@@ -21,7 +21,6 @@ services:
   app:
     container_name: bot_python_app
     build: .
-    restart: always
     ports:
       - "8081:8080"
     volumes:

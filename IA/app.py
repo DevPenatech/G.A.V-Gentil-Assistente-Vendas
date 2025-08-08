@@ -3,16 +3,15 @@ from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 import logging
 import threading
-from IA.database import database
-from IA.ai_llm import llm_interface
-from IA.knowledge import knowledge
-from IA.utils import logger_config
-from IA.core.session_manager import (
+from db import database
+from ai_llm import llm_interface
+from knowledge import knowledge
+from utils import logger_config
+from core.session_manager import (
     load_session, save_session, clear_session,
     format_product_list_for_display, format_cart_for_display
 )
-from IA.communication import twilio_client
-import os
+from communication import twilio_client
 
 app = Flask(__name__)
 logger_config.setup_logger()

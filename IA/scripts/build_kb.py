@@ -1,5 +1,5 @@
 # file: IA/build_kb.py
-from IA.database import database
+from db import database
 import json
 import re
 from psycopg2.extras import DictCursor

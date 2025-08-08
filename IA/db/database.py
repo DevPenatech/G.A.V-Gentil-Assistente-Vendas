@@ -8,7 +8,7 @@ from typing import Union, List, Dict
 import time
 import decimal
 
-load_dotenv(dotenv_path='IA/.env') # Garante que o .env da pasta IA seja lido
+load_dotenv(dotenv_path='.env') # Garante que o .env da pasta IA seja lido
 
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USERNAME")

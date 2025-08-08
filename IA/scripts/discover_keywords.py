@@ -1,5 +1,5 @@
-# file: IA/discover_keywords.py
-from IA.database import database
+# file: IA/scripts/discover_keywords.py
+from db import database
 import json
 import ollama
 import time

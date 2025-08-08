@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED 1
 
 # --- Estágio 3: Instalação das Dependências ---
 # <<< MUDANÇA AQUI: Copia o requirements.txt de dentro da pasta /IA >>>
-COPY IA/requirements.txt .
+COPY requirements.txt .
 
 # Instala as bibliotecas Python listadas.
 RUN pip install --no-cache-dir -r requirements.txt
