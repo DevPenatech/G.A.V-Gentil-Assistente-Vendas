@@ -1,10 +1,23 @@
 {
     "customer_context": null,
     "shopping_cart": [],
-    "last_search_type": "top_selling",
-    "last_search_params": {},
+    "last_search_type": "by_name",
+    "last_search_params": {
+        "product_name": "coca"
+    },
     "current_offset": 5,
-    "last_shown_products": [],
+    "last_shown_products": [
+        {
+            "codprod": 8130,
+            "descricao": "REFRIG.COCA-COLA LT 350ML",
+            "pvenda": 4.2
+        },
+        {
+            "codprod": 13700,
+            "descricao": "REFRIG.COCA-COLA PET 2L",
+            "pvenda": 8.5
+        }
+    ],
     "last_bot_action": "AWAITING_PRODUCT_SELECTION",
     "pending_action": null,
     "last_kb_search_term": null
