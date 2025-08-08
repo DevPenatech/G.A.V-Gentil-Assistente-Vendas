@@ -3,8 +3,8 @@ import json
 import logging
 from typing import Dict, Union
 
-KNOWLEDGE_BASE_FILE = "IA/knowledge_base.json"
-SEMANTIC_MAP_FILE = "IA/semantic_map.json"
+KNOWLEDGE_BASE_FILE = "knowledge/knowledge_base.json"
+SEMANTIC_MAP_FILE = "knowledge/semantic_map.json"
 _kb = None
 _semantic_map = None
 

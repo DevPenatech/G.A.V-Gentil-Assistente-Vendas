@@ -33,7 +33,7 @@ def get_suggestions_from_llm(description: str) -> list:
 
         client = ollama.Client(**client_args)
         response = client.chat(
-            model='llama3',
+            model='llama3.1',
             messages=[{'role': 'user', 'content': prompt}],
             format='json'
         )

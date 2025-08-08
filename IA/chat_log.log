@@ -72,3 +72,67 @@
 2025-08-08 18:16:44,108 [INFO] Response Status Code: 201
 2025-08-08 18:16:44,108 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '900', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 18:16:43 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQb37cf1b5d558d2560f55b725208159d2', 'Twilio-Request-Duration': '0.115', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 6f2f291762a32a9876c9d69d778cb280.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'FahdfC7wTmQ3qnbzGsWZG3aPMU5Tzp1njvlnR2wONOL_Bh0bLWs2Bw==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
 2025-08-08 18:16:44,109 [INFO] THREAD: Processamento finalizado para 'Oi'
+2025-08-08 18:21:30,993 [INFO]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-08 18:21:31,042 [INFO]  * Restarting with stat
+2025-08-08 18:21:31,752 [WARNING]  * Debugger is active!
+2025-08-08 18:21:31,753 [INFO]  * Debugger PIN: 878-148-492
+2025-08-08 18:21:56,675 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.3:8080
+2025-08-08 18:21:56,675 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-08 18:21:56,676 [INFO]  * Restarting with stat
+2025-08-08 18:21:57,331 [WARNING]  * Debugger is active!
+2025-08-08 18:21:57,332 [INFO]  * Debugger PIN: 112-391-589
+2025-08-08 18:22:02,275 [INFO] 172.18.0.1 - - [08/Aug/2025 18:22:02] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 18:22:02,277 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 18:22:02,282 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'Oi...'
+2025-08-08 18:22:02,282 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 18:22:02,284 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2523 caracteres
+2025-08-08 18:22:02,284 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2455 caracteres
+2025-08-08 18:22:02,284 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 18:22:02,297 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3
+2025-08-08 18:22:02,325 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 18:22:02,326 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 18:22:02,326 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3
+2025-08-08 18:22:02,328 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 404 Not Found"
+2025-08-08 18:22:02,329 [ERROR] [llm_interface.py] Erro ao comunicar com o LLM: model "llama3" not found, try pulling it first (status code: 404)
+2025-08-08 18:22:02,329 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'error', 'parameters': {'detail': 'Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. model "llama3" not found, try pulling it first (status code: 404)'}}
+2025-08-08 18:22:02,329 [WARNING] Fallback Final: Ferramenta desconhecida 'error'
+2025-08-08 18:22:02,330 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': None, 'last_search_params': {}, 'current_offset': 0, 'last_shown_products': [], 'last_bot_action': None, 'pending_action': 'show_top_selling', 'last_kb_search_term': None}
+2025-08-08 18:22:02,332 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: '🤖 Hum, não entendi muito bem. Que tal começarmos pelos produtos mais vendidos? Posso te mostrar?'
+2025-08-08 18:22:02,355 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 18:22:02,356 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 18:22:02,356 [INFO] Headers:
+2025-08-08 18:22:02,356 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 18:22:02,356 [INFO] Accept : application/json
+2025-08-08 18:22:02,357 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 18:22:02,357 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 18:22:02,357 [INFO] Accept-Charset : utf-8
+2025-08-08 18:22:02,357 [INFO] -- END Twilio API Request --
+2025-08-08 18:22:03,110 [INFO] Response Status Code: 201
+2025-08-08 18:22:03,110 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '900', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 18:22:03 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ03e7cd73a5a4e8019c6c3febd41a3012', 'Twilio-Request-Duration': '0.113', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 b0c4c3183ea0dd9a0f495a148c420656.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'MDXsuelpxGZC-b4dc8YE_uTMbHuy9LJfwXK0WLfbVviwe5VDbmXDuw==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 18:22:03,111 [INFO] THREAD: Processamento finalizado para 'Oi'
+2025-08-08 18:22:12,409 [INFO] 172.18.0.1 - - [08/Aug/2025 18:22:12] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 18:22:12,410 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 18:22:12,414 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'get_top_selling_products', 'parameters': {}}
+2025-08-08 18:22:12,434 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'top_selling', 'last_search_params': {}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 18:22:12,436 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: '🤖 Estes são nossos produtos mais populares:
+Nenhum produto encontrado com esse critério.'
+2025-08-08 18:22:12,437 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 18:22:12,437 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 18:22:12,437 [INFO] Headers:
+2025-08-08 18:22:12,437 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 18:22:12,438 [INFO] Accept : application/json
+2025-08-08 18:22:12,438 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 18:22:12,438 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 18:22:12,439 [INFO] Accept-Charset : utf-8
+2025-08-08 18:22:12,439 [INFO] -- END Twilio API Request --
+2025-08-08 18:22:12,727 [INFO] Response Status Code: 429
+2025-08-08 18:22:12,727 [INFO] Response Headers: {'Content-Type': 'application/json', 'Content-Length': '173', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 18:22:12 GMT', 'X-Twilio-Error-Code': '63038', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ35871c1b0b13fc3c43831a957c45c8d1', 'Twilio-Request-Duration': '0.041', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Error from cloudfront', 'Via': '1.1 b0c4c3183ea0dd9a0f495a148c420656.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'im5Zi1bFK9eSw34XSWepUUl5Wk_K67R0tmxuEi0J1sOx92M8Y7ZDnA==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 18:22:12,728 [ERROR] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-08 18:22:12,728 [INFO] THREAD: Processamento finalizado para 'Sim'
+2025-08-08 18:35:06,695 [INFO]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-08 18:35:06,736 [INFO]  * Restarting with stat
+2025-08-08 18:35:07,411 [WARNING]  * Debugger is active!
+2025-08-08 18:35:07,411 [INFO]  * Debugger PIN: 112-391-589
