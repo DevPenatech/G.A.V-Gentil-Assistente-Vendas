@@ -12,20 +12,24 @@ The file is only rewritten when the script is executed directly (``__main__``).
 import json
 import logging
 import os
+import sys
 import re
 import unicodedata
 import itertools
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
+from pathlib import Path
 
 import ollama
 from psycopg2.extras import RealDictCursor
 
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from db import database
 
 
 KNOWLEDGE_BASE_FILE = "knowledge/knowledge_base.json"
-_kb: Dict[str, Dict] | None = None
-OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3")
+_kb: Optional[Dict[str, Dict]] = None
+OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")
 
 def _load_kb() -> Dict:
