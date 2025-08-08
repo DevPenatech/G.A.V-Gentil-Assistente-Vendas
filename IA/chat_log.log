@@ -136,3 +136,11 @@ Nenhum produto encontrado com esse critério.'
 2025-08-08 18:35:06,736 [INFO]  * Restarting with stat
 2025-08-08 18:35:07,411 [WARNING]  * Debugger is active!
 2025-08-08 18:35:07,411 [INFO]  * Debugger PIN: 112-391-589
+2025-08-08 19:01:43,443 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.3:8080
+2025-08-08 19:01:43,443 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-08 19:01:43,444 [INFO]  * Restarting with stat
+2025-08-08 19:01:44,193 [WARNING]  * Debugger is active!
+2025-08-08 19:01:44,194 [INFO]  * Debugger PIN: 955-781-476
