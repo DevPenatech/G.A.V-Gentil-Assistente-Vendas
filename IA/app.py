@@ -98,7 +98,7 @@ def process_message_async(sender_phone, incoming_msg):
                 tool_name = intent.get("tool_name")
                 parameters = intent.get("parameters", {})
                 
-                db_intensive_tools = ["get_top_selling_products", "get_top_selling_products_by_name", "show_more_products", "report_incorrect_product", "get_product_by_codprod", "search_by_category"]
+                db_intensive_tools = ["get_top_selling_products", "get_top_selling_products_by_name", "show_more_products", "report_incorrect_product", "get_product_by_codprod"]
                 if tool_name in db_intensive_tools:
                     print(f">>> CONSOLE: Acessando o Banco de Dados (ferramenta: {tool_name})...")
 
@@ -133,28 +133,6 @@ def process_message_async(sender_phone, incoming_msg):
                         response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
                         last_bot_action = "AWAITING_PRODUCT_SELECTION"
                 
-                elif tool_name == "search_by_category":
-                    category = parameters.get("category", "")
-                    print(f">>> CONSOLE: Buscando pela categoria '{category}'...")
-                    semantic_map = knowledge.load_semantic_map()
-                    category_lower = category.lower()
-                    search_terms = semantic_map.get(category_lower) or semantic_map.get(category_lower.rstrip('s'))
-
-                    if search_terms:
-                        print(f">>> CONSOLE: Termos semânticos encontrados: {search_terms}")
-                        current_offset, last_shown_products = 0, []
-                        last_search_type = "by_category"
-                        last_search_params = {'category_terms': search_terms, 'category_name': category}
-                        products = database.search_products_by_category_terms(search_terms, offset=current_offset)
-                        title = f"Encontrei estes produtos na categoria '{category}':"
-                        current_offset += 5
-                        last_shown_products.extend(products)
-                        response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
-                        last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                    else:
-                        print(f">>> CONSOLE: Categoria '{category}' não encontrada no mapa semântico.")
-                        response_text = f"🤖 Desculpe, não conheço a categoria '{category}'. Tente buscar por um produto específico."
-
                 elif tool_name == "add_item_to_cart":
                     product_to_add = None
                     if "index" in parameters:
@@ -206,11 +184,6 @@ def process_message_async(sender_phone, incoming_msg):
                             product_name = last_search_params.get("product_name", "")
                             products = database.get_top_selling_products_by_name(product_name, offset=current_offset)
                             title = f"Mostrando mais produtos relacionados a '{product_name}':"
-                        elif last_search_type == "by_category":
-                            search_terms = last_search_params.get('category_terms', [])
-                            category_name = last_search_params.get('category_name', 'resultados')
-                            products = database.search_products_by_category_terms(search_terms, offset=current_offset)
-                            title = f"Mostrando mais produtos da categoria '{category_name}':"
                         
                         if not products:
                             response_text = "🤖 Não encontrei mais produtos para essa busca."
