@@ -27,30 +27,54 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from db import database
 
 
-KNOWLEDGE_BASE_FILE = "knowledge/knowledge_base.json"
+KB_PATH = Path(__file__).resolve().parent / "knowledge_base.json"
 _kb: Optional[Dict[str, Dict]] = None
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")
 
 def _load_kb() -> Dict:
-    """Load the knowledge base from disk into memory."""
+    """Load the knowledge base from disk into memory.
+
+    If the file does not exist or is empty we attempt to rebuild it using the
+    database.  The JSON file stores only canonical product names as keys, but in
+    memory we also index each related word for faster lookup.
+    """
 
     global _kb
     if _kb is not None:
         return _kb
+
+    raw_kb: Dict[str, Dict] = {}
     try:
-        with open(KNOWLEDGE_BASE_FILE, "r", encoding="utf-8") as f:
-            _kb = json.load(f)
-            logging.info(
-                f"Base de conhecimento '{KNOWLEDGE_BASE_FILE}' carregada com {len(_kb)} termos."
-            )
-            return _kb
-    except (FileNotFoundError, json.JSONDecodeError):
+        if not KB_PATH.exists() or KB_PATH.stat().st_size == 0:
+            raise FileNotFoundError
+        with KB_PATH.open("r", encoding="utf-8") as f:
+            raw_kb = json.load(f)
+        if not raw_kb:
+            raise ValueError("empty")
+    except (FileNotFoundError, json.JSONDecodeError, ValueError):
         logging.warning(
-            f"Arquivo '{KNOWLEDGE_BASE_FILE}' não encontrado. Iniciando com base vazia."
+            f"Arquivo '{KB_PATH}' inexistente ou vazio. Reconstruindo base de conhecimento..."
         )
-        _kb = {}
-        return _kb
+        try:
+            build_knowledge_base()
+            with KB_PATH.open("r", encoding="utf-8") as f:
+                raw_kb = json.load(f)
+        except Exception as e:
+            logging.error(f"Falha ao construir base de conhecimento: {e}")
+            raw_kb = {}
+
+    kb: Dict[str, Dict] = {}
+    for canonical, entry in raw_kb.items():
+        kb[canonical.lower()] = entry
+        for word in entry.get("related_words", []):
+            kb[word.lower()] = entry
+
+    _kb = kb
+    logging.info(
+        f"Base de conhecimento '{KB_PATH}' carregada com {len(raw_kb)} produtos e {len(kb)} termos."
+    )
+    return _kb
 
 def find_product_in_kb(term: str) -> Union[Dict, None]:
     """Busca um produto na base de conhecimento."""
@@ -73,26 +97,39 @@ def update_kb(term: str, correct_product: Dict):
         logging.warning("Tentativa de atualizar KB com dados inválidos.")
         return
 
-    term_lower = term.lower()
-    kb = _load_kb()
+    term_normalized = term.lower()
 
-    entry = {
-        "codprod": correct_product["codprod"],
-        "canonical_name": correct_product["descricao"],
-        "related_words": kb.get(term_lower, {}).get("related_words", []),
-    }
+    # Carrega o arquivo bruto (apenas nomes canônicos como chaves)
+    try:
+        with KB_PATH.open("r", encoding="utf-8") as f:
+            raw_kb = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        raw_kb = {}
 
-    synonyms = {term_lower, term_lower.replace("-", ""), term_lower.replace("-", " ")}
-    for synonym in synonyms:
-        if synonym:
-            kb[synonym] = entry
+    canonical_name = correct_product["descricao"]
+    entry = raw_kb.get(
+        canonical_name,
+        {
+            "codprod": correct_product["codprod"],
+            "canonical_name": canonical_name,
+            "related_words": [],
+        },
+    )
+
+    if term_normalized not in entry["related_words"]:
+        entry["related_words"].append(term_normalized)
+    raw_kb[canonical_name] = entry
 
     try:
-        with open(KNOWLEDGE_BASE_FILE, "w", encoding="utf-8") as f:
-            json.dump(kb, f, indent=2, ensure_ascii=False)
-            logging.info(f"KB atualizado para os termos {list(synonyms)}")
+        with KB_PATH.open("w", encoding="utf-8") as f:
+            json.dump(raw_kb, f, indent=2, ensure_ascii=False)
+        logging.info(f"KB atualizado com novo termo relacionado '{term_normalized}'")
     except Exception as e:
         logging.error(f"Falha ao salvar a base de conhecimento: {e}")
+
+    # Limpa o cache em memória para refletir as mudanças
+    global _kb
+    _kb = None
 
 
 def _normalize(text: str) -> str:
@@ -166,10 +203,14 @@ def build_knowledge_base() -> None:
     sql = "SELECT codprod, descricao FROM produtos WHERE status = 'ativo';"
     products: List[Dict] = []
 
-    with database.get_connection() as conn:
-        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(sql)
-            products = cursor.fetchall()
+    try:
+        with database.get_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(sql)
+                products = cursor.fetchall()
+    except Exception as e:
+        logging.error(f"Falha ao consultar produtos: {e}")
+        products = []
 
     kb: Dict[str, Dict] = {}
     for product in products:
@@ -179,16 +220,20 @@ def build_knowledge_base() -> None:
             "canonical_name": product["descricao"],
             "related_words": related,
         }
+        kb[product["descricao"]] = entry
 
-        kb[product["descricao"].lower()] = entry
-        for word in related:
-            kb[word.lower()] = entry
+    try:
+        with KB_PATH.open("w", encoding="utf-8") as f:
+            json.dump(kb, f, indent=2, ensure_ascii=False)
+        logging.info(
+            f"Base de conhecimento gerada com {len(products)} produtos."
+        )
+    except Exception as e:
+        logging.error(f"Falha ao salvar a base de conhecimento: {e}")
 
-    with open(KNOWLEDGE_BASE_FILE, "w", encoding="utf-8") as f:
-        json.dump(kb, f, indent=2, ensure_ascii=False)
-    logging.info(
-        f"Base de conhecimento gerada com {len(products)} produtos e {len(kb)} termos."
-    )
+    # Limpa o cache em memória para garantir recarregamento da nova base
+    global _kb
+    _kb = None
 
 
 if __name__ == "__main__":
