@@ -32,14 +32,14 @@ _kb: Optional[Dict[str, Dict]] = None
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")
 
+
 def _load_kb() -> Dict:
     """Load the knowledge base from disk into memory.
 
-    If the file does not exist or is empty we attempt to rebuild it using the
-    database.  The JSON file stores only canonical product names as keys, but in
+    If the file does not exist or is empty we return an empty dict.
+    The JSON file stores only canonical product names as keys, but in
     memory we also index each related word for faster lookup.
     """
-
     global _kb
     if _kb is not None:
         return _kb
@@ -47,23 +47,18 @@ def _load_kb() -> Dict:
     raw_kb: Dict[str, Dict] = {}
     try:
         if not KB_PATH.exists() or KB_PATH.stat().st_size == 0:
-            raise FileNotFoundError
-        with KB_PATH.open("r", encoding="utf-8") as f:
-            raw_kb = json.load(f)
-        if not raw_kb:
-            raise ValueError("empty")
-    except (FileNotFoundError, json.JSONDecodeError, ValueError):
-        logging.warning(
-            f"Arquivo '{KB_PATH}' inexistente ou vazio. Reconstruindo base de conhecimento..."
-        )
-        try:
-            build_knowledge_base()
+            logging.info(f"Arquivo '{KB_PATH}' inexistente ou vazio.")
+            raw_kb = {}
+        else:
             with KB_PATH.open("r", encoding="utf-8") as f:
                 raw_kb = json.load(f)
-        except Exception as e:
-            logging.error(f"Falha ao construir base de conhecimento: {e}")
-            raw_kb = {}
+            if not raw_kb:
+                raw_kb = {}
+    except (FileNotFoundError, json.JSONDecodeError, ValueError) as e:
+        logging.warning(f"Erro ao carregar '{KB_PATH}': {e}. Usando base vazia.")
+        raw_kb = {}
 
+    # Cria índice expandido: tanto nomes canônicos quanto related_words apontam para o mesmo entry
     kb: Dict[str, Dict] = {}
     for canonical, entry in raw_kb.items():
         kb[canonical.lower()] = entry
@@ -76,28 +71,35 @@ def _load_kb() -> Dict:
     )
     return _kb
 
-def find_product_in_kb(term: str) -> Union[Dict, None]:
-    """Busca um produto na base de conhecimento."""
 
+def find_product_in_kb(term: str) -> Union[Dict, None]:
+    """Busca um produto na base de conhecimento usando o termo fornecido."""
+    if not term:
+        return None
+        
     kb = _load_kb()
-    term_lower = term.lower()
+    term_lower = term.lower().strip()
+    
+    # Busca direta no índice
     if term_lower in kb:
         return kb[term_lower]
-    # Fallback: procura dentro de related_words
+    
+    # Busca fuzzy: procura se o termo está contido em alguma related_word
     for entry in kb.values():
         related = entry.get("related_words", [])
-        if any(term_lower == w.lower() for w in related):
+        if any(term_lower in w.lower() for w in related):
             return entry
+            
     return None
+
 
 def update_kb(term: str, correct_product: Dict):
     """Persistently store a new association in the knowledge base."""
-
     if not term or not correct_product or not correct_product.get("codprod"):
         logging.warning("Tentativa de atualizar KB com dados inválidos.")
         return
 
-    term_normalized = term.lower()
+    term_normalized = term.lower().strip()
 
     # Carrega o arquivo bruto (apenas nomes canônicos como chaves)
     try:
@@ -107,18 +109,27 @@ def update_kb(term: str, correct_product: Dict):
         raw_kb = {}
 
     canonical_name = correct_product["descricao"]
-    entry = raw_kb.get(
-        canonical_name,
-        {
+    
+    # Procura se já existe entrada para este produto
+    entry = None
+    for name, existing_entry in raw_kb.items():
+        if existing_entry.get("codprod") == correct_product["codprod"]:
+            entry = existing_entry
+            break
+    
+    # Se não encontrou, cria nova entrada
+    if entry is None:
+        entry = {
             "codprod": correct_product["codprod"],
             "canonical_name": canonical_name,
             "related_words": [],
-        },
-    )
+        }
+        raw_kb[canonical_name] = entry
 
-    if term_normalized not in entry["related_words"]:
+    # Adiciona o novo termo se não existir
+    if term_normalized not in [w.lower() for w in entry["related_words"]]:
         entry["related_words"].append(term_normalized)
-    raw_kb[canonical_name] = entry
+        logging.info(f"Adicionado termo '{term_normalized}' ao produto {canonical_name}")
 
     try:
         with KB_PATH.open("w", encoding="utf-8") as f:
@@ -134,73 +145,105 @@ def update_kb(term: str, correct_product: Dict):
 
 def _normalize(text: str) -> str:
     """Remove acentos e normaliza o texto para minúsculas."""
-
     nfkd = unicodedata.normalize("NFD", text.lower())
     return "".join(c for c in nfkd if unicodedata.category(c) != "Mn")
 
 
 def _heuristic_related_words(description: str) -> List[str]:
     """Fallback simples para gerar variações quando a IA não estiver disponível."""
-
     normalized = _normalize(description)
-    tokens = [t for t in re.split(r"\W+", normalized) if t]
+    tokens = [t for t in re.split(r"\W+", normalized) if t and len(t) > 1]
     variations = set()
 
+    # Variações básicas
     variations.add(normalized)
     variations.add(" ".join(tokens))
     variations.add("".join(tokens))
-    variations.add(normalized.replace("-", " "))
-    variations.add(normalized.replace("-", ""))
-    variations.add(normalized.replace(".", " "))
-    variations.add(normalized.replace(".", ""))
-    variations.add(normalized.replace("/", " "))
-    variations.add(normalized.replace("/", ""))
+    
+    # Remove pontuação
+    for char in ["-", ".", "/", "_"]:
+        variations.add(normalized.replace(char, " "))
+        variations.add(normalized.replace(char, ""))
 
-    for r in range(1, min(3, len(tokens)) + 1):
+    # Combinações de tokens
+    for r in range(1, min(4, len(tokens)) + 1):
         for combo in itertools.combinations(tokens, r):
             variations.add(" ".join(combo))
             variations.add("".join(combo))
 
+    # Remove variações muito curtas ou vazias
+    variations = {v for v in variations if v and len(v.strip()) > 1}
+    
     variations_list = list(variations)
+    
+    # Garante pelo menos 20 variações
     if len(variations_list) < 20:
         for i in range(20 - len(variations_list)):
-            variations_list.append(f"{normalized} {i+1}")
+            variations_list.append(f"{tokens[0] if tokens else 'produto'} variacao {i+1}")
+    
     return variations_list[:20]
 
 
 def generate_related_words(description: str) -> List[str]:
     """Gera pelo menos 20 variações usando o modelo configurado do Ollama."""
+    prompt = f"""
+Gere exatamente 20 variações de palavras ou frases que um cliente brasileiro poderia usar para se referir ao produto: '{description}'.
 
-    prompt = (
-        "Liste pelo menos 20 variações de palavras ou frases que um cliente "
-        f"poderia usar para se referir ao produto: '{description}'. Separe cada termo por vírgula."
-    )
+Inclua:
+- Variações com e sem acentos
+- Abreviações comuns
+- Sinônimos
+- Variações de grafia
+- Termos populares/informais
+- Marcas relacionadas (se aplicável)
+
+Responda APENAS com as 20 variações separadas por vírgula, sem numeração ou explicações.
+"""
 
     try:
         client_args = {}
         if OLLAMA_HOST:
             client_args["host"] = OLLAMA_HOST
+        
         client = ollama.Client(**client_args)
         response = client.chat(
             model=OLLAMA_MODEL_NAME,
             messages=[{"role": "user", "content": prompt}],
         )
-        text = response["message"]["content"]
-        words = [w.strip().lower() for w in text.split(",") if w.strip()]
-        if len(words) < 20:
-            raise ValueError("menor que 20")
-        return words[:20]
+        
+        text = response["message"]["content"].strip()
+        
+        # Parse da resposta
+        words = []
+        for w in text.split(","):
+            word = w.strip().lower()
+            if word and len(word) > 1:
+                words.append(word)
+        
+        # Remove duplicatas mantendo ordem
+        seen = set()
+        unique_words = []
+        for w in words:
+            if w not in seen:
+                seen.add(w)
+                unique_words.append(w)
+        
+        if len(unique_words) >= 15:  # Aceita se tiver pelo menos 15 boas variações
+            return unique_words[:20]
+        else:
+            raise ValueError(f"IA retornou apenas {len(unique_words)} variações válidas")
+            
     except Exception as e:
-        logging.warning(f"Falha ao gerar variações via IA: {e}")
+        logging.warning(f"Falha ao gerar variações via IA para '{description}': {e}")
         return _heuristic_related_words(description)
 
 
 def build_knowledge_base() -> None:
     """Consulta todos os produtos e reescreve o arquivo de base de conhecimento."""
+    logging.info("=== INICIANDO GERAÇÃO DA BASE DE CONHECIMENTO ===")
+    logging.info("Consultando produtos ativos no banco de dados...")
 
-    logging.info("Gerando base de conhecimento a partir do banco de dados...")
-
-    sql = "SELECT codprod, descricao FROM produtos WHERE status = 'ativo';"
+    sql = "SELECT codprod, descricao FROM produtos WHERE status = 'ativo' ORDER BY codprod;"
     products: List[Dict] = []
 
     try:
@@ -208,34 +251,87 @@ def build_knowledge_base() -> None:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql)
                 products = cursor.fetchall()
+                logging.info(f"Encontrados {len(products)} produtos ativos no banco")
     except Exception as e:
         logging.error(f"Falha ao consultar produtos: {e}")
-        products = []
+        return
+
+    if not products:
+        logging.warning("Nenhum produto encontrado. Base de conhecimento não será gerada.")
+        return
 
     kb: Dict[str, Dict] = {}
-    for product in products:
-        related = generate_related_words(product["descricao"])
-        entry = {
-            "codprod": product["codprod"],
-            "canonical_name": product["descricao"],
-            "related_words": related,
-        }
-        kb[product["descricao"]] = entry
+    
+    for i, product in enumerate(products, 1):
+        logging.info(f"Processando produto {i}/{len(products)}: {product['descricao']}")
+        
+        try:
+            related = generate_related_words(product["descricao"])
+            entry = {
+                "codprod": product["codprod"],
+                "canonical_name": product["descricao"],
+                "related_words": related,
+            }
+            kb[product["descricao"]] = entry
+            logging.info(f"  -> Geradas {len(related)} variações")
+            
+        except Exception as e:
+            logging.error(f"Erro ao processar produto {product['descricao']}: {e}")
+            # Adiciona entrada básica mesmo com erro
+            kb[product["descricao"]] = {
+                "codprod": product["codprod"],
+                "canonical_name": product["descricao"],
+                "related_words": _heuristic_related_words(product["descricao"]),
+            }
 
     try:
+        # Cria backup do arquivo anterior se existir
+        if KB_PATH.exists():
+            backup_path = KB_PATH.with_suffix(".json.backup")
+            KB_PATH.rename(backup_path)
+            logging.info(f"Backup criado: {backup_path}")
+        
+        # Salva nova base de conhecimento
         with KB_PATH.open("w", encoding="utf-8") as f:
             json.dump(kb, f, indent=2, ensure_ascii=False)
-        logging.info(
-            f"Base de conhecimento gerada com {len(products)} produtos."
-        )
+        
+        logging.info(f"=== BASE DE CONHECIMENTO GERADA COM SUCESSO ===")
+        logging.info(f"Arquivo: {KB_PATH}")
+        logging.info(f"Produtos processados: {len(products)}")
+        logging.info(f"Total de entradas: {len(kb)}")
+        
+        # Calcula total de termos indexados
+        total_terms = sum(len(entry.get("related_words", [])) for entry in kb.values())
+        logging.info(f"Total de termos relacionados: {total_terms}")
+        
     except Exception as e:
         logging.error(f"Falha ao salvar a base de conhecimento: {e}")
+        return
 
     # Limpa o cache em memória para garantir recarregamento da nova base
     global _kb
     _kb = None
+    logging.info("Cache em memória limpo. Próxima consulta carregará a nova base.")
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    # Configura logging para execução direta
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler("knowledge_generation.log", mode='a', encoding='utf-8')
+        ]
+    )
+    
+    print("=== GERADOR DE BASE DE CONHECIMENTO ===")
+    print("Este script irá:")
+    print("1. Consultar todos os produtos ativos no banco")
+    print("2. Gerar 20+ variações para cada produto usando IA")
+    print("3. Reescrever o arquivo knowledge_base.json")
+    print()
+    
     build_knowledge_base()
+    print("\nProcesso concluído! Verifique o arquivo knowledge_base.json e os logs.")
+    

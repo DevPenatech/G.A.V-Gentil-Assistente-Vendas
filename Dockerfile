@@ -24,6 +24,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # <<< MUDANÇA AQUI: Copia todo o conteúdo da pasta /IA para o diretório de trabalho /app >>>
 COPY IA/ .
 
+RUN python knowledge/knowledge.py
+
 # --- Estágio 5: Comando de Execução ---
 # Expõe a porta que a aplicação usará.
 EXPOSE 8080

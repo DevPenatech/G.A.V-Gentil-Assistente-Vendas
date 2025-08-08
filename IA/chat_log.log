@@ -376,3 +376,246 @@ Nenhum produto encontrado com esse critério.'
 2025-08-08 20:19:22,656 [INFO] Response Status Code: 201
 2025-08-08 20:19:22,656 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '899', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:19:22 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQbf57c4b9de772899173146a1b466e89e', 'Twilio-Request-Duration': '0.095', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 ba909a19c27187e9d323c04aa5d94468.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'MIA3-P8', 'X-Amz-Cf-Id': 'BFXJDRvFkkmmQMFvdP0OG9285iASYsQn-K4EV0_U27XM0Gz6C5g08A==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
 2025-08-08 20:19:22,656 [INFO] THREAD: Processamento finalizado para 'e coca cola ?'
+2025-08-08 20:31:53,415 [INFO]  * Detected change in '/app/knowledge/knowledge.py', reloading
+2025-08-08 20:31:53,500 [INFO]  * Restarting with stat
+2025-08-08 20:31:54,342 [WARNING]  * Debugger is active!
+2025-08-08 20:31:54,344 [INFO]  * Debugger PIN: 586-468-811
+2025-08-08 20:32:15,970 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.3:8080
+2025-08-08 20:32:15,971 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-08 20:32:15,972 [INFO]  * Restarting with stat
+2025-08-08 20:32:16,724 [WARNING]  * Debugger is active!
+2025-08-08 20:32:16,725 [INFO]  * Debugger PIN: 100-851-203
+2025-08-08 20:32:28,773 [INFO] 172.18.0.1 - - [08/Aug/2025 20:32:28] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 20:32:28,774 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 20:32:28,777 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'oi...'
+2025-08-08 20:32:28,777 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 20:32:28,778 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-08 20:32:28,779 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-08 20:32:28,779 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 20:32:28,793 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-08 20:32:28,803 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 20:32:28,803 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 20:32:28,806 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-08 20:32:34,821 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-08 20:32:34,822 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 262 caracteres
+2025-08-08 20:32:34,822 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'handle_chitchat', 'parameters': {'response_text': 'Olá! Tudo bem? Sou o G.A.V., seu assistente de vendas virtual do Comercial Esperança. Estou aqui para ajudar você a encontrar produtos e montar seu pedido. O que você gostaria de ver hoje?'}}
+2025-08-08 20:32:34,822 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'handle_chitchat', 'parameters': {'response_text': 'Olá! Tudo bem? Sou o G.A.V., seu assistente de vendas virtual do Comercial Esperança. Estou aqui para ajudar você a encontrar produtos e montar seu pedido. O que você gostaria de ver hoje?'}}
+2025-08-08 20:32:34,823 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'by_name', 'last_search_params': {'product_name': 'coca cola'}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 20:32:34,825 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: 'Olá! Tudo bem? Sou o G.A.V., seu assistente de vendas virtual do Comercial Esperança. Estou aqui para ajudar você a encontrar produtos e montar seu pedido. O que você gostaria de ver hoje?'
+2025-08-08 20:32:34,860 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 20:32:34,861 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 20:32:34,861 [INFO] Headers:
+2025-08-08 20:32:34,861 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 20:32:34,861 [INFO] Accept : application/json
+2025-08-08 20:32:34,861 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 20:32:34,861 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 20:32:34,861 [INFO] Accept-Charset : utf-8
+2025-08-08 20:32:34,861 [INFO] -- END Twilio API Request --
+2025-08-08 20:32:35,123 [INFO] Response Status Code: 201
+2025-08-08 20:32:35,124 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '991', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:32:35 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQff179f06d2d8be1bd21b4c9ceccfd112', 'Twilio-Request-Duration': '0.115', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 6f2f291762a32a9876c9d69d778cb280.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': '-3AKbSc0qrXVBZ1i4N40t_6PQ0XvpxqqGlKmzElPjtRaOEopTwxtNw==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 20:32:35,124 [INFO] THREAD: Processamento finalizado para 'oi'
+2025-08-08 20:35:51,349 [INFO]  * Detected change in '/app/knowledge/knowledge.py', reloading
+2025-08-08 20:35:51,399 [INFO]  * Restarting with stat
+2025-08-08 20:35:52,111 [WARNING]  * Debugger is active!
+2025-08-08 20:35:52,113 [INFO]  * Debugger PIN: 100-851-203
+2025-08-08 20:41:16,272 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.3:8080
+2025-08-08 20:41:16,272 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-08 20:41:16,273 [INFO]  * Restarting with stat
+2025-08-08 20:41:17,009 [WARNING]  * Debugger is active!
+2025-08-08 20:41:17,010 [INFO]  * Debugger PIN: 139-787-397
+2025-08-08 20:44:01,312 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.3:8080
+2025-08-08 20:44:01,312 [INFO] [33mPress CTRL+C to quit[0m
+2025-08-08 20:44:01,313 [INFO]  * Restarting with stat
+2025-08-08 20:44:01,977 [WARNING]  * Debugger is active!
+2025-08-08 20:44:01,978 [INFO]  * Debugger PIN: 100-009-944
+2025-08-08 20:44:25,657 [INFO] 172.18.0.1 - - [08/Aug/2025 20:44:25] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 20:44:25,658 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 20:44:25,660 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'quero coca cola...'
+2025-08-08 20:44:25,661 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 20:44:25,701 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-08 20:44:25,701 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-08 20:44:25,701 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 20:44:25,715 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-08 20:44:25,733 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 20:44:25,734 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 20:44:25,734 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-08 20:44:29,030 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-08 20:44:29,031 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 94 caracteres
+2025-08-08 20:44:29,032 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'Coca Cola'}}
+2025-08-08 20:44:29,032 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'Coca Cola'}}
+2025-08-08 20:44:29,036 [INFO] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 0 produtos e 0 termos.
+2025-08-08 20:44:29,045 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'by_name', 'last_search_params': {'product_name': 'Coca Cola'}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 20:44:29,047 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: '🤖 Encontrei estes produtos relacionados a 'Coca Cola':
+Nenhum produto encontrado com esse critério.'
+2025-08-08 20:44:29,072 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 20:44:29,072 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 20:44:29,073 [INFO] Headers:
+2025-08-08 20:44:29,073 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 20:44:29,073 [INFO] Accept : application/json
+2025-08-08 20:44:29,073 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 20:44:29,073 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 20:44:29,073 [INFO] Accept-Charset : utf-8
+2025-08-08 20:44:29,074 [INFO] -- END Twilio API Request --
+2025-08-08 20:44:29,469 [INFO] Response Status Code: 201
+2025-08-08 20:44:29,469 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '899', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:44:29 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ976cd4706556c10f41a66f901f65dbef', 'Twilio-Request-Duration': '0.126', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 381ddca30a3b9978a6c84a246d0a25ce.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'zMH5tSU2cSNLjaiR9U29RxhkQ9P89S-jZyoirC-hrYnz5XpsyXogMQ==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 20:44:29,469 [INFO] THREAD: Processamento finalizado para 'quero coca cola'
+2025-08-08 20:45:59,558 [INFO] 172.18.0.1 - - [08/Aug/2025 20:45:59] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 20:45:59,559 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 20:45:59,560 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'quero coca cola...'
+2025-08-08 20:45:59,561 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 20:45:59,562 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-08 20:45:59,562 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-08 20:45:59,562 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 20:45:59,576 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-08 20:45:59,581 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 20:45:59,581 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 20:45:59,581 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-08 20:46:00,859 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-08 20:46:00,859 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 94 caracteres
+2025-08-08 20:46:00,860 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'coca cola'}}
+2025-08-08 20:46:00,860 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'coca cola'}}
+2025-08-08 20:46:00,864 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'by_name', 'last_search_params': {'product_name': 'coca cola'}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 20:46:00,866 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: '🤖 Encontrei estes produtos relacionados a 'coca cola':
+Nenhum produto encontrado com esse critério.'
+2025-08-08 20:46:00,866 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 20:46:00,866 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 20:46:00,866 [INFO] Headers:
+2025-08-08 20:46:00,866 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 20:46:00,874 [INFO] Accept : application/json
+2025-08-08 20:46:00,874 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 20:46:00,874 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 20:46:00,875 [INFO] Accept-Charset : utf-8
+2025-08-08 20:46:00,875 [INFO] -- END Twilio API Request --
+2025-08-08 20:46:01,037 [INFO] Response Status Code: 429
+2025-08-08 20:46:01,037 [INFO] Response Headers: {'Content-Type': 'application/json', 'Content-Length': '173', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:46:00 GMT', 'X-Twilio-Error-Code': '63038', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ23b4267f356b6ab511eebeaa1d382f3e', 'Twilio-Request-Duration': '0.037', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Error from cloudfront', 'Via': '1.1 381ddca30a3b9978a6c84a246d0a25ce.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'Ae_VWt3PF2l8GcT8cYpMtCPwM_DmnCt3Wjfaa7DQLSbGyArCWu6d4g==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 20:46:01,038 [ERROR] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-08 20:46:01,038 [INFO] THREAD: Processamento finalizado para 'quero coca cola'
+2025-08-08 20:46:13,791 [INFO] 172.18.0.1 - - [08/Aug/2025 20:46:13] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 20:46:13,792 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 20:46:13,794 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'oi...'
+2025-08-08 20:46:13,794 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 20:46:13,795 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-08 20:46:13,796 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-08 20:46:13,796 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 20:46:13,813 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-08 20:46:13,826 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 20:46:13,827 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 20:46:13,828 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-08 20:46:16,030 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-08 20:46:16,031 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 277 caracteres
+2025-08-08 20:46:16,033 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'handle_chitchat', 'parameters': {'response_text': 'Olá! Tudo bem? Sou o G.A.V., seu assistente de vendas virtual do Comercial Esperança. Estou aqui para ajudar você a encontrar produtos e montar seu pedido. O que você gostaria de ver hoje?'}}
+2025-08-08 20:46:16,034 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'handle_chitchat', 'parameters': {'response_text': 'Olá! Tudo bem? Sou o G.A.V., seu assistente de vendas virtual do Comercial Esperança. Estou aqui para ajudar você a encontrar produtos e montar seu pedido. O que você gostaria de ver hoje?'}}
+2025-08-08 20:46:16,034 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'by_name', 'last_search_params': {'product_name': 'coca cola'}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 20:46:16,051 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: 'Olá! Tudo bem? Sou o G.A.V., seu assistente de vendas virtual do Comercial Esperança. Estou aqui para ajudar você a encontrar produtos e montar seu pedido. O que você gostaria de ver hoje?'
+2025-08-08 20:46:16,052 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 20:46:16,052 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 20:46:16,054 [INFO] Headers:
+2025-08-08 20:46:16,054 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 20:46:16,054 [INFO] Accept : application/json
+2025-08-08 20:46:16,054 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 20:46:16,055 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 20:46:16,055 [INFO] Accept-Charset : utf-8
+2025-08-08 20:46:16,055 [INFO] -- END Twilio API Request --
+2025-08-08 20:46:16,216 [INFO] Response Status Code: 429
+2025-08-08 20:46:16,217 [INFO] Response Headers: {'Content-Type': 'application/json', 'Content-Length': '173', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:46:16 GMT', 'X-Twilio-Error-Code': '63038', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ7ddce4a33603e8ca981bd3293bf9d166', 'Twilio-Request-Duration': '0.038', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Error from cloudfront', 'Via': '1.1 381ddca30a3b9978a6c84a246d0a25ce.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'JTNqQd9EuNNm2PPVkHB9yrjIe2WUSspi9ktrfRjZCfaUNxerBc70ag==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 20:46:16,218 [ERROR] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-08 20:46:16,219 [INFO] THREAD: Processamento finalizado para 'oi'
+2025-08-08 20:46:24,657 [INFO] 172.18.0.1 - - [08/Aug/2025 20:46:24] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 20:46:24,658 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 20:46:24,660 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'Quero coca cola...'
+2025-08-08 20:46:24,660 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 20:46:24,662 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-08 20:46:24,663 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-08 20:46:24,663 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 20:46:24,676 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-08 20:46:24,686 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 20:46:24,687 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 20:46:24,687 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-08 20:46:25,512 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-08 20:46:25,512 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 94 caracteres
+2025-08-08 20:46:25,513 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'coca cola'}}
+2025-08-08 20:46:25,513 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'coca cola'}}
+2025-08-08 20:46:25,517 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'by_name', 'last_search_params': {'product_name': 'coca cola'}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 20:46:25,528 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: '🤖 Encontrei estes produtos relacionados a 'coca cola':
+Nenhum produto encontrado com esse critério.'
+2025-08-08 20:46:25,536 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 20:46:25,536 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 20:46:25,536 [INFO] Headers:
+2025-08-08 20:46:25,536 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 20:46:25,536 [INFO] Accept : application/json
+2025-08-08 20:46:25,537 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 20:46:25,537 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 20:46:25,630 [INFO] Accept-Charset : utf-8
+2025-08-08 20:46:25,631 [INFO] -- END Twilio API Request --
+2025-08-08 20:46:25,855 [INFO] Response Status Code: 201
+2025-08-08 20:46:25,855 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '899', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:46:25 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ6f4a01342950f3b3bd6b89cda6eec085', 'Twilio-Request-Duration': '0.101', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 381ddca30a3b9978a6c84a246d0a25ce.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'mMy3219zHiYbOlV7ynpuxgSHSBePtIi6yw2uZHIet-N8z3MbpSVKNg==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 20:46:25,855 [INFO] THREAD: Processamento finalizado para 'Quero coca cola'
+2025-08-08 20:46:36,752 [INFO] 172.18.0.1 - - [08/Aug/2025 20:46:36] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 20:46:36,758 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 20:46:36,760 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'quero lata...'
+2025-08-08 20:46:36,761 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 20:46:36,762 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-08 20:46:36,762 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-08 20:46:36,763 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 20:46:36,776 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-08 20:46:36,782 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 20:46:36,783 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 20:46:36,783 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-08 20:46:37,681 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-08 20:46:37,681 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 89 caracteres
+2025-08-08 20:46:37,682 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'lata'}}
+2025-08-08 20:46:37,682 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'lata'}}
+2025-08-08 20:46:37,687 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'by_name', 'last_search_params': {'product_name': 'lata'}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 20:46:37,689 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: '🤖 Encontrei estes produtos relacionados a 'lata':
+Nenhum produto encontrado com esse critério.'
+2025-08-08 20:46:37,690 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 20:46:37,690 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 20:46:37,690 [INFO] Headers:
+2025-08-08 20:46:37,690 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 20:46:37,690 [INFO] Accept : application/json
+2025-08-08 20:46:37,691 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 20:46:37,691 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 20:46:37,691 [INFO] Accept-Charset : utf-8
+2025-08-08 20:46:37,691 [INFO] -- END Twilio API Request --
+2025-08-08 20:46:37,938 [INFO] Response Status Code: 201
+2025-08-08 20:46:37,939 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '894', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:46:37 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ0d6c3da6b6aa61976ff9f22bb9110d1b', 'Twilio-Request-Duration': '0.124', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 381ddca30a3b9978a6c84a246d0a25ce.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': '8cI6EacLc1cH_hJQHT6G3Z2dnO8Vw06Gz1bla-yYPvLzKdHChuP9Ww==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 20:46:37,939 [INFO] THREAD: Processamento finalizado para 'quero lata'
+2025-08-08 20:46:45,915 [INFO] 172.18.0.1 - - [08/Aug/2025 20:46:45] "POST /webhook HTTP/1.1" 200 -
+2025-08-08 20:46:45,916 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-08 20:46:45,921 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'produto coca cola...'
+2025-08-08 20:46:45,922 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-08 20:46:45,924 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-08 20:46:45,924 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-08 20:46:45,924 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-08 20:46:45,940 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-08 20:46:45,947 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-08 20:46:45,948 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-08 20:46:45,948 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-08 20:46:46,899 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-08 20:46:46,900 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 94 caracteres
+2025-08-08 20:46:46,900 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'coca cola'}}
+2025-08-08 20:46:46,900 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'coca cola'}}
+2025-08-08 20:46:46,904 [INFO] Salvando sessão: {'customer_context': None, 'shopping_cart': [], 'last_search_type': 'by_name', 'last_search_params': {'product_name': 'coca cola'}, 'current_offset': 5, 'last_shown_products': [], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-08 20:46:46,906 [INFO] Enviando mensagem proativa para whatsapp:+5511940726493: '🤖 Encontrei estes produtos relacionados a 'coca cola':
+Nenhum produto encontrado com esse critério.'
+2025-08-08 20:46:46,906 [INFO] -- BEGIN Twilio API Request --
+2025-08-08 20:46:46,906 [INFO] POST Request: https://api.twilio.com/2010-04-01/Accounts/ACd2a6cd60871d661c034ecb40ddbd51e7/Messages.json
+2025-08-08 20:46:46,907 [INFO] Headers:
+2025-08-08 20:46:46,907 [INFO] Content-Type : application/x-www-form-urlencoded
+2025-08-08 20:46:46,907 [INFO] Accept : application/json
+2025-08-08 20:46:46,907 [INFO] User-Agent : twilio-python/9.7.0 (Linux x86_64) Python/3.9.23
+2025-08-08 20:46:46,908 [INFO] X-Twilio-Client : python-9.7.0
+2025-08-08 20:46:46,909 [INFO] Accept-Charset : utf-8
+2025-08-08 20:46:46,909 [INFO] -- END Twilio API Request --
+2025-08-08 20:46:47,130 [INFO] Response Status Code: 201
+2025-08-08 20:46:47,130 [INFO] Response Headers: {'Content-Type': 'application/json;charset=utf-8', 'Content-Length': '899', 'Connection': 'keep-alive', 'Date': 'Fri, 08 Aug 2025 20:46:47 GMT', 'Twilio-Concurrent-Requests': '1', 'Twilio-Request-Id': 'RQ5e432e7ddf80c45abe4abe877515dfa2', 'Twilio-Request-Duration': '0.097', 'X-Home-Region': 'us1', 'X-API-Domain': 'api.twilio.com', 'Strict-Transport-Security': 'max-age=31536000', 'X-Cache': 'Miss from cloudfront', 'Via': '1.1 381ddca30a3b9978a6c84a246d0a25ce.cloudfront.net (CloudFront)', 'X-Amz-Cf-Pop': 'GRU3-P4', 'X-Amz-Cf-Id': 'BSlJWpq0OtKxvcrqhPzncwHruokpKVEETI363qmVmUYl-bTG4fQ26g==', 'X-Powered-By': 'AT-5000', 'X-Shenanigans': 'none', 'Vary': 'Origin'}
+2025-08-08 20:46:47,130 [INFO] THREAD: Processamento finalizado para 'produto coca cola'
