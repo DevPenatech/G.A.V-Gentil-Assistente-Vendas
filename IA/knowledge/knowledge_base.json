@@ -1,81 +1,14 @@
 {
-  "coca-cola pet": {
+  "REFRIG.COCA-COLA PET 2L": {
     "codprod": 13700,
     "canonical_name": "REFRIG.COCA-COLA PET 2L",
     "related_words": [
-      "refrig"
+      "refrig",
+      "coca cola",
+      "pet coca cola",
+      "coca cola 2l",
+      "coca cola refrigerada",
+      "refrigerante coca cola"
     ]
-  },
-  "refrig coca-cola": {
-    "codprod": 13700,
-    "canonical_name": "REFRIG.COCA-COLA PET 2L",
-    "related_words": [
-      "refrig"
-    ]
-  },
-  "coca-cola": {
-    "codprod": 13700,
-    "canonical_name": "REFRIG.COCA-COLA PET 2L",
-    "related_words": [
-      "refrig"
-    ]
-  },
-  "refrig": {
-    "codprod": 13700,
-    "canonical_name": "REFRIG.COCA-COLA PET 2L",
-    "related_words": [
-      "refrig"
-    ]
-  },
-  "pet": {
-    "codprod": 13700,
-    "canonical_name": "REFRIG.COCA-COLA PET 2L",
-    "related_words": [
-      "refrig"
-    ]
-  },
-  "coca-cola 350ml": {
-    "codprod": 8130,
-    "canonical_name": "REFRIG.COCA-COLA LT 350ML",
-    "related_words": [
-      "refrig"
-    ]
-  },
-  "350ml": {
-    "codprod": 8130,
-    "canonical_name": "REFRIG.COCA-COLA LT 350ML",
-    "related_words": [
-      "refrig"
-    ]
-  },
-  "omo": {
-    "codprod": 52638,
-    "canonical_name": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
-    "related_words": ["sabao"]
-  },
-  "omo lavagem": {
-    "codprod": 52638,
-    "canonical_name": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
-    "related_words": ["sabao"]
-  },
-  "perfeita 6kg": {
-    "codprod": 52638,
-    "canonical_name": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
-    "related_words": ["sabao"]
-  },
-  "perfeita": {
-    "codprod": 52638,
-    "canonical_name": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
-    "related_words": ["sabao"]
-  },
-  "lavagem perfeita": {
-    "codprod": 52638,
-    "canonical_name": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
-    "related_words": ["sabao"]
-  },
-  "6kg": {
-    "codprod": 52638,
-    "canonical_name": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
-    "related_words": ["sabao"]
   }
 }
