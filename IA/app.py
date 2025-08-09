@@ -11,6 +11,7 @@ from core.session_manager import (
     load_session, save_session, clear_session,
     format_product_list_for_display, format_cart_for_display
 )
+from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
 
 app = Flask(__name__)
@@ -41,24 +42,47 @@ def process_message_async(sender_phone, incoming_msg):
             # 1. Trata ações pendentes que requerem uma resposta direta
             if pending_action == 'AWAITING_QUANTITY':
                 print(">>> CONSOLE: Tratando ação pendente AWAITING_QUANTITY")
-                try:
-                    qt = int(incoming_msg)
-                    if qt > 0:
-                        product_to_add = session.get('pending_product_for_cart')
-                        if product_to_add:
-                            term_to_learn = session.get("term_to_learn_after_quantity")
-                            if term_to_learn:
-                                print(f">>> CONSOLE: Aprendendo que '{term_to_learn}' se refere a '{product_to_add['descricao']}'...")
-                                knowledge.update_kb(term_to_learn, product_to_add)
-                                session["term_to_learn_after_quantity"] = None
-                            shopping_cart.append({**product_to_add, "qt": qt})
-                            response_text = f"✅ Adicionado!\n\n{format_cart_for_display(shopping_cart)}"
+                
+                # 🆕 Extrai quantidade usando linguagem natural
+                qt = extract_quantity(incoming_msg)
+                
+                if qt is not None and is_valid_quantity(qt):
+                    product_to_add = session.get('pending_product_for_cart')
+                    if product_to_add:
+                        term_to_learn = session.get("term_to_learn_after_quantity")
+                        if term_to_learn:
+                            print(f">>> CONSOLE: Aprendendo que '{term_to_learn}' se refere a '{product_to_add['descricao']}'...")
+                            knowledge.update_kb(term_to_learn, product_to_add)
+                            session["term_to_learn_after_quantity"] = None
+                        
+                        # Converte para int se for número inteiro
+                        if isinstance(qt, float) and qt.is_integer():
+                            qt = int(qt)
+                            
+                        shopping_cart.append({**product_to_add, "qt": qt})
+                        
+                        # 🆕 Resposta mais natural baseada na entrada
+                        if isinstance(qt, float):
+                            qt_display = f"{qt:.1f}".rstrip('0').rstrip('.')
                         else:
-                            response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
+                            qt_display = str(qt)
+                            
+                        response_text = f"✅ Perfeito! Adicionei {qt_display} {product_to_add['descricao']} ao seu carrinho.\n\n{format_cart_for_display(shopping_cart)}"
                     else:
-                        response_text = "🤖 Por favor, insira uma quantidade positiva."
-                except ValueError:
-                    response_text = "🤖 Quantidade inválida. Por favor, digite apenas números."
+                        response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
+                else:
+                    # 🆕 Mensagem de erro mais útil
+                    if qt is None:
+                        response_text = """🤖 Não consegui entender a quantidade. Você pode usar:
+            • Números: 5, 10, 2.5
+            • Por extenso: cinco, duas, dez
+            • Expressões: meia duzia, uma duzia
+            • Com unidade: 2 pacotes, 3 unidades
+
+            Qual quantidade você quer?"""
+                    else:
+                        response_text = f"🤖 A quantidade {qt} parece muito alta. Por favor, digite uma quantidade entre 1 e 1000."
+                
                 pending_action = None
                 session['pending_product_for_cart'] = None
             
