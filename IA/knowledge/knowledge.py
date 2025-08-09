@@ -92,17 +92,60 @@ def _load_kb() -> Dict[str, List[Dict]]:
     return _kb
 
 
+def _enrich_kb_products_with_db_data(kb_products: List[Dict]) -> List[Dict]:
+    """
+    🆕 NOVA FUNÇÃO: Enriquece produtos da KB com dados do banco (preço, etc.)
+    
+    Args:
+        kb_products: Lista de produtos da KB (apenas codprod, canonical_name, related_words)
+        
+    Returns:
+        Lista de produtos enriquecidos com dados do banco (descricao, pvenda, etc.)
+    """
+    enriched_products = []
+    
+    for kb_product in kb_products:
+        codprod = kb_product.get("codprod")
+        if not codprod:
+            continue
+            
+        # Busca dados completos no banco
+        db_product = database.get_product_by_codprod(codprod)
+        
+        if db_product:
+            # Usa dados do banco como base e adiciona info da KB se necessário
+            enriched_product = db_product.copy()
+            # Mantém canonical_name da KB se não existir descricao no banco
+            if not enriched_product.get('descricao'):
+                enriched_product['descricao'] = kb_product.get('canonical_name', f'Produto {codprod}')
+        else:
+            # Se não encontrar no banco, usa dados da KB e tenta estimar preço
+            enriched_product = {
+                'codprod': codprod,
+                'descricao': kb_product.get('canonical_name', f'Produto {codprod}'),
+                'pvenda': 0.0,  # Preço padrão se não encontrar no banco
+                'canonical_name': kb_product.get('canonical_name'),
+                'related_words': kb_product.get('related_words', [])
+            }
+            
+            logging.warning(f"Produto {codprod} encontrado na KB mas não no banco de dados")
+        
+        enriched_products.append(enriched_product)
+    
+    return enriched_products
+
+
 def find_product_in_kb(term: str) -> List[Dict]:
     """
     Busca produtos na base de conhecimento usando busca fuzzy.
     
-    NOVA VERSÃO com busca tolerante a erros!
+    NOVA VERSÃO com busca tolerante a erros e enriquecimento de dados!
     
     Args:
         term: Termo de busca (pode ter erros de digitação)
         
     Returns:
-        Lista de produtos que correspondem ao termo (pode ser vazia)
+        Lista de produtos que correspondem ao termo, enriquecidos com dados do banco
     """
     if not term:
         return []
@@ -113,25 +156,26 @@ def find_product_in_kb(term: str) -> List[Dict]:
     # 🆕 ETAPA 1: Busca exata (mais rápida) - mantém compatibilidade
     if term_lower in kb:
         logging.info(f"[KB] Busca exata encontrou: {term_lower}")
-        return kb[term_lower]
+        kb_products = kb[term_lower]
+        return _enrich_kb_products_with_db_data(kb_products)
     
     # 🆕 ETAPA 2: Busca fuzzy com alta similaridade (0.8+)
     fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.8)
     if fuzzy_results:
         logging.info(f"[KB] Busca fuzzy (alta) encontrou {len(fuzzy_results)} produtos para: {term}")
-        return fuzzy_results
+        return _enrich_kb_products_with_db_data(fuzzy_results)
     
     # 🆕 ETAPA 3: Busca fuzzy com similaridade média (0.6+)
     fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.6)
     if fuzzy_results:
         logging.info(f"[KB] Busca fuzzy (média) encontrou {len(fuzzy_results)} produtos para: {term}")
-        return fuzzy_results
+        return _enrich_kb_products_with_db_data(fuzzy_results)
     
     # 🆕 ETAPA 4: Busca fuzzy relaxada (0.4+) - última chance
     fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.4)
     if fuzzy_results:
         logging.info(f"[KB] Busca fuzzy (baixa) encontrou {len(fuzzy_results)} produtos para: {term}")
-        return fuzzy_results
+        return _enrich_kb_products_with_db_data(fuzzy_results)
     
     # 🆕 ETAPA 5: Busca por contenção simples (fallback original melhorado)
     matching_products = []
@@ -158,7 +202,7 @@ def find_product_in_kb(term: str) -> List[Dict]:
     
     if matching_products:
         logging.info(f"[KB] Busca por contenção encontrou {len(matching_products)} produtos para: {term}")
-        return matching_products
+        return _enrich_kb_products_with_db_data(matching_products)
     
     logging.info(f"[KB] Nenhum produto encontrado para: {term}")
     return []
@@ -172,7 +216,9 @@ def analyze_search_quality(term: str, found_products: List[Dict]) -> Dict:
     # Calcula scores de similaridade
     scores = []
     for product in found_products:
-        score = fuzzy_engine.calculate_similarity(term, product.get('canonical_name', ''))
+        # Usa tanto descricao quanto canonical_name para calcular similaridade
+        product_name = product.get('descricao') or product.get('canonical_name', '')
+        score = fuzzy_engine.calculate_similarity(term, product_name)
         scores.append(score)
     
     avg_score = sum(scores) / len(scores) if scores else 0
@@ -233,7 +279,8 @@ def update_kb(term: str, correct_product: Dict):
     except (FileNotFoundError, json.JSONDecodeError):
         raw_kb = {}
 
-    canonical_name = correct_product["descricao"]
+    # 🆕 COMPATIBILIDADE: Usa descricao ou canonical_name
+    canonical_name = correct_product.get("descricao") or correct_product.get("canonical_name", f"Produto {correct_product['codprod']}")
     
     # Procura se já existe entrada para este produto
     entry = None

@@ -17,15 +17,9 @@
     "last_search_type": "top_selling",
     "last_search_params": {},
     "current_offset": 5,
-    "last_shown_products": [
-        {
-            "codprod": 52638,
-            "descricao": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
-            "pvenda": 25.9
-        }
-    ],
+    "last_shown_products": [],
     "last_bot_action": "AWAITING_PRODUCT_SELECTION",
     "pending_action": null,
-    "last_kb_search_term": "omo",
+    "last_kb_search_term": null,
     "pending_product_for_cart": null
 }

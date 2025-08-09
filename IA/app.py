@@ -3,6 +3,7 @@ from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 import logging
 import threading
+from typing import Dict
 from db import database
 from ai_llm import llm_interface
 from knowledge import knowledge
@@ -19,6 +20,10 @@ from knowledge.knowledge import find_product_in_kb_with_analysis
 
 app = Flask(__name__)
 logger_config.setup_logger()
+
+def get_product_name(product: Dict) -> str:
+    """Extrai o nome do produto, compatível com produtos do banco (descricao) e da KB (canonical_name)."""
+    return product.get('descricao') or product.get('canonical_name', 'Produto sem nome')
 
 def suggest_alternatives(failed_search_term: str) -> str:
     """Gera sugestões quando uma busca falha completamente."""
@@ -96,7 +101,7 @@ def process_message_async(sender_phone, incoming_msg):
                     if product_to_add:
                         term_to_learn = session.get("term_to_learn_after_quantity")
                         if term_to_learn:
-                            print(f">>> CONSOLE: Aprendendo que '{term_to_learn}' se refere a '{product_to_add['descricao']}'...")
+                            print(f">>> CONSOLE: Aprendendo que '{term_to_learn}' se refere a '{get_product_name(product_to_add)}'...")
                             knowledge.update_kb(term_to_learn, product_to_add)
                             session["term_to_learn_after_quantity"] = None
                         
@@ -112,7 +117,8 @@ def process_message_async(sender_phone, incoming_msg):
                         else:
                             qt_display = str(qt)
                             
-                        response_text = f"✅ Perfeito! Adicionei {qt_display} {product_to_add['descricao']} ao seu carrinho.\n\n{format_cart_for_display(shopping_cart)}"
+                        product_name = get_product_name(product_to_add)
+                        response_text = f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n{format_cart_for_display(shopping_cart)}"
                     else:
                         response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
                 else:
@@ -301,8 +307,9 @@ def process_message_async(sender_phone, incoming_msg):
                         pending_action = 'AWAITING_QUANTITY'
                         session['pending_product_for_cart'] = product_to_add
                         
-                        # 🆕 RESPOSTA MAIS NATURAL
-                        response_text = f"🛒 Qual a quantidade de '{product_to_add['descricao']}' você deseja?\n\n💡 Você pode dizer: 'duas', 'meia duzia', '5 unidades', etc."
+                        # 🆕 RESPOSTA MAIS NATURAL - Compatibilidade com produtos do banco e KB
+                        product_name = get_product_name(product_to_add)
+                        response_text = f"🛒 Qual a quantidade de '{product_name}' você deseja?\n\n💡 Você pode dizer: 'duas', 'meia duzia', '5 unidades', etc."
                     else:
                         response_text = "🤖 Desculpe, não consegui identificar o produto. Pode tentar novamente com um nome diferente?"
 

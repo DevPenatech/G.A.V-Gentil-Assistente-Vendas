@@ -39,7 +39,11 @@ def format_product_list_for_display(products: List[Dict], title: str, has_more: 
     for i, p in enumerate(products, 1 + offset):
         price = p.get('pvenda') or 0.0
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        response += f"{i}. {p['descricao']} - {price_str}\n"
+        
+        # 🆕 CORREÇÃO: Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
+        product_name = p.get('descricao') or p.get('canonical_name', 'Produto sem nome')
+        
+        response += f"{i}. {product_name} - {price_str}\n"
     
     response += "Me diga o nome ou o número do item que deseja adicionar.\n"
     if has_more:
@@ -59,7 +63,11 @@ def format_cart_for_display(cart: List[Dict]) -> str:
         total += subtotal
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        response += f"- {item['descricao']} (Qtd: {qt}) - Unit: {price_str} - Subtotal: {subtotal_str}\n"
+        
+        # 🆕 CORREÇÃO: Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
+        product_name = item.get('descricao') or item.get('canonical_name', 'Produto sem nome')
+        
+        response += f"- {product_name} (Qtd: {qt}) - Unit: {price_str} - Subtotal: {subtotal_str}\n"
     
     total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     response += f"-----------------------------------\nTOTAL DO PEDIDO: {total_str}"
