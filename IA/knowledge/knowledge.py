@@ -16,12 +16,17 @@ import sys
 import re
 import unicodedata
 import itertools
-from typing import Dict, List, Union, Optional
+from typing import Dict, List, Union, Optional, Tuple
 from pathlib import Path
 
 import ollama
 from psycopg2.extras import RealDictCursor
 
+utils_path = Path(__file__).resolve().parent.parent / "utils"
+if str(utils_path) not in sys.path:
+    sys.path.insert(0, str(utils_path))
+    
+from fuzzy_search import fuzzy_search_kb, fuzzy_engine
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from db import database
@@ -31,7 +36,6 @@ KB_PATH = Path(__file__).resolve().parent / "knowledge_base.json"
 _kb: Optional[Dict[str, List[Dict]]] = None
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")
-
 
 def _load_kb() -> Dict[str, List[Dict]]:
     """Load the knowledge base from disk into memory.
@@ -89,9 +93,16 @@ def _load_kb() -> Dict[str, List[Dict]]:
 
 
 def find_product_in_kb(term: str) -> List[Dict]:
-    """Busca produtos na base de conhecimento usando o termo fornecido.
+    """
+    Busca produtos na base de conhecimento usando busca fuzzy.
     
-    RETORNA: Lista de produtos que correspondem ao termo (pode ser vazia).
+    NOVA VERSÃO com busca tolerante a erros!
+    
+    Args:
+        term: Termo de busca (pode ter erros de digitação)
+        
+    Returns:
+        Lista de produtos que correspondem ao termo (pode ser vazia)
     """
     if not term:
         return []
@@ -99,17 +110,46 @@ def find_product_in_kb(term: str) -> List[Dict]:
     kb = _load_kb()
     term_lower = term.lower().strip()
     
-    # Busca direta no índice
+    # 🆕 ETAPA 1: Busca exata (mais rápida) - mantém compatibilidade
     if term_lower in kb:
-        logging.debug(f"Termo '{term_lower}' encontrado diretamente na KB")
+        logging.info(f"[KB] Busca exata encontrou: {term_lower}")
         return kb[term_lower]
     
-    # Busca fuzzy: procura se o termo está contido em alguma related_word
+    # 🆕 ETAPA 2: Busca fuzzy com alta similaridade (0.8+)
+    fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.8)
+    if fuzzy_results:
+        logging.info(f"[KB] Busca fuzzy (alta) encontrou {len(fuzzy_results)} produtos para: {term}")
+        return fuzzy_results
+    
+    # 🆕 ETAPA 3: Busca fuzzy com similaridade média (0.6+)
+    fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.6)
+    if fuzzy_results:
+        logging.info(f"[KB] Busca fuzzy (média) encontrou {len(fuzzy_results)} produtos para: {term}")
+        return fuzzy_results
+    
+    # 🆕 ETAPA 4: Busca fuzzy relaxada (0.4+) - última chance
+    fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.4)
+    if fuzzy_results:
+        logging.info(f"[KB] Busca fuzzy (baixa) encontrou {len(fuzzy_results)} produtos para: {term}")
+        return fuzzy_results
+    
+    # 🆕 ETAPA 5: Busca por contenção simples (fallback original melhorado)
     matching_products = []
-    seen_codprods = set()  # Evita duplicatas
+    seen_codprods = set()
+    
+    # Normaliza o termo de busca
+    normalized_term = fuzzy_engine.normalize_text(term)
+    corrected_term = fuzzy_engine.apply_corrections(normalized_term)
     
     for indexed_term, products in kb.items():
-        if term_lower in indexed_term or indexed_term in term_lower:
+        # Normaliza o termo indexado
+        normalized_indexed = fuzzy_engine.normalize_text(indexed_term)
+        
+        # Verifica se há contenção em qualquer direção
+        if (corrected_term in normalized_indexed or 
+            normalized_indexed in corrected_term or
+            normalized_term in normalized_indexed):
+            
             for product in products:
                 codprod = product.get("codprod")
                 if codprod and codprod not in seen_codprods:
@@ -117,11 +157,65 @@ def find_product_in_kb(term: str) -> List[Dict]:
                     seen_codprods.add(codprod)
     
     if matching_products:
-        logging.debug(f"Termo '{term_lower}' encontrado via busca fuzzy: {len(matching_products)} produtos")
+        logging.info(f"[KB] Busca por contenção encontrou {len(matching_products)} produtos para: {term}")
+        return matching_products
+    
+    logging.info(f"[KB] Nenhum produto encontrado para: {term}")
+    return []
+
+# 🆕 NOVA FUNÇÃO: Análise de qualidade da busca
+def analyze_search_quality(term: str, found_products: List[Dict]) -> Dict:
+    """Analisa a qualidade dos resultados da busca para melhorias futuras."""
+    if not found_products:
+        return {"quality": "no_results", "suggestions": []}
+    
+    # Calcula scores de similaridade
+    scores = []
+    for product in found_products:
+        score = fuzzy_engine.calculate_similarity(term, product.get('canonical_name', ''))
+        scores.append(score)
+    
+    avg_score = sum(scores) / len(scores) if scores else 0
+    max_score = max(scores) if scores else 0
+    
+    # Classifica qualidade
+    if max_score >= 0.9:
+        quality = "excellent"
+    elif max_score >= 0.7:
+        quality = "good"
+    elif max_score >= 0.5:
+        quality = "fair"
     else:
-        logging.debug(f"Termo '{term_lower}' não encontrado na KB")
-            
-    return matching_products
+        quality = "poor"
+    
+    # Gera sugestões para termos de baixa qualidade
+    suggestions = []
+    if quality in ["fair", "poor"]:
+        # Sugere correções comuns
+        corrected = fuzzy_engine.apply_corrections(term)
+        if corrected != term:
+            suggestions.append(f"Você quis dizer: {corrected}?")
+        
+        # Sugere expansão com sinônimos
+        expansions = fuzzy_engine.expand_with_synonyms(term)
+        for expansion in expansions[:2]:  # Limita a 2 sugestões
+            if expansion != term:
+                suggestions.append(f"Tente buscar: {expansion}")
+    
+    return {
+        "quality": quality,
+        "avg_score": avg_score,
+        "max_score": max_score,
+        "suggestions": suggestions,
+        "total_results": len(found_products)
+    }
+
+# 🆕 NOVA FUNÇÃO: Busca com análise
+def find_product_in_kb_with_analysis(term: str) -> Tuple[List[Dict], Dict]:
+    """Busca produtos e retorna análise da qualidade da busca."""
+    products = find_product_in_kb(term)
+    analysis = analyze_search_quality(term, products)
+    return products, analysis
 
 
 def update_kb(term: str, correct_product: Dict):

@@ -14,9 +14,54 @@ from core.session_manager import (
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
 
+from db.database import search_products_with_suggestions, get_product_details_fuzzy
+from knowledge.knowledge import find_product_in_kb_with_analysis
+
 app = Flask(__name__)
 logger_config.setup_logger()
 
+def suggest_alternatives(failed_search_term: str) -> str:
+    """Gera sugestões quando uma busca falha completamente."""
+    
+    # Importa aqui para evitar imports circulares
+    from utils.fuzzy_search import fuzzy_engine
+    
+    suggestions = []
+    
+    # Aplica correções automáticas
+    corrected = fuzzy_engine.apply_corrections(failed_search_term)
+    if corrected != failed_search_term:
+        suggestions.append(f"Tente: '{corrected}'")
+    
+    # Expande com sinônimos
+    expansions = fuzzy_engine.expand_with_synonyms(failed_search_term)
+    for expansion in expansions[:2]:
+        if expansion != failed_search_term:
+            suggestions.append(f"Ou tente: '{expansion}'")
+    
+    # Sugestões gerais baseadas na palavra
+    words = failed_search_term.lower().split()
+    general_suggestions = []
+    
+    for word in words:
+        if any(x in word for x in ['coca', 'refri', 'soda']):
+            general_suggestions.append("refrigerantes")
+        elif any(x in word for x in ['sabao', 'deterg', 'limp']):
+            general_suggestions.append("produtos de limpeza")
+        elif any(x in word for x in ['cafe', 'acu', 'arroz', 'feij']):
+            general_suggestions.append("alimentos básicos")
+    
+    if general_suggestions:
+        suggestions.extend([f"Categoria: {s}" for s in general_suggestions[:2]])
+    
+    if not suggestions:
+        suggestions = [
+            "Tente termos mais simples",
+            "Use nomes de categoria: 'refrigerante', 'sabão', 'arroz'"
+        ]
+    
+    return " • ".join(suggestions[:3])
+                
 def process_message_async(sender_phone, incoming_msg):
     """
     Esta função faz todo o trabalho pesado em segundo plano (thread) para não causar timeout.
@@ -128,53 +173,89 @@ def process_message_async(sender_phone, incoming_msg):
 
                 if tool_name in ["get_top_selling_products", "get_top_selling_products_by_name"]:
                     last_kb_search_term, last_shown_products = None, []
+                    
                     if tool_name == "get_top_selling_products_by_name":
                         product_name = parameters.get("product_name", "")
                         
-                        # CORREÇÃO: find_product_in_kb agora retorna uma lista
-                        kb_entries = knowledge.find_product_in_kb(product_name)
+                        # 🆕 BUSCA FUZZY INTELIGENTE
+                        print(f">>> CONSOLE: Buscando '{product_name}' com sistema fuzzy...")
                         
-                        if kb_entries:  # Se encontrou produtos na KB
+                        # Etapa 1: Tenta Knowledge Base com análise
+                        kb_products, kb_analysis = find_product_in_kb_with_analysis(product_name)
+                        
+                        if kb_products and kb_analysis.get("quality") in ["excellent", "good"]:
+                            # Knowledge Base encontrou bons resultados
                             last_kb_search_term = product_name
-                            products = []
+                            last_shown_products = kb_products[:5]  # Limita a 5
                             
-                            # Busca cada produto encontrado na KB no banco de dados
-                            for entry in kb_entries:
-                                if entry.get("codprod"):
-                                    product = database.get_product_by_codprod(entry["codprod"])
-                                    if product:
-                                        products.append(product)
+                            quality_emoji = "⚡" if kb_analysis["quality"] == "excellent" else "🎯"
+                            title = f"{quality_emoji} Encontrei isto para '{product_name}' (busca rápida):"
                             
-                            if products:
-                                title = f"Encontrei isto para '{product_name}' (busca rápida):"
-                                last_shown_products = products
-                                response_text = format_product_list_for_display(products, title, False, 0)
-                                last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                            else:
-                                # Fallback para busca no banco se nenhum produto da KB foi encontrado no banco
-                                current_offset, last_shown_products = 0, []
-                                last_search_type, last_search_params = "by_name", {'product_name': product_name}
-                                products = database.get_top_selling_products_by_name(product_name, offset=current_offset)
-                                title = f"Encontrei estes produtos relacionados a '{product_name}':"
-                                current_offset += 5
-                                last_shown_products.extend(products)
-                                response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
-                                last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                            response_text = format_product_list_for_display(last_shown_products, title, False, 0)
+                            last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                            
+                            print(f">>> CONSOLE: KB encontrou {len(last_shown_products)} produtos (qualidade: {kb_analysis['quality']})")
+                            
                         else:
-                            # Busca no banco quando não encontra na KB
+                            # Knowledge Base não encontrou ou qualidade baixa - busca no banco com fuzzy
+                            print(f">>> CONSOLE: KB qualidade baixa ({kb_analysis.get('quality', 'none')}), buscando no banco...")
+                            
                             current_offset, last_shown_products = 0, []
                             last_search_type, last_search_params = "by_name", {'product_name': product_name}
-                            products = database.get_top_selling_products_by_name(product_name, offset=current_offset)
-                            title = f"Encontrei estes produtos relacionados a '{product_name}':"
-                            current_offset += 5
-                            last_shown_products.extend(products)
-                            response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
-                            last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                    else: # get_top_selling_products
+                            
+                            # 🆕 USA BUSCA FUZZY COM SUGESTÕES
+                            search_result = search_products_with_suggestions(
+                                product_name, 
+                                limit=5, 
+                                offset=current_offset
+                            )
+                            
+                            products = search_result["products"]
+                            suggestions = search_result["suggestions"]
+                            
+                            if products:
+                                current_offset += 5
+                                last_shown_products.extend(products)
+                                
+                                # Determina emoji baseado na qualidade
+                                if len(products) >= 3:
+                                    title_emoji = "🎯"
+                                elif suggestions:
+                                    title_emoji = "🔍"
+                                else:
+                                    title_emoji = "📦"
+                                
+                                title = f"{title_emoji} Encontrei estes produtos relacionados a '{product_name}':"
+                                response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
+                                
+                                # 🆕 ADICIONA SUGESTÕES SE HOUVER
+                                if suggestions:
+                                    response_text += f"\n💡 Dica: {suggestions[0]}"
+                                
+                                last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                                
+                            else:
+                                # Nenhum produto encontrado - resposta inteligente
+                                print(f">>> CONSOLE: Nenhum produto encontrado para '{product_name}'")
+                                
+                                response_text = f"🤖 Não encontrei produtos para '{product_name}'."
+                                
+                                # Adiciona sugestões de correção
+                                if suggestions:
+                                    response_text += f"\n\n💡 {suggestions[0]}"
+                                    response_text += "\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'."
+                                else:
+                                    response_text += "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
+                                
+                                last_bot_action = None
+                            
+                            print(f">>> CONSOLE: Banco encontrou {len(products)} produtos, {len(suggestions)} sugestões")
+                    
+                    else:  # get_top_selling_products
                         current_offset, last_shown_products = 0, []
                         last_search_type, last_search_params = "top_selling", parameters
                         products = database.get_top_selling_products(offset=current_offset)
-                        title = "Estes são nossos produtos mais populares:"
+                        title = "⭐ Estes são nossos produtos mais populares:"
                         current_offset += 5
                         last_shown_products.extend(products)
                         response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
@@ -182,6 +263,7 @@ def process_message_async(sender_phone, incoming_msg):
                 
                 elif tool_name == "add_item_to_cart":
                     product_to_add = None
+                    
                     if "index" in parameters:
                         try:
                             idx = int(parameters["index"]) - 1
@@ -189,13 +271,25 @@ def process_message_async(sender_phone, incoming_msg):
                                 product_to_add = last_shown_products[idx]
                         except (ValueError, IndexError): 
                             pass
+                    
                     if not product_to_add and "product_name" in parameters:
-                        product_to_add = database.get_product_details(parameters["product_name"])
+                        # 🆕 USA BUSCA FUZZY PARA NOME DO PRODUTO
+                        product_name = parameters["product_name"]
+                        print(f">>> CONSOLE: Buscando produto direto por nome: '{product_name}'")
+                        
+                        product_to_add = get_product_details_fuzzy(product_name)
+                        
+                        if not product_to_add:
+                            # Tenta busca mais ampla
+                            search_result = search_products_with_suggestions(product_name, limit=1)
+                            if search_result["products"]:
+                                product_to_add = search_result["products"][0]
                     
                     if product_to_add:
                         term_to_learn = None
                         is_correction = last_bot_action == "AWAITING_CORRECTION_SELECTION"
                         is_new_learning = last_bot_action == "AWAITING_PRODUCT_SELECTION" and last_search_type == "by_name"
+                        
                         if is_correction: 
                             term_to_learn = last_kb_search_term
                         elif is_new_learning: 
@@ -203,22 +297,46 @@ def process_message_async(sender_phone, incoming_msg):
                         
                         if term_to_learn:
                             session["term_to_learn_after_quantity"] = term_to_learn
+                        
                         pending_action = 'AWAITING_QUANTITY'
                         session['pending_product_for_cart'] = product_to_add
-                        response_text = f"🤖 Qual a quantidade de '{product_to_add['descricao']}' você deseja?"
+                        
+                        # 🆕 RESPOSTA MAIS NATURAL
+                        response_text = f"🛒 Qual a quantidade de '{product_to_add['descricao']}' você deseja?\n\n💡 Você pode dizer: 'duas', 'meia duzia', '5 unidades', etc."
                     else:
-                        response_text = "🤖 Desculpe, não consegui identificar o produto."
+                        response_text = "🤖 Desculpe, não consegui identificar o produto. Pode tentar novamente com um nome diferente?"
+
 
                 elif tool_name == "report_incorrect_product":
                     if last_kb_search_term:
-                        response_text = f"🤖 Entendido! Desculpe pelo erro. Buscando no banco por '{last_kb_search_term}'...\n\n"
+                        response_text = f"🤖 Entendido! Vou buscar melhor no banco de dados por '{last_kb_search_term}'...\n\n"
                         current_offset, last_shown_products = 0, []
-                        products = database.get_top_selling_products_by_name(last_kb_search_term, offset=current_offset)
+                        
+                        # 🆕 USA BUSCA FUZZY COM SUGESTÕES
+                        search_result = search_products_with_suggestions(
+                            last_kb_search_term, 
+                            limit=5, 
+                            offset=current_offset
+                        )
+                        
+                        products = search_result["products"]
+                        suggestions = search_result["suggestions"]
+                        
                         last_search_type, last_search_params = "by_name", {"product_name": last_kb_search_term}
                         current_offset += 5
                         last_shown_products.extend(products)
-                        title = f"Resultados da busca ampla para '{last_kb_search_term}':"
-                        response_text += format_product_list_for_display(products, title, len(products) == 5, 0)
+                        
+                        if products:
+                            title = f"🔍 Resultados da busca ampla para '{last_kb_search_term}':"
+                            response_text += format_product_list_for_display(products, title, len(products) == 5, 0)
+                            
+                            if suggestions:
+                                response_text += f"\n💡 {suggestions[0]}"
+                        else:
+                            response_text += f"Infelizmente não encontrei produtos para '{last_kb_search_term}'."
+                            if suggestions:
+                                response_text += f"\n\n💡 {suggestions[0]}"
+                        
                         last_bot_action = "AWAITING_CORRECTION_SELECTION"
                     else:
                         response_text = "🤖 Entendido. Por favor, me diga o que você estava procurando."

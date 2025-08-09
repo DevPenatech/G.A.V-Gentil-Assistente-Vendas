@@ -1,5 +1,6 @@
 # file: IA/db/database.py
-import os
+import os, sys
+from pathlib import Path
 import logging
 import psycopg2
 from psycopg2.extras import DictCursor, RealDictCursor
@@ -7,6 +8,13 @@ from dotenv import load_dotenv
 from typing import Union, List, Dict
 import time
 import decimal
+
+# Adiciona utils ao path se não estiver
+utils_path = Path(__file__).resolve().parent.parent / "utils"
+if str(utils_path) not in sys.path:
+    sys.path.insert(0, str(utils_path))
+
+from fuzzy_search import fuzzy_search_products, fuzzy_engine
 
 load_dotenv(dotenv_path='.env') # Garante que o .env da pasta IA seja lido
 
@@ -85,10 +93,15 @@ def get_top_selling_products(limit: int = 5, offset: int = 0, filial: int = 17) 
     return products
 
 def get_top_selling_products_by_name(product_name: str, limit: int = 5, offset: int = 0) -> List[Dict]:
-    """Busca produtos por nome ou termo relacionado."""
+    """
+    Busca produtos por nome usando busca fuzzy inteligente.
+    
+    NOVA VERSÃO com tolerância a erros de digitação!
+    """
     if not product_name:
         return []
-        
+    
+    # 🆕 ETAPA 1: Busca exata tradicional (compatibilidade)
     search_term = f"%{product_name}%"
     sql = """
         SELECT p.codprod, p.descricao, p.preco_varejo as pvenda 
@@ -98,18 +111,179 @@ def get_top_selling_products_by_name(product_name: str, limit: int = 5, offset: 
         LIMIT %(limit)s OFFSET %(offset)s;
     """
     params = {'search_term': search_term, 'limit': limit, 'offset': offset}
+    
+    products = []
+    with get_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(sql, params)
+            for row in cursor.fetchall():
+                products.append(_convert_row_to_dict(row))
+    
+    # Se encontrou resultados suficientes, retorna
+    if len(products) >= limit:
+        logging.info(f"[DB] Busca exata encontrou {len(products)} produtos para: {product_name}")
+        return products
+    
+    # 🆕 ETAPA 2: Busca fuzzy se não encontrou resultados suficientes
+    logging.info(f"[DB] Busca exata retornou apenas {len(products)} produtos. Tentando busca fuzzy...")
+    
+    # Busca todos os produtos ativos para análise fuzzy
+    all_products = _get_all_active_products()
+    
+    if not all_products:
+        return products  # Retorna o que encontrou na busca exata
+    
+    # Aplica busca fuzzy
+    fuzzy_results = fuzzy_search_products(
+        product_name, 
+        all_products, 
+        min_similarity=0.5,  # Similaridade mínima
+        max_results=limit * 2  # Busca mais para compensar offset
+    )
+    
+    # Remove produtos já encontrados na busca exata
+    existing_codprods = {p['codprod'] for p in products}
+    new_fuzzy_results = [
+        p for p in fuzzy_results 
+        if p.get('codprod') not in existing_codprods
+    ]
+    
+    # Combina resultados (exatos primeiro, depois fuzzy)
+    combined_results = products + new_fuzzy_results
+    
+    # Aplica offset e limit
+    start_idx = offset if len(products) == 0 else max(0, offset - len(products))
+    end_idx = start_idx + (limit - len(products))
+    
+    if len(products) < limit and new_fuzzy_results:
+        final_results = products + new_fuzzy_results[start_idx:end_idx]
+    else:
+        final_results = combined_results[offset:offset + limit]
+    
+    logging.info(f"[DB] Busca fuzzy encontrou {len(new_fuzzy_results)} produtos adicionais. Total: {len(final_results)}")
+    return final_results
+
+# 🆕 NOVA FUNÇÃO: Busca todos os produtos ativos (cache)
+_products_cache = None
+_cache_timestamp = None
+
+def _get_all_active_products() -> List[Dict]:
+    """Retorna todos os produtos ativos com cache simples."""
+    global _products_cache, _cache_timestamp
+    
+    import time
+    current_time = time.time()
+    
+    # Cache por 5 minutos
+    if (_products_cache is not None and 
+        _cache_timestamp is not None and 
+        current_time - _cache_timestamp < 300):
+        return _products_cache
+    
+    sql = """
+        SELECT codprod, descricao, preco_varejo as pvenda 
+        FROM produtos 
+        WHERE status = 'ativo' 
+        ORDER BY descricao;
+    """
+    
     products = []
     try:
         with get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(sql, params)
-                for row in cursor.fetchall(): 
-                    converted = _convert_row_to_dict(row)
-                    if converted:
-                        products.append(converted)
+                cursor.execute(sql)
+                for row in cursor.fetchall():
+                    products.append(_convert_row_to_dict(row))
+        
+        # Atualiza cache
+        _products_cache = products
+        _cache_timestamp = current_time
+        
+        logging.info(f"[DB] Cache atualizado com {len(products)} produtos")
+        
     except Exception as e:
-        logging.error(f"Erro ao buscar produtos por nome '{product_name}': {e}")
+        logging.error(f"[DB] Erro ao carregar produtos para cache: {e}")
+        return _products_cache or []  # Retorna cache antigo se erro
+    
     return products
+
+# 🆕 NOVA FUNÇÃO: Busca com sugestões de correção
+def search_products_with_suggestions(product_name: str, limit: int = 5, offset: int = 0) -> Dict:
+    """
+    Busca produtos e retorna sugestões se não encontrar bons resultados.
+    """
+    # Busca normal
+    products = get_top_selling_products_by_name(product_name, limit, offset)
+    
+    # Analisa qualidade dos resultados
+    suggestions = []
+    if not products:
+        # Nenhum resultado - sugere correções
+        normalized = fuzzy_engine.normalize_text(product_name)
+        corrected = fuzzy_engine.apply_corrections(normalized)
+        
+        if corrected != normalized:
+            suggestions.append(f"Você quis dizer: {corrected}?")
+        
+        # Tenta buscar termos similares
+        expansions = fuzzy_engine.expand_with_synonyms(product_name)
+        for expansion in expansions[:2]:
+            if expansion != product_name:
+                alt_results = get_top_selling_products_by_name(expansion, 3)
+                if alt_results:
+                    suggestions.append(f"Encontrei produtos para: {expansion}")
+                    break
+    
+    elif len(products) < limit // 2:
+        # Poucos resultados - sugere alternativas
+        suggestions.append("Poucos produtos encontrados. Tente termos mais gerais.")
+    
+    return {
+        "products": products,
+        "suggestions": suggestions,
+        "total_found": len(products),
+        "search_term": product_name
+    }
+
+# 🆕 NOVA FUNÇÃO: Limpa cache (útil para testes)
+def clear_products_cache():
+    """Limpa o cache de produtos."""
+    global _products_cache, _cache_timestamp
+    _products_cache = None
+    _cache_timestamp = None
+    logging.info("[DB] Cache de produtos limpo")
+
+# 🆕 MELHORAR função existente get_product_details para usar fuzzy:
+def get_product_details_fuzzy(product_name: str) -> Union[Dict, None]:
+    """
+    Busca detalhes de produto usando busca fuzzy.
+    Retorna o produto mais similar.
+    """
+    if not product_name:
+        return None
+    
+    # Tenta busca exata primeiro
+    original_result = get_product_details(product_name)
+    if original_result:
+        return original_result
+    
+    # Busca fuzzy
+    all_products = _get_all_active_products()
+    if not all_products:
+        return None
+    
+    fuzzy_results = fuzzy_search_products(
+        product_name, 
+        all_products, 
+        min_similarity=0.6,
+        max_results=1
+    )
+    
+    if fuzzy_results:
+        logging.info(f"[DB] Busca fuzzy encontrou produto para '{product_name}': {fuzzy_results[0]['descricao']}")
+        return fuzzy_results[0]
+    
+    return None
 
 def get_product_by_codprod(codprod: int) -> Union[Dict, None]:
     """Busca um produto específico pelo código do produto."""
