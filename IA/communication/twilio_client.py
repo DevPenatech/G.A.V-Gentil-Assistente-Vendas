@@ -22,6 +22,7 @@ def send_whatsapp_message(to: str, body: str):
         return
     try:
         logging.info(f"Enviando mensagem proativa para {to}: '{body}'")
+        print(f">>>> [RESPONDENDO]: Enviando mensagem proativa para {to}: '{body}'")
         client.messages.create(
             from_=TWILIO_WHATSAPP_NUMBER,
             body=body,

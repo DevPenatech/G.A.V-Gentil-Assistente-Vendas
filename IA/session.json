@@ -6,8 +6,14 @@
         "product_name": "coca cola"
     },
     "current_offset": 5,
-    "last_shown_products": [],
+    "last_shown_products": [
+        {
+            "codprod": 13700,
+            "descricao": "REFRIG.COCA-COLA PET 2L",
+            "pvenda": 8.5
+        }
+    ],
     "last_bot_action": "AWAITING_PRODUCT_SELECTION",
     "pending_action": null,
-    "last_kb_search_term": null
+    "last_kb_search_term": "Coca Cola"
 }

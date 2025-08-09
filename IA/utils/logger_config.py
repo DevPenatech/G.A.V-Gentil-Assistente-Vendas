@@ -5,7 +5,7 @@ import sys
 def setup_logger():
     """Configura o logger para salvar APENAS em arquivo."""
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format="%(asctime)s [%(levelname)s] %(message)s",
         handlers=[
             # A única handler agora é o FileHandler. O StreamHandler foi removido.
