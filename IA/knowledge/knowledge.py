@@ -28,12 +28,12 @@ from db import database
 
 
 KB_PATH = Path(__file__).resolve().parent / "knowledge_base.json"
-_kb: Optional[Dict[str, List[Dict]]] = None  # ← MUDANÇA: agora é List[Dict]
+_kb: Optional[Dict[str, List[Dict]]] = None
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")
 
 
-def _load_kb() -> Dict[str, List[Dict]]:  # ← MUDANÇA: retorna List[Dict]
+def _load_kb() -> Dict[str, List[Dict]]:
     """Load the knowledge base from disk into memory.
 
     If the file does not exist or is empty we return an empty dict.
@@ -60,7 +60,7 @@ def _load_kb() -> Dict[str, List[Dict]]:  # ← MUDANÇA: retorna List[Dict]
         logging.warning(f"Erro ao carregar '{KB_PATH}': {e}. Usando base vazia.")
         raw_kb = {}
 
-    # ← MUDANÇA: Cria índice expandido onde cada termo pode mapear para múltiplos produtos
+    # Cria índice expandido onde cada termo pode mapear para múltiplos produtos
     kb: Dict[str, List[Dict]] = {}
     
     for canonical, entry in raw_kb.items():
@@ -88,7 +88,7 @@ def _load_kb() -> Dict[str, List[Dict]]:  # ← MUDANÇA: retorna List[Dict]
     return _kb
 
 
-def find_product_in_kb(term: str) -> List[Dict]:  # ← MUDANÇA: retorna List[Dict]
+def find_product_in_kb(term: str) -> List[Dict]:
     """Busca produtos na base de conhecimento usando o termo fornecido.
     
     RETORNA: Lista de produtos que correspondem ao termo (pode ser vazia).
@@ -101,6 +101,7 @@ def find_product_in_kb(term: str) -> List[Dict]:  # ← MUDANÇA: retorna List[D
     
     # Busca direta no índice
     if term_lower in kb:
+        logging.debug(f"Termo '{term_lower}' encontrado diretamente na KB")
         return kb[term_lower]
     
     # Busca fuzzy: procura se o termo está contido em alguma related_word
@@ -108,12 +109,17 @@ def find_product_in_kb(term: str) -> List[Dict]:  # ← MUDANÇA: retorna List[D
     seen_codprods = set()  # Evita duplicatas
     
     for indexed_term, products in kb.items():
-        if term_lower in indexed_term:
+        if term_lower in indexed_term or indexed_term in term_lower:
             for product in products:
                 codprod = product.get("codprod")
                 if codprod and codprod not in seen_codprods:
                     matching_products.append(product)
                     seen_codprods.add(codprod)
+    
+    if matching_products:
+        logging.debug(f"Termo '{term_lower}' encontrado via busca fuzzy: {len(matching_products)} produtos")
+    else:
+        logging.debug(f"Termo '{term_lower}' não encontrado na KB")
             
     return matching_products
 
@@ -274,7 +280,7 @@ def build_knowledge_base() -> None:
     try:
         with database.get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(sql)
+                cursor.execute(sql, params=None)
                 products = cursor.fetchall()
                 logging.info(f"Encontrados {len(products)} produtos ativos no banco")
     except Exception as e:

@@ -106,15 +106,38 @@ def process_message_async(sender_phone, incoming_msg):
                     last_kb_search_term, last_shown_products = None, []
                     if tool_name == "get_top_selling_products_by_name":
                         product_name = parameters.get("product_name", "")
-                        kb_entry = knowledge.find_product_in_kb(product_name)
-                        if kb_entry and kb_entry.get("codprod"):
+                        
+                        # CORREÇÃO: find_product_in_kb agora retorna uma lista
+                        kb_entries = knowledge.find_product_in_kb(product_name)
+                        
+                        if kb_entries:  # Se encontrou produtos na KB
                             last_kb_search_term = product_name
-                            product = database.get_product_by_codprod(kb_entry["codprod"])
-                            products, title = [product] if product else [], f"Encontrei isto para '{product_name}' (busca rápida):"
-                            last_shown_products = products
-                            response_text = format_product_list_for_display(products, title, False, 0)
-                            last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                            products = []
+                            
+                            # Busca cada produto encontrado na KB no banco de dados
+                            for entry in kb_entries:
+                                if entry.get("codprod"):
+                                    product = database.get_product_by_codprod(entry["codprod"])
+                                    if product:
+                                        products.append(product)
+                            
+                            if products:
+                                title = f"Encontrei isto para '{product_name}' (busca rápida):"
+                                last_shown_products = products
+                                response_text = format_product_list_for_display(products, title, False, 0)
+                                last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                            else:
+                                # Fallback para busca no banco se nenhum produto da KB foi encontrado no banco
+                                current_offset, last_shown_products = 0, []
+                                last_search_type, last_search_params = "by_name", {'product_name': product_name}
+                                products = database.get_top_selling_products_by_name(product_name, offset=current_offset)
+                                title = f"Encontrei estes produtos relacionados a '{product_name}':"
+                                current_offset += 5
+                                last_shown_products.extend(products)
+                                response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
+                                last_bot_action = "AWAITING_PRODUCT_SELECTION"
                         else:
+                            # Busca no banco quando não encontra na KB
                             current_offset, last_shown_products = 0, []
                             last_search_type, last_search_params = "by_name", {'product_name': product_name}
                             products = database.get_top_selling_products_by_name(product_name, offset=current_offset)
@@ -138,16 +161,22 @@ def process_message_async(sender_phone, incoming_msg):
                     if "index" in parameters:
                         try:
                             idx = int(parameters["index"]) - 1
-                            if 0 <= idx < len(last_shown_products): product_to_add = last_shown_products[idx]
-                        except (ValueError, IndexError): pass
+                            if 0 <= idx < len(last_shown_products): 
+                                product_to_add = last_shown_products[idx]
+                        except (ValueError, IndexError): 
+                            pass
                     if not product_to_add and "product_name" in parameters:
                         product_to_add = database.get_product_details(parameters["product_name"])
+                    
                     if product_to_add:
                         term_to_learn = None
                         is_correction = last_bot_action == "AWAITING_CORRECTION_SELECTION"
                         is_new_learning = last_bot_action == "AWAITING_PRODUCT_SELECTION" and last_search_type == "by_name"
-                        if is_correction: term_to_learn = last_kb_search_term
-                        elif is_new_learning: term_to_learn = last_search_params.get("product_name")
+                        if is_correction: 
+                            term_to_learn = last_kb_search_term
+                        elif is_new_learning: 
+                            term_to_learn = last_search_params.get("product_name")
+                        
                         if term_to_learn:
                             session["term_to_learn_after_quantity"] = term_to_learn
                         pending_action = 'AWAITING_QUANTITY'
@@ -193,7 +222,8 @@ def process_message_async(sender_phone, incoming_msg):
                             response_text = format_product_list_for_display(products, title, len(products) == 5, offset=offset_before_call)
                             last_bot_action = "AWAITING_PRODUCT_SELECTION"
                 
-                elif tool_name == 'view_cart': response_text = format_cart_for_display(shopping_cart)
+                elif tool_name == 'view_cart': 
+                    response_text = format_cart_for_display(shopping_cart)
                 
                 elif tool_name == 'start_new_order':
                     customer_context, shopping_cart, last_shown_products, last_search_type, last_search_params, current_offset, last_kb_search_term = None, [], [], None, {}, 0, None
@@ -201,8 +231,10 @@ def process_message_async(sender_phone, incoming_msg):
                     response_text = "🧹 Certo! Carrinho e dados limpos. Vamos começar de novo!"
 
                 elif tool_name == 'checkout':
-                    if not shopping_cart: response_text = "🤖 Seu carrinho está vazio!"
-                    elif not customer_context: response_text = "⭐ Para finalizar a compra, preciso do seu CNPJ."
+                    if not shopping_cart: 
+                        response_text = "🤖 Seu carrinho está vazio!"
+                    elif not customer_context: 
+                        response_text = "⭐ Para finalizar a compra, preciso do seu CNPJ."
                     else:
                         response_text = f"✅ Pedido para {customer_context['nome']} pronto para ser finalizado!\n\n{format_cart_for_display(shopping_cart)}\n(Funcionalidade de inserção do pedido no sistema será implementada futuramente)"
                 
@@ -216,9 +248,11 @@ def process_message_async(sender_phone, incoming_msg):
                         else:
                             response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}."
                 
-                elif tool_name == 'handle_chitchat': response_text = parameters.get('response_text', 'Entendi!')
+                elif tool_name == 'handle_chitchat': 
+                    response_text = parameters.get('response_text', 'Entendi!')
                 
-                elif not tool_name and "response_text" in intent: response_text = intent['response_text']
+                elif not tool_name and "response_text" in intent: 
+                    response_text = intent['response_text']
                 
                 else:
                     logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")

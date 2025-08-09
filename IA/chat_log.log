@@ -1386,3 +1386,65 @@ Me diga o nome ou o número do item que deseja adicionar.
 2025-08-09 14:04:32,342 [INFO]  * Restarting with stat
 2025-08-09 14:04:32,979 [WARNING]  * Debugger is active!
 2025-08-09 14:04:32,980 [INFO]  * Debugger PIN: 124-228-871
+2025-08-09 14:04:38,748 [INFO] 172.18.0.1 - - [09/Aug/2025 14:04:38] "POST /webhook HTTP/1.1" 200 -
+2025-08-09 14:04:38,751 [INFO] Arquivo de sessão encontrado. Carregando.
+2025-08-09 14:04:38,754 [INFO] [llm_interface.py] Iniciando get_intent para mensagem: 'quais todos os produtos da coca cola?...'
+2025-08-09 14:04:38,754 [INFO] [llm_interface.py] Tentando carregar prompt de: ai_llm/gav_prompt.txt
+2025-08-09 14:04:38,755 [INFO] [llm_interface.py] Prompt carregado com sucesso. Tamanho: 2326 caracteres
+2025-08-09 14:04:38,755 [INFO] [llm_interface.py] System prompt preparado. Tamanho: 2262 caracteres
+2025-08-09 14:04:38,755 [INFO] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-09 14:04:38,769 [INFO] [llm_interface.py] Verificando disponibilidade do modelo: llama3.1
+2025-08-09 14:04:38,770 [DEBUG] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-09 14:04:38,773 [DEBUG] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc34f5074f0>
+2025-08-09 14:04:38,773 [DEBUG] send_request_headers.started request=<Request [b'GET']>
+2025-08-09 14:04:38,773 [DEBUG] send_request_headers.complete
+2025-08-09 14:04:38,773 [DEBUG] send_request_body.started request=<Request [b'GET']>
+2025-08-09 14:04:38,774 [DEBUG] send_request_body.complete
+2025-08-09 14:04:38,774 [DEBUG] receive_response_headers.started request=<Request [b'GET']>
+2025-08-09 14:04:38,775 [DEBUG] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 09 Aug 2025 14:04:38 GMT'), (b'Content-Length', b'679')])
+2025-08-09 14:04:38,775 [INFO] HTTP Request: GET http://host.docker.internal:11434/api/tags "HTTP/1.1 200 OK"
+2025-08-09 14:04:38,775 [DEBUG] receive_response_body.started request=<Request [b'GET']>
+2025-08-09 14:04:38,776 [DEBUG] receive_response_body.complete
+2025-08-09 14:04:38,776 [DEBUG] response_closed.started
+2025-08-09 14:04:38,776 [DEBUG] response_closed.complete
+2025-08-09 14:04:38,776 [WARNING] [llm_interface.py] Não foi possível verificar modelos disponíveis: 'name'
+2025-08-09 14:04:38,776 [INFO] [llm_interface.py] Enviando requisição para o modelo llama3.1
+2025-08-09 14:04:38,777 [DEBUG] send_request_headers.started request=<Request [b'POST']>
+2025-08-09 14:04:38,777 [DEBUG] send_request_headers.complete
+2025-08-09 14:04:38,777 [DEBUG] send_request_body.started request=<Request [b'POST']>
+2025-08-09 14:04:38,778 [DEBUG] send_request_body.complete
+2025-08-09 14:04:38,778 [DEBUG] receive_response_headers.started request=<Request [b'POST']>
+2025-08-09 14:04:39,639 [DEBUG] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 09 Aug 2025 14:04:39 GMT'), (b'Content-Length', b'392')])
+2025-08-09 14:04:39,640 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-09 14:04:39,640 [DEBUG] receive_response_body.started request=<Request [b'POST']>
+2025-08-09 14:04:39,640 [DEBUG] receive_response_body.complete
+2025-08-09 14:04:39,640 [DEBUG] response_closed.started
+2025-08-09 14:04:39,641 [DEBUG] response_closed.complete
+2025-08-09 14:04:39,641 [INFO] [llm_interface.py] Resposta recebida do LLM. Tamanho: 94 caracteres
+2025-08-09 14:04:39,641 [DEBUG] [llm_interface.py] Conteúdo da resposta: {"tool_name": "get_top_selling_products_by_name", "parameters": {"product_name": "Coca Cola"}}
+2025-08-09 14:04:39,641 [INFO] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'Coca Cola'}}
+2025-08-09 14:04:39,641 [INFO] INTENÇÃO PROCESSADA: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'Coca Cola'}}
+2025-08-09 14:04:39,646 [INFO] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 3 produtos e 57 termos.
+2025-08-09 14:04:39,646 [ERROR] ERRO CRÍTICO NA THREAD: 'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/app/app.py", line 110, in process_message_async
+    if kb_entry and kb_entry.get("codprod"):
+AttributeError: 'list' object has no attribute 'get'
+2025-08-09 14:18:52,475 [INFO]  * Detected change in '/app/app.py', reloading
+2025-08-09 14:18:52,514 [INFO]  * Restarting with stat
+2025-08-09 14:18:53,249 [WARNING]  * Debugger is active!
+2025-08-09 14:18:53,250 [INFO]  * Debugger PIN: 124-228-871
+2025-08-09 14:19:15,452 [INFO]  * Detected change in '/app/knowledge/knowledge.py', reloading
+2025-08-09 14:19:15,485 [INFO]  * Restarting with stat
+2025-08-09 14:19:16,188 [WARNING]  * Debugger is active!
+2025-08-09 14:19:16,190 [INFO]  * Debugger PIN: 124-228-871
+2025-08-09 14:22:18,876 [INFO]  * Detected change in '/app/knowledge/knowledge.py', reloading
+2025-08-09 14:22:18,909 [INFO]  * Restarting with stat
+2025-08-09 14:22:19,668 [WARNING]  * Debugger is active!
+2025-08-09 14:22:19,669 [INFO]  * Debugger PIN: 124-228-871
+2025-08-09 14:22:29,220 [INFO]  * Detected change in '/app/db/database.py', reloading
+2025-08-09 14:22:29,251 [INFO]  * Restarting with stat
+2025-08-09 14:22:29,954 [WARNING]  * Debugger is active!
+2025-08-09 14:22:29,955 [INFO]  * Debugger PIN: 124-228-871
+2025-08-09 14:22:38,951 [INFO]  * Detected change in '/app/communication/twilio_client.py', reloading
+2025-08-09 14:22:38,985 [INFO]  * Restarting with stat
