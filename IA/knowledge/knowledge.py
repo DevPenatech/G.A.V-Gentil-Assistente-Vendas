@@ -28,17 +28,19 @@ from db import database
 
 
 KB_PATH = Path(__file__).resolve().parent / "knowledge_base.json"
-_kb: Optional[Dict[str, Dict]] = None
+_kb: Optional[Dict[str, List[Dict]]] = None  # ← MUDANÇA: agora é List[Dict]
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")
 
 
-def _load_kb() -> Dict:
+def _load_kb() -> Dict[str, List[Dict]]:  # ← MUDANÇA: retorna List[Dict]
     """Load the knowledge base from disk into memory.
 
     If the file does not exist or is empty we return an empty dict.
     The JSON file stores only canonical product names as keys, but in
     memory we also index each related word for faster lookup.
+    
+    IMPORTANTE: Agora cada termo pode mapear para MÚLTIPLOS produtos.
     """
     global _kb
     if _kb is not None:
@@ -58,24 +60,41 @@ def _load_kb() -> Dict:
         logging.warning(f"Erro ao carregar '{KB_PATH}': {e}. Usando base vazia.")
         raw_kb = {}
 
-    # Cria índice expandido: tanto nomes canônicos quanto related_words apontam para o mesmo entry
-    kb: Dict[str, Dict] = {}
+    # ← MUDANÇA: Cria índice expandido onde cada termo pode mapear para múltiplos produtos
+    kb: Dict[str, List[Dict]] = {}
+    
     for canonical, entry in raw_kb.items():
-        kb[canonical.lower()] = entry
+        # Adiciona pelo nome canônico
+        canonical_lower = canonical.lower()
+        if canonical_lower not in kb:
+            kb[canonical_lower] = []
+        kb[canonical_lower].append(entry)
+        
+        # Adiciona por cada related_word
         for word in entry.get("related_words", []):
-            kb[word.lower()] = entry
+            word_lower = word.lower()
+            if word_lower not in kb:
+                kb[word_lower] = []
+            # Só adiciona se não estiver já na lista (evita duplicatas)
+            if entry not in kb[word_lower]:
+                kb[word_lower].append(entry)
 
     _kb = kb
+    total_products = len(raw_kb)
+    total_terms = len(kb)
     logging.info(
-        f"Base de conhecimento '{KB_PATH}' carregada com {len(raw_kb)} produtos e {len(kb)} termos."
+        f"Base de conhecimento '{KB_PATH}' carregada com {total_products} produtos e {total_terms} termos."
     )
     return _kb
 
 
-def find_product_in_kb(term: str) -> Union[Dict, None]:
-    """Busca um produto na base de conhecimento usando o termo fornecido."""
+def find_product_in_kb(term: str) -> List[Dict]:  # ← MUDANÇA: retorna List[Dict]
+    """Busca produtos na base de conhecimento usando o termo fornecido.
+    
+    RETORNA: Lista de produtos que correspondem ao termo (pode ser vazia).
+    """
     if not term:
-        return None
+        return []
         
     kb = _load_kb()
     term_lower = term.lower().strip()
@@ -85,12 +104,18 @@ def find_product_in_kb(term: str) -> Union[Dict, None]:
         return kb[term_lower]
     
     # Busca fuzzy: procura se o termo está contido em alguma related_word
-    for entry in kb.values():
-        related = entry.get("related_words", [])
-        if any(term_lower in w.lower() for w in related):
-            return entry
+    matching_products = []
+    seen_codprods = set()  # Evita duplicatas
+    
+    for indexed_term, products in kb.items():
+        if term_lower in indexed_term:
+            for product in products:
+                codprod = product.get("codprod")
+                if codprod and codprod not in seen_codprods:
+                    matching_products.append(product)
+                    seen_codprods.add(codprod)
             
-    return None
+    return matching_products
 
 
 def update_kb(term: str, correct_product: Dict):
@@ -334,4 +359,3 @@ if __name__ == "__main__":
     
     build_knowledge_base()
     print("\nProcesso concluído! Verifique o arquivo knowledge_base.json e os logs.")
-    

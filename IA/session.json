@@ -1,10 +1,8 @@
 {
     "customer_context": null,
     "shopping_cart": [],
-    "last_search_type": "by_name",
-    "last_search_params": {
-        "product_name": "coca cola"
-    },
+    "last_search_type": "top_selling",
+    "last_search_params": {},
     "current_offset": 5,
     "last_shown_products": [
         {
