@@ -8,13 +8,24 @@ from typing import List, Dict
 import redis
 
 
-redis_client = redis.Redis(
-    host=os.getenv("REDIS_HOST", "localhost"),
-    port=int(os.getenv("REDIS_PORT", 6379)),
-    password=os.getenv("REDIS_PASSWORD"),
-    db=0,
-    decode_responses=True,
-)
+# Inicializa o cliente Redis somente com senha se ela estiver configurada de fato
+_redis_password = os.getenv("REDIS_PASSWORD")
+_redis_config = {
+    "host": os.getenv("REDIS_HOST", "localhost"),
+    "port": int(os.getenv("REDIS_PORT", 6379)),
+    "db": 0,
+    "decode_responses": True,
+}
+
+# Alguns ambientes definem REDIS_PASSWORD com valores fictícios como '<password>'.
+# Isso faz com que o cliente envie um comando AUTH desnecessário e o Redis
+# responda com erro, impedindo o carregamento/salvamento da sessão. Ao tratar
+# valores vazios ou placeholders, evitamos a autenticação quando ela não é
+# exigida.
+if _redis_password and _redis_password != "<password>":
+    _redis_config["password"] = _redis_password
+
+redis_client = redis.Redis(**_redis_config)
 
 def save_session(session_id: str, data: Dict):
     """Salva os dados da sessão no Redis com TTL de 1 hora."""
