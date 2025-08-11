@@ -13,9 +13,13 @@ AVAILABLE_TOOLS = [
     "get_top_selling_products",
     "get_top_selling_products_by_name",
     "add_item_to_cart",
+    "update_cart_item",
     "view_cart",
     "checkout",
-    "handle_chitchat"
+    "handle_chitchat",
+    "start_new_order",
+    "show_more_products",
+    "report_incorrect_product"
 ]
 
 def load_prompt_template() -> str:
