@@ -8,45 +8,25 @@ from typing import List, Dict
 import redis
 
 
-# Configuração do Redis com tratamento de erro
-def _get_redis_client():
-    """Cria cliente Redis com configuração robusta."""
-    try:
-        redis_config = {
-            'host': os.getenv("REDIS_HOST", "redis"),
-            'port': int(os.getenv("REDIS_PORT", 6379)),
-            'db': 0,
-            'decode_responses': True,
-            'socket_timeout': 5,
-            'socket_connect_timeout': 5,
-            'retry_on_timeout': True
-        }
-        
-        # Só adiciona password se estiver definida no .env
-        redis_password = os.getenv("REDIS_PASSWORD")
-        if redis_password and redis_password.strip():
-            redis_config['password'] = redis_password
-            
-        client = redis.Redis(**redis_config)
-        
-        # Testa a conexão
-        client.ping()
-        logging.info(f"[SESSION] Conexão Redis estabelecida: {redis_config['host']}:{redis_config['port']}")
-        return client
-        
-    except Exception as e:
-        logging.error(f"[SESSION] Falha ao conectar Redis: {e}")
-        return None
+# Inicializa o cliente Redis somente com senha se ela estiver configurada de fato
+_redis_password = os.getenv("REDIS_PASSWORD")
+_redis_config = {
+    "host": os.getenv("REDIS_HOST", "localhost"),
+    "port": int(os.getenv("REDIS_PORT", 6379)),
+    "db": 0,
+    "decode_responses": True,
+}
 
-# Cliente Redis global com lazy loading
-_redis_client = None
+# Alguns ambientes definem REDIS_PASSWORD com valores fictícios como '<password>'.
+# Isso faz com que o cliente envie um comando AUTH desnecessário e o Redis
+# responda com erro, impedindo o carregamento/salvamento da sessão. Ao tratar
+# valores vazios ou placeholders, evitamos a autenticação quando ela não é
+# exigida.
+if _redis_password and _redis_password != "<password>":
+    _redis_config["password"] = _redis_password
 
-def get_redis_client():
-    """Retorna cliente Redis com lazy loading."""
-    global _redis_client
-    if _redis_client is None:
-        _redis_client = _get_redis_client()
-    return _redis_client
+redis_client = redis.Redis(**_redis_config)
+
 
 def save_session(session_id: str, data: Dict):
     """Salva os dados da sessão no Redis com TTL de 1 hora e fallback para arquivo."""
