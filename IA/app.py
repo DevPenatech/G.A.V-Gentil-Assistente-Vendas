@@ -481,18 +481,57 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 else:
                     # Nenhum produto encontrado - resposta inteligente
                     print(f">>> CONSOLE: Nenhum produto encontrado para '{product_name}'")
+                    category = fuzzy_engine.detect_category(product_name)
+                    if category:
+                        category_products = database.search_products_by_category_terms([category])
+                        if category_products:
+                            title = (
+                                f"📦 Não encontrei '{product_name}', mas aqui estão alguns produtos"
+                                f" da categoria '{category}':"
+                            )
+                            current_offset += len(category_products)
+                            last_shown_products.extend(category_products)
+                            response_text = format_product_list_for_display(
+                                category_products, title, len(category_products) == 5, 0
+                            )
+                            last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                            add_message_to_history(
+                                session, 'assistant', response_text, 'SHOW_PRODUCTS_FROM_DB'
+                            )
+                        else:
+                            response_text = f"🤖 Não encontrei produtos para '{product_name}'."
+                            if suggestions:
+                                response_text += f"\n\n💡 {suggestions[0]}"
+                                response_text += (
+                                    "\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'."
+                                )
+                            else:
+                                response_text += (
+                                    "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
+                                )
 
-                    response_text = f"🤖 Não encontrei produtos para '{product_name}'."
-
-                    # Adiciona sugestões de correção
-                    if suggestions:
-                        response_text += f"\n\n💡 {suggestions[0]}"
-                        response_text += "\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'."
+                            last_bot_action = None
+                            add_message_to_history(
+                                session, 'assistant', response_text, 'NO_PRODUCTS_FOUND'
+                            )
                     else:
-                        response_text += "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
+                        response_text = f"🤖 Não encontrei produtos para '{product_name}'."
 
-                    last_bot_action = None
-                    add_message_to_history(session, 'assistant', response_text, 'NO_PRODUCTS_FOUND')
+                        # Adiciona sugestões de correção
+                        if suggestions:
+                            response_text += f"\n\n💡 {suggestions[0]}"
+                            response_text += (
+                                "\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'."
+                            )
+                        else:
+                            response_text += (
+                                "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
+                            )
+
+                        last_bot_action = None
+                        add_message_to_history(
+                            session, 'assistant', response_text, 'NO_PRODUCTS_FOUND'
+                        )
 
                 print(f">>> CONSOLE: Banco encontrou {len(products)} produtos, {len(suggestions)} sugestões")
 
