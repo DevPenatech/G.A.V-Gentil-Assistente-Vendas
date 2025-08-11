@@ -3,16 +3,14 @@ from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 import logging
 import threading
-from typing import Dict
+from typing import Dict, List, Tuple, Union
 from db import database
 from ai_llm import llm_interface
 from knowledge import knowledge
 from utils import logger_config
 from core.session_manager import (
     load_session, save_session, clear_session,
-    format_product_list_for_display, format_cart_for_display,
-    add_item_to_cart, remove_item_from_cart,
-    update_item_quantity, add_quantity_to_item
+    format_product_list_for_display, format_cart_for_display
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
@@ -20,14 +18,157 @@ from communication import twilio_client
 from db.database import search_products_with_suggestions, get_product_details_fuzzy
 from knowledge.knowledge import find_product_in_kb_with_analysis
 
-
-
 app = Flask(__name__)
 logger_config.setup_logger()
 
 def get_product_name(product: Dict) -> str:
     """Extrai o nome do produto, compatível com produtos do banco (descricao) e da KB (canonical_name)."""
     return product.get('descricao') or product.get('canonical_name', 'Produto sem nome')
+
+def find_products_in_cart_by_name(cart: List[Dict], product_name: str) -> List[Tuple[int, Dict]]:
+    """
+    Encontra produtos no carrinho pelo nome (busca fuzzy).
+    
+    Returns:
+        Lista de tuplas (índice, produto) que correspondem ao nome
+    """
+    if not cart or not product_name:
+        return []
+    
+    # Importa aqui para evitar imports circulares
+    from utils.fuzzy_search import fuzzy_engine
+    
+    matches = []
+    search_term = product_name.lower().strip()
+    
+    for i, item in enumerate(cart):
+        item_name = get_product_name(item).lower()
+        
+        # Busca exata
+        if search_term in item_name or item_name in search_term:
+            matches.append((i, item))
+            continue
+            
+        # Busca fuzzy
+        similarity = fuzzy_engine.calculate_similarity(search_term, item_name)
+        if similarity >= 0.6:  # Threshold para considerar uma correspondência
+            matches.append((i, item))
+    
+    return matches
+
+def format_cart_with_indices(cart: List[Dict]) -> str:
+    """Formata o carrinho com índices para facilitar seleção."""
+    if not cart:
+        return "🤖 Seu carrinho de compras está vazio."
+    
+    response = "🛒 Seu Carrinho de Compras:\n"
+    total = 0.0
+    
+    for i, item in enumerate(cart, 1):
+        price = item.get('pvenda') or 0.0
+        qt = item.get('qt', 0)
+        subtotal = price * qt
+        total += subtotal
+        
+        price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        product_name = get_product_name(item)
+        
+        response += f"{i}. {product_name} (Qtd: {qt}) - Unit: {price_str} - Subtotal: {subtotal_str}\n"
+    
+    total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    response += f"-----------------------------------\nTOTAL DO PEDIDO: {total_str}"
+    return response
+
+def remove_item_from_cart(cart: List[Dict], index: int) -> Tuple[bool, str, List[Dict]]:
+    """
+    Remove item do carrinho pelo índice.
+    
+    Returns:
+        Tupla (sucesso, mensagem, novo_carrinho)
+    """
+    if not cart:
+        return False, "🤖 Seu carrinho está vazio.", cart
+    
+    if not (1 <= index <= len(cart)):
+        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+    
+    removed_item = cart.pop(index - 1)
+    product_name = get_product_name(removed_item)
+    
+    if cart:
+        cart_display = format_cart_for_display(cart)
+        message = f"🗑️ {product_name} removido do carrinho.\n\n{cart_display}"
+    else:
+        message = f"🗑️ {product_name} removido do carrinho.\n\n🤖 Seu carrinho de compras está vazio."
+    
+    return True, message, cart
+
+def add_quantity_to_cart_item(cart: List[Dict], index: int, additional_qty: Union[int, float]) -> Tuple[bool, str, List[Dict]]:
+    """
+    Adiciona quantidade a um item específico do carrinho.
+    
+    Returns:
+        Tupla (sucesso, mensagem, novo_carrinho)
+    """
+    if not cart:
+        return False, "🤖 Seu carrinho está vazio.", cart
+    
+    if not (1 <= index <= len(cart)):
+        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+    
+    if not is_valid_quantity(additional_qty):
+        return False, f"🤖 Quantidade inválida: {additional_qty}", cart
+    
+    cart[index - 1]['qt'] += additional_qty
+    product_name = get_product_name(cart[index - 1])
+    new_total = cart[index - 1]['qt']
+    
+    # Formata a quantidade para exibição
+    if isinstance(additional_qty, float):
+        qty_display = f"{additional_qty:.1f}".rstrip('0').rstrip('.')
+    else:
+        qty_display = str(additional_qty)
+    
+    if isinstance(new_total, float):
+        total_display = f"{new_total:.1f}".rstrip('0').rstrip('.')
+    else:
+        total_display = str(new_total)
+    
+    cart_display = format_cart_for_display(cart)
+    message = f"✅ Adicionei +{qty_display} {product_name}. Total agora: {total_display}\n\n{cart_display}"
+    
+    return True, message, cart
+
+def update_cart_item_quantity(cart: List[Dict], index: int, new_qty: Union[int, float]) -> Tuple[bool, str, List[Dict]]:
+    """
+    Atualiza a quantidade de um item do carrinho.
+    
+    Returns:
+        Tupla (sucesso, mensagem, novo_carrinho)
+    """
+    if not cart:
+        return False, "🤖 Seu carrinho está vazio.", cart
+    
+    if not (1 <= index <= len(cart)):
+        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+    
+    if not is_valid_quantity(new_qty):
+        return False, f"🤖 Quantidade inválida: {new_qty}", cart
+    
+    cart[index - 1]['qt'] = new_qty
+    product_name = get_product_name(cart[index - 1])
+    
+    # Formata a quantidade para exibição
+    if isinstance(new_qty, float):
+        qty_display = f"{new_qty:.1f}".rstrip('0').rstrip('.')
+    else:
+        qty_display = str(new_qty)
+    
+    cart_display = format_cart_for_display(cart)
+    message = f"✅ Quantidade de {product_name} atualizada para {qty_display}\n\n{cart_display}"
+    
+    return True, message, cart
 
 def suggest_alternatives(failed_search_term: str) -> str:
     """Gera sugestões quando uma busca falha completamente."""
@@ -113,7 +254,7 @@ def process_message_async(sender_phone, incoming_msg):
                         if isinstance(qt, float) and qt.is_integer():
                             qt = int(qt)
                             
-                        add_item_to_cart(shopping_cart, product_to_add, qt)
+                        shopping_cart.append({**product_to_add, "qt": qt})
                         
                         # 🆕 Resposta mais natural baseada na entrada
                         if isinstance(qt, float):
@@ -143,6 +284,38 @@ def process_message_async(sender_phone, incoming_msg):
                 session['pending_action'] = pending_action
                 session['shopping_cart'] = shopping_cart
                 save_session(sender_phone, session)
+            
+            elif pending_action == 'AWAITING_CART_ITEM_SELECTION':
+                # Usuário está selecionando item do carrinho após ambiguidade
+                cart_action = session.get('pending_cart_action')
+                cart_matches = session.get('pending_cart_matches', [])
+                
+                if incoming_msg.isdigit():
+                    selection = int(incoming_msg)
+                    
+                    # Verifica se a seleção é válida
+                    valid_indices = [match[0] + 1 for match in cart_matches]  # +1 para índice baseado em 1
+                    
+                    if selection in valid_indices:
+                        if cart_action == 'remove':
+                            success, message, shopping_cart = remove_item_from_cart(shopping_cart, selection)
+                            response_text = message
+                        elif cart_action == 'add':
+                            quantity = session.get('pending_cart_quantity', 1)
+                            success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, selection, quantity)
+                            response_text = message
+                        else:
+                            response_text = "🤖 Ação inválida."
+                        
+                        # Limpa estado pendente
+                        pending_action = None
+                        session.pop('pending_cart_action', None)
+                        session.pop('pending_cart_matches', None)
+                        session.pop('pending_cart_quantity', None)
+                    else:
+                        response_text = f"🤖 Número inválido. Escolha um dos números listados: {', '.join(map(str, valid_indices))}"
+                else:
+                    response_text = "🤖 Por favor, digite o número do item que você quer selecionar."
             
             elif pending_action:
                 print(f">>> CONSOLE: Tratando ação pendente {pending_action}")
@@ -324,6 +497,105 @@ def process_message_async(sender_phone, incoming_msg):
                     else:
                         response_text = "🤖 Desculpe, não consegui identificar o produto. Pode tentar novamente com um nome diferente?"
 
+                elif tool_name == "update_cart_item":
+                    action = parameters.get("action", "").lower()
+                    
+                    if action == "list":
+                        # Mostra carrinho com opções de ação
+                        if not shopping_cart:
+                            response_text = "🤖 Seu carrinho está vazio. Que tal adicionar alguns produtos?"
+                        else:
+                            response_text = format_cart_with_indices(shopping_cart)
+                            response_text += "\n\n📝 O que você quer fazer?\n"
+                            response_text += "• Digite o número + 'remover' (ex: '1 remover')\n"
+                            response_text += "• Digite o número + quantidade (ex: '2 adicionar 3')\n"
+                            response_text += "• Ou diga o nome do produto + ação (ex: 'remover coca cola')"
+                    
+                    elif action == "remove":
+                        if "index" in parameters:
+                            # Remove por índice específico
+                            index = parameters["index"]
+                            success, message, shopping_cart = remove_item_from_cart(shopping_cart, index)
+                            response_text = message
+                            
+                        elif "product_name" in parameters:
+                            # Remove por nome do produto
+                            product_name = parameters["product_name"]
+                            matches = find_products_in_cart_by_name(shopping_cart, product_name)
+                            
+                            if not matches:
+                                response_text = f"🤖 Não encontrei '{product_name}' no seu carrinho."
+                            elif len(matches) == 1:
+                                # Remove automaticamente se só tem 1 correspondência
+                                index = matches[0][0] + 1  # +1 porque remove_item_from_cart espera índice baseado em 1
+                                success, message, shopping_cart = remove_item_from_cart(shopping_cart, index)
+                                response_text = message
+                            else:
+                                # Múltiplas correspondências - pede esclarecimento
+                                response_text = f"🤖 Encontrei {len(matches)} produtos com '{product_name}' no carrinho:\n"
+                                for i, (cart_index, item) in enumerate(matches, 1):
+                                    product_name_full = get_product_name(item)
+                                    qty = item.get('qt', 0)
+                                    response_text += f"{cart_index + 1}. {product_name_full} (Qtd: {qty})\n"
+                                response_text += "\nQual você quer remover? Digite o número."
+                                
+                                # Salva estado para próxima interação
+                                pending_action = 'AWAITING_CART_ITEM_SELECTION'
+                                session['pending_cart_action'] = 'remove'
+                                session['pending_cart_matches'] = matches
+                        else:
+                            response_text = "🤖 Preciso saber qual item remover. Use o número do item ou o nome do produto."
+                    
+                    elif action == "add":
+                        if "index" in parameters and "quantity" in parameters:
+                            # Adiciona quantidade a item específico
+                            index = parameters["index"]
+                            quantity = parameters["quantity"]
+                            success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, index, quantity)
+                            response_text = message
+                            
+                        elif "product_name" in parameters:
+                            # Adiciona por nome do produto
+                            product_name = parameters["product_name"]
+                            quantity = parameters.get("quantity", 1)
+                            matches = find_products_in_cart_by_name(shopping_cart, product_name)
+                            
+                            if not matches:
+                                response_text = f"🤖 Não encontrei '{product_name}' no seu carrinho. Quer adicionar este produto?"
+                            elif len(matches) == 1:
+                                # Adiciona automaticamente se só tem 1 correspondência
+                                index = matches[0][0] + 1
+                                success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, index, quantity)
+                                response_text = message
+                            else:
+                                # Múltiplas correspondências
+                                response_text = f"🤖 Encontrei {len(matches)} produtos com '{product_name}' no carrinho:\n"
+                                for i, (cart_index, item) in enumerate(matches, 1):
+                                    product_name_full = get_product_name(item)
+                                    qty = item.get('qt', 0)
+                                    response_text += f"{cart_index + 1}. {product_name_full} (Qtd: {qty})\n"
+                                response_text += f"\nEm qual você quer adicionar {quantity}? Digite o número."
+                                
+                                # Salva estado para próxima interação
+                                pending_action = 'AWAITING_CART_ITEM_SELECTION'
+                                session['pending_cart_action'] = 'add'
+                                session['pending_cart_quantity'] = quantity
+                                session['pending_cart_matches'] = matches
+                        else:
+                            response_text = "🤖 Preciso saber em qual item adicionar quantidade."
+                    
+                    elif action == "update":
+                        if "index" in parameters and "quantity" in parameters:
+                            # Atualiza quantidade de item específico
+                            index = parameters["index"]
+                            quantity = parameters["quantity"]
+                            success, message, shopping_cart = update_cart_item_quantity(shopping_cart, index, quantity)
+                            response_text = message
+                        else:
+                            response_text = "🤖 Preciso saber qual item e a nova quantidade."
+                    
+                    else:
+                        response_text = "🤖 Ação não reconhecida. Use: remover, adicionar ou atualizar."
 
                 elif tool_name == "report_incorrect_product":
                     if last_kb_search_term:
@@ -381,34 +653,8 @@ def process_message_async(sender_phone, incoming_msg):
                             last_shown_products.extend(products)
                             response_text = format_product_list_for_display(products, title, len(products) == 5, offset=offset_before_call)
                             last_bot_action = "AWAITING_PRODUCT_SELECTION"
-
-                elif tool_name == 'update_cart_item':
-                    action = parameters.get('action')
-                    index = parameters.get('index')
-                    qty = parameters.get('quantity', 0)
-
-                    if isinstance(index, int):
-                        idx = index - 1
-                        success = False
-                        if action == 'remove':
-                            success = remove_item_from_cart(shopping_cart, idx)
-                            if success:
-                                response_text = f"🗑️ Item {index} removido do carrinho.\n\n{format_cart_for_display(shopping_cart)}"
-                        elif action == 'update':
-                            success = update_item_quantity(shopping_cart, idx, qty)
-                            if success:
-                                response_text = f"✏️ Item {index} atualizado para {qty} unidade(s).\n\n{format_cart_for_display(shopping_cart)}"
-                        elif action == 'add':
-                            success = add_quantity_to_item(shopping_cart, idx, qty)
-                            if success:
-                                response_text = f"➕ Adicionei {qty} unidade(s) ao item {index}.\n\n{format_cart_for_display(shopping_cart)}"
-
-                        if not success:
-                            response_text = "🤖 Não consegui atualizar o carrinho com esses dados."
-                    else:
-                        response_text = "🤖 Preciso que você informe o número do item no carrinho."
-
-                elif tool_name == 'view_cart':
+                
+                elif tool_name == 'view_cart': 
                     response_text = format_cart_for_display(shopping_cart)
                 
                 elif tool_name == 'start_new_order':
