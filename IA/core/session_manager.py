@@ -8,24 +8,26 @@ from typing import List, Dict, Optional
 import redis
 
 
-# Inicializa o cliente Redis somente com senha se ela estiver configurada de fato
-_redis_password = os.getenv("REDIS_PASSWORD")
+_redis_password = os.getenv("REDIS_PASSWORD", "").strip()
 _redis_config = {
-    "host": os.getenv("REDIS_HOST", "localhost"),
+    "host": os.getenv("REDIS_HOST", "redis"),  # Use "redis" como padrão (nome do serviço)
     "port": int(os.getenv("REDIS_PORT", 6379)),
     "db": 0,
     "decode_responses": True,
 }
 
-# Alguns ambientes definem REDIS_PASSWORD com valores fictícios como '<password>'.
-# Isso faz com que o cliente envie um comando AUTH desnecessário e o Redis
-# responda com erro, impedindo o carregamento/salvamento da sessão. Ao tratar
-# valores vazios ou placeholders, evitamos a autenticação quando ela não é
-# exigida.
-if _redis_password and _redis_password != "<password>":
+
+# Só adiciona senha se ela existir e não for vazia
+if _redis_password and _redis_password not in ["", "<password>"]:
     _redis_config["password"] = _redis_password
 
-redis_client = redis.Redis(**_redis_config)
+try:
+    redis_client = redis.Redis(**_redis_config)
+    redis_client.ping()  # Testa a conexão imediatamente
+    logging.info("[SESSION] Redis conectado com sucesso")
+except Exception as e:
+    logging.warning(f"[SESSION] Redis não disponível, usando fallback para arquivo: {e}")
+    redis_client = None
 
 
 def get_redis_client() -> Optional[redis.Redis]:
