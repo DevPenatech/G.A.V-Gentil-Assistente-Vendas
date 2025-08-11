@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import re
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 import redis
 
@@ -26,6 +26,17 @@ if _redis_password and _redis_password != "<password>":
     _redis_config["password"] = _redis_password
 
 redis_client = redis.Redis(**_redis_config)
+
+
+def get_redis_client() -> Optional[redis.Redis]:
+    """Retorna o cliente Redis global se a conexão estiver ativa."""
+    global redis_client
+    try:
+        redis_client.ping()
+        return redis_client
+    except Exception as e:
+        logging.error(f"[SESSION] Falha ao conectar-se ao Redis: {e}")
+        return None
 
 
 def save_session(session_id: str, data: Dict):
