@@ -164,7 +164,8 @@ Instruções finais:
             if model_name not in available_models:
                 logging.error(f"[llm_interface.py] Modelo '{model_name}' não encontrado. Tentando baixar...")
                 try:
-                    client.pull(model_name)
+                    for _ in client.pull(model_name):
+                        pass  # consome o progresso para finalizar o download
                     logging.info(f"[llm_interface.py] Modelo '{model_name}' baixado com sucesso")
                     models_response = client.list()
                     if hasattr(models_response, 'get'):
