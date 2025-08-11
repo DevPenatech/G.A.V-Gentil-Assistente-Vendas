@@ -434,7 +434,7 @@ def process_message_async(sender_phone, incoming_msg):
                 "last_bot_action": last_bot_action, "pending_action": pending_action,
                 "last_kb_search_term": last_kb_search_term
             })
-            save_session(session_id, session)
+            save_session(sender_phone, session)
             
             if response_text:
                 print(f">>> CONSOLE: Enviando resposta para o usuário: '{response_text[:80]}...'")
