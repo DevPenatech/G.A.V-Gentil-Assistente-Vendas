@@ -19,3 +19,25 @@
 2025-08-08 20:45:13,624 [INFO] Total de entradas: 3
 2025-08-08 20:45:13,624 [INFO] Total de termos relacionados: 59
 2025-08-08 20:45:13,625 [INFO] Cache em memória limpo. Próxima consulta carregará a nova base.
+2025-08-11 11:42:04,969 [INFO] === INICIANDO GERAÇÃO DA BASE DE CONHECIMENTO ===
+2025-08-11 11:42:04,970 [INFO] Consultando produtos ativos no banco de dados...
+2025-08-11 11:42:04,975 [ERROR] Falha ao consultar produtos: execute() got an unexpected keyword argument 'params'
+2025-08-11 11:43:26,389 [INFO] === INICIANDO GERAÇÃO DA BASE DE CONHECIMENTO ===
+2025-08-11 11:43:26,389 [INFO] Consultando produtos ativos no banco de dados...
+2025-08-11 11:43:26,396 [INFO] Encontrados 3 produtos ativos no banco
+2025-08-11 11:43:26,396 [INFO] Processando produto 1/3: REFRIG.COCA-COLA LT 350ML
+2025-08-11 11:43:29,325 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-11 11:43:29,326 [INFO]   -> Geradas 17 variações
+2025-08-11 11:43:29,326 [INFO] Processando produto 2/3: REFRIG.COCA-COLA PET 2L
+2025-08-11 11:43:32,576 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-11 11:43:32,577 [INFO]   -> Geradas 20 variações
+2025-08-11 11:43:32,578 [INFO] Processando produto 3/3: DT.PO OMO LAVAGEM PERFEITA 1.6KG
+2025-08-11 11:43:36,820 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-11 11:43:36,821 [INFO]   -> Geradas 20 variações
+2025-08-11 11:43:36,824 [INFO] Backup criado: /app/knowledge/knowledge_base.json.backup
+2025-08-11 11:43:36,826 [INFO] === BASE DE CONHECIMENTO GERADA COM SUCESSO ===
+2025-08-11 11:43:36,826 [INFO] Arquivo: /app/knowledge/knowledge_base.json
+2025-08-11 11:43:36,826 [INFO] Produtos processados: 3
+2025-08-11 11:43:36,826 [INFO] Total de entradas: 3
+2025-08-11 11:43:36,827 [INFO] Total de termos relacionados: 57
+2025-08-11 11:43:36,827 [INFO] Cache em memória limpo. Próxima consulta carregará a nova base.

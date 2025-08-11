@@ -421,7 +421,7 @@ def build_knowledge_base() -> None:
     try:
         with database.get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(sql, params=None)
+                cursor.execute(sql)
                 products = cursor.fetchall()
                 logging.info(f"Encontrados {len(products)} produtos ativos no banco")
     except Exception as e:

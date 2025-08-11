@@ -18,6 +18,12 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
   app:
     container_name: bot_python_app
     build: .
@@ -28,11 +34,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     env_file:
       - .env
-    # <<< CORREÇÃO AQUI: Adicionada a variável de ambiente para o Ollama >>>
-    # Agora o seu app.py saberá qual endereço usar para se conectar ao Ollama.
-    # Certifique-se de que OLLAMA_HOST está definido no seu arquivo .env
+
     environment:
       DB_USERNAME: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
@@ -42,6 +48,7 @@ services:
       OLLAMA_HOST: ${OLLAMA_HOST}
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      
 
 volumes:
   postgres_data:

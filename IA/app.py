@@ -18,6 +18,8 @@ from communication import twilio_client
 from db.database import search_products_with_suggestions, get_product_details_fuzzy
 from knowledge.knowledge import find_product_in_kb_with_analysis
 
+
+
 app = Flask(__name__)
 logger_config.setup_logger()
 
@@ -74,7 +76,7 @@ def process_message_async(sender_phone, incoming_msg):
     with app.app_context():
         try:
             print(f"\n--- INÍCIO DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---")
-            session = load_session()
+            session = load_session(sender_phone)
             
             # Extrai dados da sessão para variáveis locais
             customer_context = session.get("customer_context")
@@ -136,6 +138,10 @@ def process_message_async(sender_phone, incoming_msg):
                 
                 pending_action = None
                 session['pending_product_for_cart'] = None
+                session['pending_product_for_cart'] = None
+                session['pending_action'] = pending_action
+                session['shopping_cart'] = shopping_cart
+                save_session(sender_phone, session)
             
             elif pending_action:
                 print(f">>> CONSOLE: Tratando ação pendente {pending_action}")
@@ -307,6 +313,10 @@ def process_message_async(sender_phone, incoming_msg):
                         pending_action = 'AWAITING_QUANTITY'
                         session['pending_product_for_cart'] = product_to_add
                         
+                        session['pending_action'] = pending_action
+                        session['shopping_cart'] = shopping_cart
+                        save_session(sender_phone, session)
+                        
                         # 🆕 RESPOSTA MAIS NATURAL - Compatibilidade com produtos do banco e KB
                         product_name = get_product_name(product_to_add)
                         response_text = f"🛒 Qual a quantidade de '{product_name}' você deseja?\n\n💡 Você pode dizer: 'duas', 'meia duzia', '5 unidades', etc."
@@ -376,7 +386,14 @@ def process_message_async(sender_phone, incoming_msg):
                 
                 elif tool_name == 'start_new_order':
                     customer_context, shopping_cart, last_shown_products, last_search_type, last_search_params, current_offset, last_kb_search_term = None, [], [], None, {}, 0, None
-                    clear_session()
+                    pending_action = None
+                    last_bot_action = None
+                    clear_session(sender_phone)
+                    session = {}
+                    session['shopping_cart'] = shopping_cart
+                    session['pending_action'] = pending_action
+                    session['last_bot_action'] = last_bot_action
+                    save_session(sender_phone, session)
                     response_text = "🧹 Certo! Carrinho e dados limpos. Vamos começar de novo!"
 
                 elif tool_name == 'checkout':
@@ -418,7 +435,7 @@ def process_message_async(sender_phone, incoming_msg):
                 "last_bot_action": last_bot_action, "pending_action": pending_action,
                 "last_kb_search_term": last_kb_search_term
             })
-            save_session(session)
+            save_session(sender_phone, session)
             
             if response_text:
                 print(f">>> CONSOLE: Enviando resposta para o usuário: '{response_text[:80]}...'")

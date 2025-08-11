@@ -2,35 +2,49 @@
 import json
 import logging
 import os
-from typing import List, Dict, Union
+import re
+from typing import List, Dict
 
-SESSION_FILE = "session.json"
+import redis
 
-def save_session(session_data: Dict):
-    """Salva os dados da sessão atual em um arquivo JSON."""
-    logging.info(f"Salvando sessão: {session_data}")
-    with open(SESSION_FILE, "w", encoding="utf-8") as f:
-        json.dump(session_data, f, indent=4, ensure_ascii=False)
 
-def load_session() -> Dict:
-    """Carrega os dados da sessão de um arquivo JSON, retornando um dicionário vazio se não existir."""
-    if os.path.exists(SESSION_FILE):
-        logging.info("Arquivo de sessão encontrado. Carregando.")
-        with open(SESSION_FILE, "r", encoding="utf-8") as f:
-            try:
-                return json.load(f)
-            except json.JSONDecodeError:
-                logging.error("Erro ao decodificar o arquivo de sessão. Iniciando uma nova.")
-                return {}
-    logging.info("Nenhum arquivo de sessão encontrado. Iniciando uma nova.")
-    return {}
+redis_client = redis.Redis(
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", 6379)),
+    password=os.getenv("REDIS_PASSWORD"),
+    db=0,
+    decode_responses=True,
+)
 
-def clear_session():
-    """Remove o arquivo de sessão."""
-    if os.path.exists(SESSION_FILE):
-        logging.info("Limpando sessão (removendo arquivo).")
-        os.remove(SESSION_FILE)
+def save_session(session_id: str, data: Dict):
+    """Salva os dados da sessão no Redis com TTL de 1 hora."""
+    try:
+        redis_client.set(session_id, json.dumps(data), ex=3600)
+    except Exception as e:
+        logging.error("Erro ao salvar sessão: %s", e)
+        return {}
 
+
+def load_session(session_id: str) -> Dict:
+    """Carrega os dados da sessão do Redis."""
+    try:
+        raw = redis_client.get(session_id)
+        if raw:
+            return json.loads(raw)
+        return {}
+    except Exception as e:
+        logging.error("Erro ao carregar sessão: %s", e)
+        return {}
+
+
+def clear_session(session_id: str):
+    """Remove os dados da sessão do Redis."""
+    try:
+        redis_client.delete(session_id)
+    except Exception as e:
+        logging.error("Erro ao limpar sessão: %s", e)
+        return {}
+    
 def format_product_list_for_display(products: List[Dict], title: str, has_more: bool, offset: int = 0) -> str:
     if not products:
         return f"🤖 {title}\nNenhum produto encontrado com esse critério."
