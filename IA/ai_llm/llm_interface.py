@@ -154,13 +154,13 @@ Instruções finais:
             models_response = client.list()
             available_models = []
             if hasattr(models_response, 'get'):
-                available_models = [model.get('name', '') for model in models_response.get('models', [])]
+                available_models = [model.get('name', '').split(':')[0] for model in models_response.get('models', [])]
             elif hasattr(models_response, 'models'):
-                available_models = [model.get('name', '') for model in models_response.models]
-            
+                available_models = [model.get('name', '').split(':')[0] for model in models_response.models]
+
             logging.info(f"[llm_interface.py] Modelos disponíveis: {available_models}")
-            
-            model_name = OLLAMA_MODEL_NAME
+
+            model_name = OLLAMA_MODEL_NAME.split(':')[0]
             if model_name not in available_models:
                 logging.error(f"[llm_interface.py] Modelo '{model_name}' não encontrado. Tentando baixar...")
                 try:
@@ -168,13 +168,13 @@ Instruções finais:
                     logging.info(f"[llm_interface.py] Modelo '{model_name}' baixado com sucesso")
                     models_response = client.list()
                     if hasattr(models_response, 'get'):
-                        available_models = [m.get('name','') for m in models_response.get('models',[])]
+                        available_models = [m.get('name','').split(':')[0] for m in models_response.get('models',[])]
                     elif hasattr(models_response, 'models'):
-                        available_models = [m.get('name','') for m in models_response.models]
+                        available_models = [m.get('name','').split(':')[0] for m in models_response.models]
                 except Exception as pull_error:
                     logging.error(f"[llm_interface.py] Erro ao baixar modelo: {pull_error}")
             if model_name not in available_models:
-                fallbacks = ["llama3.1:8b", "llama3.1", "llama3", "qwen2.5:7b", "mistral"]
+                fallbacks = [m.split(':')[0] for m in ["llama3.1:8b", "llama3.1", "llama3", "qwen2.5:7b", "mistral"]]
                 chosen = next((m for m in fallbacks if m in available_models), None)
                 if not chosen:
                     logging.error("[llm_interface.py] Nenhum modelo disponível após tentativas.")
