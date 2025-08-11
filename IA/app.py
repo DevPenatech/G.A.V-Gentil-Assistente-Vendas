@@ -138,7 +138,6 @@ def process_message_async(sender_phone, incoming_msg):
                 
                 pending_action = None
                 session['pending_product_for_cart'] = None
-                session['pending_product_for_cart'] = None
                 session['pending_action'] = pending_action
                 session['shopping_cart'] = shopping_cart
                 save_session(sender_phone, session)
