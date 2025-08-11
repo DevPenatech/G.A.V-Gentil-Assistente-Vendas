@@ -4,6 +4,7 @@ import logging
 import os
 import re
 from typing import List, Dict, Optional
+from datetime import datetime
 
 import redis
 
@@ -234,3 +235,111 @@ def add_quantity_to_item(cart: List[Dict], index: int, qt: float) -> bool:
         cart[index]["qt"] = cart[index].get("qt", 0) + qt
         return True
     return False
+
+def add_message_to_history(session_data: Dict, role: str, message: str, action_type: str = None):
+    """
+    Adiciona uma mensagem ao histórico da conversa.
+    
+    Args:
+        session_data: Dados da sessão
+        role: 'user' ou 'assistant'
+        message: Conteúdo da mensagem
+        action_type: Tipo de ação realizada (opcional)
+    """
+    if 'conversation_history' not in session_data:
+        session_data['conversation_history'] = []
+    
+    # Limita o histórico a 20 mensagens (10 pares) para não sobrecarregar a IA
+    if len(session_data['conversation_history']) >= 20:
+        session_data['conversation_history'] = session_data['conversation_history'][-18:]
+    
+    message_entry = {
+        'role': role,
+        'message': message,
+        'timestamp': datetime.now().isoformat(),
+    }
+    
+    if action_type:
+        message_entry['action_type'] = action_type
+        
+    session_data['conversation_history'].append(message_entry)
+
+def get_conversation_context(session_data: Dict, max_messages: int = 10) -> str:
+    """
+    Formata o histórico da conversa para enviar à IA.
+    
+    Args:
+        session_data: Dados da sessão
+        max_messages: Máximo de mensagens a incluir
+        
+    Returns:
+        String formatada com o contexto da conversa
+    """
+    history = session_data.get('conversation_history', [])
+    
+    if not history:
+        return "Esta é a primeira interação com o cliente."
+    
+    # Pega as últimas N mensagens
+    recent_history = history[-max_messages:] if len(history) > max_messages else history
+    
+    context_lines = ["**HISTÓRICO DA CONVERSA (mensagens recentes):**"]
+    
+    for entry in recent_history:
+        role_icon = "👤" if entry['role'] == 'user' else "🤖"
+        message = entry['message']
+        
+        # Trunca mensagens muito longas
+        if len(message) > 200:
+            message = message[:200] + "..."
+            
+        context_lines.append(f"{role_icon} {entry['role'].upper()}: {message}")
+        
+        # Adiciona informação sobre ação realizada, se houver
+        if entry.get('action_type'):
+            context_lines.append(f"   ↳ Ação: {entry['action_type']}")
+    
+    context_lines.append("**FIM DO HISTÓRICO**")
+    context_lines.append("")
+    
+    return "\n".join(context_lines)
+
+def get_session_context_summary(session_data: Dict) -> str:
+    """
+    Cria um resumo do estado atual da sessão para a IA.
+    """
+    lines = []
+    
+    # Informações do carrinho
+    cart = session_data.get('shopping_cart', [])
+    if cart:
+        lines.append(f"🛒 CARRINHO: {len(cart)} itens")
+        for i, item in enumerate(cart[:3], 1):  # Mostra apenas os 3 primeiros
+            product_name = item.get('descricao', item.get('canonical_name', 'Produto'))
+            qt = item.get('qt', 0)
+            lines.append(f"   {i}. {product_name} (Qtd: {qt})")
+        if len(cart) > 3:
+            lines.append(f"   ... e mais {len(cart) - 3} itens")
+    else:
+        lines.append("🛒 CARRINHO: vazio")
+    
+    # Última busca realizada
+    last_search = session_data.get('last_search_params', {})
+    if last_search:
+        search_term = last_search.get('product_name', '')
+        if search_term:
+            lines.append(f"🔍 ÚLTIMA BUSCA: '{search_term}'")
+    
+    # Cliente identificado
+    customer = session_data.get('customer_context')
+    if customer:
+        lines.append(f"👤 CLIENTE: {customer.get('nome', 'Identificado')}")
+    else:
+        lines.append("👤 CLIENTE: não identificado")
+    
+    # Ação pendente
+    pending = session_data.get('pending_action')
+    if pending:
+        lines.append(f"⏳ AGUARDANDO: {pending}")
+    
+    return "\n".join(lines)

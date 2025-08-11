@@ -10,7 +10,8 @@ from knowledge import knowledge
 from utils import logger_config
 from core.session_manager import (
     load_session, save_session, clear_session,
-    format_product_list_for_display, format_cart_for_display
+    format_product_list_for_display, format_cart_for_display,
+    add_message_to_history, get_conversation_context
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
@@ -212,14 +213,18 @@ def suggest_alternatives(failed_search_term: str) -> str:
     
     return " • ".join(suggestions[:3])
                 
-def process_message_async(sender_phone, incoming_msg):
+def process_message_async(sender_phone: str, incoming_msg: str):
     """
     Esta função faz todo o trabalho pesado em segundo plano (thread) para não causar timeout.
+    ATUALIZADA COM MEMÓRIA CONVERSACIONAL COMPLETA
     """
     with app.app_context():
         try:
             print(f"\n--- INÍCIO DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---")
             session = load_session(sender_phone)
+            
+            # 📝 REGISTRA A MENSAGEM DO USUÁRIO NO HISTÓRICO
+            add_message_to_history(session, 'user', incoming_msg)
             
             # Extrai dados da sessão para variáveis locais
             customer_context = session.get("customer_context")
@@ -264,20 +269,31 @@ def process_message_async(sender_phone, incoming_msg):
                             
                         product_name = get_product_name(product_to_add)
                         response_text = f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n{format_cart_for_display(shopping_cart)}"
+                        
+                        # 📝 REGISTRA A RESPOSTA DO BOT
+                        add_message_to_history(session, 'assistant', response_text, 'ADD_TO_CART')
+                        
                     else:
                         response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
+                        add_message_to_history(session, 'assistant', response_text, 'ERROR')
+                        
+                    session["pending_action"] = None
+                    session["pending_product_for_cart"] = None
+                    
                 else:
                     # 🆕 Mensagem de erro mais útil
                     if qt is None:
                         response_text = """🤖 Não consegui entender a quantidade. Você pode usar:
-            • Números: 5, 10, 2.5
-            • Por extenso: cinco, duas, dez
-            • Expressões: meia duzia, uma duzia
-            • Com unidade: 2 pacotes, 3 unidades
+• Números: 5, 10, 2.5
+• Por extenso: cinco, duas, dez
+• Expressões: meia duzia, uma duzia
+• Com unidade: 2 pacotes, 3 unidades
 
-            Qual quantidade você quer?"""
+Qual quantidade você quer?"""
                     else:
                         response_text = f"🤖 A quantidade {qt} parece muito alta. Por favor, digite uma quantidade entre 1 e 1000."
+                        
+                    add_message_to_history(session, 'assistant', response_text, 'REQUEST_QUANTITY')
                 
                 pending_action = None
                 session['pending_product_for_cart'] = None
@@ -300,12 +316,15 @@ def process_message_async(sender_phone, incoming_msg):
                         if cart_action == 'remove':
                             success, message, shopping_cart = remove_item_from_cart(shopping_cart, selection)
                             response_text = message
+                            add_message_to_history(session, 'assistant', response_text, 'REMOVE_FROM_CART')
                         elif cart_action == 'add':
                             quantity = session.get('pending_cart_quantity', 1)
                             success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, selection, quantity)
                             response_text = message
+                            add_message_to_history(session, 'assistant', response_text, 'ADD_QUANTITY_TO_CART')
                         else:
                             response_text = "🤖 Ação inválida."
+                            add_message_to_history(session, 'assistant', response_text, 'ERROR')
                         
                         # Limpa estado pendente
                         pending_action = None
@@ -314,8 +333,10 @@ def process_message_async(sender_phone, incoming_msg):
                         session.pop('pending_cart_quantity', None)
                     else:
                         response_text = f"🤖 Número inválido. Escolha um dos números listados: {', '.join(map(str, valid_indices))}"
+                        add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
                 else:
                     response_text = "🤖 Por favor, digite o número do item que você quer selecionar."
+                    add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
             
             elif pending_action:
                 print(f">>> CONSOLE: Tratando ação pendente {pending_action}")
@@ -327,6 +348,7 @@ def process_message_async(sender_phone, incoming_msg):
                     pending_action = None
                 elif incoming_msg.lower() in negative_responses:
                     response_text = "🤖 Tudo bem! O que você gostaria de fazer então?"
+                    add_message_to_history(session, 'assistant', response_text, 'CHITCHAT')
                     pending_action = None
                 else:
                     pending_action = None
@@ -338,13 +360,22 @@ def process_message_async(sender_phone, incoming_msg):
                         response_text = "🤖 Não entendi. Quer selecionar um dos produtos da lista? Se sim, me diga o número. Se quiser buscar outra coisa, é só digitar o nome do produto."
                     else:
                         response_text = "🤖 Por favor, me diga o que você precisa."
+                    add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
                 elif incoming_msg.isdigit() and last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
                     intent = {"tool_name": "add_item_to_cart", "parameters": {"index": int(incoming_msg)}}
                 elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
                     intent = {"tool_name": "show_more_products", "parameters": {}}
                 else:
-                    print(">>> CONSOLE: Consultando a IA (Ollama)...")
-                    intent = llm_interface.get_intent(incoming_msg, customer_context, len(shopping_cart))
+                    print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
+                    
+                    # 🧠 USA O NOVO SISTEMA COM MEMÓRIA CONVERSACIONAL
+                    intent = llm_interface.get_intent(
+                        user_message=incoming_msg,
+                        session_data=session,  # ← PASSA OS DADOS COMPLETOS DA SESSÃO
+                        customer_context=customer_context,  # Mantém compatibilidade
+                        cart_items_count=len(shopping_cart)  # Mantém compatibilidade
+                    )
+                    
                     print(f">>> CONSOLE: IA retornou a intenção: {intent}")
 
             # 3. Roteamento de Ferramentas
@@ -379,6 +410,7 @@ def process_message_async(sender_phone, incoming_msg):
                             
                             response_text = format_product_list_for_display(last_shown_products, title, False, 0)
                             last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                            add_message_to_history(session, 'assistant', response_text, 'SHOW_PRODUCTS_FROM_KB')
                             
                             print(f">>> CONSOLE: KB encontrou {len(last_shown_products)} produtos (qualidade: {kb_analysis['quality']})")
                             
@@ -419,6 +451,7 @@ def process_message_async(sender_phone, incoming_msg):
                                     response_text += f"\n💡 Dica: {suggestions[0]}"
                                 
                                 last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                                add_message_to_history(session, 'assistant', response_text, 'SHOW_PRODUCTS_FROM_DB')
                                 
                             else:
                                 # Nenhum produto encontrado - resposta inteligente
@@ -434,6 +467,7 @@ def process_message_async(sender_phone, incoming_msg):
                                     response_text += "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
                                 
                                 last_bot_action = None
+                                add_message_to_history(session, 'assistant', response_text, 'NO_PRODUCTS_FOUND')
                             
                             print(f">>> CONSOLE: Banco encontrou {len(products)} produtos, {len(suggestions)} sugestões")
                     
@@ -446,6 +480,7 @@ def process_message_async(sender_phone, incoming_msg):
                         last_shown_products.extend(products)
                         response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
                         last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                        add_message_to_history(session, 'assistant', response_text, 'SHOW_TOP_PRODUCTS')
                 
                 elif tool_name == "add_item_to_cart":
                     product_to_add = None
@@ -494,8 +529,10 @@ def process_message_async(sender_phone, incoming_msg):
                         # 🆕 RESPOSTA MAIS NATURAL - Compatibilidade com produtos do banco e KB
                         product_name = get_product_name(product_to_add)
                         response_text = f"🛒 Qual a quantidade de '{product_name}' você deseja?\n\n💡 Você pode dizer: 'duas', 'meia duzia', '5 unidades', etc."
+                        add_message_to_history(session, 'assistant', response_text, 'REQUEST_QUANTITY')
                     else:
                         response_text = "🤖 Desculpe, não consegui identificar o produto. Pode tentar novamente com um nome diferente?"
+                        add_message_to_history(session, 'assistant', response_text, 'PRODUCT_NOT_FOUND')
 
                 elif tool_name == "update_cart_item":
                     action = parameters.get("action", "").lower()
@@ -510,6 +547,7 @@ def process_message_async(sender_phone, incoming_msg):
                             response_text += "• Digite o número + 'remover' (ex: '1 remover')\n"
                             response_text += "• Digite o número + quantidade (ex: '2 adicionar 3')\n"
                             response_text += "• Ou diga o nome do produto + ação (ex: 'remover coca cola')"
+                        add_message_to_history(session, 'assistant', response_text, 'SHOW_CART_OPTIONS')
                     
                     elif action == "remove":
                         if "index" in parameters:
@@ -517,6 +555,7 @@ def process_message_async(sender_phone, incoming_msg):
                             index = parameters["index"]
                             success, message, shopping_cart = remove_item_from_cart(shopping_cart, index)
                             response_text = message
+                            add_message_to_history(session, 'assistant', response_text, 'REMOVE_FROM_CART')
                             
                         elif "product_name" in parameters:
                             # Remove por nome do produto
@@ -525,11 +564,13 @@ def process_message_async(sender_phone, incoming_msg):
                             
                             if not matches:
                                 response_text = f"🤖 Não encontrei '{product_name}' no seu carrinho."
+                                add_message_to_history(session, 'assistant', response_text, 'PRODUCT_NOT_IN_CART')
                             elif len(matches) == 1:
                                 # Remove automaticamente se só tem 1 correspondência
                                 index = matches[0][0] + 1  # +1 porque remove_item_from_cart espera índice baseado em 1
                                 success, message, shopping_cart = remove_item_from_cart(shopping_cart, index)
                                 response_text = message
+                                add_message_to_history(session, 'assistant', response_text, 'REMOVE_FROM_CART')
                             else:
                                 # Múltiplas correspondências - pede esclarecimento
                                 response_text = f"🤖 Encontrei {len(matches)} produtos com '{product_name}' no carrinho:\n"
@@ -543,8 +584,10 @@ def process_message_async(sender_phone, incoming_msg):
                                 pending_action = 'AWAITING_CART_ITEM_SELECTION'
                                 session['pending_cart_action'] = 'remove'
                                 session['pending_cart_matches'] = matches
+                                add_message_to_history(session, 'assistant', response_text, 'REQUEST_CART_ITEM_SELECTION')
                         else:
                             response_text = "🤖 Preciso saber qual item remover. Use o número do item ou o nome do produto."
+                            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
                     
                     elif action == "add":
                         if "index" in parameters and "quantity" in parameters:
@@ -553,6 +596,7 @@ def process_message_async(sender_phone, incoming_msg):
                             quantity = parameters["quantity"]
                             success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, index, quantity)
                             response_text = message
+                            add_message_to_history(session, 'assistant', response_text, 'ADD_QUANTITY_TO_CART')
                             
                         elif "product_name" in parameters:
                             # Adiciona por nome do produto
@@ -562,11 +606,13 @@ def process_message_async(sender_phone, incoming_msg):
                             
                             if not matches:
                                 response_text = f"🤖 Não encontrei '{product_name}' no seu carrinho. Quer adicionar este produto?"
+                                add_message_to_history(session, 'assistant', response_text, 'PRODUCT_NOT_IN_CART')
                             elif len(matches) == 1:
                                 # Adiciona automaticamente se só tem 1 correspondência
                                 index = matches[0][0] + 1
                                 success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, index, quantity)
                                 response_text = message
+                                add_message_to_history(session, 'assistant', response_text, 'ADD_QUANTITY_TO_CART')
                             else:
                                 # Múltiplas correspondências
                                 response_text = f"🤖 Encontrei {len(matches)} produtos com '{product_name}' no carrinho:\n"
@@ -581,8 +627,10 @@ def process_message_async(sender_phone, incoming_msg):
                                 session['pending_cart_action'] = 'add'
                                 session['pending_cart_quantity'] = quantity
                                 session['pending_cart_matches'] = matches
+                                add_message_to_history(session, 'assistant', response_text, 'REQUEST_CART_ITEM_SELECTION')
                         else:
                             response_text = "🤖 Preciso saber em qual item adicionar quantidade."
+                            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
                     
                     elif action == "update":
                         if "index" in parameters and "quantity" in parameters:
@@ -591,11 +639,14 @@ def process_message_async(sender_phone, incoming_msg):
                             quantity = parameters["quantity"]
                             success, message, shopping_cart = update_cart_item_quantity(shopping_cart, index, quantity)
                             response_text = message
+                            add_message_to_history(session, 'assistant', response_text, 'UPDATE_CART_QUANTITY')
                         else:
                             response_text = "🤖 Preciso saber qual item e a nova quantidade."
+                            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
                     
                     else:
                         response_text = "🤖 Ação não reconhecida. Use: remover, adicionar ou atualizar."
+                        add_message_to_history(session, 'assistant', response_text, 'UNRECOGNIZED_ACTION')
 
                 elif tool_name == "report_incorrect_product":
                     if last_kb_search_term:
@@ -628,12 +679,15 @@ def process_message_async(sender_phone, incoming_msg):
                                 response_text += f"\n\n💡 {suggestions[0]}"
                         
                         last_bot_action = "AWAITING_CORRECTION_SELECTION"
+                        add_message_to_history(session, 'assistant', response_text, 'SHOW_CORRECTED_SEARCH')
                     else:
                         response_text = "🤖 Entendido. Por favor, me diga o que você estava procurando."
+                        add_message_to_history(session, 'assistant', response_text, 'REQUEST_SEARCH_TERM')
 
                 elif tool_name == "show_more_products":
                     if not last_search_type:
                         response_text = "🤖 Para eu mostrar mais, primeiro você precisa fazer uma busca."
+                        add_message_to_history(session, 'assistant', response_text, 'NO_PREVIOUS_SEARCH')
                     else:
                         offset_before_call = current_offset
                         products = []
@@ -648,14 +702,17 @@ def process_message_async(sender_phone, incoming_msg):
                         
                         if not products:
                             response_text = "🤖 Não encontrei mais produtos para essa busca."
+                            add_message_to_history(session, 'assistant', response_text, 'NO_MORE_PRODUCTS')
                         else:
                             current_offset += 5
                             last_shown_products.extend(products)
                             response_text = format_product_list_for_display(products, title, len(products) == 5, offset=offset_before_call)
                             last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                            add_message_to_history(session, 'assistant', response_text, 'SHOW_MORE_PRODUCTS')
                 
                 elif tool_name == 'view_cart': 
                     response_text = format_cart_for_display(shopping_cart)
+                    add_message_to_history(session, 'assistant', response_text, 'SHOW_CART')
                 
                 elif tool_name == 'start_new_order':
                     customer_context, shopping_cart, last_shown_products, last_search_type, last_search_params, current_offset, last_kb_search_term = None, [], [], None, {}, 0, None
@@ -668,14 +725,18 @@ def process_message_async(sender_phone, incoming_msg):
                     session['last_bot_action'] = last_bot_action
                     save_session(sender_phone, session)
                     response_text = "🧹 Certo! Carrinho e dados limpos. Vamos começar de novo!"
+                    add_message_to_history(session, 'assistant', response_text, 'NEW_ORDER')
 
                 elif tool_name == 'checkout':
                     if not shopping_cart: 
                         response_text = "🤖 Seu carrinho está vazio!"
+                        add_message_to_history(session, 'assistant', response_text, 'EMPTY_CART')
                     elif not customer_context: 
                         response_text = "⭐ Para finalizar a compra, preciso do seu CNPJ."
+                        add_message_to_history(session, 'assistant', response_text, 'REQUEST_CNPJ')
                     else:
                         response_text = f"✅ Pedido para {customer_context['nome']} pronto para ser finalizado!\n\n{format_cart_for_display(shopping_cart)}\n(Funcionalidade de inserção do pedido no sistema será implementada futuramente)"
+                        add_message_to_history(session, 'assistant', response_text, 'CHECKOUT_READY')
                 
                 elif tool_name == 'find_customer_by_cnpj':
                     cnpj = parameters.get("cnpj")
@@ -684,22 +745,31 @@ def process_message_async(sender_phone, incoming_msg):
                         if customer:
                             customer_context = customer
                             response_text = f"🤖 Olá, {customer_context['nome']}! Bem-vindo(a) de volta."
+                            add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_IDENTIFIED')
                         else:
                             response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}."
+                            add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_NOT_FOUND')
+                    else:
+                        response_text = "🤖 Por favor, informe seu CNPJ."
+                        add_message_to_history(session, 'assistant', response_text, 'REQUEST_CNPJ')
                 
                 elif tool_name == 'handle_chitchat': 
                     response_text = parameters.get('response_text', 'Entendi!')
+                    add_message_to_history(session, 'assistant', response_text, 'CHITCHAT')
                 
                 elif not tool_name and "response_text" in intent: 
                     response_text = intent['response_text']
+                    add_message_to_history(session, 'assistant', response_text, 'GENERIC_RESPONSE')
                 
                 else:
                     logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")
                     response_text = "🤖 Hum, não entendi muito bem. Que tal começarmos pelos produtos mais vendidos? Posso te mostrar?"
                     pending_action = "show_top_selling"
+                    add_message_to_history(session, 'assistant', response_text, 'FALLBACK')
             
             if not response_text and not pending_action:
                 response_text = "Operação concluída. O que mais posso fazer por você?"
+                add_message_to_history(session, 'assistant', response_text, 'OPERATION_COMPLETE')
 
             session.update({
                 "customer_context": customer_context, "shopping_cart": shopping_cart,
@@ -719,6 +789,17 @@ def process_message_async(sender_phone, incoming_msg):
         except Exception as e:
             logging.error(f"ERRO CRÍTICO NA THREAD: {e}", exc_info=True)
             print(f"!!! ERRO CRÍTICO NA THREAD: {e}")
+            
+            error_response = "🤖 Desculpe, ocorreu um erro interno. Tente novamente!"
+            twilio_client.send_whatsapp_message(to=sender_phone, body=error_response)
+            
+            # Registra o erro no histórico também
+            try:
+                session = load_session(sender_phone)
+                add_message_to_history(session, 'assistant', error_response, 'ERROR')
+                save_session(sender_phone, session)
+            except:
+                pass  # Se falhar aqui, apenas ignora para não causar loop de erro
 
 @app.route("/webhook", methods=['POST'])
 def webhook():

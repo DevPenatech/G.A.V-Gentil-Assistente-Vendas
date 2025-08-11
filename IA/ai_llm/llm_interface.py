@@ -62,25 +62,54 @@ Responda APENAS com um objeto JSON válido e nada mais, seguindo a estrutura de 
 - Para "quero comprar": {"tool_name": "get_top_selling_products", "parameters": {}}
 - Para buscas por produto (ex: "quero omo"): {"tool_name": "get_top_selling_products_by_name", "parameters": {"product_name": "omo"}}"""
 
-def get_intent(user_message: str, customer_context: Union[Dict, None], cart_items_count: int) -> Dict:
+def get_intent(user_message: str, session_data: Dict, customer_context: Union[Dict, None] = None, cart_items_count: int = 0) -> Dict:
     """
     Usa o LLM para interpretar a mensagem do usuário e traduzir em uma ferramenta.
+    Agora inclui contexto conversacional completo.
+    
+    Args:
+        user_message: Mensagem atual do usuário
+        session_data: Dados completos da sessão (incluindo histórico)
+        customer_context: Informações do cliente (mantido para compatibilidade)
+        cart_items_count: Quantidade de itens no carrinho (mantido para compatibilidade)
     """
+    from core.session_manager import get_conversation_context, get_session_context_summary
+    
     logging.info(f"[llm_interface.py] Iniciando get_intent para mensagem: '{user_message[:50]}...'")
     
     # 1. Carrega o template do prompt do arquivo .txt
     prompt_template = load_prompt_template()
     
-    # 2. Preenche os placeholders ({...}) no template com os dados da conversa atual
+    # 2. Prepara o contexto conversacional
+    conversation_context = get_conversation_context(session_data, max_messages=12)
+    session_summary = get_session_context_summary(session_data)
+    
+    # 3. Prepara variáveis para o template
     customer_context_str = f"Sim, {customer_context['nome']}" if customer_context else "Não"
-    system_prompt = prompt_template.format(
-        customer_context_str=customer_context_str,
-        cart_items_count=cart_items_count
-    )
     
-    logging.info(f"[llm_interface.py] System prompt preparado. Tamanho: {len(system_prompt)} caracteres")
+    # 4. Cria o prompt completo com contexto conversacional
+    enhanced_prompt = f"""{prompt_template}
+
+{conversation_context}
+
+**ESTADO ATUAL DA SESSÃO:**
+{session_summary}
+
+**CONTEXTO DINÂMICO:**
+- Cliente identificado: {customer_context_str}
+- Itens no carrinho: {cart_items_count}
+
+**MENSAGEM ATUAL DO USUÁRIO:** "{user_message}"
+
+**INSTRUÇÕES IMPORTANTES:**
+- Use o HISTÓRICO DA CONVERSA para entender o contexto e dar respostas coerentes
+- Se o usuário se referir a algo mencionado anteriormente, use essa informação
+- Mantenha continuidade na conversa baseada no histórico
+- Se houver produtos no carrinho ou buscas recentes, considere isso nas respostas"""
     
-    # 3. Verifica e configura conexão com Ollama
+    logging.info(f"[llm_interface.py] Prompt com contexto preparado. Tamanho: {len(enhanced_prompt)} caracteres")
+    
+    # 5. Chama o modelo de linguagem
     try:
         client_args = {}
         if OLLAMA_HOST:
@@ -91,7 +120,7 @@ def get_intent(user_message: str, customer_context: Union[Dict, None], cart_item
             
         client = ollama.Client(**client_args)
         
-        # Verifica se o modelo está disponível
+        # Verifica disponibilidade do modelo
         try:
             logging.info(f"[llm_interface.py] Verificando disponibilidade do modelo: {OLLAMA_MODEL_NAME}")
             models_response = client.list()
@@ -109,36 +138,54 @@ def get_intent(user_message: str, customer_context: Union[Dict, None], cart_item
                     client.pull(OLLAMA_MODEL_NAME)
                     logging.info(f"[llm_interface.py] Modelo '{OLLAMA_MODEL_NAME}' baixado com sucesso")
                 except Exception as pull_error:
-                    logging.error(f"[llm_interface.py] Falha ao baixar modelo: {pull_error}")
-                    return {"tool_name": "error", "parameters": {"detail": f"Failed to download model {OLLAMA_MODEL_NAME}: {str(pull_error)}"}}
-        except Exception as check_error:
-            logging.warning(f"[llm_interface.py] Não foi possível verificar modelos disponíveis: {check_error}")
-
-        # 4. Envia a requisição para o LLM
-        logging.info(f"[llm_interface.py] Enviando requisição para o modelo {OLLAMA_MODEL_NAME}")
+                    logging.error(f"[llm_interface.py] Erro ao baixar modelo: {pull_error}")
+                    return {"tool_name": "handle_chitchat", "parameters": {"response_text": "🤖 Desculpe, estou com problemas técnicos. Tente novamente em alguns instantes."}}
+                    
+        except Exception as list_error:
+            logging.warning(f"[llm_interface.py] Não foi possível verificar modelos disponíveis: {list_error}")
+        
+        # Faz a chamada para o modelo
+        logging.info(f"[llm_interface.py] Fazendo chamada para ollama.chat...")
         response = client.chat(
             model=OLLAMA_MODEL_NAME,
             messages=[
-                {'role': 'system', 'content': system_prompt},
-                {'role': 'user', 'content': user_message}
-            ],
-            format='json'
+                {"role": "system", "content": enhanced_prompt},
+                {"role": "user", "content": user_message}
+            ]
         )
         
-        response_content = response['message']['content']
-        logging.info(f"[llm_interface.py] Resposta recebida do LLM. Tamanho: {len(response_content)} caracteres")
-        logging.debug(f"[llm_interface.py] Conteúdo da resposta: {response_content}")
+        logging.info(f"[llm_interface.py] Resposta recebida do LLM")
+        content = response.get('message', {}).get('content', '')
         
-        # O LLM deve retornar um conteúdo em formato JSON, que é carregado para um dicionário Python
+        if not content:
+            logging.error(f"[llm_interface.py] Resposta vazia do LLM")
+            return {"tool_name": "handle_chitchat", "parameters": {"response_text": "🤖 Desculpe, não consegui processar sua mensagem. Pode repetir?"}}
+        
+        logging.debug(f"[llm_interface.py] Conteúdo da resposta: {content}")
+        
+        # Parse do JSON
         try:
-            parsed_response = json.loads(response_content)
+            parsed_response = json.loads(content)
             logging.info(f"[llm_interface.py] JSON parseado com sucesso: {parsed_response}")
             return parsed_response
+            
         except json.JSONDecodeError as json_error:
             logging.error(f"[llm_interface.py] Erro ao fazer parse do JSON: {json_error}")
-            logging.error(f"[llm_interface.py] Conteúdo problemático: {response_content}")
-            return {"tool_name": "error", "parameters": {"detail": f"Invalid JSON response from LLM: {str(json_error)}"}}
-        
+            logging.error(f"[llm_interface.py] Conteúdo que causou erro: {content}")
+            
+            # Fallback para resposta de erro
+            return {
+                "tool_name": "handle_chitchat", 
+                "parameters": {
+                    "response_text": "🤖 Desculpe, tive dificuldade para entender. Pode reformular sua pergunta?"
+                }
+            }
+            
     except Exception as e:
-        logging.error(f"[llm_interface.py] Erro ao comunicar com o LLM: {e}")
-        return {"tool_name": "error", "parameters": {"detail": f"Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. {str(e)}"}}
+        logging.error(f"[llm_interface.py] Erro na comunicação com Ollama: {e}")
+        return {
+            "tool_name": "handle_chitchat", 
+            "parameters": {
+                "response_text": "🤖 Estou com problemas de conexão. Tente novamente em alguns segundos."
+            }
+        }
