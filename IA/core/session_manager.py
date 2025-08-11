@@ -194,3 +194,43 @@ def format_cart_for_display(cart: List[Dict]) -> str:
     total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     response += f"-----------------------------------\nTOTAL DO PEDIDO: {total_str}"
     return response
+
+
+def add_item_to_cart(cart: List[Dict], item: Dict, qt: float) -> None:
+    """Adiciona um item ao carrinho ou incrementa a quantidade se ele já existir."""
+    if qt <= 0:
+        return
+
+    for existing in cart:
+        if (
+            (item.get("codprod") and existing.get("codprod") == item.get("codprod"))
+            or (item.get("canonical_name") and existing.get("canonical_name") == item.get("canonical_name"))
+        ):
+            existing["qt"] = existing.get("qt", 0) + qt
+            return
+
+    cart.append({**item, "qt": qt})
+
+
+def remove_item_from_cart(cart: List[Dict], index: int) -> bool:
+    """Remove um item do carrinho pelo índice (baseado em 0)."""
+    if 0 <= index < len(cart):
+        cart.pop(index)
+        return True
+    return False
+
+
+def update_item_quantity(cart: List[Dict], index: int, qt: float) -> bool:
+    """Atualiza a quantidade de um item específico do carrinho."""
+    if 0 <= index < len(cart) and qt > 0:
+        cart[index]["qt"] = qt
+        return True
+    return False
+
+
+def add_quantity_to_item(cart: List[Dict], index: int, qt: float) -> bool:
+    """Adiciona quantidade extra a um item existente no carrinho."""
+    if 0 <= index < len(cart) and qt > 0:
+        cart[index]["qt"] = cart[index].get("qt", 0) + qt
+        return True
+    return False

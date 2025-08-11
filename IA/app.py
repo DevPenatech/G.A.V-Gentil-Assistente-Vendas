@@ -10,7 +10,9 @@ from knowledge import knowledge
 from utils import logger_config
 from core.session_manager import (
     load_session, save_session, clear_session,
-    format_product_list_for_display, format_cart_for_display
+    format_product_list_for_display, format_cart_for_display,
+    add_item_to_cart, remove_item_from_cart,
+    update_item_quantity, add_quantity_to_item
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
@@ -111,7 +113,7 @@ def process_message_async(sender_phone, incoming_msg):
                         if isinstance(qt, float) and qt.is_integer():
                             qt = int(qt)
                             
-                        shopping_cart.append({**product_to_add, "qt": qt})
+                        add_item_to_cart(shopping_cart, product_to_add, qt)
                         
                         # 🆕 Resposta mais natural baseada na entrada
                         if isinstance(qt, float):
@@ -379,8 +381,34 @@ def process_message_async(sender_phone, incoming_msg):
                             last_shown_products.extend(products)
                             response_text = format_product_list_for_display(products, title, len(products) == 5, offset=offset_before_call)
                             last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                
-                elif tool_name == 'view_cart': 
+
+                elif tool_name == 'update_cart_item':
+                    action = parameters.get('action')
+                    index = parameters.get('index')
+                    qty = parameters.get('quantity', 0)
+
+                    if isinstance(index, int):
+                        idx = index - 1
+                        success = False
+                        if action == 'remove':
+                            success = remove_item_from_cart(shopping_cart, idx)
+                            if success:
+                                response_text = f"🗑️ Item {index} removido do carrinho.\n\n{format_cart_for_display(shopping_cart)}"
+                        elif action == 'update':
+                            success = update_item_quantity(shopping_cart, idx, qty)
+                            if success:
+                                response_text = f"✏️ Item {index} atualizado para {qty} unidade(s).\n\n{format_cart_for_display(shopping_cart)}"
+                        elif action == 'add':
+                            success = add_quantity_to_item(shopping_cart, idx, qty)
+                            if success:
+                                response_text = f"➕ Adicionei {qty} unidade(s) ao item {index}.\n\n{format_cart_for_display(shopping_cart)}"
+
+                        if not success:
+                            response_text = "🤖 Não consegui atualizar o carrinho com esses dados."
+                    else:
+                        response_text = "🤖 Preciso que você informe o número do item no carrinho."
+
+                elif tool_name == 'view_cart':
                     response_text = format_cart_for_display(shopping_cart)
                 
                 elif tool_name == 'start_new_order':
