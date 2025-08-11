@@ -8,42 +8,157 @@ from typing import List, Dict
 import redis
 
 
-redis_client = redis.Redis(
-    host=os.getenv("REDIS_HOST", "localhost"),
-    port=int(os.getenv("REDIS_PORT", 6379)),
-    password=os.getenv("REDIS_PASSWORD"),
-    db=0,
-    decode_responses=True,
-)
+# Configuração do Redis com tratamento de erro
+def _get_redis_client():
+    """Cria cliente Redis com configuração robusta."""
+    try:
+        redis_config = {
+            'host': os.getenv("REDIS_HOST", "redis"),
+            'port': int(os.getenv("REDIS_PORT", 6379)),
+            'db': 0,
+            'decode_responses': True,
+            'socket_timeout': 5,
+            'socket_connect_timeout': 5,
+            'retry_on_timeout': True
+        }
+        
+        # Só adiciona password se estiver definida no .env
+        redis_password = os.getenv("REDIS_PASSWORD")
+        if redis_password and redis_password.strip():
+            redis_config['password'] = redis_password
+            
+        client = redis.Redis(**redis_config)
+        
+        # Testa a conexão
+        client.ping()
+        logging.info(f"[SESSION] Conexão Redis estabelecida: {redis_config['host']}:{redis_config['port']}")
+        return client
+        
+    except Exception as e:
+        logging.error(f"[SESSION] Falha ao conectar Redis: {e}")
+        return None
+
+# Cliente Redis global com lazy loading
+_redis_client = None
+
+def get_redis_client():
+    """Retorna cliente Redis com lazy loading."""
+    global _redis_client
+    if _redis_client is None:
+        _redis_client = _get_redis_client()
+    return _redis_client
 
 def save_session(session_id: str, data: Dict):
-    """Salva os dados da sessão no Redis com TTL de 1 hora."""
+    """Salva os dados da sessão no Redis com TTL de 1 hora e fallback para arquivo."""
+    if not session_id or not data:
+        logging.warning("[SESSION] Tentativa de salvar sessão com dados inválidos")
+        return
+        
     try:
-        redis_client.set(session_id, json.dumps(data), ex=3600)
+        client = get_redis_client()
+        if client:
+            client.set(session_id, json.dumps(data), ex=3600)
+            logging.debug(f"[SESSION] Sessão salva no Redis: {session_id}")
+        else:
+            # Fallback para arquivo se Redis não estiver disponível
+            _save_session_to_file(session_id, data)
+            
     except Exception as e:
-        logging.error("Erro ao salvar sessão: %s", e)
-        return {}
+        logging.error(f"[SESSION] Erro ao salvar sessão no Redis: {e}")
+        # Fallback para arquivo
+        _save_session_to_file(session_id, data)
 
 
 def load_session(session_id: str) -> Dict:
-    """Carrega os dados da sessão do Redis."""
+    """Carrega os dados da sessão do Redis com fallback para arquivo."""
+    if not session_id:
+        logging.warning("[SESSION] Tentativa de carregar sessão sem ID")
+        return {}
+        
     try:
-        raw = redis_client.get(session_id)
-        if raw:
-            return json.loads(raw)
-        return {}
+        client = get_redis_client()
+        if client:
+            raw = client.get(session_id)
+            if raw:
+                data = json.loads(raw)
+                logging.debug(f"[SESSION] Sessão carregada do Redis: {session_id}")
+                return data
+        
+        # Fallback para arquivo se não encontrar no Redis
+        return _load_session_from_file(session_id)
+        
     except Exception as e:
-        logging.error("Erro ao carregar sessão: %s", e)
-        return {}
+        logging.error(f"[SESSION] Erro ao carregar sessão do Redis: {e}")
+        # Fallback para arquivo
+        return _load_session_from_file(session_id)
 
 
 def clear_session(session_id: str):
-    """Remove os dados da sessão do Redis."""
+    """Remove os dados da sessão do Redis e arquivo."""
+    if not session_id:
+        return
+        
     try:
-        redis_client.delete(session_id)
+        client = get_redis_client()
+        if client:
+            client.delete(session_id)
+            logging.debug(f"[SESSION] Sessão removida do Redis: {session_id}")
+        
+        # Remove também do arquivo
+        _clear_session_file(session_id)
+        
     except Exception as e:
-        logging.error("Erro ao limpar sessão: %s", e)
-        return {}
+        logging.error(f"[SESSION] Erro ao limpar sessão: {e}")
+        # Tenta remover do arquivo mesmo se Redis falhar
+        _clear_session_file(session_id)
+
+# Funções de fallback para arquivo
+def _get_session_file_path(session_id: str) -> str:
+    """Retorna caminho do arquivo de sessão."""
+    # Sanitiza o session_id para nome de arquivo seguro
+    safe_id = re.sub(r'[^\w\-_.]', '_', session_id)
+    return f"data/session_{safe_id}.json"
+
+def _save_session_to_file(session_id: str, data: Dict):
+    """Salva sessão em arquivo como fallback."""
+    try:
+        os.makedirs("data", exist_ok=True)
+        file_path = _get_session_file_path(session_id)
+        
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        logging.info(f"[SESSION] Sessão salva em arquivo (fallback): {file_path}")
+        
+    except Exception as e:
+        logging.error(f"[SESSION] Erro ao salvar sessão em arquivo: {e}")
+
+def _load_session_from_file(session_id: str) -> Dict:
+    """Carrega sessão de arquivo como fallback."""
+    try:
+        file_path = _get_session_file_path(session_id)
+        
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            logging.info(f"[SESSION] Sessão carregada de arquivo (fallback): {file_path}")
+            return data
+            
+    except Exception as e:
+        logging.error(f"[SESSION] Erro ao carregar sessão de arquivo: {e}")
+    
+    return {}
+
+def _clear_session_file(session_id: str):
+    """Remove arquivo de sessão."""
+    try:
+        file_path = _get_session_file_path(session_id)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            logging.debug(f"[SESSION] Arquivo de sessão removido: {file_path}")
+    except Exception as e:
+        logging.error(f"[SESSION] Erro ao remover arquivo de sessão: {e}")
     
 def format_product_list_for_display(products: List[Dict], title: str, has_more: bool, offset: int = 0) -> str:
     if not products:

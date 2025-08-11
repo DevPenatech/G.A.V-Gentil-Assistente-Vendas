@@ -91,7 +91,12 @@ def get_intent(user_message: str, customer_context: Union[Dict, None], cart_item
         try:
             logging.info(f"[llm_interface.py] Verificando disponibilidade do modelo: {OLLAMA_MODEL_NAME}")
             models_response = client.list()
-            available_models = [model['name'] for model in models_response.get('models', [])]
+            available_models = []
+            if hasattr(models_response, 'get'):
+                available_models = [model.get('name', '') for model in models_response.get('models', [])]
+            elif hasattr(models_response, 'models'):
+                available_models = [model.get('name', '') for model in models_response.models]
+            
             logging.info(f"[llm_interface.py] Modelos disponíveis: {available_models}")
             
             if OLLAMA_MODEL_NAME not in available_models:
