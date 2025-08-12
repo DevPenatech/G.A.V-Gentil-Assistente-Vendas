@@ -8,8 +8,10 @@ import ollama
 import json
 import logging
 import re
-from typing import Union, Dict, List
+from typing import Union, Dict
 import time
+
+from core.session_manager import get_conversation_context
 
 # --- Configurações Globais ---
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -67,25 +69,6 @@ ESTILO: Respostas curtas com próxima ação explícita. Liste até 3 opções p
 FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, ask_continue_or_checkout
 
 SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!"""
-
-def format_conversation_history(history: List[Dict]) -> str:
-    """Formata o histórico de conversa para contexto com foco nas últimas interações."""
-    if not history:
-        return "Primeira interação com o cliente."
-    
-    # Pega apenas as últimas 6 mensagens para manter contexto relevante
-    recent_history = history[-6:]
-    
-    formatted = "CONTEXTO RECENTE:\n"
-    for msg in recent_history:
-        role = "Cliente" if msg['role'] == 'user' else "G.A.V."
-        # Limita mensagens longas
-        message_preview = msg['message'][:100]
-        if len(msg['message']) > 100:
-            message_preview += "..."
-        formatted += f"{role}: {message_preview}\n"
-    
-    return formatted
 
 def extract_numeric_selection(message: str) -> Union[int, None]:
     """Extrai seleção numérica (1, 2 ou 3) da mensagem do usuário."""
@@ -215,10 +198,8 @@ def get_intent(user_message: str, session_data: Dict, customer_context: Union[Di
         system_prompt = load_prompt_template()
         logging.info(f"[llm_interface.py] System prompt preparado. Tamanho: {len(system_prompt)} caracteres")
         
-        # Formata histórico de conversa
-        conversation_history = format_conversation_history(
-            session_data.get("conversation_history", [])
-        )
+        # Obtém contexto da conversa a partir do gerenciador de sessão
+        conversation_context = get_conversation_context(session_data)
         
         # Informações do carrinho
         cart_info = ""
@@ -252,7 +233,7 @@ def get_intent(user_message: str, session_data: Dict, customer_context: Union[Di
         full_context = f"""
 MENSAGEM DO USUÁRIO: "{user_message}"
 
-{conversation_history}
+{conversation_context}
 
 {cart_info}
 {products_info}
