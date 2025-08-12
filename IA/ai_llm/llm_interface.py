@@ -144,7 +144,7 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
     # Comandos de continuar compra
     if any(cmd in message_lower for cmd in ['continuar', 'mais produtos', 'outros']):
         context["continue_shopping"] = True
-    
+
     # Detecta gírias de produtos
     product_slang = {
         'refri': 'refrigerante',
@@ -158,7 +158,27 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         if slang in message_lower:
             context["detected_slang"] = {slang: meaning}
             break
-    
+
+    # Determina estágio da compra
+    purchase_stage = session_data.get("purchase_stage", "greeting")
+
+    greeting_keywords = ['oi', 'olá', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
+    search_keywords = ['buscar', 'procurar', 'produto', 'comprar', 'preciso', 'quero', 'produtos', 'mais vendidos']
+
+    if context.get("direct_checkout_command"):
+        purchase_stage = "checkout"
+    elif context.get("direct_cart_command"):
+        purchase_stage = "cart"
+    elif any(word in message_lower for word in greeting_keywords):
+        purchase_stage = "greeting"
+    elif any(word in message_lower for word in search_keywords) or context.get("has_pending_products") or context.get("recent_search"):
+        purchase_stage = "search"
+    elif context.get("has_cart_items"):
+        purchase_stage = "cart"
+
+    context["purchase_stage"] = purchase_stage
+    session_data["purchase_stage"] = purchase_stage
+
     return context
 
 def get_intent(user_message: str, session_data: Dict, customer_context: Union[Dict, None] = None, cart_items_count: int = 0) -> Dict:
@@ -244,6 +264,7 @@ CONTEXTO ADICIONAL:
 - Seleção numérica detectada: {enhanced_context.get('numeric_selection', 'Nenhuma')}
 - Quantidade inferida: {enhanced_context.get('inferred_quantity', 'Não especificada')}
 - Gíria detectada: {enhanced_context.get('detected_slang', 'Nenhuma')}
+- Estágio da compra: {enhanced_context.get('purchase_stage', 'greeting')}
 
 IMPORTANTE: Baseie sua resposta no contexto acima. Se há produtos mostrados e o usuário digitou um número (Ex: 1, 2 ou 3), use add_item_to_cart. Se há itens no carrinho e usuário quer finalizar, use checkout.
 """
@@ -344,6 +365,7 @@ def clean_json_response(content: str) -> str:
 def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     """Cria intenção de fallback baseada em padrões simples quando LLM falha ou demora."""
     message_lower = user_message.lower().strip()
+    stage = context.get("purchase_stage", "greeting")
     
     # Seleção numérica direta
     if context.get("numeric_selection") and context.get("has_pending_products"):
@@ -389,16 +411,28 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     # Saudações
     greetings = ['oi', 'olá', 'ola', 'boa', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
     if any(greeting in message_lower for greeting in greetings):
+        if stage == "cart":
+            response_text = "Olá! Você tem itens no carrinho. Digite 'checkout' para finalizar ou informe outro produto."
+        elif stage == "checkout":
+            response_text = "Olá! Para concluir a compra digite 'finalizar' ou 'carrinho' para revisar seus itens."
+        else:
+            response_text = "Olá! Sou o G.A.V. do Comercial Esperança. Posso mostrar nossos produtos mais vendidos ou você já sabe o que procura?"
         return {
-            "tool_name": "handle_chitchat", 
-            "parameters": {"response_text": "Olá! Sou o G.A.V. do Comercial Esperança. Posso mostrar nossos produtos mais vendidos ou você já sabe o que procura?"}
+            "tool_name": "handle_chitchat",
+            "parameters": {"response_text": response_text}
         }
     
     # Ajuda
     if any(word in message_lower for word in ['ajuda', 'help', 'como', 'funciona']):
+        if stage == "cart":
+            response_text = "Você pode digitar 'checkout' para finalizar ou informar outro produto para continuar comprando."
+        elif stage == "checkout":
+            response_text = "Para concluir digite 'finalizar'. Se quiser revisar os itens, digite 'carrinho'."
+        else:
+            response_text = "Como posso ajudar? Digite o nome de um produto para buscar, 'carrinho' para ver suas compras, ou 'produtos' para ver os mais vendidos."
         return {
             "tool_name": "handle_chitchat",
-            "parameters": {"response_text": "Como posso ajudar? Digite o nome de um produto para buscar, 'carrinho' para ver suas compras, ou 'produtos' para ver os mais vendidos."}
+            "parameters": {"response_text": response_text}
         }
     
     # Novo pedido
@@ -416,9 +450,17 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
             "parameters": {"product_name": message_lower}
         }
     
+    if stage == "cart":
+        default_text = "Não entendi. Você pode digitar o nome de um produto para adicionar mais itens ou 'checkout' para finalizar."
+    elif stage == "checkout":
+        default_text = "Não entendi. Digite 'finalizar' para concluir a compra ou 'carrinho' para revisar."
+    elif stage == "search":
+        default_text = "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens."
+    else:
+        default_text = "Não entendi. Posso mostrar os produtos mais vendidos ou buscar algo específico."
     return {
-        "tool_name": "handle_chitchat", 
-        "parameters": {"response_text": "Não entendi. Digite o nome do produto que procura ou 'ajuda' para ver as opções."}
+        "tool_name": "handle_chitchat",
+        "parameters": {"response_text": default_text}
     }
 
 def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
