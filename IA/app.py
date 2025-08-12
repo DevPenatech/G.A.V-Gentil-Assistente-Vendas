@@ -507,9 +507,9 @@ Qual quantidade você quer?"""
     return intent, response_text
 
 
-def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tuple[Union[Dict, None], str]:
-    """Processa a mensagem do usuário e determina a intenção."""
-    intent = None
+def _get_intent(session: Dict, state: Dict, incoming_msg: str) -> Tuple[Union[Dict, None], str]:
+    """Determina a intenção do usuário usando IA com fallback simples."""
+    intent: Union[Dict, None] = None
     response_text = ""
     last_bot_action = state.get("last_bot_action")
     shopping_cart = state.get("shopping_cart", [])
@@ -531,22 +531,19 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
         add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
         return intent, response_text
 
-    intent_type = detect_user_intent_type(incoming_msg, session)
+    msg_lower = incoming_msg.lower().strip()
 
-    if intent_type == "VIEW_CART":
-        intent = {"tool_name": "view_cart", "parameters": {}}
-    elif intent_type == "CHECKOUT":
-        intent = {"tool_name": "checkout", "parameters": {}}
-    elif intent_type == "NUMERIC_SELECTION" and last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
-        intent = {"tool_name": "add_item_to_cart", "parameters": {"index": int(incoming_msg)}}
-    elif intent_type == "NUMERIC_SELECTION" and last_bot_action == "AWAITING_MENU_SELECTION":
-        if incoming_msg == "1":
-            intent = {"tool_name": "get_top_selling_products", "parameters": {}}
-        elif incoming_msg == "2":
-            intent = {"tool_name": "view_cart", "parameters": {}}
-        elif incoming_msg == "3":
-            intent = {"tool_name": "checkout", "parameters": {}}
-        else:
+    # --- Comandos simples e seleções numéricas ---
+    if msg_lower.isdigit():
+        if last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
+            return {"tool_name": "add_item_to_cart", "parameters": {"index": int(msg_lower)}}, response_text
+        if last_bot_action == "AWAITING_MENU_SELECTION":
+            if msg_lower == "1":
+                return {"tool_name": "get_top_selling_products", "parameters": {}}, response_text
+            if msg_lower == "2":
+                return {"tool_name": "view_cart", "parameters": {}}, response_text
+            if msg_lower == "3":
+                return {"tool_name": "checkout", "parameters": {}}, response_text
             response_text = (
                 "🤖 Opção inválida. Escolha 1, 2 ou 3.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
@@ -555,23 +552,38 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
             state['last_shown_products'] = []
             state['last_bot_action'] = 'AWAITING_MENU_SELECTION'
             return intent, response_text
-    elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
-        intent = {"tool_name": "show_more_products", "parameters": {}}
-    elif intent_type in ["GENERAL", "SEARCH_PRODUCT"]:
+
+    if msg_lower in ["mais", "proximo", "próximo", "mais produtos"]:
+        return {"tool_name": "show_more_products", "parameters": {}}, response_text
+    if msg_lower in ["carrinho", "ver carrinho"]:
+        return {"tool_name": "view_cart", "parameters": {}}, response_text
+    if msg_lower in ["checkout", "finalizar", "finalizar pedido", "fechar pedido"]:
+        return {"tool_name": "checkout", "parameters": {}}, response_text
+
+    # --- Consulta à IA ---
+    try:
         print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
         intent = llm_interface.get_intent(
             user_message=incoming_msg,
             session_data=session,
             customer_context=state.get("customer_context"),
-            cart_items_count=len(shopping_cart)
+            cart_items_count=len(shopping_cart),
         )
         print(f">>> CONSOLE: IA retornou a intenção: {intent}")
-    elif intent_type == "GREETING":
-        response_text = "🤖 Olá! Como posso ajudar você hoje?"
-        add_message_to_history(session, 'assistant', response_text, 'GREETING')
-    else:
-        response_text = "🤖 Desculpe, não entendi. Pode reformular?"
-        add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
+        if not intent or not intent.get("tool_name"):
+            raise ValueError("IA não retornou intenção")
+    except Exception:
+        intent_type = detect_user_intent_type(incoming_msg, session)
+        if intent_type == "VIEW_CART":
+            intent = {"tool_name": "view_cart", "parameters": {}}
+        elif intent_type == "CHECKOUT":
+            intent = {"tool_name": "checkout", "parameters": {}}
+        elif intent_type == "GREETING":
+            response_text = "🤖 Olá! Como posso ajudar você hoje?"
+            add_message_to_history(session, 'assistant', response_text, 'GREETING')
+        else:
+            response_text = "🤖 Desculpe, não entendi. Pode reformular?"
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
 
     return intent, response_text
 
@@ -1004,7 +1016,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 
             # 2. Se não houve resposta ou intenção, determina a intenção
             if not intent and not response_text:
-                intent, response_text = _process_user_message(session, state, incoming_msg)
+                intent, response_text = _get_intent(session, state, incoming_msg)
 
             # 3. Executa a intenção identificada
             if intent and not response_text:
