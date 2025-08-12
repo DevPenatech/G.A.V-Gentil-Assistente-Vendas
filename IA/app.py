@@ -273,32 +273,90 @@ def _handle_pending_action(session: Dict, state: Dict, incoming_msg: str) -> Tup
                 if isinstance(qt, float) and qt.is_integer():
                     qt = int(qt)
 
-                shopping_cart.append({**product_to_add, "qt": qt})
+                # Verifica se o item já existe no carrinho (por codprod ou nome)
+                duplicate_index = None
+                for i, item in enumerate(shopping_cart):
+                    if (
+                        product_to_add.get('codprod')
+                        and item.get('codprod') == product_to_add.get('codprod')
+                    ) or (
+                        not product_to_add.get('codprod')
+                        and get_product_name(item).lower() == get_product_name(product_to_add).lower()
+                    ):
+                        duplicate_index = i
+                        break
 
-                # 🆕 Resposta mais natural baseada na entrada
-                if isinstance(qt, float):
-                    qt_display = f"{qt:.1f}".rstrip('0').rstrip('.')
+                if duplicate_index is not None:
+                    existing_item = shopping_cart[duplicate_index]
+                    existing_qty = existing_item.get('qt', 0)
+                    if isinstance(existing_qty, float):
+                        existing_qty_display = f"{existing_qty:.1f}".rstrip('0').rstrip('.')
+                    else:
+                        existing_qty_display = str(existing_qty)
+                    product_name = get_product_name(existing_item)
+
+                    response_text = (
+                        f"Você já possui **{product_name}** com **{existing_qty_display}** unidades. "
+                        "Deseja *1* somar ou *2* substituir pela nova quantidade?"
+                    )
+
+                    update_session_context(
+                        session,
+                        {
+                            "pending_product_for_cart": None,
+                            "duplicate_item_index": duplicate_index + 1,
+                            "duplicate_item_qty": qt,
+                            "pending_action": "AWAITING_DUPLICATE_DECISION",
+                        },
+                    )
+
+                    add_message_to_history(
+                        session,
+                        'assistant',
+                        response_text,
+                        'REQUEST_DUPLICATE_DECISION',
+                    )
+
+                    pending_action = 'AWAITING_DUPLICATE_DECISION'
                 else:
-                    qt_display = str(qt)
+                    shopping_cart.append({**product_to_add, "qt": qt})
 
-                product_name = get_product_name(product_to_add)
-                response_text = (
-                    f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n"
-                    f"{format_cart_for_display(shopping_cart)}\n\n"
-                    f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-                )
+                    # 🆕 Resposta mais natural baseada na entrada
+                    if isinstance(qt, float):
+                        qt_display = f"{qt:.1f}".rstrip('0').rstrip('.')
+                    else:
+                        qt_display = str(qt)
 
-                # 📝 REGISTRA A RESPOSTA DO BOT
-                add_message_to_history(session, 'assistant', response_text, 'ADD_TO_CART')
+                    product_name = get_product_name(product_to_add)
+                    response_text = (
+                        f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n"
+                        f"{format_cart_for_display(shopping_cart)}\n\n"
+                        f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                    )
+
+                    # 📝 REGISTRA A RESPOSTA DO BOT
+                    add_message_to_history(session, 'assistant', response_text, 'ADD_TO_CART')
+
+                    update_session_context(
+                        session,
+                        {
+                            "pending_action": None,
+                            "pending_product_for_cart": None,
+                        },
+                    )
+                    pending_action = None
 
             else:
                 response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
                 add_message_to_history(session, 'assistant', response_text, 'ERROR')
-
-            update_session_context(session, {
-                "pending_action": None,
-                "pending_product_for_cart": None
-            })
+                update_session_context(
+                    session,
+                    {
+                        "pending_action": None,
+                        "pending_product_for_cart": None,
+                    },
+                )
+                pending_action = None
 
         else:
             # 🆕 Mensagem de erro mais útil
@@ -314,8 +372,8 @@ Qual quantidade você quer?"""
                 response_text = f"🤖 A quantidade {qt} parece muito alta. Por favor, digite uma quantidade entre 1 e 1000."
 
             add_message_to_history(session, 'assistant', response_text, 'REQUEST_QUANTITY')
+            pending_action = None
 
-        pending_action = None
         state['pending_action'] = pending_action
         state['shopping_cart'] = shopping_cart
 
@@ -361,6 +419,60 @@ Qual quantidade você quer?"""
                 f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
             )
             add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
+
+        state['pending_action'] = pending_action
+        state['shopping_cart'] = shopping_cart
+
+    elif pending_action == 'AWAITING_DUPLICATE_DECISION':
+        print(">>> CONSOLE: Tratando ação pendente AWAITING_DUPLICATE_DECISION")
+        choice = incoming_msg.strip()
+        index = session.get('duplicate_item_index')
+        qty = session.get('duplicate_item_qty')
+
+        if choice == '1':
+            success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, index, qty)
+            response_text = message
+            add_message_to_history(session, 'assistant', response_text, 'ADD_QUANTITY_TO_CART')
+            pending_action = None
+            update_session_context(
+                session,
+                {
+                    'duplicate_item_index': None,
+                    'duplicate_item_qty': None,
+                    'pending_action': None,
+                },
+            )
+        elif choice == '2':
+            success, message, shopping_cart = update_cart_item_quantity(shopping_cart, index, qty)
+            response_text = message
+            add_message_to_history(session, 'assistant', response_text, 'UPDATE_CART_ITEM_QUANTITY')
+            pending_action = None
+            update_session_context(
+                session,
+                {
+                    'duplicate_item_index': None,
+                    'duplicate_item_qty': None,
+                    'pending_action': None,
+                },
+            )
+        else:
+            if index and 1 <= index <= len(shopping_cart):
+                existing_item = shopping_cart[index - 1]
+                existing_qty = existing_item.get('qt', 0)
+                if isinstance(existing_qty, float):
+                    existing_qty_display = f"{existing_qty:.1f}".rstrip('0').rstrip('.')
+                else:
+                    existing_qty_display = str(existing_qty)
+                product_name = get_product_name(existing_item)
+                response_text = (
+                    f"Você já possui **{product_name}** com **{existing_qty_display}** unidades. "
+                    "Deseja *1* somar ou *2* substituir pela nova quantidade?"
+                )
+            else:
+                response_text = (
+                    "Por favor, responda com *1* para somar ou *2* substituir pela nova quantidade."
+                )
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_DUPLICATE_DECISION')
 
         state['pending_action'] = pending_action
         state['shopping_cart'] = shopping_cart
