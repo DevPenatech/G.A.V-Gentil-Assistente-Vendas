@@ -41,6 +41,7 @@ AVAILABLE_TOOLS = [
     "ask_continue_or_checkout",
     "clear_cart",  # 🆕 ADICIONADO
 ]
+# Manter esta lista sincronizada com os handlers em IA/app.py::_route_tool
 
 # Cache do prompt para evitar leitura repetida do arquivo
 _prompt_cache = LimitedCache(max_size=10, ttl_seconds=300)  # 5 minutos TTL

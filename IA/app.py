@@ -1092,6 +1092,26 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     session, "assistant", response_text, "SHOW_MORE_PRODUCTS"
                 )
 
+    elif tool_name == "report_incorrect_product":
+        product_info = parameters.get("product_name") or parameters.get("product_code")
+        if not product_info and "index" in parameters:
+            try:
+                idx = int(parameters["index"]) - 1
+                if 0 <= idx < len(last_shown_products):
+                    product_info = get_product_name(last_shown_products[idx])
+            except (ValueError, IndexError):
+                pass
+
+        logging.info(f"Usuário reportou produto incorreto: {product_info}")
+        response_text = (
+            "🔎 Obrigado pelo aviso! Vamos verificar este produto.\n\n"
+            f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+        )
+        add_message_to_history(session, "assistant", response_text, "REPORT_INCORRECT_PRODUCT")
+        last_shown_products = []
+        last_bot_action = "AWAITING_MENU_SELECTION"
+        pending_action = None
+
     elif tool_name == "view_cart":
         response_text = (
             f"{format_cart_for_display(shopping_cart)}\n\n"
