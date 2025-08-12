@@ -29,18 +29,6 @@ services:
     volumes:
       - redis_data:/data
 
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - C:\Users\02.jonathan.lima\.ollama:/root/.ollama
-    healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:11434/api/tags"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-
   app:
     container_name: bot_python_app
     build: .
@@ -48,14 +36,11 @@ services:
       - "8081:8080"
     volumes:
       - ./IA:/app
-
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
-      ollama:
-        condition: service_healthy
     env_file:
       - .env
 
@@ -65,7 +50,7 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_HOST: db
       DB_PORT: 5432
-      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_HOST: ${OLLAMA_HOST}
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
       REDIS_HOST: ${REDIS_HOST}               
@@ -76,4 +61,3 @@ services:
 volumes:
   postgres_data:
   redis_data:
-  ollama:

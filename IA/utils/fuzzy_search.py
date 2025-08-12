@@ -104,38 +104,8 @@ class FuzzySearchEngine:
                     new_text = text.replace(word, main_word)
                     if new_text not in variations:
                         variations.append(new_text)
-
+        
         return variations
-
-    def detect_category(self, text: str) -> Optional[str]:
-        """Detecta a categoria do produto com base nos sinônimos conhecidos.
-
-        Args:
-            text: Texto de entrada fornecido pelo usuário.
-
-        Returns:
-            O nome da categoria quando algum sinônimo é encontrado,
-            ou ``None`` caso não seja possível determinar a categoria.
-        """
-        if not text:
-            return None
-
-        normalized_text = self.normalize_text(text)
-        words = set(normalized_text.split())
-
-        for category, synonyms in self.synonyms.items():
-            normalized_category = self.normalize_text(category)
-            # Verifica se o nome da categoria aparece no texto
-            if normalized_category in words or normalized_category in normalized_text:
-                return category
-
-            # Verifica sinônimos associados
-            for synonym in synonyms:
-                normalized_syn = self.normalize_text(synonym)
-                if normalized_syn in words or normalized_syn in normalized_text:
-                    return category
-
-        return None
 
     def calculate_similarity(self, text1: str, text2: str) -> float:
         """Calcula similaridade entre dois textos (0.0 a 1.0)."""
