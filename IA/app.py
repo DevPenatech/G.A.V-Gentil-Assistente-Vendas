@@ -3,6 +3,7 @@ from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 import logging
 import threading
+import re
 from typing import Dict, List, Tuple, Union
 from db import database
 from ai_llm import llm_interface
@@ -555,6 +556,16 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
             state['last_shown_products'] = []
             state['last_bot_action'] = 'AWAITING_MENU_SELECTION'
             return intent, response_text
+    elif intent_type == "REMOVE_CART_ITEM":
+        params = {"action": "remove"}
+        index_match = re.search(r"\b(\d+)\b", incoming_msg)
+        if index_match:
+            params["index"] = int(index_match.group(1))
+        else:
+            product_name = re.sub(r"\b(remover|tirar|excluir|deletar)\b", "", incoming_msg, flags=re.IGNORECASE).strip()
+            if product_name:
+                params["product_name"] = product_name
+        intent = {"tool_name": "update_cart_item", "parameters": params}
     elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
         intent = {"tool_name": "show_more_products", "parameters": {}}
     elif intent_type in ["GENERAL", "SEARCH_PRODUCT"]:

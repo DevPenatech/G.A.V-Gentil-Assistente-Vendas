@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union, Any
 import redis
 import re
+from utils.quantity_extractor import detect_quantity_modifiers
 
 # Configurações
 REDIS_ENABLED = os.getenv("REDIS_ENABLED", "false").lower() == "true"
@@ -349,12 +350,17 @@ def detect_user_intent_type(message: str, session_data: Dict) -> str:
     # Comandos de busca
     if any(word in message_lower for word in ['quero', 'buscar', 'procurar', 'produto']):
         return "SEARCH_PRODUCT"
-    
+
     # Saudações
     greetings = ['oi', 'olá', 'ola', 'boa', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
     if any(greeting in message_lower for greeting in greetings):
         return "GREETING"
-    
+
+    # Remover itens do carrinho
+    modifiers = detect_quantity_modifiers(message_lower)
+    if modifiers.get('action') == 'remove':
+        return "REMOVE_CART_ITEM"
+
     # Quantidades
     if re.search(r'\d+', message) and len(session_data.get("last_shown_products", [])) > 0:
         return "QUANTITY_SPECIFICATION"
