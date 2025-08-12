@@ -217,3 +217,431 @@
 2025-08-12 18:20:31,639 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
 2025-08-12 18:20:31,641 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
 2025-08-12 18:20:31,642 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '12345678910236'
+2025-08-12 20:32:10,499 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:32:10,589 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:32:10,631 [INFO] [werkzeug:97] [_log] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.20.0.4:8080
+2025-08-12 20:32:10,632 [INFO] [werkzeug:97] [_log] [33mPress CTRL+C to quit[0m
+2025-08-12 20:32:10,635 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:32:11,441 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:32:11,526 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:32:11,559 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:32:11,561 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
+2025-08-12 20:34:37,870 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:34:37] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:34:37,874 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:34:37,880 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:34:37,880 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Olá! Como posso ajudar você hoje?'
+2025-08-12 20:34:38,211 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM85303fe36a63c5091bb554d9e4ff3ad1
+2025-08-12 20:34:38,213 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'Oi'
+2025-08-12 20:34:48,355 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:34:48] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:34:48,358 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:34:48,366 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:34:48,367 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🛒 Seu carrinho está vazio.
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos...'
+2025-08-12 20:34:48,583 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM0df0392f32bc9ba4a628d5326a6e3197
+2025-08-12 20:34:48,584 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'meu carrinho'
+2025-08-12 20:34:55,471 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:34:55] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:34:55,475 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:34:55,479 [INFO] [root:436] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'quero coca cola'
+2025-08-12 20:34:55,481 [INFO] [root:187] [load_prompt_template] [llm_interface.py] Carregando prompt de: ai_llm/gav_prompt.txt
+2025-08-12 20:34:55,484 [INFO] [root:192] [load_prompt_template] [llm_interface.py] Prompt carregado e cacheado. Tamanho: 5500 caracteres
+2025-08-12 20:34:55,485 [INFO] [root:482] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 5500 caracteres
+2025-08-12 20:34:55,499 [INFO] [root:573] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-12 20:34:55,502 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-12 20:34:55,506 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f7cd03d0df0>
+2025-08-12 20:34:55,507 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-12 20:34:55,508 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-12 20:34:55,508 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-12 20:34:55,509 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-12 20:34:55,512 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-12 20:35:03,155 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 12 Aug 2025 20:35:03 GMT'), (b'Content-Length', b'420')])
+2025-08-12 20:35:03,157 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-12 20:35:03,158 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-12 20:35:03,159 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-12 20:35:03,160 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-12 20:35:03,161 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-12 20:35:03,162 [INFO] [root:592] [get_intent] [llm_interface.py] Resposta recebida do LLM em 7.66s
+2025-08-12 20:35:03,163 [WARNING] [root:598] [get_intent] [llm_interface.py] LLM demorou 7.66s (timeout: 5s)
+2025-08-12 20:35:03,164 [INFO] [root:604] [get_intent] [llm_interface.py] Resposta do LLM: Com base no contexto fornecido, podemos analisar a mensagem do cliente "quero coca cola" e determina...
+2025-08-12 20:35:03,165 [DEBUG] [root:607] [get_intent] [llm_interface.py] Conteúdo limpo: Com base no contexto fornecido, podemos analisar a mensagem do cliente "quero coca cola" e determinar a melhor resposta.
+2025-08-12 20:35:03,165 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-12 20:35:03,174 [INFO] [root:101] [_load_kb] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 3 produtos e 59 termos.
+2025-08-12 20:35:03,175 [INFO] [root:156] [find_product_in_kb] [KB] Busca exata encontrou: coca cola
+2025-08-12 20:35:03,200 [INFO] [root:352] [fuzzy_search_products] [FUZZY] Busca fuzzy no banco para: 'coca cola'
+2025-08-12 20:35:03,206 [INFO] [root:397] [fuzzy_search_products] [FUZZY] Retornando 2 produtos do banco
+2025-08-12 20:35:03,212 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:03,213 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '📦 *📦 Encontrei estes produtos relacionados a 'coca cola'::*
+
+*1.* REFRIG.COCA-COLA PET 2L
+    💰 R$ 8...'
+2025-08-12 20:35:03,480 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM17f18be763a16ebcb3f4f5df048774b9
+2025-08-12 20:35:03,482 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'quero coca cola'
+2025-08-12 20:35:10,137 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:35:10] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:35:10,142 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:10,147 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:10,148 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Quantas unidades de REFRIG.COCA-COLA LT 350ML você deseja adicionar?'
+2025-08-12 20:35:10,375 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM724df4fbf9216e8acaa00e93133e054b
+2025-08-12 20:35:10,376 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '2'
+2025-08-12 20:35:16,329 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:35:16] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:35:16,333 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:16,340 [INFO] [root:263] [update_kb] KB atualizado com novo termo relacionado 'coca cola'
+2025-08-12 20:35:16,345 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:16,346 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '✅ Perfeito! Adicionei 10 REFRIG.COCA-COLA LT 350ML ao seu carrinho.
+
+🛒 *SEU CARRINHO:*
+━━━━━━━━━━━━━...'
+2025-08-12 20:35:16,581 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM80c15068ee75e5975f972a1f94fe8902
+2025-08-12 20:35:16,582 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '10'
+2025-08-12 20:35:33,768 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:35:33] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:35:33,771 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:33,775 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:33,776 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Quantas unidades de REFRIG.COCA-COLA PET 2L você deseja adicionar?'
+2025-08-12 20:35:34,016 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMd276961a2f5b4c849d9242758ce8bd3b
+2025-08-12 20:35:34,017 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '1'
+2025-08-12 20:35:52,124 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:35:52] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:35:52,131 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:52,137 [INFO] [root:263] [update_kb] KB atualizado com novo termo relacionado 'coca cola'
+2025-08-12 20:35:52,141 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:35:52,142 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '✅ Perfeito! Adicionei 5 REFRIG.COCA-COLA PET 2L ao seu carrinho.
+
+🛒 *SEU CARRINHO:*
+━━━━━━━━━━━━━━━━...'
+2025-08-12 20:35:52,368 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMf823c75fd812ec958bff0da921b1aa60
+2025-08-12 20:35:52,369 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '5'
+2025-08-12 20:36:01,611 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:36:01] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:36:01,616 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:36:01,617 [INFO] [root:378] [detect_user_intent_type] [INTENT] Comando de limpeza detectado: 'limpar carrinho'
+2025-08-12 20:36:01,620 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:36:01,621 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🗑️ Carrinho esvaziado! 2 itens removidos.
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver o...'
+2025-08-12 20:36:01,830 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMbf19b78fa3fc999deaa769cc829560ce
+2025-08-12 20:36:01,832 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'limpar carrinho'
+2025-08-12 20:36:54,319 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:36:54] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:36:54,324 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:36:54,325 [INFO] [root:436] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'quero omo'
+2025-08-12 20:36:54,326 [INFO] [root:482] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 5500 caracteres
+2025-08-12 20:36:54,342 [INFO] [root:573] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-12 20:36:54,346 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-12 20:36:54,350 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f7cd0397ca0>
+2025-08-12 20:36:54,351 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-12 20:36:54,352 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-12 20:36:54,353 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-12 20:36:54,354 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-12 20:36:54,354 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-12 20:36:56,117 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 12 Aug 2025 20:36:56 GMT'), (b'Content-Length', b'387')])
+2025-08-12 20:36:56,118 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-12 20:36:56,119 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-12 20:36:56,120 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-12 20:36:56,121 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-12 20:36:56,122 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-12 20:36:56,123 [INFO] [root:592] [get_intent] [llm_interface.py] Resposta recebida do LLM em 1.78s
+2025-08-12 20:36:56,124 [INFO] [root:604] [get_intent] [llm_interface.py] Resposta do LLM: Analisando a mensagem do usuário "quero omo" no contexto da conversa, podemos inferir que:...
+2025-08-12 20:36:56,124 [DEBUG] [root:607] [get_intent] [llm_interface.py] Conteúdo limpo: Analisando a mensagem do usuário "quero omo" no contexto da conversa, podemos inferir que:
+2025-08-12 20:36:56,125 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-12 20:36:56,133 [INFO] [root:101] [_load_kb] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 3 produtos e 59 termos.
+2025-08-12 20:36:56,134 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'omo'
+2025-08-12 20:36:56,137 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 0 produtos com similaridade >= 0.8
+2025-08-12 20:36:56,139 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'omo'
+2025-08-12 20:36:56,140 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 1 produtos com similaridade >= 0.6
+2025-08-12 20:36:56,140 [INFO] [root:169] [find_product_in_kb] [KB] Busca fuzzy (média) encontrou 1 produtos para: omo
+2025-08-12 20:36:56,159 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:36:56,160 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '📦 *📦 Encontrei estes produtos relacionados a 'omo'::*
+
+*1.* DT.PO OMO LAVAGEM PERFEITA 1.6KG
+    💰 R...'
+2025-08-12 20:36:56,414 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM485bd02fbc7628a7457984c4ebdd513d
+2025-08-12 20:36:56,415 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'quero omo'
+2025-08-12 20:37:04,586 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:37:04] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:37:04,590 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:04,594 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:04,594 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Seu carrinho está vazio!
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos...'
+2025-08-12 20:37:04,809 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM0a6ae534ba26f9a8e4388829f335ef3f
+2025-08-12 20:37:04,810 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'finalizar'
+2025-08-12 20:37:12,232 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:37:12] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:37:12,236 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:12,249 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:12,250 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '📦 *⭐ Estes são nossos produtos mais populares::*
+
+*1.* DT.PO OMO LAVAGEM PERFEITA 1.6KG
+    💰 R$ 25,...'
+2025-08-12 20:37:12,482 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM949928acd7a05c7c42c866006c31b3b2
+2025-08-12 20:37:12,483 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '1'
+2025-08-12 20:37:20,942 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:37:20] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:37:20,946 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:20,950 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:20,950 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Quantas unidades de DT.PO OMO LAVAGEM PERFEITA 1.6KG você deseja adicionar?'
+2025-08-12 20:37:21,169 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM2fcd48807e888d76b8ed1389288f93b4
+2025-08-12 20:37:21,170 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '1'
+2025-08-12 20:37:26,419 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:37:26] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:37:26,423 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:26,429 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:26,430 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '✅ Perfeito! Adicionei 10 DT.PO OMO LAVAGEM PERFEITA 1.6KG ao seu carrinho.
+
+🛒 *SEU CARRINHO:*
+━━━━━━...'
+2025-08-12 20:37:26,647 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM831f8bb3e41e849e2d45f7ad6112a625
+2025-08-12 20:37:26,648 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '10'
+2025-08-12 20:37:34,502 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:37:34] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:37:34,506 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:34,516 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:34,517 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Quantas unidades de REFRIG.COCA-COLA PET 2L você deseja adicionar?'
+2025-08-12 20:37:34,758 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM93c0f2655180e43a258a93a9e87f07b0
+2025-08-12 20:37:34,759 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '3'
+2025-08-12 20:37:40,244 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:37:40] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:37:40,248 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:40,252 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:40,253 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '✅ Perfeito! Adicionei 1 REFRIG.COCA-COLA PET 2L ao seu carrinho.
+
+🛒 *SEU CARRINHO:*
+━━━━━━━━━━━━━━━━...'
+2025-08-12 20:37:40,465 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM33142263a8e5cf50cf43445250b0116e
+2025-08-12 20:37:40,466 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'Finalizar'
+2025-08-12 20:37:51,323 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:37:51] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:37:51,327 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:51,332 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:37:51,333 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '⭐ Para finalizar a compra, preciso do seu CNPJ.'
+2025-08-12 20:37:51,603 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM4deff998792e738ab25f4348c6723aa4
+2025-08-12 20:37:51,605 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'finalizar pedido'
+2025-08-12 20:38:00,515 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:38:00] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:38:00,519 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:38:00,528 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:38:00,530 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Não encontrei um cliente com o CNPJ 12345678910223. Mas posso registrar seu pedido mesmo assim!
+
+✅...'
+2025-08-12 20:38:00,760 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMdba2748bfd4f179fe5ac825d687edbcd
+2025-08-12 20:38:00,761 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '12345678910223'
+2025-08-12 20:38:40,933 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:38:40] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:38:40,938 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:38:40,942 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:38:40,943 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🛒 Seu carrinho está vazio.
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos...'
+2025-08-12 20:38:41,152 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM85bf9f6d3c476d03f8af2e127ffb18d4
+2025-08-12 20:38:41,154 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'meu carrinho'
+2025-08-12 20:38:51,107 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:38:51] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:38:51,112 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:38:51,113 [INFO] [root:436] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'meus pedidos'
+2025-08-12 20:38:51,114 [INFO] [root:482] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 5500 caracteres
+2025-08-12 20:38:51,129 [INFO] [root:573] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-12 20:38:51,130 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-12 20:38:51,135 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f7cd03929d0>
+2025-08-12 20:38:51,136 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-12 20:38:51,137 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-12 20:38:51,138 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-12 20:38:51,138 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-12 20:38:51,139 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-12 20:38:52,663 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 12 Aug 2025 20:38:52 GMT'), (b'Content-Length', b'331')])
+2025-08-12 20:38:52,665 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-12 20:38:52,666 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-12 20:38:52,667 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-12 20:38:52,667 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-12 20:38:52,668 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-12 20:38:52,669 [INFO] [root:592] [get_intent] [llm_interface.py] Resposta recebida do LLM em 1.54s
+2025-08-12 20:38:52,670 [INFO] [root:604] [get_intent] [llm_interface.py] Resposta do LLM: **ANÁLISE DA MENSAGEM DO USUÁRIO:**...
+2025-08-12 20:38:52,670 [DEBUG] [root:607] [get_intent] [llm_interface.py] Conteúdo limpo: **ANÁLISE DA MENSAGEM DO USUÁRIO:**
+2025-08-12 20:38:52,671 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-12 20:38:52,672 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'meus pedidos'
+2025-08-12 20:38:52,679 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 0 produtos com similaridade >= 0.8
+2025-08-12 20:38:52,680 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'meus pedidos'
+2025-08-12 20:38:52,681 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 0 produtos com similaridade >= 0.6
+2025-08-12 20:38:52,682 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'meus pedidos'
+2025-08-12 20:38:52,683 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 0 produtos com similaridade >= 0.4
+2025-08-12 20:38:52,684 [INFO] [root:205] [find_product_in_kb] [KB] Nenhum produto encontrado para: meus pedidos
+2025-08-12 20:38:52,691 [INFO] [root:352] [fuzzy_search_products] [FUZZY] Busca fuzzy no banco para: 'meus pedidos'
+2025-08-12 20:38:52,699 [INFO] [root:397] [fuzzy_search_products] [FUZZY] Retornando 0 produtos do banco
+2025-08-12 20:38:52,704 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:38:52,705 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Não encontrei produtos para 'meus pedidos'.
+
+Tente usar termos mais gerais como 'refrigerante', 's...'
+2025-08-12 20:38:52,914 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM9eabef064a4e1f46cb35914b27d2325a
+2025-08-12 20:38:52,915 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'meus pedidos'
+2025-08-12 20:39:00,899 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:39:00] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:39:00,903 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:39:00,903 [INFO] [root:436] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'sabão'
+2025-08-12 20:39:00,904 [INFO] [root:482] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 5500 caracteres
+2025-08-12 20:39:00,919 [INFO] [root:573] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-12 20:39:00,921 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-12 20:39:00,926 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f7cd03a9970>
+2025-08-12 20:39:00,927 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-12 20:39:00,928 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-12 20:39:00,929 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-12 20:39:00,930 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-12 20:39:00,930 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-12 20:39:02,439 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 12 Aug 2025 20:39:02 GMT'), (b'Content-Length', b'330')])
+2025-08-12 20:39:02,440 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-12 20:39:02,442 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-12 20:39:02,443 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-12 20:39:02,444 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-12 20:39:02,445 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-12 20:39:02,445 [INFO] [root:592] [get_intent] [llm_interface.py] Resposta recebida do LLM em 1.52s
+2025-08-12 20:39:02,446 [INFO] [root:604] [get_intent] [llm_interface.py] Resposta do LLM: **ANÁLISE DA MENSAGEM DO USUÁRIO:**...
+2025-08-12 20:39:02,447 [DEBUG] [root:607] [get_intent] [llm_interface.py] Conteúdo limpo: **ANÁLISE DA MENSAGEM DO USUÁRIO:**
+2025-08-12 20:39:02,448 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-12 20:39:02,449 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'sabão'
+2025-08-12 20:39:02,459 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 0 produtos com similaridade >= 0.8
+2025-08-12 20:39:02,460 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'sabão'
+2025-08-12 20:39:02,461 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 1 produtos com similaridade >= 0.6
+2025-08-12 20:39:02,462 [INFO] [root:169] [find_product_in_kb] [KB] Busca fuzzy (média) encontrou 1 produtos para: sabão
+2025-08-12 20:39:02,474 [INFO] [root:352] [fuzzy_search_products] [FUZZY] Busca fuzzy no banco para: 'sabão'
+2025-08-12 20:39:02,481 [INFO] [root:397] [fuzzy_search_products] [FUZZY] Retornando 0 produtos do banco
+2025-08-12 20:39:02,488 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:39:02,489 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Não encontrei produtos para 'sabão'.
+
+💡 sabao
+
+Ou tente buscar por categoria: 'refrigerantes', 'de...'
+2025-08-12 20:39:02,695 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM500a3f113b920af04cf3337debcff800
+2025-08-12 20:39:02,696 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'sabão'
+2025-08-12 20:39:08,837 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:39:08] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:39:08,841 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:39:08,842 [INFO] [root:436] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'omo'
+2025-08-12 20:39:08,843 [INFO] [root:482] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 5500 caracteres
+2025-08-12 20:39:08,857 [INFO] [root:573] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-12 20:39:08,859 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-12 20:39:08,865 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f7cd039a250>
+2025-08-12 20:39:08,866 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-12 20:39:08,867 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-12 20:39:08,867 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-12 20:39:08,868 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-12 20:39:08,868 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-12 20:39:10,436 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 12 Aug 2025 20:39:10 GMT'), (b'Content-Length', b'331')])
+2025-08-12 20:39:10,437 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-12 20:39:10,438 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-12 20:39:10,439 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-12 20:39:10,440 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-12 20:39:10,441 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-12 20:39:10,442 [INFO] [root:592] [get_intent] [llm_interface.py] Resposta recebida do LLM em 1.58s
+2025-08-12 20:39:10,443 [INFO] [root:604] [get_intent] [llm_interface.py] Resposta do LLM: **ANÁLISE DA MENSAGEM DO USUÁRIO:**...
+2025-08-12 20:39:10,444 [DEBUG] [root:607] [get_intent] [llm_interface.py] Conteúdo limpo: **ANÁLISE DA MENSAGEM DO USUÁRIO:**
+2025-08-12 20:39:10,445 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-12 20:39:10,446 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'omo'
+2025-08-12 20:39:10,447 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 0 produtos com similaridade >= 0.8
+2025-08-12 20:39:10,448 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'omo'
+2025-08-12 20:39:10,449 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 1 produtos com similaridade >= 0.6
+2025-08-12 20:39:10,450 [INFO] [root:169] [find_product_in_kb] [KB] Busca fuzzy (média) encontrou 1 produtos para: omo
+2025-08-12 20:39:10,466 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:39:10,467 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '📦 *📦 Encontrei estes produtos relacionados a 'omo'::*
+
+*1.* DT.PO OMO LAVAGEM PERFEITA 1.6KG
+    💰 R...'
+2025-08-12 20:39:10,673 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMef393898474b6eb8ed8eb03cd5cbe2e4
+2025-08-12 20:39:10,674 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'omo'
+2025-08-12 20:40:20,959 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/session_manager.py', reloading
+2025-08-12 20:40:21,030 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:40:21,909 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:40:21,991 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:40:22,035 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:40:22,036 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
+2025-08-12 20:40:30,042 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:40:30] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:40:30,049 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:30,055 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:30,056 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Quantas unidades de DT.PO OMO LAVAGEM PERFEITA 1.6KG você deseja adicionar?'
+2025-08-12 20:40:30,452 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM16e9c8cf7a8b78506ab1295fa95d1c78
+2025-08-12 20:40:30,453 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '1'
+2025-08-12 20:40:35,197 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:40:35] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:40:35,202 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:35,207 [INFO] [root:258] [update_kb] Adicionado termo 'omo' ao produto DT.PO OMO LAVAGEM PERFEITA 1.6KG
+2025-08-12 20:40:35,212 [INFO] [root:263] [update_kb] KB atualizado com novo termo relacionado 'omo'
+2025-08-12 20:40:35,219 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:35,220 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '✅ Perfeito! Adicionei 10 DT.PO OMO LAVAGEM PERFEITA 1.6KG ao seu carrinho.
+
+🛒 *SEU CARRINHO:*
+━━━━━━...'
+2025-08-12 20:40:35,447 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMea44fe18b4d279a246911c055eed8cb5
+2025-08-12 20:40:35,448 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '10'
+2025-08-12 20:40:46,278 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:40:46] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:40:46,283 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:46,286 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:46,287 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '⭐ Para finalizar a compra, preciso do seu CNPJ.'
+2025-08-12 20:40:46,521 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM8905dde86b5f35787883927e3b46da47
+2025-08-12 20:40:46,522 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'finalizar pedido'
+2025-08-12 20:40:54,841 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:40:54] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:40:54,848 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:54,858 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:40:54,861 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Não encontrei um cliente com o CNPJ 10203060504011. Mas posso registrar seu pedido mesmo assim!
+
+✅...'
+2025-08-12 20:40:55,077 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMc332a299010e1b7395acd439cb7d9b00
+2025-08-12 20:40:55,078 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '10203060504011'
+2025-08-12 20:41:43,905 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/session_manager.py', reloading
+2025-08-12 20:41:43,964 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:41:44,736 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:41:44,825 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:41:44,858 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:41:44,860 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
+2025-08-12 20:43:24,028 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:43:24] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:43:24,033 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:24,037 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:24,038 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🛒 Seu carrinho está vazio.
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos...'
+2025-08-12 20:43:24,485 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMf2daeedc3067381513930e78d228580c
+2025-08-12 20:43:24,486 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'adiciona 5 coca cola no carrinho'
+2025-08-12 20:43:33,208 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:43:33] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:43:33,214 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:33,215 [INFO] [root:436] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'quero coca cola'
+2025-08-12 20:43:33,217 [INFO] [root:187] [load_prompt_template] [llm_interface.py] Carregando prompt de: ai_llm/gav_prompt.txt
+2025-08-12 20:43:33,220 [INFO] [root:192] [load_prompt_template] [llm_interface.py] Prompt carregado e cacheado. Tamanho: 5500 caracteres
+2025-08-12 20:43:33,221 [INFO] [root:482] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 5500 caracteres
+2025-08-12 20:43:33,236 [INFO] [root:573] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-12 20:43:33,238 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-12 20:43:33,243 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f3d1e0d3df0>
+2025-08-12 20:43:33,243 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-12 20:43:33,245 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-12 20:43:33,246 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-12 20:43:33,246 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-12 20:43:33,247 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-12 20:43:34,771 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 12 Aug 2025 20:43:34 GMT'), (b'Content-Length', b'331')])
+2025-08-12 20:43:34,772 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-12 20:43:34,773 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-12 20:43:34,774 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-12 20:43:34,775 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-12 20:43:34,776 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-12 20:43:34,777 [INFO] [root:592] [get_intent] [llm_interface.py] Resposta recebida do LLM em 1.54s
+2025-08-12 20:43:34,778 [INFO] [root:604] [get_intent] [llm_interface.py] Resposta do LLM: **ANÁLISE DA MENSAGEM DO USUÁRIO:**...
+2025-08-12 20:43:34,779 [DEBUG] [root:607] [get_intent] [llm_interface.py] Conteúdo limpo: **ANÁLISE DA MENSAGEM DO USUÁRIO:**
+2025-08-12 20:43:34,780 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-12 20:43:34,787 [INFO] [root:101] [_load_kb] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 3 produtos e 60 termos.
+2025-08-12 20:43:34,788 [INFO] [root:156] [find_product_in_kb] [KB] Busca exata encontrou: coca cola
+2025-08-12 20:43:34,808 [INFO] [root:352] [fuzzy_search_products] [FUZZY] Busca fuzzy no banco para: 'coca cola'
+2025-08-12 20:43:34,815 [INFO] [root:397] [fuzzy_search_products] [FUZZY] Retornando 2 produtos do banco
+2025-08-12 20:43:34,821 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:34,822 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '📦 *📦 Encontrei estes produtos relacionados a 'coca cola'::*
+
+*1.* REFRIG.COCA-COLA PET 2L
+    💰 R$ 8...'
+2025-08-12 20:43:35,039 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMacaf550725db8cae9219429f1246bd8a
+2025-08-12 20:43:35,040 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'quero coca cola'
+2025-08-12 20:43:40,000 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:43:40] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:43:40,005 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:40,010 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:40,011 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Quantas unidades de REFRIG.COCA-COLA LT 350ML você deseja adicionar?'
+2025-08-12 20:43:40,224 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMfc4459d242cf8a8c722ed42af95b0bc1
+2025-08-12 20:43:40,225 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '2'
+2025-08-12 20:43:45,301 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:43:45] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:43:45,305 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:45,313 [INFO] [root:263] [update_kb] KB atualizado com novo termo relacionado 'coca cola'
+2025-08-12 20:43:45,318 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:45,319 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '✅ Perfeito! Adicionei 5 REFRIG.COCA-COLA LT 350ML ao seu carrinho.
+
+🛒 *SEU CARRINHO:*
+━━━━━━━━━━━━━━...'
+2025-08-12 20:43:45,548 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMb7e630e1ad561575348c3405011468ea
+2025-08-12 20:43:45,549 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '5'
+2025-08-12 20:43:53,293 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [12/Aug/2025 20:43:53] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 20:43:53,297 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:53,301 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 20:43:53,302 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Olá! Como posso ajudar você hoje?'
+2025-08-12 20:43:53,516 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM90461c4f1d69afba31179218051473c7
+2025-08-12 20:43:53,518 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'Adiciona mais 5 coca cola'

@@ -452,9 +452,7 @@ def format_quick_actions(has_cart: bool = False, has_products: bool = False) -> 
     
     if has_cart:
         actions = [
-            "*1* - 🔍 Buscar produtos",
-            "*2* - 🛒 Ver carrinho",
-            "*3* - ✅ Finalizar pedido"
+            "*1* - ✅ Para finalizar, digite [ *Finalizar pedido* ]"
         ]
     else:
         actions = [

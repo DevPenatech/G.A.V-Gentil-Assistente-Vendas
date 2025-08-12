@@ -2,7 +2,7 @@
 services:
   db:
     image: postgres:15
-    container_name: bot_postgres_db
+    container_name: bot_postgres_db_funcional
     restart: always
     env_file:
       - .env
@@ -20,7 +20,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: redis
+    container_name: redis_funcional
     ports:
       - "6379:6379"
     command: redis-server --requirepass ${REDIS_PASSWORD}
@@ -30,7 +30,7 @@ services:
       - redis_data:/data
 
   app:
-    container_name: bot_python_app
+    container_name: bot_python_app_funcional
     build: .
     ports:
       - "8081:8080"
