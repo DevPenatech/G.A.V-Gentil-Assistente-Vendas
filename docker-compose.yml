@@ -112,8 +112,8 @@ services:
 
       # Aplicação
       FLASK_ENV: ${FLASK_ENV:-production}
-      LOG_LEVEL: ${LOG_LEVEL:-INFO}
-      DEBUG: ${DEBUG:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
+      DEBUG: ${DEBUG:-true}
       
       # Python
       PYTHONUNBUFFERED: 1
