@@ -1,0 +1,132 @@
+{
+  "customer_context": null,
+  "shopping_cart": [
+    {
+      "codprod": 8130,
+      "descricao": "REFRIG.COCA-COLA LT 350ML",
+      "unidade_venda": "UN",
+      "preco_varejo": 4.2,
+      "preco_atacado": 3.9,
+      "quantidade_atacado": 12,
+      "status": "ativo",
+      "fuzzy_score": 0.491764705882353,
+      "matched_variation": "coca cola",
+      "qt": 10
+    },
+    {
+      "codprod": 13700,
+      "descricao": "REFRIG.COCA-COLA PET 2L",
+      "unidade_venda": "UN",
+      "preco_varejo": 8.5,
+      "preco_atacado": 7.99,
+      "quantidade_atacado": 6,
+      "status": "ativo",
+      "fuzzy_score": 0.505,
+      "matched_variation": "coca cola",
+      "qt": 5
+    }
+  ],
+  "conversation_history": [
+    {
+      "role": "user",
+      "message": "Quero ver meu carrinho",
+      "timestamp": "2025-08-12T17:43:17.148105",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* REFRIG.COCA-COLA LT 350ML\n   10× R$ 4,20 = *R$ 42,00*\n\n*2.* REFRIG.COCA-COLA PET 2L\n   5× R$ 8,50 = *R$ 42,50*\n\n*3.* REFRIG.COCA-COLA PET 2L\n   2× R$ 8,50 = *R$ 17,00*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 101,50*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-12T17:43:17.148173",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "user",
+      "message": "remover item 3",
+      "timestamp": "2025-08-12T17:43:32.407291",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🗑️ REFRIG.COCA-COLA PET 2L removido do carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* REFRIG.COCA-COLA LT 350ML\n   10× R$ 4,20 = *R$ 42,00*\n\n*2.* REFRIG.COCA-COLA PET 2L\n   5× R$ 8,50 = *R$ 42,50*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 84,50*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-12T17:43:32.407876",
+      "action_type": "REMOVE_FROM_CART"
+    },
+    {
+      "role": "user",
+      "message": "finalizar pedido",
+      "timestamp": "2025-08-12T17:43:56.765992",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "⭐ Para finalizar a compra, preciso do seu CNPJ.",
+      "timestamp": "2025-08-12T17:43:56.766021",
+      "action_type": "REQUEST_CNPJ"
+    },
+    {
+      "role": "user",
+      "message": "123456789101112",
+      "timestamp": "2025-08-12T17:44:09.304213",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Não encontrei produtos para '123456789101112'.\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'.",
+      "timestamp": "2025-08-12T17:44:32.185940",
+      "action_type": "NO_PRODUCTS_FOUND"
+    },
+    {
+      "role": "user",
+      "message": "limpar carrinho",
+      "timestamp": "2025-08-12T17:44:58.970677",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* REFRIG.COCA-COLA LT 350ML\n   10× R$ 4,20 = *R$ 42,00*\n\n*2.* REFRIG.COCA-COLA PET 2L\n   5× R$ 8,50 = *R$ 42,50*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 84,50*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-12T17:44:58.970717",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "user",
+      "message": "esvaziar carrinho",
+      "timestamp": "2025-08-12T17:45:07.358674",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* REFRIG.COCA-COLA LT 350ML\n   10× R$ 4,20 = *R$ 42,00*\n\n*2.* REFRIG.COCA-COLA PET 2L\n   5× R$ 8,50 = *R$ 42,50*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 84,50*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-12T17:45:07.358718",
+      "action_type": "SHOW_CART"
+    }
+  ],
+  "last_search_type": "by_name",
+  "last_search_params": {
+    "product_name": "123456789101112"
+  },
+  "current_offset": 0,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_MENU_SELECTION",
+  "pending_action": null,
+  "pending_product_selection": null,
+  "pending_quantity": null,
+  "last_kb_search_term": null,
+  "last_search_results": [],
+  "last_search_analysis": {},
+  "last_search_suggestions": [],
+  "created_at": "2025-08-12T13:06:36.759783",
+  "last_activity": "2025-08-12T17:45:07.358728",
+  "pending_product_for_cart": null,
+  "term_to_learn_after_quantity": null,
+  "session_stats": {
+    "cart_items": 2,
+    "conversation_length": 12,
+    "customer_identified": false,
+    "last_action": "AWAITING_MENU_SELECTION",
+    "has_pending_selection": false,
+    "has_pending_quantity": false,
+    "cart_total_value": 84.5
+  },
+  "conversation_summary": "edido | Cliente: Limpar carrinho | G.A.V.: 🛒 *SEU CARRINHO:* ━━━━━━━━━━━━━━━━━━━━ *1.* REFRIG.COCA-COLA LT 350ML    10× R$ 4,20 = *R$ 42,00*  *2.* REFRIG.COCA-COLA PET 2L    5× R$ 8,50 = *R$ 42,50*  *3.* REFRIG.COCA-COLA PET 2L    2× R$ 8,50 = *R$ 17,00*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 101,50*  *1* - 🔍 Buscar produtos *2* - 🛒 Ver carrinho *3* - ✅ Finalizar pedido | Cliente: produtos | G.A.V.: 🤖 Não encontrei produtos para 's'.  Tente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'. | Cliente: Meu carrinho | G.A.V.: 🛒 *SEU CARRINHO:* ━━━━━━━━━━━━━━━━━━━━ *1.* REFRIG.COCA-COLA LT 350ML    10× R$ 4,20 = *R$ 42,00*  *2.* REFRIG.COCA-COLA PET 2L    5× R$ 8,50 = *R$ 42,50*  *3.* REFRIG.COCA-COLA PET 2L    2× R$ 8,50 = *R$ 17,00*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 101,50*  *1* - 🔍 Buscar produtos *2* - 🛒 Ver carrinho *3* - ✅ Finalizar pedido | Cliente: remover coca cola | G.A.V.: 🤖 Olá! Como posso ajudar você hoje? | Cliente: Oi | G.A.V.: 🤖 Olá! Como posso ajudar você hoje?",
+  "purchase_stage": "cart"
+}

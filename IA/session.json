@@ -1,0 +1,33 @@
+{
+    "customer_context": null,
+    "shopping_cart": [
+        {
+            "codprod": 8130,
+            "descricao": "REFRIG.COCA-COLA LT 350ML",
+            "pvenda": 4.2,
+            "qt": 5
+        },
+        {
+            "codprod": 52638,
+            "descricao": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
+            "pvenda": 25.9,
+            "qt": 6
+        }
+    ],
+    "last_search_type": "by_name",
+    "last_search_params": {
+        "product_name": "arroz"
+    },
+    "current_offset": 0,
+    "last_shown_products": [
+        {
+            "codprod": 52638,
+            "descricao": "DT.PO OMO LAVAGEM PERFEITA 1.6KG",
+            "pvenda": 25.9
+        }
+    ],
+    "last_bot_action": "AWAITING_PRODUCT_SELECTION",
+    "pending_action": null,
+    "last_kb_search_term": "omo",
+    "pending_product_for_cart": null
+}

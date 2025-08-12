@@ -1,0 +1,11 @@
+{
+  "customer_context": null,
+  "shopping_cart": [],
+  "last_search_type": null,
+  "last_search_params": {},
+  "current_offset": 0,
+  "last_shown_products": [],
+  "last_bot_action": null,
+  "pending_action": null,
+  "last_kb_search_term": null
+}
