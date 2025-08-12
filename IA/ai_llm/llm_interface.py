@@ -380,45 +380,57 @@ def _is_simple_message(message: str) -> bool:
     
     return False
 
-def _parse_ai_response(content: str) -> Union[Dict, None]:
-    """Parser robusto para extrair JSON da resposta da IA"""
-    if not content:
-        return None
-    
+def _parse_ai_response(content: str) -> Dict:
+    """Parser robusto para extrair JSON da resposta da IA.
+
+    Retorna intenção de fallback e registra log quando a resposta é vazia ou malformada.
+    """
+    fallback_intent = {
+        "tool_name": "handle_chitchat",
+        "parameters": {"response_text": "Desculpe, não entendi."},
+    }
+
+    if not content or not content.strip():
+        logging.warning("[llm_interface.py] Resposta vazia do LLM; usando fallback.")
+        return fallback_intent
+
     try:
         # Primeira tentativa: JSON direto
-        return json.loads(content.strip())
+        parsed = json.loads(content.strip())
+        if isinstance(parsed, dict) and parsed.get("tool_name"):
+            return parsed
     except json.JSONDecodeError:
         pass
-    
+
     try:
         # Remove markdown e texto extra
         cleaned = re.sub(r'```json\s*', '', content)
         cleaned = re.sub(r'```\s*', '', cleaned)
         cleaned = re.sub(r'\*\*[^*]+\*\*', '', cleaned)  # Remove **texto**
         cleaned = re.sub(r'#{1,6}\s+[^\n]+', '', cleaned)  # Remove headers markdown
-        
+
         # Busca JSON no texto
         json_patterns = [
             r'\{[^}]+\}',  # JSON simples
             r'\{[^{}]*\{[^}]*\}[^{}]*\}',  # JSON aninhado
             r'\{"tool_name"[^}]+\}',  # Específico para tool_name
         ]
-        
+
         for pattern in json_patterns:
             matches = re.findall(pattern, cleaned, re.DOTALL)
             for match in matches:
                 try:
                     parsed = json.loads(match.strip())
-                    if isinstance(parsed, dict) and 'tool_name' in parsed:
+                    if isinstance(parsed, dict) and parsed.get("tool_name"):
                         return parsed
                 except json.JSONDecodeError:
                     continue
-    
+
     except Exception as e:
         logging.warning(f"[llm_interface.py] Erro no parser robusto: {e}")
-    
-    return None
+
+    logging.warning(f"[llm_interface.py] Resposta malformada do LLM. Conteúdo bruto: {content}")
+    return fallback_intent
 
 def _create_simple_fallback(message: str, context: Dict) -> Dict:
     """Fallback inteligente quando IA falha"""
