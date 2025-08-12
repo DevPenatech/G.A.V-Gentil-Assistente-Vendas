@@ -181,6 +181,14 @@ def update_cart_item_quantity(cart: List[Dict], index: int, new_qty: Union[int, 
 
     return True, message, cart
 
+def generate_continue_or_checkout_message(cart: List[Dict]) -> str:
+    """Gera uma mensagem amigável perguntando se o cliente deseja continuar ou finalizar."""
+    quick_actions = format_quick_actions(has_cart=bool(cart))
+    return (
+        "🛍️ Deseja continuar comprando ou finalizar o pedido?\n\n"
+        f"{quick_actions}"
+    )
+
 def suggest_alternatives(failed_search_term: str) -> str:
     """Gera sugestões quando uma busca falha completamente."""
     
@@ -718,10 +726,23 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 last_bot_action = 'AWAITING_MENU_SELECTION'
             else:
                 response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}."
-                add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_NOT_FOUND')
+            add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_NOT_FOUND')
         else:
             response_text = "🤖 Por favor, informe seu CNPJ."
             add_message_to_history(session, 'assistant', response_text, 'REQUEST_CNPJ')
+
+    elif tool_name == 'ask_continue_or_checkout':
+        if shopping_cart:
+            response_text = generate_continue_or_checkout_message(shopping_cart)
+            add_message_to_history(session, 'assistant', response_text, 'ASK_CONTINUE_OR_CHECKOUT')
+        else:
+            response_text = (
+                "🤖 Seu carrinho está vazio. Que tal começar adicionando um produto?\n\n"
+                f"{format_quick_actions(has_cart=False)}"
+            )
+            add_message_to_history(session, 'assistant', response_text, 'EMPTY_CART')
+        last_shown_products = []
+        last_bot_action = 'AWAITING_MENU_SELECTION'
 
     elif tool_name == 'handle_chitchat':
         response_text = (
