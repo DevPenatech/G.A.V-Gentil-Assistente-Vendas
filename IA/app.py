@@ -340,6 +340,11 @@ Qual quantidade você quer?"""
                     success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, selection, quantity)
                     response_text = message
                     add_message_to_history(session, 'assistant', response_text, 'ADD_QUANTITY_TO_CART')
+                elif cart_action == 'update':
+                    quantity = session.get('pending_cart_quantity', 1)
+                    success, message, shopping_cart = update_cart_item_quantity(shopping_cart, selection, quantity)
+                    response_text = message
+                    add_message_to_history(session, 'assistant', response_text, 'UPDATE_CART_ITEM')
                 else:
                     response_text = "🤖 Ação inválida."
                     add_message_to_history(session, 'assistant', response_text, 'ERROR')
@@ -629,6 +634,70 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
             )
             add_message_to_history(session, 'assistant', response_text, 'PRODUCT_NOT_FOUND')
+
+    elif tool_name == "update_cart_item":
+        action = parameters.get("action")
+        quantity = parameters.get("qt", 1)
+        try:
+            quantity = float(quantity)
+        except (ValueError, TypeError):
+            quantity = 1
+
+        index = parameters.get("index")
+        product_name = parameters.get("product_name")
+        matched_index = None
+
+        if index:
+            try:
+                idx = int(index)
+                if 1 <= idx <= len(shopping_cart):
+                    matched_index = idx
+            except (ValueError, TypeError):
+                pass
+        elif product_name:
+            matches = find_products_in_cart_by_name(shopping_cart, product_name)
+            if len(matches) == 1:
+                matched_index = matches[0][0] + 1
+            elif len(matches) > 1:
+                pending_action = "AWAITING_CART_ITEM_SELECTION"
+                pending_cart_action = 'remove' if action == 'remove' else ('add' if action == 'add_quantity' else 'update')
+                update_session_context(session, {
+                    'pending_cart_matches': matches,
+                    'pending_cart_action': pending_cart_action,
+                    'pending_cart_quantity': quantity,
+                    'pending_action': pending_action
+                })
+                options = "\n".join(
+                    [f"{idx+1}. {get_product_name(item)} (Qtd: {item.get('qt', 0)})" for idx, item in matches]
+                )
+                response_text = (
+                    f"🤖 Encontrei vários itens com esse nome no carrinho:\n{options}\nDigite o número do item desejado."
+                )
+                add_message_to_history(session, 'assistant', response_text, 'REQUEST_CART_ITEM_SELECTION')
+
+        if matched_index is not None:
+            if action == "remove":
+                success, response_text, shopping_cart = remove_item_from_cart(shopping_cart, matched_index)
+                add_message_to_history(session, 'assistant', response_text, 'REMOVE_FROM_CART')
+            elif action == "add_quantity":
+                success, response_text, shopping_cart = add_quantity_to_cart_item(shopping_cart, matched_index, quantity)
+                add_message_to_history(session, 'assistant', response_text, 'ADD_QUANTITY_TO_CART')
+            elif action == "update_quantity":
+                success, response_text, shopping_cart = update_cart_item_quantity(shopping_cart, matched_index, quantity)
+                add_message_to_history(session, 'assistant', response_text, 'UPDATE_CART_ITEM')
+            else:
+                response_text = "🤖 Ação inválida."
+                add_message_to_history(session, 'assistant', response_text, 'ERROR')
+            last_bot_action = 'AWAITING_MENU_SELECTION'
+            pending_action = None
+        elif pending_action != "AWAITING_CART_ITEM_SELECTION":
+            response_text = (
+                f"🤖 Não encontrei esse item no carrinho.\n\n{format_cart_for_display(shopping_cart)}\n\n"
+                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+            )
+            add_message_to_history(session, 'assistant', response_text, 'CART_ITEM_NOT_FOUND')
+            last_bot_action = 'AWAITING_MENU_SELECTION'
+            pending_action = None
 
     elif tool_name == "show_more_products":
         if not last_search_type:
