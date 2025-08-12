@@ -11,7 +11,7 @@ from utils import logger_config
 from core.session_manager import (
     load_session, save_session, clear_session,
     format_product_list_for_display, format_cart_for_display,
-    add_message_to_history, get_conversation_context
+    add_message_to_history
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
