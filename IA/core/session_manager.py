@@ -55,6 +55,7 @@ def load_session(session_id: str) -> Dict:
         "customer_context": None,
         "shopping_cart": [],
         "conversation_history": [],
+        "conversation_summary": "",
         "last_search_type": None,
         "last_search_params": {},
         "current_offset": 0,
@@ -107,6 +108,7 @@ def save_session(session_id: str, session_data: Dict):
     """Salva dados da sessão no armazenamento."""
     # Atualiza timestamp
     session_data["last_activity"] = datetime.now().isoformat()
+    _summarize_old_messages(session_data)
     
     # Salva no Redis se disponível
     if redis_client:
@@ -260,14 +262,35 @@ def format_cart_for_display(cart: List[Dict]) -> str:
 # GESTÃO DO HISTÓRICO DE CONVERSA
 # ================================================================================
 
+def _summarize_old_messages(session_data: Dict, max_history: int = 20, keep_recent: int = 10):
+    """Resumir mensagens antigas para evitar crescimento infinito do histórico."""
+    history = session_data.get("conversation_history", [])
+    if len(history) <= max_history:
+        return
+
+    # Mensagens que serão resumidas
+    old_messages = history[:-keep_recent]
+
+    summary_lines = []
+    for msg in old_messages:
+        role = "Cliente" if msg.get("role") == "user" else "G.A.V."
+        content = msg.get("message", "").replace("\n", " ")
+        summary_lines.append(f"{role}: {content}")
+
+    new_summary = " | ".join(summary_lines)
+    existing_summary = session_data.get("conversation_summary", "")
+
+    # Combina com sumário existente e limita tamanho
+    combined = (existing_summary + " | " + new_summary).strip(" |") if existing_summary else new_summary
+    session_data["conversation_summary"] = combined[-1000:]
+
+    # Mantém apenas as últimas mensagens detalhadas
+    session_data["conversation_history"] = history[-keep_recent:]
+
 def add_message_to_history(session_data: Dict, role: str, message: str, action_type: str = ""):
     """Adiciona mensagem ao histórico da conversa com contexto aprimorado."""
     if "conversation_history" not in session_data:
         session_data["conversation_history"] = []
-    
-    # Limita histórico a últimas 20 mensagens para performance
-    if len(session_data["conversation_history"]) >= 20:
-        session_data["conversation_history"] = session_data["conversation_history"][-19:]
     
     session_data["conversation_history"].append({
         "role": role,
@@ -276,21 +299,30 @@ def add_message_to_history(session_data: Dict, role: str, message: str, action_t
         "action_type": action_type
     })
 
+    # Atualiza sumário caso o histórico fique grande demais
+    _summarize_old_messages(session_data)
+
 def get_conversation_context(session_data: Dict, max_messages: int = 10) -> str:
-    """Retorna contexto resumido da conversa para o LLM."""
+    """Retorna contexto da conversa incluindo sumário e últimas mensagens."""
     history = session_data.get("conversation_history", [])
-    if not history:
+    summary = session_data.get("conversation_summary")
+
+    if not history and not summary:
         return "Primeira interação com o cliente."
-    
-    # Pega as últimas mensagens
-    recent_history = history[-max_messages:]
-    
-    context = "HISTÓRICO RECENTE:\n"
-    for msg in recent_history:
-        role = "Cliente" if msg['role'] == 'user' else "G.A.V."
-        context += f"{role}: {msg['message'][:100]}...\n"
-    
-    return context
+
+    parts = []
+    if summary:
+        parts.append(f"RESUMO:\n{summary}")
+
+    if history:
+        recent_history = history[-max_messages:]
+        context = "HISTÓRICO RECENTE:\n"
+        for msg in recent_history:
+            role = "Cliente" if msg['role'] == 'user' else "G.A.V."
+            context += f"{role}: {msg['message'][:100]}...\n"
+        parts.append(context)
+
+    return "\n\n".join(parts)
 
 # ================================================================================
 # DETECÇÃO E ANÁLISE DE INTENÇÕES
