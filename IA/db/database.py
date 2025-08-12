@@ -69,229 +69,142 @@ def find_customer_by_cnpj(cnpj: str) -> Union[Dict, None]:
 def get_top_selling_products(limit: int = 5, offset: int = 0, filial: int = 17) -> List[Dict]:
     """Busca os produtos mais vendidos com base no histórico de orçamentos."""
     sql = """
-        SELECT p.codprod, p.descricao, p.preco_varejo as pvenda 
-        FROM orcamento_itens oi 
-        JOIN produtos p ON oi.codprod = p.codprod 
-        JOIN orcamentos o ON oi.id_orcamento = o.id_orcamento 
-        WHERE o.id_loja = %(id_loja)s AND p.status = 'ativo'
-        GROUP BY p.codprod, p.descricao, p.preco_varejo 
-        ORDER BY SUM(oi.quantidade) DESC 
-        LIMIT %(limit)s OFFSET %(offset)s;
+    SELECT 
+        p.codprod,
+        p.descricao,
+        p.unidade_venda,
+        p.preco_varejo AS pvenda,
+        p.preco_atacado,
+        p.quantidade_atacado,
+        COALESCE(SUM(oi.quantidade), 0) AS total_vendido
+    FROM produtos p
+    LEFT JOIN orcamento_itens oi ON p.codprod = oi.codprod
+    LEFT JOIN orcamentos o ON oi.id_orcamento = o.id_orcamento
+    WHERE p.status = 'ativo'
+    GROUP BY p.codprod, p.descricao, p.unidade_venda, p.preco_varejo, p.preco_atacado, p.quantidade_atacado
+    ORDER BY total_vendido DESC, p.descricao ASC
+    LIMIT %(limit)s OFFSET %(offset)s;
     """
-    params = {'limit': limit, 'offset': offset, 'id_loja': filial}
-    products = []
+    params = {'limit': limit, 'offset': offset}
     try:
         with get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
-                for row in cursor.fetchall(): 
-                    converted = _convert_row_to_dict(row)
-                    if converted:
-                        products.append(converted)
+                results = cursor.fetchall()
+                return [_convert_row_to_dict(row) for row in results]
     except Exception as e:
         logging.error(f"Erro ao buscar produtos mais vendidos: {e}")
-    return products
+        return []
 
 def get_top_selling_products_by_name(product_name: str, limit: int = 5, offset: int = 0) -> List[Dict]:
-    """
-    Busca produtos por nome usando busca fuzzy inteligente.
-    
-    NOVA VERSÃO com tolerância a erros de digitação!
-    """
-    if not product_name:
+    """Busca produtos por nome com ranking de vendas."""
+    if not product_name or len(product_name.strip()) < 2:
         return []
     
-    # 🆕 ETAPA 1: Busca exata tradicional (compatibilidade)
-    search_term = f"%{product_name}%"
-    sql = """
-        SELECT p.codprod, p.descricao, p.preco_varejo as pvenda 
-        FROM produtos p 
-        WHERE p.descricao ILIKE %(search_term)s AND p.status = 'ativo' 
-        ORDER BY p.descricao 
-        LIMIT %(limit)s OFFSET %(offset)s;
-    """
-    params = {'search_term': search_term, 'limit': limit, 'offset': offset}
-    
-    products = []
-    with get_connection() as conn:
-        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(sql, params)
-            for row in cursor.fetchall():
-                products.append(_convert_row_to_dict(row))
-    
-    # Se encontrou resultados suficientes, retorna
-    if len(products) >= limit:
-        logging.info(f"[DB] Busca exata encontrou {len(products)} produtos para: {product_name}")
-        return products
-    
-    # 🆕 ETAPA 2: Busca fuzzy se não encontrou resultados suficientes
-    logging.info(f"[DB] Busca exata retornou apenas {len(products)} produtos. Tentando busca fuzzy...")
-    
-    # Busca todos os produtos ativos para análise fuzzy
-    all_products = _get_all_active_products()
-    
-    if not all_products:
-        return products  # Retorna o que encontrou na busca exata
-    
-    # Aplica busca fuzzy
-    fuzzy_results = fuzzy_search_products(
-        product_name, 
-        all_products, 
-        min_similarity=0.5,  # Similaridade mínima
-        max_results=limit * 2  # Busca mais para compensar offset
-    )
-    
-    # Remove produtos já encontrados na busca exata
-    existing_codprods = {p['codprod'] for p in products}
-    new_fuzzy_results = [
-        p for p in fuzzy_results 
-        if p.get('codprod') not in existing_codprods
-    ]
-    
-    # Combina resultados (exatos primeiro, depois fuzzy)
-    combined_results = products + new_fuzzy_results
-    
-    # Aplica offset e limit
-    start_idx = offset if len(products) == 0 else max(0, offset - len(products))
-    end_idx = start_idx + (limit - len(products))
-    
-    if len(products) < limit and new_fuzzy_results:
-        final_results = products + new_fuzzy_results[start_idx:end_idx]
-    else:
-        final_results = combined_results[offset:offset + limit]
-    
-    logging.info(f"[DB] Busca fuzzy encontrou {len(new_fuzzy_results)} produtos adicionais. Total: {len(final_results)}")
-    return final_results
-
-# 🆕 NOVA FUNÇÃO: Busca todos os produtos ativos (cache)
-_products_cache = None
-_cache_timestamp = None
-
-def _get_all_active_products() -> List[Dict]:
-    """Retorna todos os produtos ativos com cache simples."""
-    global _products_cache, _cache_timestamp
-    
-    import time
-    current_time = time.time()
-    
-    # Cache por 5 minutos
-    if (_products_cache is not None and 
-        _cache_timestamp is not None and 
-        current_time - _cache_timestamp < 300):
-        return _products_cache
+    # Preparação da string de busca para ILIKE
+    search_pattern = f"%{product_name.strip().lower()}%"
     
     sql = """
-        SELECT codprod, descricao, preco_varejo as pvenda 
-        FROM produtos 
-        WHERE status = 'ativo' 
-        ORDER BY descricao;
+    SELECT 
+        p.codprod,
+        p.descricao,
+        p.unidade_venda,
+        p.preco_varejo AS pvenda,
+        p.preco_atacado,
+        p.quantidade_atacado,
+        COALESCE(SUM(oi.quantidade), 0) AS total_vendido
+    FROM produtos p
+    LEFT JOIN orcamento_itens oi ON p.codprod = oi.codprod
+    LEFT JOIN orcamentos o ON oi.id_orcamento = o.id_orcamento
+    WHERE p.status = 'ativo' 
+        AND LOWER(p.descricao) ILIKE %(pattern)s
+    GROUP BY p.codprod, p.descricao, p.unidade_venda, p.preco_varejo, p.preco_atacado, p.quantidade_atacado
+    ORDER BY total_vendido DESC, p.descricao ASC
+    LIMIT %(limit)s OFFSET %(offset)s;
     """
+    params = {'pattern': search_pattern, 'limit': limit, 'offset': offset}
     
-    products = []
     try:
         with get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(sql)
-                for row in cursor.fetchall():
-                    products.append(_convert_row_to_dict(row))
-        
-        # Atualiza cache
-        _products_cache = products
-        _cache_timestamp = current_time
-        
-        logging.info(f"[DB] Cache atualizado com {len(products)} produtos")
-        
+                cursor.execute(sql, params)
+                results = cursor.fetchall()
+                return [_convert_row_to_dict(row) for row in results]
     except Exception as e:
-        logging.error(f"[DB] Erro ao carregar produtos para cache: {e}")
-        return _products_cache or []  # Retorna cache antigo se erro
-    
-    return products
+        logging.error(f"Erro ao buscar produtos por nome '{product_name}': {e}")
+        return []
 
-# 🆕 NOVA FUNÇÃO: Busca com sugestões de correção
 def search_products_with_suggestions(product_name: str, limit: int = 5, offset: int = 0) -> Dict:
     """
-    Busca produtos e retorna sugestões se não encontrar bons resultados.
+    🆕 NOVA FUNÇÃO: Busca produtos com sugestões inteligentes e fuzzy search.
+    
+    Returns:
+        Dict com 'products', 'suggestions', 'search_quality'
     """
-    # Busca normal
-    products = get_top_selling_products_by_name(product_name, limit, offset)
+    if not product_name or len(product_name.strip()) < 2:
+        return {"products": [], "suggestions": [], "search_quality": "invalid"}
     
-    # Analisa qualidade dos resultados
+    # Etapa 1: Busca exata no banco
+    exact_products = get_top_selling_products_by_name(product_name, limit, offset)
+    
+    if exact_products:
+        return {
+            "products": exact_products,
+            "suggestions": [],
+            "search_quality": "exact"
+        }
+    
+    # Etapa 2: Busca fuzzy no banco
+    fuzzy_products = fuzzy_search_products(product_name, limit)
+    
+    if fuzzy_products:
+        return {
+            "products": fuzzy_products,
+            "suggestions": [],
+            "search_quality": "fuzzy"
+        }
+    
+    # Etapa 3: Gera sugestões de correção
     suggestions = []
-    if not products:
-        # Nenhum resultado - sugere correções
-        normalized = fuzzy_engine.normalize_text(product_name)
-        corrected = fuzzy_engine.apply_corrections(normalized)
-        
-        if corrected != normalized:
-            suggestions.append(f"Você quis dizer: {corrected}?")
-        
-        # Tenta buscar termos similares
-        expansions = fuzzy_engine.expand_with_synonyms(product_name)
-        for expansion in expansions[:2]:
-            if expansion != product_name:
-                alt_results = get_top_selling_products_by_name(expansion, 3)
-                if alt_results:
-                    suggestions.append(f"Encontrei produtos para: {expansion}")
-                    break
+    corrected_term = fuzzy_engine.apply_corrections(product_name)
     
-    elif len(products) < limit // 2:
-        # Poucos resultados - sugere alternativas
-        suggestions.append("Poucos produtos encontrados. Tente termos mais gerais.")
+    if corrected_term != product_name.lower().strip():
+        # Testa termo corrigido
+        corrected_products = get_top_selling_products_by_name(corrected_term, 3)
+        if corrected_products:
+            suggestions.append(corrected_term)
+    
+    # Sugestões baseadas em sinônimos
+    synonyms = fuzzy_engine.expand_with_synonyms(product_name)
+    for synonym in synonyms[:2]:  # Máximo 2 sugestões
+        if synonym != product_name.lower():
+            suggestions.append(synonym)
     
     return {
-        "products": products,
-        "suggestions": suggestions,
-        "total_found": len(products),
-        "search_term": product_name
+        "products": [],
+        "suggestions": suggestions[:3],  # Máximo 3 conforme especificação
+        "search_quality": "no_results"
     }
 
-# 🆕 NOVA FUNÇÃO: Limpa cache (útil para testes)
-def clear_products_cache():
-    """Limpa o cache de produtos."""
-    global _products_cache, _cache_timestamp
-    _products_cache = None
-    _cache_timestamp = None
-    logging.info("[DB] Cache de produtos limpo")
-
-# 🆕 MELHORAR função existente get_product_details para usar fuzzy:
-def get_product_details_fuzzy(product_name: str) -> Union[Dict, None]:
-    """
-    Busca detalhes de produto usando busca fuzzy.
-    Retorna o produto mais similar.
-    """
-    if not product_name:
-        return None
-    
-    # Tenta busca exata primeiro
-    original_result = get_product_details(product_name)
-    if original_result:
-        return original_result
-    
-    # Busca fuzzy
-    all_products = _get_all_active_products()
-    if not all_products:
-        return None
-    
-    fuzzy_results = fuzzy_search_products(
-        product_name, 
-        all_products, 
-        min_similarity=0.6,
-        max_results=1
-    )
-    
-    if fuzzy_results:
-        logging.info(f"[DB] Busca fuzzy encontrou produto para '{product_name}': {fuzzy_results[0]['descricao']}")
-        return fuzzy_results[0]
-    
-    return None
-
 def get_product_by_codprod(codprod: int) -> Union[Dict, None]:
-    """Busca um produto específico pelo código do produto."""
-    if not codprod:
+    """Busca um produto específico pelo código."""
+    if not codprod or codprod <= 0:
         return None
-        
-    sql = "SELECT codprod, descricao, preco_varejo as pvenda FROM produtos WHERE codprod = %(codprod)s AND status = 'ativo';"
+    
+    sql = """
+    SELECT 
+        codprod,
+        descricao,
+        unidade_venda,
+        preco_varejo AS pvenda,
+        preco_atacado,
+        quantidade_atacado,
+        status
+    FROM produtos 
+    WHERE codprod = %(codprod)s AND status = 'ativo';
+    """
     params = {'codprod': codprod}
+    
     try:
         with get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
@@ -302,135 +215,79 @@ def get_product_by_codprod(codprod: int) -> Union[Dict, None]:
         logging.error(f"Erro ao buscar produto por código {codprod}: {e}")
         return None
 
-def get_product_details(product_name: str) -> Union[Dict, None]:
-    """Busca o produto mais similar ao nome fornecido."""
-    if not product_name:
-        return None
-        
-    search_term = f"%{product_name}%"
-    sql = """
-        SELECT codprod, descricao, preco_varejo as pvenda 
-        FROM produtos 
-        WHERE descricao ILIKE %(search_term)s AND status = 'ativo' 
-        ORDER BY LENGTH(descricao) ASC 
-        LIMIT 1;
+def get_product_details_fuzzy(search_term: str) -> List[Dict]:
     """
-    params = {'search_term': search_term}
-    try:
-        with get_connection() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(sql, params)
-                result = cursor.fetchone()
-                return _convert_row_to_dict(result) if result else None
-    except Exception as e:
-        logging.error(f"Erro ao buscar detalhes do produto '{product_name}': {e}")
-        return None
-
-def get_last_order_items(cnpj: str) -> List[Dict]:
-    """Busca os itens do último pedido finalizado de um cliente."""
-    if not cnpj:
-        return []
-        
-    sql = """
-        SELECT p.codprod, p.descricao, oi.quantidade AS qt, oi.preco_unitario_gravado AS pvenda 
-        FROM orcamento_itens oi 
-        JOIN produtos p ON oi.codprod = p.codprod 
-        WHERE oi.id_orcamento = (
-            SELECT id_orcamento 
-            FROM orcamentos 
-            WHERE cnpj_cliente = %(cnpj)s AND status = 'finalizado' 
-            ORDER BY finalizado_em DESC 
-            LIMIT 1
-        );
+    🆕 NOVA FUNÇÃO: Busca produtos com detalhes usando fuzzy search avançado.
     """
-    params = {'cnpj': cnpj}
-    items = []
-    try:
-        with get_connection() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(sql, params)
-                for row in cursor.fetchall(): 
-                    converted = _convert_row_to_dict(row)
-                    if converted:
-                        items.append(converted)
-    except Exception as e:
-        logging.error(f"Erro ao buscar último pedido do cliente {cnpj}: {e}")
-    return items
-
-def search_products_by_category_terms(terms: List[str], limit: int = 5, offset: int = 0) -> List[Dict]:
-    """
-    Busca produtos cuja descrição contenha QUALQUER um dos termos fornecidos.
-    """
-    if not terms:
+    if not search_term or len(search_term.strip()) < 2:
         return []
     
-    where_clauses = " OR ".join([f"p.descricao ILIKE %(term_{i})s" for i in range(len(terms))])
+    # Primeiro tenta busca exata
+    exact_results = get_top_selling_products_by_name(search_term, 5)
+    if exact_results:
+        return exact_results
     
-    sql = f"""
-        SELECT p.codprod, p.descricao, p.preco_varejo as pvenda
-        FROM produtos p
-        WHERE ({where_clauses}) AND p.status = 'ativo'
-        ORDER BY p.descricao
-        LIMIT %(limit)s OFFSET %(offset)s;
+    # Usa fuzzy search como fallback
+    return fuzzy_search_products(search_term, 5)
+
+def get_all_active_products() -> List[Dict]:
+    """Retorna todos os produtos ativos para geração da base de conhecimento."""
+    sql = """
+    SELECT 
+        codprod,
+        descricao,
+        unidade_venda,
+        preco_varejo,
+        preco_atacado,
+        quantidade_atacado,
+        status
+    FROM produtos 
+    WHERE status = 'ativo'
+    ORDER BY descricao ASC;
     """
     
-    params = {'limit': limit, 'offset': offset}
-    for i, term in enumerate(terms):
-        params[f'term_{i}'] = f'%{term}%'
-        
-    logging.info(f"Executando SQL de Categoria com Parâmetros: {params}")
-    products = []
-    try:
-        with get_connection() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(sql, params)
-                for row in cursor.fetchall():
-                    converted = _convert_row_to_dict(row)
-                    if converted:
-                        products.append(converted)
-    except Exception as e:
-        logging.error(f"Erro ao buscar produtos por categoria {terms}: {e}")
-    return products
-
-def get_all_products() -> List[Dict]:
-    """Busca todos os produtos ativos para geração da base de conhecimento."""
-    sql = "SELECT codprod, descricao FROM produtos WHERE status = 'ativo' ORDER BY codprod;"
-    products = []
     try:
         with get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql)
-                for row in cursor.fetchall():
-                    converted = _convert_row_to_dict(row)
-                    if converted:
-                        products.append(converted)
+                results = cursor.fetchall()
+                return [_convert_row_to_dict(row) for row in results]
     except Exception as e:
-        logging.error(f"Erro ao buscar todos os produtos: {e}")
-    return products
+        logging.error(f"Erro ao buscar todos os produtos ativos: {e}")
+        return []
 
-# --- Funções de Estatísticas ---
+# --- Funções de Estatísticas e Análise ---
 
-def log_search_event(termo_busca: str, fonte_resultado: str, codprod_sugerido: int) -> int:
-    """Registra um evento de busca para análise posterior."""
-    sql = """
-        INSERT INTO estatisticas_busca (termo_busca, fonte_resultado, codprod_sugerido, feedback_usuario) 
-        VALUES (%(termo)s, %(fonte)s, %(codprod)s, 'sem_feedback') 
-        RETURNING id_estatistica;
+def add_search_statistic(search_term: str, result_source: str, suggested_codprod: int = None, feedback: str = "sem_feedback"):
     """
-    params = {'termo': termo_busca, 'fonte': fonte_resultado, 'codprod': codprod_sugerido}
+    🆕 FUNÇÃO APRIMORADA: Adiciona estatística de busca com mais detalhes.
+    """
+    if not search_term:
+        return
+        
+    sql = """
+    INSERT INTO estatisticas_busca 
+    (termo_busca, fonte_resultado, codprod_sugerido, feedback_usuario, timestamp) 
+    VALUES (%(term)s, %(source)s, %(codprod)s, %(feedback)s, NOW());
+    """
+    params = {
+        'term': search_term[:255],  # Limita tamanho
+        'source': result_source,
+        'codprod': suggested_codprod,
+        'feedback': feedback
+    }
+    
     try:
         with get_connection() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(sql, params)
-                new_id = cursor.fetchone()[0]
                 conn.commit()
-                return new_id
+                logging.debug(f"Estatística de busca adicionada: {search_term} -> {result_source}")
     except Exception as e:
-        logging.error(f"Falha ao registrar evento de busca: {e}")
-        return None
+        logging.error(f"Erro ao adicionar estatística de busca: {e}")
 
 def update_search_feedback(id_estatistica: int, feedback: str):
-    """Atualiza o feedback de um evento de busca."""
+    """Atualiza feedback de uma busca específica."""
     if not id_estatistica: 
         return
         
@@ -443,6 +300,236 @@ def update_search_feedback(id_estatistica: int, feedback: str):
                 conn.commit()
     except Exception as e:
         logging.error(f"Falha ao atualizar feedback de busca: {e}")
+
+def get_search_statistics(days: int = 7) -> List[Dict]:
+    """
+    🆕 NOVA FUNÇÃO: Retorna estatísticas de busca dos últimos N dias.
+    """
+    sql = """
+    SELECT 
+        termo_busca,
+        fonte_resultado,
+        COUNT(*) as total_buscas,
+        COUNT(CASE WHEN feedback_usuario = 'acerto' THEN 1 END) as acertos,
+        COUNT(CASE WHEN feedback_usuario = 'recusa' THEN 1 END) as recusas,
+        MAX(timestamp) as ultima_busca
+    FROM estatisticas_busca 
+    WHERE timestamp >= NOW() - INTERVAL %(days)s DAY
+    GROUP BY termo_busca, fonte_resultado
+    ORDER BY total_buscas DESC, ultima_busca DESC
+    LIMIT 50;
+    """
+    params = {'days': days}
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(sql, params)
+                results = cursor.fetchall()
+                return [_convert_row_to_dict(row) for row in results]
+    except Exception as e:
+        logging.error(f"Erro ao buscar estatísticas: {e}")
+        return []
+
+# --- Funções de Orçamento/Carrinho ---
+
+def create_orcamento(cnpj_cliente: str, id_loja: int = 1) -> Union[int, None]:
+    """Cria um novo orçamento e retorna o ID."""
+    sql = """
+    INSERT INTO orcamentos (cnpj_cliente, id_loja, status, criado_em) 
+    VALUES (%(cnpj)s, %(loja)s, 'aberto', NOW())
+    RETURNING id_orcamento;
+    """
+    params = {'cnpj': cnpj_cliente, 'loja': id_loja}
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, params)
+                result = cursor.fetchone()
+                conn.commit()
+                return result[0] if result else None
+    except Exception as e:
+        logging.error(f"Erro ao criar orçamento: {e}")
+        return None
+
+def add_item_to_orcamento(id_orcamento: int, codprod: int, quantidade: float, tipo_preco: str = 'varejo'):
+    """Adiciona item ao orçamento."""
+    # Busca preço atual do produto
+    product = get_product_by_codprod(codprod)
+    if not product:
+        return False
+    
+    preco_unitario = product.get('preco_atacado' if tipo_preco == 'atacado' else 'pvenda', 0.0)
+    
+    sql = """
+    INSERT INTO orcamento_itens 
+    (id_orcamento, codprod, quantidade, tipo_preco_aplicado, preco_unitario_gravado) 
+    VALUES (%(orcamento)s, %(codprod)s, %(qt)s, %(tipo)s, %(preco)s);
+    """
+    params = {
+        'orcamento': id_orcamento,
+        'codprod': codprod,
+        'qt': quantidade,
+        'tipo': tipo_preco,
+        'preco': preco_unitario
+    }
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, params)
+                conn.commit()
+                return True
+    except Exception as e:
+        logging.error(f"Erro ao adicionar item ao orçamento: {e}")
+        return False
+
+def finalize_orcamento(id_orcamento: int) -> bool:
+    """Finaliza um orçamento calculando o valor total."""
+    # Calcula valor total
+    sql_total = """
+    SELECT SUM(quantidade * preco_unitario_gravado) as total
+    FROM orcamento_itens 
+    WHERE id_orcamento = %(id)s;
+    """
+    
+    # Atualiza orçamento
+    sql_update = """
+    UPDATE orcamentos 
+    SET valor_total = %(total)s, status = 'finalizado', finalizado_em = NOW()
+    WHERE id_orcamento = %(id)s;
+    """
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                # Calcula total
+                cursor.execute(sql_total, {'id': id_orcamento})
+                result = cursor.fetchone()
+                total = result[0] if result and result[0] else 0.0
+                
+                # Atualiza orçamento
+                cursor.execute(sql_update, {'id': id_orcamento, 'total': total})
+                conn.commit()
+                
+                logging.info(f"Orçamento {id_orcamento} finalizado com total: R$ {total:.2f}")
+                return True
+                
+    except Exception as e:
+        logging.error(f"Erro ao finalizar orçamento {id_orcamento}: {e}")
+        return False
+
+# --- Funções de Análise e Relatórios ---
+
+def get_popular_search_terms(limit: int = 10) -> List[Dict]:
+    """
+    🆕 NOVA FUNÇÃO: Retorna termos de busca mais populares.
+    """
+    sql = """
+    SELECT 
+        termo_busca,
+        COUNT(*) as total_buscas,
+        COUNT(CASE WHEN feedback_usuario = 'acerto' THEN 1 END) as taxa_acerto,
+        MAX(timestamp) as ultima_busca
+    FROM estatisticas_busca 
+    WHERE timestamp >= NOW() - INTERVAL 30 DAY
+    GROUP BY termo_busca
+    HAVING COUNT(*) >= 2
+    ORDER BY total_buscas DESC, taxa_acerto DESC
+    LIMIT %(limit)s;
+    """
+    params = {'limit': limit}
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(sql, params)
+                results = cursor.fetchall()
+                return [_convert_row_to_dict(row) for row in results]
+    except Exception as e:
+        logging.error(f"Erro ao buscar termos populares: {e}")
+        return []
+
+def get_product_performance_stats(days: int = 30) -> List[Dict]:
+    """
+    🆕 NOVA FUNÇÃO: Retorna estatísticas de performance dos produtos.
+    """
+    sql = """
+    SELECT 
+        p.codprod,
+        p.descricao,
+        COUNT(DISTINCT e.id_estatistica) as buscas_recentes,
+        COUNT(DISTINCT o.id_orcamento) as vendas_recentes,
+        AVG(oi.quantidade) as quantidade_media_vendida,
+        SUM(oi.quantidade * oi.preco_unitario_gravado) as receita_recente
+    FROM produtos p
+    LEFT JOIN estatisticas_busca e ON p.codprod = e.codprod_sugerido 
+        AND e.timestamp >= NOW() - INTERVAL %(days)s DAY
+    LEFT JOIN orcamento_itens oi ON p.codprod = oi.codprod
+    LEFT JOIN orcamentos o ON oi.id_orcamento = o.id_orcamento 
+        AND o.criado_em >= NOW() - INTERVAL %(days)s DAY
+    WHERE p.status = 'ativo'
+    GROUP BY p.codprod, p.descricao
+    HAVING COUNT(DISTINCT e.id_estatistica) > 0 OR COUNT(DISTINCT o.id_orcamento) > 0
+    ORDER BY receita_recente DESC, buscas_recentes DESC
+    LIMIT 20;
+    """
+    params = {'days': days}
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(sql, params)
+                results = cursor.fetchall()
+                return [_convert_row_to_dict(row) for row in results]
+    except Exception as e:
+        logging.error(f"Erro ao buscar estatísticas de performance: {e}")
+        return []
+
+# --- Funções de Manutenção ---
+
+def cleanup_old_statistics(days: int = 90):
+    """
+    🆕 NOVA FUNÇÃO: Remove estatísticas antigas para manter performance.
+    """
+    sql = "DELETE FROM estatisticas_busca WHERE timestamp < NOW() - INTERVAL %(days)s DAY;"
+    params = {'days': days}
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, params)
+                deleted_count = cursor.rowcount
+                conn.commit()
+                logging.info(f"Removidas {deleted_count} estatísticas antigas (>{days} dias)")
+                return deleted_count
+    except Exception as e:
+        logging.error(f"Erro ao limpar estatísticas antigas: {e}")
+        return 0
+
+def optimize_database():
+    """
+    🆕 NOVA FUNÇÃO: Executa otimizações básicas no banco.
+    """
+    optimization_queries = [
+        "VACUUM ANALYZE produtos;",
+        "VACUUM ANALYZE estatisticas_busca;",
+        "VACUUM ANALYZE orcamentos;",
+        "VACUUM ANALYZE orcamento_itens;",
+    ]
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                for query in optimization_queries:
+                    cursor.execute(query)
+                conn.commit()
+                logging.info("Otimização do banco de dados concluída")
+                return True
+    except Exception as e:
+        logging.error(f"Erro na otimização do banco: {e}")
+        return False
 
 # --- Funções de Teste e Diagnóstico ---
 
@@ -471,3 +558,81 @@ def get_products_count() -> int:
     except Exception as e:
         logging.error(f"Erro ao contar produtos: {e}")
         return 0
+
+def get_database_health() -> Dict:
+    """
+    🆕 NOVA FUNÇÃO: Retorna informações de saúde do banco de dados.
+    """
+    health_info = {
+        "connection_ok": False,
+        "total_products": 0,
+        "recent_searches": 0,
+        "recent_orders": 0,
+        "database_size": "N/A"
+    }
+    
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                health_info["connection_ok"] = True
+                
+                # Total de produtos ativos
+                cursor.execute("SELECT COUNT(*) FROM produtos WHERE status = 'ativo';")
+                health_info["total_products"] = cursor.fetchone()[0]
+                
+                # Buscas recentes (último dia)
+                cursor.execute("""
+                    SELECT COUNT(*) FROM estatisticas_busca 
+                    WHERE timestamp >= NOW() - INTERVAL 1 DAY;
+                """)
+                health_info["recent_searches"] = cursor.fetchone()[0]
+                
+                # Orçamentos recentes (último dia)
+                cursor.execute("""
+                    SELECT COUNT(*) FROM orcamentos 
+                    WHERE criado_em >= NOW() - INTERVAL 1 DAY;
+                """)
+                health_info["recent_orders"] = cursor.fetchone()[0]
+                
+                # Tamanho do banco de dados
+                cursor.execute("""
+                    SELECT pg_size_pretty(pg_database_size(current_database()));
+                """)
+                health_info["database_size"] = cursor.fetchone()[0]
+                
+    except Exception as e:
+        logging.error(f"Erro ao verificar saúde do banco: {e}")
+        health_info["connection_ok"] = False
+    
+    return health_info
+
+def run_database_diagnostics() -> Dict:
+    """
+    🆕 NOVA FUNÇÃO: Executa diagnósticos completos do banco.
+    """
+    diagnostics = {
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "health": get_database_health(),
+        "popular_terms": get_popular_search_terms(5),
+        "top_products": get_product_performance_stats(7),
+        "search_quality": {}
+    }
+    
+    # Analisa qualidade das buscas
+    try:
+        stats = get_search_statistics(7)
+        total_searches = sum(stat.get('total_buscas', 0) for stat in stats)
+        total_hits = sum(stat.get('acertos', 0) for stat in stats)
+        
+        diagnostics["search_quality"] = {
+            "total_searches_week": total_searches,
+            "success_rate": (total_hits / total_searches * 100) if total_searches > 0 else 0,
+            "knowledge_base_usage": len([s for s in stats if s.get('fonte_resultado') == 'knowledge_base']),
+            "database_fallback_usage": len([s for s in stats if s.get('fonte_resultado') == 'db_fallback'])
+        }
+        
+    except Exception as e:
+        logging.error(f"Erro na análise de qualidade de buscas: {e}")
+        diagnostics["search_quality"] = {"error": str(e)}
+    
+    return diagnostics

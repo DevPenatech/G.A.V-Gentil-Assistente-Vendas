@@ -1,4 +1,4 @@
-# file: session_manager.py
+# file: IA/core/session_manager.py
 import json
 import logging
 import os
@@ -35,11 +35,12 @@ def get_redis_client() -> Optional[redis.Redis]:
     """Retorna o cliente Redis global se a conexão estiver ativa."""
     global redis_client
     try:
-        redis_client.ping()
-        return redis_client
+        if redis_client:
+            redis_client.ping()
+            return redis_client
     except Exception as e:
         logging.error(f"[SESSION] Falha ao conectar-se ao Redis: {e}")
-        return None
+    return None
 
 
 def save_session(session_id: str, data: Dict):
@@ -164,48 +165,53 @@ def clear_old_sessions():
             logging.warning(f"Erro ao limpar sessões Redis: {e}")
     
     # Limpa arquivos antigos
-    sessions_dir = "sessions"
+    sessions_dir = "data"
     if os.path.exists(sessions_dir):
         cutoff_date = datetime.now() - timedelta(days=7)
         
         for filename in os.listdir(sessions_dir):
-            filepath = os.path.join(sessions_dir, filename)
-            
-            try:
-                # Verifica data de modificação
-                file_time = datetime.fromtimestamp(os.path.getmtime(filepath))
-                if file_time < cutoff_date:
-                    os.remove(filepath)
-                    logging.info(f"Sessão antiga removida: {filename}")
-            except Exception as e:
-                logging.warning(f"Erro ao processar {filename}: {e}")    
+            if filename.startswith("session_"):
+                filepath = os.path.join(sessions_dir, filename)
+                
+                try:
+                    # Verifica data de modificação
+                    file_time = datetime.fromtimestamp(os.path.getmtime(filepath))
+                    if file_time < cutoff_date:
+                        os.remove(filepath)
+                        logging.info(f"Sessão antiga removida: {filename}")
+                except Exception as e:
+                    logging.warning(f"Erro ao processar {filename}: {e}")    
     
 def format_product_list_for_display(products: List[Dict], title: str, has_more: bool, offset: int = 0) -> str:
+    """Formata lista de produtos para exibição com estilo direto e objetivo."""
     if not products:
-        return f"🤖 {title}\nNenhum produto encontrado com esse critério."
+        return f"{title}\nNão achei esse item. Posso sugerir similares?"
     
-    response = f"🤖 {title}\n"
-    for i, p in enumerate(products, 1 + offset):
-        price = p.get('pvenda') or 0.0
+    # Limita a 3 produtos conforme especificação
+    limited_products = products[:3]
+    
+    response = f"{title}:\n"
+    for i, p in enumerate(limited_products, 1):
+        price = p.get('pvenda') or p.get('preco_varejo', 0.0)
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         
-        # 🆕 CORREÇÃO: Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
+        # Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
         product_name = p.get('descricao') or p.get('canonical_name', 'Produto sem nome')
         
-        response += f"{i}. {product_name} - {price_str}\n"
+        response += f"{i}. {product_name} — {price_str}\n"
     
-    response += "Me diga o nome ou o número do item que deseja adicionar.\n"
+    response += "Qual você quer? Responda 1, 2 ou 3."
     if has_more:
-        response += "Ou digite 'mais' para ver outros resultados!"
+        response += "\nOu digite 'mais' para ver outros resultados!"
     return response
 
 def format_cart_for_display(cart: List[Dict]) -> str:
-    """Formata o carrinho para exibição."""
+    """Formata o carrinho para exibição com estilo direto."""
     if not cart:
-        return "🛒 Seu carrinho está vazio."
+        return "Seu carrinho está vazio."
     
-    response = "🛒 **SEU CARRINHO:**\n"
-    response += "-" * 30 + "\n"
+    response = "**SEU CARRINHO:**\n"
+    response += "-" * 25 + "\n"
     total = 0.0
     
     for i, item in enumerate(cart, 1):
@@ -217,161 +223,154 @@ def format_cart_for_display(cart: List[Dict]) -> str:
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         
-        product_name = item.get('descricao') or item.get('canonical_name', 'Produto')
+        # Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
+        product_name = item.get('descricao') or item.get('canonical_name', 'Produto sem nome')
+        
+        # Formata quantidade para exibição
+        if isinstance(qt, float):
+            qty_display = f"{qt:.1f}".rstrip('0').rstrip('.')
+        else:
+            qty_display = str(qt)
         
         response += f"{i}. {product_name}\n"
-        response += f"   Qtd: {qt} x {price_str} = {subtotal_str}\n"
+        response += f"   {qty_display}× {price_str} = {subtotal_str}\n"
     
-    response += "-" * 30 + "\n"
+    response += "-" * 25 + "\n"
     total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    response += f"💰 **TOTAL: {total_str}**"
+    response += f"**Total: {total_str}**"
     
     return response
 
-
-def add_item_to_cart(cart: List[Dict], item: Dict, qt: float) -> None:
-    """Adiciona um item ao carrinho ou incrementa a quantidade se ele já existir."""
-    if qt <= 0:
-        return
-
-    for existing in cart:
-        if (
-            (item.get("codprod") and existing.get("codprod") == item.get("codprod"))
-            or (item.get("canonical_name") and existing.get("canonical_name") == item.get("canonical_name"))
-        ):
-            existing["qt"] = existing.get("qt", 0) + qt
-            return
-
-    cart.append({**item, "qt": qt})
-
-
-def remove_item_from_cart(cart: List[Dict], index: int) -> bool:
-    """Remove um item do carrinho pelo índice (baseado em 0)."""
-    if 0 <= index < len(cart):
-        cart.pop(index)
-        return True
-    return False
-
-
-def update_item_quantity(cart: List[Dict], index: int, qt: float) -> bool:
-    """Atualiza a quantidade de um item específico do carrinho."""
-    if 0 <= index < len(cart) and qt > 0:
-        cart[index]["qt"] = qt
-        return True
-    return False
-
-
-def add_quantity_to_item(cart: List[Dict], index: int, qt: float) -> bool:
-    """Adiciona quantidade extra a um item existente no carrinho."""
-    if 0 <= index < len(cart) and qt > 0:
-        cart[index]["qt"] = cart[index].get("qt", 0) + qt
-        return True
-    return False
-
-def add_message_to_history(session_data: Dict, role: str, message: str, action_type: str = None):
-    """
-    Adiciona uma mensagem ao histórico da conversa.
+def add_message_to_history(session_data: Dict, role: str, message: str, action_type: str = ""):
+    """Adiciona mensagem ao histórico da conversa com contexto aprimorado."""
+    if "conversation_history" not in session_data:
+        session_data["conversation_history"] = []
     
-    Args:
-        session_data: Dados da sessão
-        role: 'user' ou 'assistant'
-        message: Conteúdo da mensagem
-        action_type: Tipo de ação realizada (opcional)
-    """
-    if 'conversation_history' not in session_data:
-        session_data['conversation_history'] = []
+    # Limita histórico a últimas 20 mensagens para performance
+    if len(session_data["conversation_history"]) >= 20:
+        session_data["conversation_history"] = session_data["conversation_history"][-19:]
     
-    # Limita o histórico a 20 mensagens (10 pares) para não sobrecarregar a IA
-    if len(session_data['conversation_history']) >= 20:
-        session_data['conversation_history'] = session_data['conversation_history'][-18:]
-    
-    message_entry = {
-        'role': role,
-        'message': message,
-        'timestamp': datetime.now().isoformat(),
-    }
-    
-    if action_type:
-        message_entry['action_type'] = action_type
-        
-    session_data['conversation_history'].append(message_entry)
+    session_data["conversation_history"].append({
+        "role": role,
+        "message": message[:500],  # Limita tamanho da mensagem
+        "timestamp": datetime.now().isoformat(),
+        "action_type": action_type
+    })
 
 def get_conversation_context(session_data: Dict, max_messages: int = 10) -> str:
-    """
-    Formata o histórico da conversa para enviar à IA.
-    
-    Args:
-        session_data: Dados da sessão
-        max_messages: Máximo de mensagens a incluir
-        
-    Returns:
-        String formatada com o contexto da conversa
-    """
-    history = session_data.get('conversation_history', [])
-    
+    """Retorna contexto resumido da conversa para o LLM."""
+    history = session_data.get("conversation_history", [])
     if not history:
-        return "Esta é a primeira interação com o cliente."
+        return "Primeira interação com o cliente."
     
-    # Pega as últimas N mensagens
-    recent_history = history[-max_messages:] if len(history) > max_messages else history
+    # Pega as últimas mensagens
+    recent_history = history[-max_messages:]
     
-    context_lines = ["**HISTÓRICO DA CONVERSA (mensagens recentes):**"]
+    context = "HISTÓRICO RECENTE:\n"
+    for msg in recent_history:
+        role = "Cliente" if msg['role'] == 'user' else "G.A.V."
+        context += f"{role}: {msg['message'][:100]}...\n"
     
-    for entry in recent_history:
-        role_icon = "👤" if entry['role'] == 'user' else "🤖"
-        message = entry['message']
-        
-        # Trunca mensagens muito longas
-        if len(message) > 200:
-            message = message[:200] + "..."
-            
-        context_lines.append(f"{role_icon} {entry['role'].upper()}: {message}")
-        
-        # Adiciona informação sobre ação realizada, se houver
-        if entry.get('action_type'):
-            context_lines.append(f"   ↳ Ação: {entry['action_type']}")
-    
-    context_lines.append("**FIM DO HISTÓRICO**")
-    context_lines.append("")
-    
-    return "\n".join(context_lines)
+    return context
 
-def get_session_context_summary(session_data: Dict) -> str:
-    """
-    Cria um resumo do estado atual da sessão para a IA.
-    """
-    lines = []
+def get_session_stats(session_data: Dict) -> Dict:
+    """Retorna estatísticas da sessão atual."""
+    stats = {
+        "cart_items": len(session_data.get("shopping_cart", [])),
+        "conversation_length": len(session_data.get("conversation_history", [])),
+        "customer_identified": bool(session_data.get("customer_context")),
+        "last_action": session_data.get("last_bot_action", "NONE"),
+        "has_pending_selection": bool(session_data.get("last_shown_products"))
+    }
     
-    # Informações do carrinho
-    cart = session_data.get('shopping_cart', [])
-    if cart:
-        lines.append(f"🛒 CARRINHO: {len(cart)} itens")
-        for i, item in enumerate(cart[:3], 1):  # Mostra apenas os 3 primeiros
-            product_name = item.get('descricao', item.get('canonical_name', 'Produto'))
-            qt = item.get('qt', 0)
-            lines.append(f"   {i}. {product_name} (Qtd: {qt})")
-        if len(cart) > 3:
-            lines.append(f"   ... e mais {len(cart) - 3} itens")
+    # Calcula valor total do carrinho
+    cart = session_data.get("shopping_cart", [])
+    total_value = 0.0
+    for item in cart:
+        price = item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
+        qt = item.get('qt', 0)
+        total_value += price * qt
+    
+    stats["cart_total_value"] = total_value
+    
+    return stats
+
+def format_quick_actions(has_cart: bool = False, has_products: bool = False) -> str:
+    """Gera menu de ações rápidas baseado no contexto atual."""
+    actions = []
+    
+    if has_products:
+        actions.extend(["1 Selecionar", "2 Ver mais"])
+    
+    if has_cart:
+        actions.extend(["Ver carrinho", "Finalizar"])
     else:
-        lines.append("🛒 CARRINHO: vazio")
+        actions.append("Ver produtos")
     
-    # Última busca realizada
-    last_search = session_data.get('last_search_params', {})
-    if last_search:
-        search_term = last_search.get('product_name', '')
-        if search_term:
-            lines.append(f"🔍 ÚLTIMA BUSCA: '{search_term}'")
+    if not actions:
+        actions = ["Ver produtos", "Buscar item"]
     
-    # Cliente identificado
-    customer = session_data.get('customer_context')
-    if customer:
-        lines.append(f"👤 CLIENTE: {customer.get('nome', 'Identificado')}")
-    else:
-        lines.append("👤 CLIENTE: não identificado")
+    # Limita a 3 opções conforme especificação
+    limited_actions = actions[:3]
     
-    # Ação pendente
-    pending = session_data.get('pending_action')
-    if pending:
-        lines.append(f"⏳ AGUARDANDO: {pending}")
+    menu = "Opções: "
+    for i, action in enumerate(limited_actions, 1):
+        menu += f"[{i} {action}] "
     
-    return "\n".join(lines)
+    return menu.strip()
+
+def detect_user_intent_type(message: str, session_data: Dict) -> str:
+    """Detecta tipo de intenção do usuário para melhor contexto."""
+    message_lower = message.lower().strip()
+    
+    # Comandos numéricos diretos
+    if re.match(r'^\s*[123]\s*$', message_lower):
+        return "NUMERIC_SELECTION"
+    
+    # Comandos de carrinho
+    cart_commands = ['carrinho', 'ver carrinho', 'mostrar carrinho']
+    if any(cmd in message_lower for cmd in cart_commands):
+        return "VIEW_CART"
+    
+    # Comandos de finalização
+    checkout_commands = ['finalizar', 'fechar pedido', 'checkout', 'comprar']
+    if any(cmd in message_lower for cmd in checkout_commands):
+        return "CHECKOUT"
+    
+    # Comandos de busca
+    if any(word in message_lower for word in ['quero', 'buscar', 'procurar', 'produto']):
+        return "SEARCH_PRODUCT"
+    
+    # Saudações
+    greetings = ['oi', 'olá', 'boa', 'bom dia', 'boa tarde', 'boa noite']
+    if any(greeting in message_lower for greeting in greetings):
+        return "GREETING"
+    
+    # Quantidades
+    if re.search(r'\d+', message) and len(session_data.get("last_shown_products", [])) > 0:
+        return "QUANTITY_SPECIFICATION"
+    
+    return "GENERAL"
+
+def update_session_context(session_data: Dict, new_context: Dict):
+    """Atualiza contexto da sessão de forma inteligente."""
+    # Preserva dados importantes
+    important_keys = [
+        "customer_context", 
+        "shopping_cart", 
+        "conversation_history",
+        "last_shown_products",
+        "current_offset",
+        "last_search_type",
+        "last_search_params"
+    ]
+    
+    for key in important_keys:
+        if key in new_context:
+            session_data[key] = new_context[key]
+    
+    # Atualiza timestamp da última atividade
+    session_data["last_activity"] = datetime.now().isoformat()
+    
+    # Calcula métricas da sessão
+    session_data["session_stats"] = get_session_stats(session_data)
