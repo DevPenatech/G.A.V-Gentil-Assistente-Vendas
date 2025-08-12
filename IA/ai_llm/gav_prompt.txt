@@ -152,6 +152,8 @@ Usuário: "limpar carrinho e mostrar produtos"
 - SEMPRE use `clear_cart` para qualquer comando de limpeza de carrinho
 - Analise TODO o contexto da conversa
 - Seja DETERMINÍSTICO em suas escolhas
+- NUNCA use markdown (```json ou ```)
+- Se não entender, use handle_chitchat com mensagem de ajuda
 
 **SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!**
 

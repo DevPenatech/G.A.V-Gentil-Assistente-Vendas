@@ -1,108 +1,199 @@
-# file: IA/utils/command_detector.py
+# file: utils/command_detector.py
 """
-Detecção centralizada de comandos críticos para o G.A.V.
-Consolida todas as funções de detecção que estavam duplicadas.
+Detector de Comandos Centralizados
+VERSÃO CORRIGIDA: Detecção robusta de todos os comandos críticos
 """
 
 import re
-from typing import Dict, Optional, Tuple, List
+from typing import Tuple, Dict, List, Union
 
-def is_valid_cnpj(cnpj: str) -> bool:
+def is_valid_cnpj(cnpj_str: str) -> bool:
     """
-    Função única para validação de CNPJ - remove duplicação entre arquivos.
+    Valida se uma string contém um CNPJ válido (formato básico).
     
     Args:
-        cnpj: String contendo CNPJ a ser validado
+        cnpj_str: String para validar
         
     Returns:
-        bool: True se CNPJ é válido, False caso contrário
+        bool: True se é um CNPJ válido
     """
-    if not cnpj:
+    if not cnpj_str:
         return False
     
-    # Remove caracteres não numéricos
-    cnpj_digits = re.sub(r'\D', '', cnpj)
+    # Remove tudo que não é dígito
+    digits = re.sub(r'\D', '', cnpj_str.strip())
     
-    # Verifica se tem 14 dígitos
-    if len(cnpj_digits) != 14:
+    # CNPJ deve ter exatamente 14 dígitos
+    if len(digits) != 14:
         return False
     
-    # Verifica se não são todos iguais (ex: 11111111111111)
-    if cnpj_digits == cnpj_digits[0] * 14:
+    # Verifica se não são todos iguais (11111111111111, etc.)
+    if len(set(digits)) == 1:
         return False
     
-    try:
-        # Valida primeiro dígito verificador
-        sequence = [int(cnpj_digits[i]) for i in range(12)]
-        weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-        sum1 = sum(sequence[i] * weights1[i] for i in range(12))
-        digit1 = ((sum1 % 11) < 2) and 0 or (11 - (sum1 % 11))
-        
-        if digit1 != int(cnpj_digits[12]):
-            return False
-        
-        # Valida segundo dígito verificador
-        sequence.append(digit1)
-        weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-        sum2 = sum(sequence[i] * weights2[i] for i in range(13))
-        digit2 = ((sum2 % 11) < 2) and 0 or (11 - (sum2 % 11))
-        
-        return digit2 == int(cnpj_digits[13])
-        
-    except (ValueError, IndexError):
-        return False
+    return True
 
 def detect_cart_clear_command(message: str) -> bool:
     """
-    Função única para detectar comandos de limpeza de carrinho.
-    Consolida detection de session_manager.py, llm_interface.py e app.py
+    Detecta comandos para esvaziar/limpar carrinho.
     
     Args:
         message: Mensagem do usuário
         
     Returns:
-        bool: True se é comando de limpeza de carrinho
+        bool: True se é comando de limpeza
     """
     if not message:
         return False
-        
+    
     message_lower = message.lower().strip()
     
-    # Comandos explícitos - PRIORIDADE MÁXIMA
-    explicit_commands = [
+    # Comandos explícitos de limpeza
+    clear_commands = [
         'esvaziar carrinho', 'limpar carrinho', 'zerar carrinho',
         'resetar carrinho', 'apagar carrinho', 'deletar carrinho',
-        'esvaziar tudo', 'limpar tudo', 'zerar tudo',
+        'esvaziar tudo', 'limpar tudo', 'zerar tudo', 
         'apagar tudo', 'deletar tudo', 'remover tudo',
         'começar de novo', 'recomeçar', 'reiniciar',
         'do zero', 'novo pedido', 'nova compra',
-        'limpa carrinho', 'esvazia carrinho', 'zera carrinho'
+        'limpa', 'esvazia', 'zera', 'apaga'
     ]
     
-    # Verifica comandos exatos primeiro
-    for command in explicit_commands:
+    # Verifica comandos exatos
+    for command in clear_commands:
         if command in message_lower:
             return True
     
-    # Padrões com regex mais flexíveis
-    patterns = [
-        r'\b(esvaziar|limpar|zerar|apagar|deletar|remover)\s+(o\s+)?carrinho\b',
-        r'\b(carrinho|tudo)\s+(vazio|limpo|zerado)\b',
+    # Padrões regex para variações
+    clear_patterns = [
+        r'\b(limpar|esvaziar|zerar|apagar|deletar|remover)\s+(o\s+)?carrinho\b',
+        r'\b(carrinho|tudo)\s+(limpo|vazio|zerado)\b',
         r'\bcomeca\w*\s+de\s+novo\b',
         r'\bdo\s+zero\b',
-        r'\breinicia\w*\s+(carrinho|tudo|compra)\b',
-        r'\b(esvazia|limpa|zera)\s+(carrinho|tudo)?\b'
+        r'\breinicia\w*\s+(carrinho|tudo|compra)\b'
     ]
     
-    for pattern in patterns:
+    for pattern in clear_patterns:
         if re.search(pattern, message_lower):
             return True
     
     return False
 
-def detect_numeric_selection(message: str) -> Optional[int]:
+def detect_cart_view_command(message: str) -> bool:
     """
-    Extração limpa de seleção numérica (1, 2 ou 3).
+    Detecta comandos para visualizar carrinho.
+    
+    Args:
+        message: Mensagem do usuário
+        
+    Returns:
+        bool: True se é comando para ver carrinho
+    """
+    if not message:
+        return False
+    
+    message_lower = message.lower().strip()
+    
+    view_commands = [
+        'carrinho', 'meu carrinho', 'ver carrinho', 'mostrar carrinho',
+        'listar carrinho', 'itens', 'meus itens', 'compras', 'pedido'
+    ]
+    
+    # Comando exato
+    if message_lower in view_commands:
+        return True
+    
+    # Padrões regex
+    view_patterns = [
+        r'^\s*(ver|mostrar|listar)\s+(o\s+)?carrinho\s*$',
+        r'^\s*meu\s+carrinho\s*$',
+        r'^\s*carrinho\s*$'
+    ]
+    
+    for pattern in view_patterns:
+        if re.match(pattern, message_lower):
+            return True
+    
+    return False
+
+def detect_checkout_command(message: str) -> bool:
+    """
+    Detecta comandos para finalizar compra.
+    
+    Args:
+        message: Mensagem do usuário
+        
+    Returns:
+        bool: True se é comando de checkout
+    """
+    if not message:
+        return False
+    
+    message_lower = message.lower().strip()
+    
+    checkout_commands = [
+        'finalizar', 'checkout', 'comprar', 'fechar pedido',
+        'fechar compra', 'confirmar pedido', 'confirmar compra',
+        'prosseguir', 'continuar', 'enviar pedido'
+    ]
+    
+    # Comando exato
+    if message_lower in checkout_commands:
+        return True
+    
+    # Padrões regex
+    checkout_patterns = [
+        r'^\s*(finalizar|fechar|confirmar)\s+(pedido|compra)\s*$',
+        r'^\s*quero\s+(comprar|finalizar)\s*$',
+        r'^\s*(prosseguir|continuar)\s+(com\s+)?(pedido|compra)\s*$'
+    ]
+    
+    for pattern in checkout_patterns:
+        if re.match(pattern, message_lower):
+            return True
+    
+    return False
+
+def detect_products_command(message: str) -> bool:
+    """
+    Detecta comandos para mostrar produtos.
+    
+    Args:
+        message: Mensagem do usuário
+        
+    Returns:
+        bool: True se é comando para mostrar produtos
+    """
+    if not message:
+        return False
+    
+    message_lower = message.lower().strip()
+    
+    products_commands = [
+        'produtos', 'mostrar produtos', 'ver produtos', 'listar produtos',
+        'catálogo', 'catalogo', 'menu', 'opções', 'opcoes'
+    ]
+    
+    # Comando exato
+    if message_lower in products_commands:
+        return True
+    
+    # Padrões regex
+    products_patterns = [
+        r'^\s*(ver|mostrar|listar)\s+produtos\s*$',
+        r'^\s*que\s+produtos?\s+(tem|há|ha|vocês?\s+tem|possui)\s*$',
+        r'^\s*produtos?\s+disponíveis?\s*$'
+    ]
+    
+    for pattern in products_patterns:
+        if re.match(pattern, message_lower):
+            return True
+    
+    return False
+
+def detect_numeric_selection(message: str) -> Union[int, None]:
+    """
+    Detecta seleção numérica (1, 2 ou 3).
     
     Args:
         message: Mensagem do usuário
@@ -119,6 +210,92 @@ def detect_numeric_selection(message: str) -> Optional[int]:
         return int(match.group(1))
     
     return None
+
+def detect_product_search(message: str) -> Union[str, None]:
+    """
+    Detecta busca por produtos específicos.
+    
+    Args:
+        message: Mensagem do usuário
+        
+    Returns:
+        str: Termo de busca ou None
+    """
+    if not message:
+        return None
+    
+    message_lower = message.lower().strip()
+    
+    # Palavras que indicam busca por produto
+    search_indicators = [
+        'quero', 'preciso', 'busco', 'procuro', 'tem', 'há', 'ha',
+        'vende', 'vendo', 'comprar', 'onde está', 'onde esta'
+    ]
+    
+    # Produtos comuns no vocabulário
+    product_keywords = [
+        'coca', 'cola', 'refrigerante', 'sabão', 'sabao', 'detergente',
+        'omo', 'bebida', 'limpeza', 'produto'
+    ]
+    
+    # Se contém indicador + produto, extrai termo
+    has_indicator = any(indicator in message_lower for indicator in search_indicators)
+    has_product = any(keyword in message_lower for keyword in product_keywords)
+    
+    if has_indicator or has_product:
+        # Remove indicadores e retorna o termo limpo
+        cleaned = message_lower
+        for indicator in search_indicators:
+            cleaned = re.sub(f'\\b{indicator}\\b', '', cleaned)
+        
+        # Remove palavras de ligação
+        cleaned = re.sub(r'\b(o|a|os|as|um|uma|de|da|do|des|das|para|por)\b', '', cleaned)
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+        
+        if cleaned:
+            return cleaned
+    
+    # Se não detectou padrão específico, mas contém palavra-chave de produto
+    if any(keyword in message_lower for keyword in product_keywords):
+        return message.strip()
+    
+    return None
+
+def detect_greetings(message: str) -> bool:
+    """
+    Detecta saudações.
+    
+    Args:
+        message: Mensagem do usuário
+        
+    Returns:
+        bool: True se é saudação
+    """
+    if not message:
+        return False
+    
+    message_lower = message.lower().strip()
+    greetings = [
+        'oi', 'olá', 'ola', 'boa', 'bom dia', 'boa tarde', 
+        'boa noite', 'e aí', 'e ai', 'hello', 'hi', 'eae'
+    ]
+    
+    # Saudação simples
+    if message_lower in greetings:
+        return True
+    
+    # Padrões de saudação
+    greeting_patterns = [
+        r'^\s*(oi|olá|ola)\s*[!.]*\s*$',
+        r'^\s*bom\s+dia\s*[!.]*\s*$',
+        r'^\s*boa\s+(tarde|noite)\s*[!.]*\s*$'
+    ]
+    
+    for pattern in greeting_patterns:
+        if re.match(pattern, message_lower):
+            return True
+    
+    return False
 
 def detect_checkout_context_by_history(conversation_history: List[Dict]) -> Dict[str, bool]:
     """
@@ -198,82 +375,34 @@ def analyze_critical_command(message: str, session_data: Dict) -> Tuple[str, Dic
         if checkout_context['awaiting_cnpj'] or checkout_context['checkout_initiated']:
             return 'find_customer_by_cnpj', {'cnpj': re.sub(r'\D', '', message_clean)}
     
-    # 3. PRIORIDADE MÉDIA: Seleção numérica
+    # 3. SELEÇÃO NUMÉRICA (alta prioridade se há produtos mostrados)
     numeric_selection = detect_numeric_selection(message_clean)
-    if numeric_selection and session_data.get('last_shown_products'):
-        return 'add_item_to_cart', {'index': numeric_selection}
+    if numeric_selection is not None:
+        last_shown = session_data.get('last_shown_products', [])
+        if last_shown:
+            return 'add_item_to_cart', {'product_index': numeric_selection - 1}
     
-    # 4. Comandos diretos simples
-    message_lower = message_clean.lower()
-    
-    if any(cmd in message_lower for cmd in ['carrinho', 'ver carrinho']):
+    # 4. COMANDOS EXPLÍCITOS
+    if detect_cart_view_command(message_clean):
         return 'view_cart', {}
     
-    if any(cmd in message_lower for cmd in ['finalizar', 'fechar', 'checkout']):
+    if detect_checkout_command(message_clean):
         return 'checkout', {}
     
-    if any(cmd in message_lower for cmd in ['produtos', 'mais vendidos', 'populares']):
+    if detect_products_command(message_clean):
         return 'get_top_selling_products', {}
     
-    if message_lower in ['mais', 'proximo', 'próximo']:
-        return 'show_more_products', {}
+    # 5. BUSCA POR PRODUTOS
+    search_term = detect_product_search(message_clean)
+    if search_term:
+        return 'get_top_selling_products_by_name', {'search_term': search_term}
     
-    # 5. Comandos de remoção
-    if any(word in message_lower for word in ['remover', 'tirar', 'excluir', 'deletar']):
-        # Verifica se especifica item
-        index_match = re.search(r'\b(\d+)\b', message_clean)
-        if index_match:
-            return 'update_cart_item', {'action': 'remove', 'index': int(index_match.group(1))}
-        else:
-            return 'update_cart_item', {'action': 'remove'}
+    # 6. SAUDAÇÕES
+    if detect_greetings(message_clean):
+        return 'handle_chitchat', {'response_text': 'Olá! Como posso ajudar você hoje?'}
     
-    # 6. Busca de produto (fallback)
-    if len(message_clean) > 2:
-        return 'get_top_selling_products_by_name', {'product_name': message_clean}
-    
+    # Comando não reconhecido
     return 'unknown', {}
-
-def detect_simple_greetings(message: str) -> bool:
-    """
-    Detecta saudações simples.
-    
-    Args:
-        message: Mensagem do usuário
-        
-    Returns:
-        bool: True se é saudação
-    """
-    if not message:
-        return False
-    
-    message_lower = message.lower().strip()
-    greetings = [
-        'oi', 'olá', 'ola', 'boa', 'bom dia', 'boa tarde', 
-        'boa noite', 'e aí', 'e ai', 'hello', 'hi'
-    ]
-    
-    return any(greeting in message_lower for greeting in greetings)
-
-def detect_help_requests(message: str) -> bool:
-    """
-    Detecta pedidos de ajuda.
-    
-    Args:
-        message: Mensagem do usuário
-        
-    Returns:
-        bool: True se é pedido de ajuda
-    """
-    if not message:
-        return False
-    
-    message_lower = message.lower().strip()
-    help_keywords = [
-        'ajuda', 'help', 'como', 'funciona', 'não entendi', 
-        'nao entendi', 'socorro', 'o que', 'que posso'
-    ]
-    
-    return any(keyword in message_lower for keyword in help_keywords)
 
 def get_command_confidence(message: str, session_data: Dict) -> Dict:
     """
@@ -301,6 +430,8 @@ def get_command_confidence(message: str, session_data: Dict) -> Dict:
         confidence = 0.8
     elif command_type == 'get_top_selling_products_by_name':
         confidence = 0.6
+    elif command_type == 'handle_chitchat':
+        confidence = 0.7 if detect_greetings(message) else 0.5
     
     return {
         'command': command_type,

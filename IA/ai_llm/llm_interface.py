@@ -200,18 +200,22 @@ def detect_checkout_context(session_data: Dict) -> Dict:
     return context
 
 def get_fallback_prompt() -> str:
-    """Prompt de emergência caso o arquivo não seja encontrado."""
-    return """Você é G.A.V., o Gentil Assistente de Vendas do Comercial Esperança. Seu tom é PROFISSIONAL, DIRETO e OBJETIVO. 
+    """Prompt de emergência melhorado com ênfase no JSON"""
+    return """Você é G.A.V., o Gentil Assistente de Vendas do Comercial Esperança.
 
-ESTILO: Respostas curtas com próxima ação explícita. Liste até 3 opções por vez; peça escolha por número ("1, 2 ou 3").
+CRÍTICO: RESPONDA SEMPRE E APENAS COM JSON VÁLIDO. NÃO INCLUA TEXTO EXTRA, MARKDOWN, OU EXPLICAÇÕES.
 
-FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, ask_continue_or_checkout, clear_cart
+Formato obrigatório:
+{"tool_name": "nome_da_ferramenta", "parameters": {}}
 
-COMANDOS ESPECIAIS:
-- "esvaziar carrinho", "limpar carrinho" → use clear_cart
-- CNPJ (14 dígitos) quando solicitado → use find_customer_by_cnpj
+Ferramentas disponíveis: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, clear_cart
 
-SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!"""
+Exemplos:
+- Saudação: {"tool_name": "handle_chitchat", "parameters": {"response_text": "Olá! Como posso ajudar?"}}
+- Busca produto: {"tool_name": "get_top_selling_products_by_name", "parameters": {"search_term": "coca cola"}}
+- Esvaziar carrinho: {"tool_name": "clear_cart", "parameters": {}}
+
+RESPONDA APENAS O JSON!"""
 
 
 def extract_numeric_selection(message: str) -> Union[int, None]:
@@ -354,6 +358,154 @@ def analyze_conversation_context(history: List[Dict], current_message: str) -> D
     
     return context_analysis
 
+def _is_simple_message(message: str) -> bool:
+    """Detecta mensagens simples que não precisam consultar IA"""
+    if not message:
+        return True
+    
+    message_lower = message.lower().strip()
+    
+    # Mensagens muito simples
+    simple_patterns = [
+        r'^\s*(oi|olá|ola|hello|hi)\s*$',
+        r'^\s*(obrigad|valeu|ok|certo)\s*$',
+        r'^\s*(sim|não|nao|yes|no)\s*$',
+        r'^\s*[123]\s*$',  # Seleção numérica
+        r'^\s*(carrinho|produtos|finalizar)\s*$'
+    ]
+    
+    for pattern in simple_patterns:
+        if re.match(pattern, message_lower):
+            return True
+    
+    return False
+
+def _parse_ai_response(content: str) -> Union[Dict, None]:
+    """Parser robusto para extrair JSON da resposta da IA"""
+    if not content:
+        return None
+    
+    try:
+        # Primeira tentativa: JSON direto
+        return json.loads(content.strip())
+    except json.JSONDecodeError:
+        pass
+    
+    try:
+        # Remove markdown e texto extra
+        cleaned = re.sub(r'```json\s*', '', content)
+        cleaned = re.sub(r'```\s*', '', cleaned)
+        cleaned = re.sub(r'\*\*[^*]+\*\*', '', cleaned)  # Remove **texto**
+        cleaned = re.sub(r'#{1,6}\s+[^\n]+', '', cleaned)  # Remove headers markdown
+        
+        # Busca JSON no texto
+        json_patterns = [
+            r'\{[^}]+\}',  # JSON simples
+            r'\{[^{}]*\{[^}]*\}[^{}]*\}',  # JSON aninhado
+            r'\{"tool_name"[^}]+\}',  # Específico para tool_name
+        ]
+        
+        for pattern in json_patterns:
+            matches = re.findall(pattern, cleaned, re.DOTALL)
+            for match in matches:
+                try:
+                    parsed = json.loads(match.strip())
+                    if isinstance(parsed, dict) and 'tool_name' in parsed:
+                        return parsed
+                except json.JSONDecodeError:
+                    continue
+    
+    except Exception as e:
+        logging.warning(f"[llm_interface.py] Erro no parser robusto: {e}")
+    
+    return None
+
+def _create_simple_fallback(message: str, context: Dict) -> Dict:
+    """Fallback inteligente quando IA falha"""
+    if not message:
+        return {"tool_name": "handle_chitchat", "parameters": {"response_text": "Como posso ajudar?"}}
+    
+    message_lower = message.lower().strip()
+    
+    # 1. Comandos detectados centralmente
+    command_type, parameters = analyze_critical_command(message, context.get('session_data', {}))
+    if command_type != 'unknown':
+        return {"tool_name": command_type, "parameters": parameters}
+    
+    # 2. Saudações
+    if any(greeting in message_lower for greeting in ['oi', 'olá', 'ola', 'hello', 'hi', 'bom dia', 'boa tarde']):
+        return {"tool_name": "handle_chitchat", "parameters": {"response_text": "Olá! Como posso ajudar você hoje?"}}
+    
+    # 3. Produtos específicos (busca por nome)
+    product_keywords = ['coca', 'cola', 'refrigerante', 'sabão', 'detergente', 'omo']
+    if any(keyword in message_lower for keyword in product_keywords):
+        return {"tool_name": "get_top_selling_products_by_name", "parameters": {"search_term": message.strip()}}
+    
+    # 4. Seleção numérica
+    if re.match(r'^\s*[123]\s*$', message):
+        num = int(message.strip())
+        return {"tool_name": "add_item_to_cart", "parameters": {"product_index": num - 1}}
+    
+    # 5. Fallback baseado no contexto
+    cart_items = context.get("cart_count", 0)
+    if cart_items > 0:
+        response_text = "Não entendi. Digite o nome de um produto, 'carrinho' para ver seus itens ou 'finalizar' para checkout."
+    else:
+        response_text = "Não entendi. Digite o nome de um produto ou 'produtos' para ver os mais vendidos."
+    
+    return {"tool_name": "handle_chitchat", "parameters": {"response_text": response_text}}
+
+def _prepare_ai_context(message: str, session_data: Dict, context: Dict) -> str:
+    """Prepara contexto para a IA com formato específico"""
+    cart_info = f"Carrinho: {context.get('cart_count', 0)} itens"
+    last_action = context.get('last_action', 'nenhuma')
+    
+    return f"""MENSAGEM DO USUÁRIO: "{message}"
+
+CONTEXTO:
+- {cart_info}
+- Última ação: {last_action}
+- Cliente identificado: {context.get('customer_identified', False)}
+
+IMPORTANTE: Responda APENAS com JSON válido no formato:
+{{"tool_name": "ferramenta", "parameters": {{}}}}
+
+NÃO inclua explicações, markdown, ou texto extra. APENAS JSON!"""
+
+def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
+    """Versão simplificada usando funções centralizadas"""
+    
+    # Usa detecção centralizada
+    command_type, command_params = analyze_critical_command(user_message, session_data)
+    
+    context = {
+        "has_cart_items": len(session_data.get("shopping_cart", [])) > 0,
+        "cart_count": len(session_data.get("shopping_cart", [])),
+        "has_pending_products": len(session_data.get("last_shown_products", [])) > 0,
+        "last_action": session_data.get("last_bot_action", ""),
+        "customer_identified": bool(session_data.get("customer_context")),
+        "session_data": session_data,
+        
+        # Usa detecção centralizada
+        "detected_command": command_type,
+        "command_parameters": command_params,
+        "is_critical_command": command_type != 'unknown'
+    }
+
+    # Determina estágio da compra
+    if command_type == 'checkout' or context.get("customer_identified"):
+        purchase_stage = "checkout"
+    elif command_type == 'view_cart' or context["has_cart_items"]:
+        purchase_stage = "cart"
+    elif command_type in ['get_top_selling_products', 'get_top_selling_products_by_name']:
+        purchase_stage = "search"
+    else:
+        purchase_stage = "greeting"
+
+    context["purchase_stage"] = purchase_stage
+    session_data["purchase_stage"] = purchase_stage
+
+    return context
 
 def get_intent(
     user_message: str,
@@ -361,11 +513,11 @@ def get_intent(
     customer_context: Union[Dict, None] = None,
     cart_items_count: int = 0,
 ) -> Dict:
-    """🔧 CORREÇÃO: Versão robusta com fallback melhorado"""
+    """Versão corrigida com detecção prévia e parser robusto"""
     try:
         logging.info(f"[llm_interface.py] Iniciando get_intent para mensagem: '{user_message}'")
 
-        # 🔧 DETECÇÃO CENTRALIZADA PRIMEIRO
+        # 1. DETECÇÃO CENTRALIZADA PRIMEIRO
         enhanced_context = enhance_context_awareness(user_message, session_data)
         
         # Se comando crítico foi detectado, retorna imediatamente
@@ -376,16 +528,16 @@ def get_intent(
             logging.info(f"[llm_interface.py] Comando crítico detectado: {command_type}")
             return {"tool_name": command_type, "parameters": command_params}
 
-        # Para mensagens simples, usa detecção rápida sem IA
+        # 2. Para mensagens simples, usa detecção rápida sem IA
         if _is_simple_message(user_message):
             logging.info("[llm_interface.py] Mensagem simples detectada, usando fallback rápido")
             return _create_simple_fallback(user_message, enhanced_context)
 
-        # Se não for habilitado uso de IA, usa fallback
+        # 3. Se não habilitado uso de IA, usa fallback
         if not USE_AI_FALLBACK:
             return _create_simple_fallback(user_message, enhanced_context)
 
-        # 🔧 CONSULTA IA com timeout e fallback robusto
+        # 4. CONSULTA IA com timeout e fallback robusto
         try:
             logging.info("[llm_interface.py] Consultando IA...")
             
@@ -410,20 +562,20 @@ def get_intent(
                 options={
                     "temperature": 0.1,
                     "top_p": 0.9,
-                    "num_predict": 150,
-                    "stop": ["\n\n", "```"],
+                    "num_predict": 200,
+                    "stop": ["\n\n", "```", "**"],
                 },
                 stream=False,
             )
 
             elapsed_time = time.time() - start_time
-            logging.info(f"[llm_interface.py] Resposta da IA em {elapsed_time:.2f}s")
+            logging.info(f"[llm_interface.py] Resposta recebida do LLM em {elapsed_time:.2f}s")
 
             # Processa resposta da IA
             content = response.get("message", {}).get("content", "")
-            logging.info(f"[llm_interface.py] Resposta da IA: {content[:100]}...")
+            logging.info(f"[llm_interface.py] Resposta do LLM: {content[:100]}...")
 
-            # 🔧 PARSE ROBUSTO DO JSON
+            # PARSE ROBUSTO DO JSON
             intent_data = _parse_ai_response(content)
             
             if intent_data and intent_data.get("tool_name"):
@@ -444,7 +596,7 @@ def get_intent(
         except Exception as e:
             logging.warning(f"[llm_interface.py] Erro na consulta IA: {e}")
 
-        # 🔧 FALLBACK ROBUSTO se IA falhou
+        # FALLBACK ROBUSTO se IA falhou
         logging.info("[llm_interface.py] Usando fallback por falha da IA")
         return _create_simple_fallback(user_message, enhanced_context)
 
@@ -456,6 +608,9 @@ def get_intent(
             "parameters": {"response_text": "Desculpe, tive um problema. Pode tentar novamente?"}
         }
 
+def get_intent_with_context(user_message: str, session_data: Dict, customer_context: Union[Dict, None] = None) -> Dict:
+    """Interface compatível para outras partes do sistema"""
+    return get_intent(user_message, session_data, customer_context, len(session_data.get("shopping_cart", [])))
 
 def clean_json_response(content: str) -> str:
     """Limpa a resposta do LLM para extrair JSON válido."""

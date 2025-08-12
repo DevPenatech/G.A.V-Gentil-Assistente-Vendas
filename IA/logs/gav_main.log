@@ -306,3 +306,51 @@ Ou tente buscar por categoria: 'refrige...'
 2025-08-12 19:38:11,912 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
 2025-08-12 19:38:11,936 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
 2025-08-12 19:38:11,937 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 861-849-057
+2025-08-12 20:01:17,024 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-12 20:01:17,073 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:01:17,846 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:01:17,922 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:01:17,954 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:01:17,956 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 861-849-057
+2025-08-12 20:01:51,216 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-12 20:01:51,265 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:01:52,261 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:01:52,342 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:01:52,383 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:01:52,384 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 861-849-057
+2025-08-12 20:02:20,139 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-12 20:02:20,194 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:02:20,911 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:02:20,979 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:02:21,034 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:02:21,036 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 861-849-057
+2025-08-12 20:03:20,311 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-12 20:03:20,353 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:03:21,026 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:03:21,136 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:03:21,166 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:03:21,167 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 861-849-057
+2025-08-12 20:04:12,777 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/session_manager.py', reloading
+2025-08-12 20:04:12,820 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:04:13,580 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:04:13,659 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:04:13,686 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:04:13,688 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 861-849-057
+2025-08-12 20:06:10,064 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/utils/command_detector.py', reloading
+2025-08-12 20:06:10,110 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:06:10,829 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:06:10,905 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:06:10,937 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:06:10,938 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 861-849-057
+2025-08-12 20:07:25,506 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:07:25,597 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:07:25,628 [INFO] [werkzeug:97] [_log] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.4:8080
+2025-08-12 20:07:25,629 [INFO] [werkzeug:97] [_log] [33mPress CTRL+C to quit[0m
+2025-08-12 20:07:25,631 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 20:07:26,357 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 20:07:26,421 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 20:07:26,449 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 20:07:26,451 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 878-175-250
