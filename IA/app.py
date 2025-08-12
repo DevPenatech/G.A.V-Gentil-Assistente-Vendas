@@ -1,20 +1,9 @@
 # file: IA/app.py
-"""
-G.A.V. (Gentil Assistente de Vendas) - Aplicação Principal
-Sistema completo de vendas via WhatsApp com IA integrada
-"""
-
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 import logging
 import threading
-from typing import Dict, List, Tuple, Union, Optional
-from datetime import datetime
-import re
-import json
-import os
-
-# Importações dos módulos do projeto
+from typing import Dict, List, Tuple, Union
 from db import database
 from ai_llm import llm_interface
 from knowledge import knowledge
@@ -22,911 +11,723 @@ from utils import logger_config
 from core.session_manager import (
     load_session, save_session, clear_session,
     format_product_list_for_display, format_cart_for_display,
-    add_message_to_history, get_conversation_context,
-    detect_user_intent_type, format_quick_actions, get_session_stats,
-    update_session_context
+    add_message_to_history, get_conversation_context
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
 
-# Importações específicas para funcionalidades avançadas
-from db.database import (
-    search_products_with_suggestions, 
-    get_product_details_fuzzy,
-    get_product_by_codprod,
-    get_all_active_products
-)
-from knowledge.knowledge import (
-    find_product_in_kb_with_analysis,
-    search_kb_with_suggestions,
-    update_kb,
-    get_kb_statistics
-)
+from db.database import search_products_with_suggestions, get_product_details_fuzzy
+from knowledge.knowledge import find_product_in_kb_with_analysis
 
 app = Flask(__name__)
 logger_config.setup_logger()
-
-# ================================================================================
-# UTILITÁRIOS BÁSICOS
-# ================================================================================
 
 def get_product_name(product: Dict) -> str:
     """Extrai o nome do produto, compatível com produtos do banco (descricao) e da KB (canonical_name)."""
     return product.get('descricao') or product.get('canonical_name', 'Produto sem nome')
 
-def format_price(price: float) -> str:
-    """Formata preço no padrão brasileiro."""
-    return f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+def find_products_in_cart_by_name(cart: List[Dict], product_name: str) -> List[Tuple[int, Dict]]:
+    """
+    Encontra produtos no carrinho pelo nome (busca fuzzy).
+    
+    Returns:
+        Lista de tuplas (índice, produto) que correspondem ao nome
+    """
+    if not cart or not product_name:
+        return []
+    
+    # Importa aqui para evitar imports circulares
+    from utils.fuzzy_search import fuzzy_engine
+    
+    matches = []
+    search_term = product_name.lower().strip()
+    
+    for i, item in enumerate(cart):
+        item_name = get_product_name(item).lower()
+        
+        # Busca exata
+        if search_term in item_name or item_name in search_term:
+            matches.append((i, item))
+            continue
+            
+        # Busca fuzzy
+        similarity = fuzzy_engine.calculate_similarity(search_term, item_name)
+        if similarity >= 0.6:  # Threshold para considerar uma correspondência
+            matches.append((i, item))
+    
+    return matches
 
-def sanitize_message(message: str) -> str:
-    """Sanitiza mensagem do usuário removendo caracteres problemáticos."""
-    if not message:
-        return ""
-    # Remove quebras de linha excessivas e espaços
-    return re.sub(r'\s+', ' ', message.strip())
-
-def format_options_menu(options: List[str], max_options: int = 3) -> str:
-    """Formata um menu de opções numeradas."""
-    if not options:
-        return ""
-    
-    limited_options = options[:max_options]
-    menu = ""
-    for i, option in enumerate(limited_options, 1):
-        menu += f"[{i} {option}] "
-    return menu.strip()
-
-# ================================================================================
-# FORMATAÇÃO DE PRODUTOS E CARRINHO
-# ================================================================================
-
-def format_product_selection(products: List[Dict], title: str = "Opções encontradas", has_more: bool = False) -> str:
-    """Formata lista de produtos para seleção com estilo direto e objetivo."""
-    if not products:
-        return "Não achei esse item. Posso sugerir similares?"
-    
-    # Limita a 3 produtos conforme especificação
-    limited_products = products[:3]
-    
-    response = f"{title}:\n"
-    for i, product in enumerate(limited_products, 1):
-        price = product.get('pvenda') or product.get('preco_varejo', 0.0)
-        price_str = format_price(price)
-        product_name = get_product_name(product)
-        response += f"{i}. {product_name} — {price_str}\n"
-    
-    response += "Qual você quer? Responda 1, 2 ou 3."
-    
-    if has_more:
-        response += "\nOu digite 'mais' para ver outros resultados!"
-    
-    return response
-
-def format_checkout_summary(cart: List[Dict], customer_context: Dict = None) -> str:
-    """Formata resumo final do pedido com estilo objetivo."""
+def format_cart_with_indices(cart: List[Dict]) -> str:
+    """Formata o carrinho com índices para facilitar seleção."""
     if not cart:
-        return "Carrinho vazio — nenhum pedido para finalizar."
+        return "🤖 Seu carrinho de compras está vazio."
     
-    summary = "🛍️ **RESUMO DO PEDIDO:**\n"
-    summary += "=" * 30 + "\n"
+    response = "🛒 Seu Carrinho de Compras:\n"
     total = 0.0
     
     for i, item in enumerate(cart, 1):
-        price = item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
+        price = item.get('pvenda') or 0.0
         qt = item.get('qt', 0)
         subtotal = price * qt
         total += subtotal
         
+        price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         product_name = get_product_name(item)
-        price_str = format_price(price)
-        subtotal_str = format_price(subtotal)
         
-        # Formata quantidade para exibição
-        if isinstance(qt, float):
-            qty_display = f"{qt:.1f}".rstrip('0').rstrip('.')
-        else:
-            qty_display = str(qt)
-        
-        summary += f"{i}. {product_name}\n"
-        summary += f"   Qtd: {qty_display} × {price_str} = {subtotal_str}\n"
+        response += f"{i}. {product_name} (Qtd: {qt}) - Unit: {price_str} - Subtotal: {subtotal_str}\n"
     
-    summary += "=" * 30 + "\n"
-    total_str = format_price(total)
-    summary += f"**TOTAL: {total_str}**\n\n"
-    
-    # Adiciona informações do cliente se disponível
-    if customer_context:
-        customer_name = customer_context.get('name', 'Cliente')
-        summary += f"Cliente: {customer_name}\n"
-    
-    summary += "Confirma o pedido? [1 Sim] [2 Alterar] [3 Cancelar]"
-    return summary
-
-def format_search_suggestions(term: str, suggestions: List[str]) -> str:
-    """Formata sugestões de busca quando não encontra produtos."""
-    if not suggestions:
-        return f"Não encontrei '{term}'. Tente outro termo ou navegue pelos produtos disponíveis."
-    
-    response = f"Não encontrei '{term}'. Você quis dizer:\n"
-    for i, suggestion in enumerate(suggestions[:3], 1):
-        response += f"{i}. {suggestion}\n"
-    
-    response += "Escolha uma opção (1-3) ou digite outro termo."
+    total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    response += f"-----------------------------------\nTOTAL DO PEDIDO: {total_str}"
     return response
 
-# ================================================================================
-# GESTÃO DE CARRINHO
-# ================================================================================
-
-def add_item_to_cart_with_quantity(cart: List[Dict], product: Dict, quantity: Union[int, float]) -> Tuple[bool, str, List[Dict]]:
-    """Adiciona item ao carrinho com quantidade especificada."""
-    if not product or not is_valid_quantity(quantity):
-        return False, "Dados inválidos para adicionar ao carrinho.", cart
+def remove_item_from_cart(cart: List[Dict], index: int) -> Tuple[bool, str, List[Dict]]:
+    """
+    Remove item do carrinho pelo índice.
     
-    codprod = product.get('codprod')
-    if not codprod:
-        return False, "Produto inválido.", cart
-    
-    # Verifica se já existe no carrinho
-    for item in cart:
-        if item.get('codprod') == codprod:
-            item['qt'] += quantity
-            product_name = get_product_name(item)
-            
-            # Formata quantidade para exibição
-            total_qty = item['qt']
-            if isinstance(total_qty, float):
-                qty_display = f"{total_qty:.1f}".rstrip('0').rstrip('.')
-            else:
-                qty_display = str(total_qty)
-            
-            cart_display = format_cart_for_display(cart)
-            return True, f"Quantidade de {product_name} atualizada para {qty_display}.\n\n{cart_display}", cart
-    
-    # Adiciona novo item
-    new_item = product.copy()
-    new_item['qt'] = quantity
-    cart.append(new_item)
-    
-    product_name = get_product_name(new_item)
-    
-    # Formata quantidade para exibição
-    if isinstance(quantity, float):
-        qty_display = f"{quantity:.1f}".rstrip('0').rstrip('.')
-    else:
-        qty_display = str(quantity)
-    
-    cart_display = format_cart_for_display(cart)
-    return True, f"{product_name} ({qty_display} un.) adicionado ao carrinho.\n\n{cart_display}", cart
-
-def handle_numeric_selection_with_quantity(user_message: str, last_shown_products: List[Dict], session_id: str) -> Tuple[bool, str]:
-    """Gerencia seleção numérica de produtos com extração de quantidade."""
-    try:
-        # Extrai seleção e quantidade da mensagem
-        selection_match = re.search(r'([123])', user_message)
-        if not selection_match:
-            return False, ""
-        
-        selection = int(selection_match.group(1)) - 1
-        
-        if 0 <= selection < len(last_shown_products):
-            selected_product = last_shown_products[selection]
-            
-            # Extrai quantidade da mensagem (padrão: 1)
-            quantity = extract_quantity(user_message)
-            if not is_valid_quantity(quantity):
-                quantity = 1
-            
-            # Adiciona ao carrinho
-            state = load_session(session_id)
-            cart = state.get("shopping_cart", [])
-            
-            success, message, updated_cart = add_item_to_cart_with_quantity(cart, selected_product, quantity)
-            
-            if success:
-                state["shopping_cart"] = updated_cart
-                state["last_shown_products"] = []  # Limpa produtos mostrados
-                save_session(session_id, state)
-                
-                product_name = get_product_name(selected_product)
-                
-                # Formata quantidade para exibição
-                if isinstance(quantity, float):
-                    qty_display = f"{quantity:.1f}".rstrip('0').rstrip('.')
-                else:
-                    qty_display = str(quantity)
-                
-                response = f"✅ {product_name} ({qty_display} un.) adicionado!\n\n"
-                response += "O que prefere agora?\n"
-                response += format_quick_actions(has_cart=True)
-                
-                return True, response
-            
-        return False, ""
-    except (ValueError, IndexError):
-        return False, ""
-
-def update_cart_item_quantity(cart: List[Dict], index: int, new_qty: Union[int, float]) -> Tuple[bool, str, List[Dict]]:
-    """Atualiza a quantidade de um item do carrinho."""
+    Returns:
+        Tupla (sucesso, mensagem, novo_carrinho)
+    """
     if not cart:
-        return False, "Seu carrinho está vazio.", cart
+        return False, "🤖 Seu carrinho está vazio.", cart
     
     if not (1 <= index <= len(cart)):
-        return False, f"Número inválido. Escolha entre 1 e {len(cart)}.", cart
+        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+    
+    removed_item = cart.pop(index - 1)
+    product_name = get_product_name(removed_item)
+    
+    if cart:
+        cart_display = format_cart_for_display(cart)
+        message = f"🗑️ {product_name} removido do carrinho.\n\n{cart_display}"
+    else:
+        message = f"🗑️ {product_name} removido do carrinho.\n\n🤖 Seu carrinho de compras está vazio."
+    
+    return True, message, cart
+
+def add_quantity_to_cart_item(cart: List[Dict], index: int, additional_qty: Union[int, float]) -> Tuple[bool, str, List[Dict]]:
+    """
+    Adiciona quantidade a um item específico do carrinho.
+    
+    Returns:
+        Tupla (sucesso, mensagem, novo_carrinho)
+    """
+    if not cart:
+        return False, "🤖 Seu carrinho está vazio.", cart
+    
+    if not (1 <= index <= len(cart)):
+        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+    
+    if not is_valid_quantity(additional_qty):
+        return False, f"🤖 Quantidade inválida: {additional_qty}", cart
+    
+    cart[index - 1]['qt'] += additional_qty
+    product_name = get_product_name(cart[index - 1])
+    new_total = cart[index - 1]['qt']
+    
+    # Formata a quantidade para exibição
+    if isinstance(additional_qty, float):
+        qty_display = f"{additional_qty:.1f}".rstrip('0').rstrip('.')
+    else:
+        qty_display = str(additional_qty)
+    
+    if isinstance(new_total, float):
+        total_display = f"{new_total:.1f}".rstrip('0').rstrip('.')
+    else:
+        total_display = str(new_total)
+    
+    cart_display = format_cart_for_display(cart)
+    message = f"✅ Adicionei +{qty_display} {product_name}. Total agora: {total_display}\n\n{cart_display}"
+    
+    return True, message, cart
+
+def update_cart_item_quantity(cart: List[Dict], index: int, new_qty: Union[int, float]) -> Tuple[bool, str, List[Dict]]:
+    """
+    Atualiza a quantidade de um item do carrinho.
+    
+    Returns:
+        Tupla (sucesso, mensagem, novo_carrinho)
+    """
+    if not cart:
+        return False, "🤖 Seu carrinho está vazio.", cart
+    
+    if not (1 <= index <= len(cart)):
+        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
     
     if not is_valid_quantity(new_qty):
-        return False, f"Quantidade inválida: {new_qty}", cart
+        return False, f"🤖 Quantidade inválida: {new_qty}", cart
     
     cart[index - 1]['qt'] = new_qty
     product_name = get_product_name(cart[index - 1])
     
-    # Formata quantidade para exibição
+    # Formata a quantidade para exibição
     if isinstance(new_qty, float):
         qty_display = f"{new_qty:.1f}".rstrip('0').rstrip('.')
     else:
         qty_display = str(new_qty)
     
     cart_display = format_cart_for_display(cart)
-    message = f"Quantidade de {product_name} atualizada para {qty_display}.\n\n{cart_display}"
+    message = f"✅ Quantidade de {product_name} atualizada para {qty_display}\n\n{cart_display}"
     
     return True, message, cart
 
-def handle_cart_operations(cart: List[Dict], operation: str, parameters: Dict) -> Tuple[bool, str, List[Dict]]:
-    """Gerencia operações no carrinho (remover, atualizar, limpar)."""
-    operation = operation.lower()
+def suggest_alternatives(failed_search_term: str) -> str:
+    """Gera sugestões quando uma busca falha completamente."""
     
-    if operation == 'clear':
-        if not cart:
-            return False, "Carrinho já está vazio.", cart
-        cart.clear()
-        return True, "Carrinho esvaziado com sucesso.", cart
+    # Importa aqui para evitar imports circulares
+    from utils.fuzzy_search import fuzzy_engine
     
-    elif operation == 'remove':
-        if not cart:
-            return False, "Seu carrinho está vazio.", cart
-        
-        index = parameters.get('index')
-        if index and 1 <= index <= len(cart):
-            removed = cart.pop(index - 1)
-            product_name = get_product_name(removed)
-            return True, f"{product_name} removido do carrinho.", cart
-        
-        return False, f"Número inválido. Use um número entre 1 e {len(cart)}.", cart
+    suggestions = []
     
-    elif operation == 'update_quantity':
-        index = parameters.get('index')
-        quantity = parameters.get('quantity')
-        
-        if index and quantity is not None:
-            return update_cart_item_quantity(cart, index, quantity)
-        
-        return False, "Parâmetros inválidos para atualização.", cart
+    # Aplica correções automáticas
+    corrected = fuzzy_engine.apply_corrections(failed_search_term)
+    if corrected != failed_search_term:
+        suggestions.append(f"Tente: '{corrected}'")
     
-    return False, "Operação não reconhecida.", cart
+    # Expande com sinônimos
+    expansions = fuzzy_engine.expand_with_synonyms(failed_search_term)
+    for expansion in expansions[:2]:
+        if expansion != failed_search_term:
+            suggestions.append(f"Ou tente: '{expansion}'")
+    
+    # Sugestões gerais baseadas na palavra
+    words = failed_search_term.lower().split()
+    general_suggestions = []
+    
+    for word in words:
+        if any(x in word for x in ['coca', 'refri', 'soda']):
+            general_suggestions.append("refrigerantes")
+        elif any(x in word for x in ['sabao', 'deterg', 'limp']):
+            general_suggestions.append("produtos de limpeza")
+        elif any(x in word for x in ['cafe', 'acu', 'arroz', 'feij']):
+            general_suggestions.append("alimentos básicos")
+    
+    if general_suggestions:
+        suggestions.extend([f"Categoria: {s}" for s in general_suggestions[:2]])
+    
+    if not suggestions:
+        suggestions = [
+            "Tente termos mais simples",
+            "Use nomes de categoria: 'refrigerante', 'sabão', 'arroz'"
+        ]
+    
+    return " • ".join(suggestions[:3])
 
-# ================================================================================
-# BUSCA INTELIGENTE DE PRODUTOS
-# ================================================================================
 
-def search_products_intelligent(term: str, session_data: Dict) -> Tuple[List[Dict], Dict]:
-    """
-    Busca inteligente de produtos combinando banco de dados e knowledge base.
-    Retorna produtos encontrados e análise de qualidade.
-    """
-    search_results = {
-        "products": [],
-        "analysis": {
-            "search_quality": "unknown",
-            "source": "none",
-            "suggestions": [],
-            "corrected_term": None
-        }
+def _extract_state(session: Dict) -> Dict:
+    """Extrai os dados relevantes da sessão em um dicionário mutável."""
+    return {
+        "customer_context": session.get("customer_context"),
+        "shopping_cart": session.get("shopping_cart", []),
+        "last_search_type": session.get("last_search_type"),
+        "last_search_params": session.get("last_search_params", {}),
+        "current_offset": session.get("current_offset", 0),
+        "last_shown_products": session.get("last_shown_products", []),
+        "last_bot_action": session.get("last_bot_action"),
+        "pending_action": session.get("pending_action"),
+        "last_kb_search_term": session.get("last_kb_search_term"),
     }
-    
-    # 1. Busca na Knowledge Base com análise
-    try:
-        kb_products, kb_analysis = find_product_in_kb_with_analysis(term)
-        if kb_products:
-            search_results["products"] = kb_products
-            search_results["analysis"] = kb_analysis
-            search_results["analysis"]["source"] = "knowledge_base"
-            logging.info(f"Busca KB bem-sucedida para '{term}': {len(kb_products)} produtos")
-            return search_results["products"], search_results["analysis"]
-    except Exception as e:
-        logging.warning(f"Erro na busca KB para '{term}': {e}")
-    
-    # 2. Busca no banco de dados com sugestões
-    try:
-        db_products = search_products_with_suggestions(term)
-        if db_products:
-            search_results["products"] = db_products
-            search_results["analysis"]["source"] = "database"
-            search_results["analysis"]["search_quality"] = "good" if len(db_products) > 0 else "poor"
-            logging.info(f"Busca DB bem-sucedida para '{term}': {len(db_products)} produtos")
-            return search_results["products"], search_results["analysis"]
-    except Exception as e:
-        logging.warning(f"Erro na busca DB para '{term}': {e}")
-    
-    # 3. Busca fuzzy no banco como fallback
-    try:
-        fuzzy_products = get_product_details_fuzzy(term)
-        if fuzzy_products:
-            search_results["products"] = fuzzy_products
-            search_results["analysis"]["source"] = "database_fuzzy"
-            search_results["analysis"]["search_quality"] = "fair"
-            logging.info(f"Busca fuzzy bem-sucedida para '{term}': {len(fuzzy_products)} produtos")
-            return search_results["products"], search_results["analysis"]
-    except Exception as e:
-        logging.warning(f"Erro na busca fuzzy para '{term}': {e}")
-    
-    # 4. Gera sugestões se não encontrou nada
-    try:
-        kb_suggestions = search_kb_with_suggestions(term)
-        if kb_suggestions.get("suggestions"):
-            search_results["analysis"]["suggestions"] = kb_suggestions["suggestions"]
-            search_results["analysis"]["search_quality"] = "no_results_with_suggestions"
-    except Exception as e:
-        logging.warning(f"Erro ao gerar sugestões para '{term}': {e}")
-    
-    search_results["analysis"]["search_quality"] = "no_results"
-    return [], search_results["analysis"]
 
-def handle_search_request(term: str, session_data: Dict, offset: int = 0) -> Tuple[str, Dict]:
-    """Processa solicitação de busca e retorna resposta formatada."""
-    if not term or len(term.strip()) < 2:
-        return "Digite pelo menos 2 caracteres para buscar produtos.", session_data
-    
-    # Busca inteligente
-    products, analysis = search_products_intelligent(term, session_data)
-    
-    # Atualiza sessão com resultados da busca
-    session_data["last_search_term"] = term
-    session_data["last_search_results"] = products
-    session_data["last_search_analysis"] = analysis
-    session_data["current_offset"] = offset
-    
-    # Se encontrou produtos
-    if products:
-        # Mostra produtos encontrados
-        has_more = len(products) > 3
-        session_data["last_shown_products"] = products[:3]
-        
-        title = "Produtos encontrados"
-        if analysis.get("source") == "knowledge_base":
-            title = "Encontrei estes produtos"
-        elif analysis.get("corrected_term"):
-            title = f"Resultados para '{analysis['corrected_term']}'"
-        
-        response = format_product_list_for_display(
-            products[:3], 
-            title, 
-            has_more, 
-            offset
-        )
-        
-        # Adiciona ações rápidas
-        response += f"\n\n{format_quick_actions(has_products=True)}"
-        
-        return response, session_data
-    
-    # Se não encontrou produtos
-    else:
-        session_data["last_shown_products"] = []
-        
-        # Verifica se há sugestões
-        suggestions = analysis.get("suggestions", [])
-        if suggestions:
-            response = format_search_suggestions(term, suggestions)
-            session_data["last_search_suggestions"] = suggestions
-        else:
-            response = f"Não encontrei produtos para '{term}'. "
-            response += "Tente usar palavras diferentes ou navegue pelos produtos disponíveis.\n\n"
-            response += format_quick_actions()
-        
-        return response, session_data
 
-# ================================================================================
-# PROCESSAMENTO DE MENSAGENS COM IA
-# ================================================================================
+def _handle_pending_action(session: Dict, state: Dict, incoming_msg: str) -> Tuple[Union[Dict, None], str]:
+    """Processa ações pendentes existentes na sessão."""
+    pending_action = state.get("pending_action")
+    shopping_cart = state.get("shopping_cart", [])
+    intent = None
+    response_text = ""
 
-def generate_ai_response(user_message: str, session_data: Dict) -> str:
-    """Gera resposta usando IA quando necessário."""
-    try:
-        # Prepara contexto para a IA
-        conversation_context = get_conversation_context(session_data)
-        user_intent = detect_user_intent_type(user_message, session_data)
-        session_stats = get_session_stats(session_data)
-        
-        # Contexto do sistema
-        system_context = {
-            "conversation_history": conversation_context,
-            "user_intent": user_intent,
-            "cart_items": session_stats.get("cart_items", 0),
-            "cart_total": session_stats.get("cart_total_value", 0),
-            "last_action": session_stats.get("last_action", "NONE")
-        }
-        
-        # Gera resposta com IA
-        ai_response = llm_interface.generate_response(
-            user_message=user_message,
-            system_context=system_context,
-            max_tokens=200
-        )
-        
-        return ai_response if ai_response else "Desculpe, não entendi. Pode reformular?"
-        
-    except Exception as e:
-        logging.error(f"Erro ao gerar resposta IA: {e}")
-        return "Desculpe, houve um problema. Como posso ajudar?"
+    if pending_action == 'AWAITING_QUANTITY':
+        print(">>> CONSOLE: Tratando ação pendente AWAITING_QUANTITY")
 
-def handle_greeting_message(user_message: str, session_data: Dict) -> str:
-    """Processa mensagens de saudação."""
-    customer_context = session_data.get("customer_context", {})
-    customer_name = customer_context.get("name", "")
-    
-    greeting_response = "Olá"
-    if customer_name:
-        greeting_response += f", {customer_name}"
-    
-    greeting_response += "! Bem-vindo ao nosso atendimento. "
-    
-    cart = session_data.get("shopping_cart", [])
-    if cart:
-        greeting_response += f"Vi que você já tem {len(cart)} item(ns) no carrinho. "
-        greeting_response += "Quer continuar comprando ou finalizar o pedido?\n\n"
-        greeting_response += format_quick_actions(has_cart=True)
-    else:
-        greeting_response += "Como posso ajudar você hoje?\n\n"
-        greeting_response += format_quick_actions()
-    
-    return greeting_response
+        # 🆕 Extrai quantidade usando linguagem natural
+        qt = extract_quantity(incoming_msg)
 
-def handle_help_message(session_data: Dict) -> str:
-    """Processa solicitações de ajuda."""
-    help_response = "🤖 **COMO POSSO AJUDAR:**\n\n"
-    help_response += "📍 **Para buscar produtos:**\n"
-    help_response += "   Digite o nome do produto (ex: 'coca cola')\n\n"
-    help_response += "📍 **Para ver seu carrinho:**\n"
-    help_response += "   Digite 'carrinho' ou 'ver carrinho'\n\n"
-    help_response += "📍 **Para finalizar pedido:**\n"
-    help_response += "   Digite 'finalizar' ou 'fechar pedido'\n\n"
-    help_response += "📍 **Para adicionar quantidade:**\n"
-    help_response += "   Digite '2 coca cola' (quantidade + produto)\n\n"
-    
-    cart = session_data.get("shopping_cart", [])
-    if cart:
-        help_response += f"Você tem {len(cart)} item(ns) no carrinho.\n\n"
-        help_response += format_quick_actions(has_cart=True)
-    else:
-        help_response += format_quick_actions()
-    
-    return help_response
+        if qt is not None and is_valid_quantity(qt):
+            product_to_add = session.get('pending_product_for_cart')
+            if product_to_add:
+                term_to_learn = session.get("term_to_learn_after_quantity")
+                if term_to_learn:
+                    print(f">>> CONSOLE: Aprendendo que '{term_to_learn}' se refere a '{get_product_name(product_to_add)}'...")
+                    knowledge.update_kb(term_to_learn, product_to_add)
+                    session["term_to_learn_after_quantity"] = None
 
-# ================================================================================
-# PROCESSAMENTO PRINCIPAL DE MENSAGENS
-# ================================================================================
+                # Converte para int se for número inteiro
+                if isinstance(qt, float) and qt.is_integer():
+                    qt = int(qt)
 
-def process_message_async(session_id: str, user_message: str):
-    """Processa mensagem de forma assíncrona com lógica completa."""
-    try:
-        # Sanitiza mensagem
-        user_message = sanitize_message(user_message)
-        if not user_message:
-            return
-        
-        # Carrega estado da sessão
-        state = load_session(session_id)
-        
-        # Variáveis de sessão
-        customer_context = state.get("customer_context")
-        shopping_cart = state.get("shopping_cart", [])
-        last_search_type = state.get("last_search_type")
-        last_search_params = state.get("last_search_params", {})
-        current_offset = state.get("current_offset", 0)
-        last_shown_products = state.get("last_shown_products", [])
-        last_bot_action = state.get("last_bot_action")
-        pending_action = state.get("pending_action")
-        last_search_suggestions = state.get("last_search_suggestions", [])
-        
-        response_text = ""
-        user_lower = user_message.lower().strip()
-        
-        # Detecta intenção do usuário
-        user_intent = detect_user_intent_type(user_message, state)
-        
-        # =====================================================================
-        # PRIORIDADE 1: Seleção numérica de produtos (1, 2, 3)
-        # =====================================================================
-        if last_shown_products and re.match(r'^\s*[123]\s*$', user_message.strip()):
-            handled, response = handle_numeric_selection_with_quantity(user_message, last_shown_products, session_id)
-            if handled:
-                add_message_to_history(state, 'user', user_message, 'NUMERIC_SELECTION')
-                add_message_to_history(state, 'assistant', response, 'ITEM_ADDED_WITH_OPTIONS')
-                save_session(session_id, state)
-                twilio_client.send_message(session_id, response)
-                logging.info(f"THREAD: Seleção numérica processada para '{user_message}'")
-                return
-        
-        # =====================================================================
-        # PRIORIDADE 2: Comandos diretos de carrinho
-        # =====================================================================
-        
-        # Comando: esvaziar carrinho
-        if any(cmd in user_lower for cmd in ['esvaziar carrinho', 'limpar carrinho', 'zerar carrinho']):
-            success, message, new_cart = handle_cart_operations(shopping_cart, 'clear', {})
-            if success:
-                state["shopping_cart"] = new_cart
-                state["last_bot_action"] = "CART_CLEARED"
-                save_session(session_id, state)
-                response_text = message + " Posso ajudar com mais alguma coisa?\n\n" + format_quick_actions()
-        
-        # Comando: ver carrinho
-        elif any(cmd in user_lower for cmd in ['carrinho', 'ver carrinho', 'mostrar carrinho']):
-            if shopping_cart:
-                cart_display = format_cart_for_display(shopping_cart)
-                response_text = cart_display + "\n\n"
-                response_text += "O que gostaria de fazer?\n"
-                response_text += format_quick_actions(has_cart=True)
-                state["last_bot_action"] = "CART_DISPLAYED"
-            else:
-                response_text = "Seu carrinho está vazio. Vamos adicionar alguns produtos?\n\n"
-                response_text += format_quick_actions()
-                state["last_bot_action"] = "EMPTY_CART_DISPLAYED"
-        
-        # Comando: finalizar pedido
-        elif any(cmd in user_lower for cmd in ['finalizar', 'fechar pedido', 'checkout', 'finalizar pedido']):
-            if shopping_cart:
-                checkout_summary = format_checkout_summary(shopping_cart, customer_context)
-                response_text = checkout_summary
-                state["last_bot_action"] = "CHECKOUT_INITIATED"
-                state["pending_action"] = "CHECKOUT_CONFIRMATION"
-            else:
-                response_text = "Seu carrinho está vazio. Adicione alguns produtos primeiro!\n\n"
-                response_text += format_quick_actions()
-                state["last_bot_action"] = "EMPTY_CART_CHECKOUT_ATTEMPT"
-        
-        # =====================================================================
-        # PRIORIDADE 3: Confirmação de checkout
-        # =====================================================================
-        elif pending_action == "CHECKOUT_CONFIRMATION":
-            if re.match(r'^\s*1\s*$', user_message.strip()) or 'sim' in user_lower:
-                # Confirma pedido
-                total_value = sum(
-                    (item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)) * item.get('qt', 0)
-                    for item in shopping_cart
-                )
-                
-                order_id = f"PED{datetime.now().strftime('%Y%m%d%H%M%S')}"
-                
-                response_text = f"🎉 **PEDIDO CONFIRMADO!**\n\n"
-                response_text += f"Número: {order_id}\n"
-                response_text += f"Total: {format_price(total_value)}\n\n"
-                response_text += "Obrigado pela preferência! Seu pedido foi registrado.\n\n"
-                response_text += "Precisa de mais alguma coisa?"
-                
-                # Limpa carrinho e sessão após confirmar pedido
-                state["shopping_cart"] = []
-                state["pending_action"] = None
-                state["last_bot_action"] = "ORDER_CONFIRMED"
-                
-            elif re.match(r'^\s*[23]\s*$', user_message.strip()) or 'não' in user_lower or 'cancelar' in user_lower:
-                response_text = "Pedido cancelado. Seu carrinho permanece como estava.\n\n"
-                if shopping_cart:
-                    response_text += format_quick_actions(has_cart=True)
+                shopping_cart.append({**product_to_add, "qt": qt})
+
+                # 🆕 Resposta mais natural baseada na entrada
+                if isinstance(qt, float):
+                    qt_display = f"{qt:.1f}".rstrip('0').rstrip('.')
                 else:
-                    response_text += format_quick_actions()
-                
-                state["pending_action"] = None
-                state["last_bot_action"] = "ORDER_CANCELLED"
-            else:
-                response_text = "Por favor, confirme o pedido:\n"
-                response_text += "[1 Sim] [2 Alterar] [3 Cancelar]"
-        
-        # =====================================================================
-        # PRIORIDADE 4: Seleção de sugestões de busca
-        # =====================================================================
-        elif last_search_suggestions and re.match(r'^\s*[123]\s*$', user_message.strip()):
-            selection = int(user_message.strip()) - 1
-            if 0 <= selection < len(last_search_suggestions):
-                suggested_term = last_search_suggestions[selection]
-                response_text, state = handle_search_request(suggested_term, state)
-                state["last_search_suggestions"] = []
-                state["last_bot_action"] = "SUGGESTION_SELECTED"
-        
-        # =====================================================================
-        # PRIORIDADE 5: Comando "mais" para ver mais resultados
-        # =====================================================================
-        elif user_lower == 'mais' and last_search_type:
-            # Implementa paginação dos resultados
-            current_offset = state.get("current_offset", 0) + 3
-            last_search_term = state.get("last_search_term", "")
-            
-            if last_search_term:
-                response_text, state = handle_search_request(last_search_term, state, current_offset)
-                state["last_bot_action"] = "MORE_RESULTS_REQUESTED"
-        
-        # =====================================================================
-        # PRIORIDADE 6: Saudações
-        # =====================================================================
-        elif user_intent == "GREETING":
-            response_text = handle_greeting_message(user_message, state)
-            state["last_bot_action"] = "GREETING_RESPONDED"
-        
-        # =====================================================================
-        # PRIORIDADE 7: Pedidos de ajuda
-        # =====================================================================
-        elif any(word in user_lower for word in ['ajuda', 'help', 'como funciona', 'comandos']):
-            response_text = handle_help_message(state)
-            state["last_bot_action"] = "HELP_PROVIDED"
-        
-        # =====================================================================
-        # PRIORIDADE 8: Busca de produtos (com extração de quantidade)
-        # =====================================================================
-        elif user_intent in ["SEARCH_PRODUCT", "GENERAL"] or len(user_message.strip()) > 2:
-            # Extrai quantidade da mensagem se presente
-            extracted_qty = extract_quantity(user_message)
-            search_term = re.sub(r'\b\d+(\.\d+)?\b', '', user_message).strip()
-            
-            if len(search_term) >= 2:
-                # Busca produtos
-                response_text, state = handle_search_request(search_term, state)
-                state["last_bot_action"] = "PRODUCT_SEARCH"
-                
-                # Se extraiu quantidade, armazena para uso posterior
-                if extracted_qty and is_valid_quantity(extracted_qty):
-                    state["pending_quantity"] = extracted_qty
-            else:
-                response_text = "Digite pelo menos 2 caracteres para buscar produtos.\n\n"
-                response_text += format_quick_actions()
-                state["last_bot_action"] = "INVALID_SEARCH_TERM"
-        
-        # =====================================================================
-        # FALLBACK: IA para casos não cobertos
-        # =====================================================================
-        else:
-            response_text = generate_ai_response(user_message, state)
-            state["last_bot_action"] = "AI_RESPONSE"
-        
-        # =====================================================================
-        # Salva sessão e envia resposta
-        # =====================================================================
-        if response_text:
-            # Adiciona mensagens ao histórico
-            add_message_to_history(state, 'user', user_message, user_intent)
-            add_message_to_history(state, 'assistant', response_text, state.get("last_bot_action", "UNKNOWN"))
-            
-            # Atualiza contexto da sessão
-            update_session_context(state, state)
-            
-            # Salva sessão
-            save_session(session_id, state)
-            
-            # Envia resposta
-            twilio_client.send_message(session_id, response_text)
-            
-            logging.info(f"THREAD: Processamento completo para '{user_message[:50]}...' - Ação: {state.get('last_bot_action')}")
-        else:
-            logging.warning(f"THREAD: Nenhuma resposta gerada para '{user_message}'")
-            
-    except Exception as e:
-        logging.error(f"THREAD: Erro no processamento assíncrono: {e}")
-        
-        # Resposta de erro para o usuário
-        error_response = "Desculpe, houve um problema técnico. Tente novamente em alguns segundos."
-        try:
-            twilio_client.send_message(session_id, error_response)
-        except:
-            pass
+                    qt_display = str(qt)
 
-# ================================================================================
-# ROTA PRINCIPAL DO WEBHOOK
-# ================================================================================
+                product_name = get_product_name(product_to_add)
+                response_text = f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n{format_cart_for_display(shopping_cart)}"
 
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    """Webhook principal para receber mensagens do Twilio."""
-    try:
-        # Extrai dados da requisição
-        incoming_msg = request.values.get('Body', '').strip()
-        from_number = request.values.get('From', '')
-        
-        if not incoming_msg or not from_number:
-            logging.warning("Webhook recebido sem corpo da mensagem ou número de origem")
-            return str(MessagingResponse())
-        
-        # Extrai número limpo para usar como session_id
-        session_id = re.sub(r'[^\d]', '', from_number)
-        
-        logging.info(f"WEBHOOK: Mensagem recebida de {from_number}: '{incoming_msg[:100]}...'")
-        
-        # Resposta imediata para o Twilio
-        response = MessagingResponse()
-        
-        # Processa mensagem em thread separada para não bloquear o webhook
-        thread = threading.Thread(
-            target=process_message_async,
-            args=(session_id, incoming_msg),
-            daemon=True
+                # 📝 REGISTRA A RESPOSTA DO BOT
+                add_message_to_history(session, 'assistant', response_text, 'ADD_TO_CART')
+
+            else:
+                response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
+                add_message_to_history(session, 'assistant', response_text, 'ERROR')
+
+            session["pending_action"] = None
+            session["pending_product_for_cart"] = None
+
+        else:
+            # 🆕 Mensagem de erro mais útil
+            if qt is None:
+                response_text = """🤖 Não consegui entender a quantidade. Você pode usar:
+• Números: 5, 10, 2.5
+• Por extenso: cinco, duas, dez
+• Expressões: meia duzia, uma duzia
+• Com unidade: 2 pacotes, 3 unidades
+
+Qual quantidade você quer?"""
+            else:
+                response_text = f"🤖 A quantidade {qt} parece muito alta. Por favor, digite uma quantidade entre 1 e 1000."
+
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_QUANTITY')
+
+        pending_action = None
+        state['pending_action'] = pending_action
+        state['shopping_cart'] = shopping_cart
+
+    elif pending_action == 'AWAITING_CART_ITEM_SELECTION':
+        # Usuário está selecionando item do carrinho após ambiguidade
+        cart_action = session.get('pending_cart_action')
+        cart_matches = session.get('pending_cart_matches', [])
+
+        if incoming_msg.isdigit():
+            selection = int(incoming_msg)
+
+            # Verifica se a seleção é válida
+            valid_indices = [match[0] + 1 for match in cart_matches]  # +1 para índice baseado em 1
+
+            if selection in valid_indices:
+                if cart_action == 'remove':
+                    success, message, shopping_cart = remove_item_from_cart(shopping_cart, selection)
+                    response_text = message
+                    add_message_to_history(session, 'assistant', response_text, 'REMOVE_FROM_CART')
+                elif cart_action == 'add':
+                    quantity = session.get('pending_cart_quantity', 1)
+                    success, message, shopping_cart = add_quantity_to_cart_item(shopping_cart, selection, quantity)
+                    response_text = message
+                    add_message_to_history(session, 'assistant', response_text, 'ADD_QUANTITY_TO_CART')
+                else:
+                    response_text = "🤖 Ação inválida."
+                    add_message_to_history(session, 'assistant', response_text, 'ERROR')
+
+                # Limpa estado pendente
+                pending_action = None
+                session.pop('pending_cart_action', None)
+                session.pop('pending_cart_matches', None)
+                session.pop('pending_cart_quantity', None)
+            else:
+                response_text = f"🤖 Número inválido. Escolha um dos números listados: {', '.join(map(str, valid_indices))}"
+                add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
+        else:
+            response_text = "🤖 Por favor, digite o número do item que você quer selecionar."
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
+
+        state['pending_action'] = pending_action
+        state['shopping_cart'] = shopping_cart
+
+    elif pending_action:
+        print(f">>> CONSOLE: Tratando ação pendente {pending_action}")
+        affirmative_responses = ["sim", "pode ser", "s", "claro", "quero", "ok", "beleza"]
+        negative_responses = ["não", "n", "agora não", "deixa"]
+        if incoming_msg.lower() in affirmative_responses:
+            if pending_action == "show_top_selling":
+                intent = {"tool_name": "get_top_selling_products", "parameters": {}}
+            pending_action = None
+        elif incoming_msg.lower() in negative_responses:
+            response_text = "🤖 Tudo bem! O que você gostaria de fazer então?"
+            add_message_to_history(session, 'assistant', response_text, 'CHITCHAT')
+            pending_action = None
+        else:
+            pending_action = None
+
+        state['pending_action'] = pending_action
+
+    return intent, response_text
+
+
+def _determine_intent(session: Dict, state: Dict, incoming_msg: str) -> Tuple[Union[Dict, None], str]:
+    """Determina a intenção do usuário quando não há ações pendentes."""
+    intent = None
+    response_text = ""
+    last_bot_action = state.get("last_bot_action")
+    shopping_cart = state.get("shopping_cart", [])
+
+    if not incoming_msg:
+        if last_bot_action == "AWAITING_PRODUCT_SELECTION":
+            response_text = "🤖 Não entendi. Quer selecionar um dos produtos da lista? Se sim, me diga o número. Se quiser buscar outra coisa, é só digitar o nome do produto."
+        else:
+            response_text = "🤖 Por favor, me diga o que você precisa."
+        add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
+    elif incoming_msg.isdigit() and last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
+        intent = {"tool_name": "add_item_to_cart", "parameters": {"index": int(incoming_msg)}}
+    elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
+        intent = {"tool_name": "show_more_products", "parameters": {}}
+    else:
+        print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
+
+        intent = llm_interface.get_intent(
+            user_message=incoming_msg,
+            session_data=session,  # ← PASSA OS DADOS COMPLETOS DA SESSÃO
+            customer_context=state.get("customer_context"),  # Mantém compatibilidade
+            cart_items_count=len(shopping_cart)  # Mantém compatibilidade
         )
-        thread.start()
-        
-        return str(response)
-        
-    except Exception as e:
-        logging.error(f"WEBHOOK: Erro crítico: {e}")
-        
-        # Resposta de erro mínima
-        response = MessagingResponse()
-        msg = response.message("Desculpe, houve um problema técnico. Tente novamente.")
-        return str(response)
 
-# ================================================================================
-# ROTAS DE DIAGNÓSTICO E SAÚDE
-# ================================================================================
+        print(f">>> CONSOLE: IA retornou a intenção: {intent}")
 
-@app.route("/health", methods=["GET"])
-def health_check():
-    """Endpoint de verificação de saúde da aplicação."""
-    try:
-        health_status = {
-            "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "services": {
-                "database": "unknown",
-                "twilio": "unknown",
-                "knowledge_base": "unknown",
-                "ai_llm": "unknown"
-            }
-        }
-        
-        # Verifica banco de dados
-        try:
-            products = get_all_active_products()
-            health_status["services"]["database"] = "healthy" if products else "no_data"
-        except Exception as e:
-            health_status["services"]["database"] = f"error: {str(e)[:50]}"
-        
-        # Verifica Twilio
-        try:
-            twilio_health = twilio_client.get_client_health()
-            health_status["services"]["twilio"] = "healthy" if twilio_health.get("client_healthy") else "unhealthy"
-        except Exception as e:
-            health_status["services"]["twilio"] = f"error: {str(e)[:50]}"
-        
-        # Verifica Knowledge Base
-        try:
-            kb_stats = get_kb_statistics()
-            health_status["services"]["knowledge_base"] = "healthy" if kb_stats.get("total_entries", 0) > 0 else "no_data"
-        except Exception as e:
-            health_status["services"]["knowledge_base"] = f"error: {str(e)[:50]}"
-        
-        # Verifica AI/LLM
-        try:
-            test_response = llm_interface.generate_response("teste", {}, max_tokens=10)
-            health_status["services"]["ai_llm"] = "healthy" if test_response else "no_response"
-        except Exception as e:
-            health_status["services"]["ai_llm"] = f"error: {str(e)[:50]}"
-        
-        # Status geral
-        unhealthy_services = [k for k, v in health_status["services"].items() if not v.startswith("healthy")]
-        if unhealthy_services:
-            health_status["status"] = "degraded"
-            health_status["issues"] = unhealthy_services
-        
-        return health_status, 200
-        
-    except Exception as e:
-        return {
-            "status": "unhealthy",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat()
-        }, 500
+    return intent, response_text
 
-@app.route("/stats", methods=["GET"])
-def get_stats():
-    """Endpoint para estatísticas do sistema."""
-    try:
-        stats = {
-            "timestamp": datetime.now().isoformat(),
-            "database": {
-                "active_products": 0,
-                "total_products": 0
-            },
-            "knowledge_base": {},
-            "twilio": {},
-            "sessions": {
-                "active_sessions": 0
-            }
-        }
-        
-        # Estatísticas do banco
-        try:
-            active_products = get_all_active_products()
-            stats["database"]["active_products"] = len(active_products) if active_products else 0
-        except Exception as e:
-            stats["database"]["error"] = str(e)
-        
-        # Estatísticas da Knowledge Base
-        try:
-            stats["knowledge_base"] = get_kb_statistics()
-        except Exception as e:
-            stats["knowledge_base"]["error"] = str(e)
-        
-        # Estatísticas do Twilio
-        try:
-            twilio_health = twilio_client.get_client_health()
-            stats["twilio"] = twilio_health.get("statistics", {})
-        except Exception as e:
-            stats["twilio"]["error"] = str(e)
-        
-        return stats, 200
-        
-    except Exception as e:
-        return {"error": str(e)}, 500
 
-# ================================================================================
-# INICIALIZAÇÃO DA APLICAÇÃO
-# ================================================================================
+def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> str:
+    """Executa a ferramenta baseada na intenção identificada."""
+    customer_context = state.get("customer_context")
+    shopping_cart = state.get("shopping_cart", [])
+    last_search_type = state.get("last_search_type")
+    last_search_params = state.get("last_search_params", {})
+    current_offset = state.get("current_offset", 0)
+    last_shown_products = state.get("last_shown_products", [])
+    last_bot_action = state.get("last_bot_action")
+    pending_action = state.get("pending_action")
+    last_kb_search_term = state.get("last_kb_search_term")
 
-def initialize_application():
-    """Inicializa componentes necessários da aplicação."""
-    logging.info("=== INICIANDO G.A.V. (Gentil Assistente de Vendas) ===")
-    
-    # Verifica configurações essenciais
-    required_env_vars = [
-        "TWILIO_ACCOUNT_SID",
-        "TWILIO_AUTH_TOKEN",
-        "POSTGRES_HOST",
-        "POSTGRES_DB"
+    response_text = ""
+    tool_name = intent.get("tool_name")
+    parameters = intent.get("parameters", {})
+
+    db_intensive_tools = [
+        "get_top_selling_products",
+        "get_top_selling_products_by_name",
+        "show_more_products",
+        "report_incorrect_product",
+        "get_product_by_codprod",
     ]
-    
-    missing_vars = [var for var in required_env_vars if not os.getenv(var)]
-    if missing_vars:
-        logging.error(f"Variáveis de ambiente faltando: {missing_vars}")
-        return False
-    
-    # Cria diretórios necessários
-    os.makedirs("data", exist_ok=True)
-    os.makedirs("logs", exist_ok=True)
-    
-    # Testa conexões principais
-    try:
-        # Testa banco de dados
-        products = get_all_active_products()
-        logging.info(f"✅ Banco de dados: {len(products) if products else 0} produtos ativos")
-        
-        # Testa Knowledge Base
-        kb_stats = get_kb_statistics()
-        logging.info(f"✅ Knowledge Base: {kb_stats.get('total_entries', 0)} entradas")
-        
-        # Testa Twilio
-        twilio_health = twilio_client.get_client_health()
-        logging.info(f"✅ Twilio: {'Conectado' if twilio_health.get('client_healthy') else 'Com problemas'}")
-        
-        logging.info("=== G.A.V. INICIALIZADO COM SUCESSO ===")
-        return True
-        
-    except Exception as e:
-        logging.error(f"❌ Erro na inicialização: {e}")
-        return False
+    if tool_name in db_intensive_tools:
+        print(f">>> CONSOLE: Acessando o Banco de Dados (ferramenta: {tool_name})...")
+
+    if tool_name in ["get_top_selling_products", "get_top_selling_products_by_name"]:
+        last_kb_search_term, last_shown_products = None, []
+
+        if tool_name == "get_top_selling_products_by_name":
+            product_name = parameters.get("product_name", "")
+
+            # 🆕 BUSCA FUZZY INTELIGENTE
+            print(f">>> CONSOLE: Buscando '{product_name}' com sistema fuzzy...")
+
+            # Etapa 1: Tenta Knowledge Base com análise
+            kb_products, kb_analysis = find_product_in_kb_with_analysis(product_name)
+
+            if kb_products and kb_analysis.get("quality") in ["excellent", "good"]:
+                # Knowledge Base encontrou bons resultados
+                last_kb_search_term = product_name
+                last_shown_products = kb_products[:5]  # Limita a 5
+
+                quality_emoji = "⚡" if kb_analysis["quality"] == "excellent" else "🎯"
+                title = f"{quality_emoji} Encontrei isto para '{product_name}' (busca rápida):"
+
+                response_text = format_product_list_for_display(last_shown_products, title, False, 0)
+                last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                add_message_to_history(session, 'assistant', response_text, 'SHOW_PRODUCTS_FROM_KB')
+
+                print(f">>> CONSOLE: KB encontrou {len(last_shown_products)} produtos (qualidade: {kb_analysis['quality']})")
+
+            else:
+                # Knowledge Base não encontrou ou qualidade baixa - busca no banco com fuzzy
+                print(f">>> CONSOLE: KB qualidade baixa ({kb_analysis.get('quality', 'none')}), buscando no banco...")
+
+                current_offset, last_shown_products = 0, []
+                last_search_type, last_search_params = "by_name", {'product_name': product_name}
+
+                # 🆕 USA BUSCA FUZZY COM SUGESTÕES
+                search_result = search_products_with_suggestions(
+                    product_name,
+                    limit=5,
+                    offset=current_offset
+                )
+
+                products = search_result["products"]
+                suggestions = search_result["suggestions"]
+
+                if products:
+                    current_offset += 5
+                    last_shown_products.extend(products)
+
+                    # Determina emoji baseado na qualidade
+                    if len(products) >= 3:
+                        title_emoji = "🎯"
+                    elif suggestions:
+                        title_emoji = "🔍"
+                    else:
+                        title_emoji = "📦"
+
+                    title = f"{title_emoji} Encontrei estes produtos relacionados a '{product_name}':"
+                    response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
+
+                    # 🆕 ADICIONA SUGESTÕES SE HOUVER
+                    if suggestions:
+                        response_text += f"\n💡 Dica: {suggestions[0]}"
+
+                    last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                    add_message_to_history(session, 'assistant', response_text, 'SHOW_PRODUCTS_FROM_DB')
+
+                else:
+                    # Nenhum produto encontrado - resposta inteligente
+                    print(f">>> CONSOLE: Nenhum produto encontrado para '{product_name}'")
+
+                    response_text = f"🤖 Não encontrei produtos para '{product_name}'."
+
+                    # Adiciona sugestões de correção
+                    if suggestions:
+                        response_text += f"\n\n💡 {suggestions[0]}"
+                        response_text += "\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'."
+                    else:
+                        response_text += "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
+
+                    last_bot_action = None
+                    add_message_to_history(session, 'assistant', response_text, 'NO_PRODUCTS_FOUND')
+
+                print(f">>> CONSOLE: Banco encontrou {len(products)} produtos, {len(suggestions)} sugestões")
+
+        else:  # get_top_selling_products
+            current_offset, last_shown_products = 0, []
+            last_search_type, last_search_params = "top_selling", parameters
+            products = database.get_top_selling_products(offset=current_offset)
+            title = "⭐ Estes são nossos produtos mais populares:"
+            current_offset += 5
+            last_shown_products.extend(products)
+            response_text = format_product_list_for_display(products, title, len(products) == 5, 0)
+            last_bot_action = "AWAITING_PRODUCT_SELECTION"
+            add_message_to_history(session, 'assistant', response_text, 'SHOW_TOP_PRODUCTS')
+
+    elif tool_name == "add_item_to_cart":
+        product_to_add = None
+
+        if "index" in parameters:
+            try:
+                idx = int(parameters["index"]) - 1
+                if 0 <= idx < len(last_shown_products):
+                    product_to_add = last_shown_products[idx]
+            except (ValueError, IndexError):
+                pass
+
+        if not product_to_add and "product_name" in parameters:
+            # 🆕 USA BUSCA FUZZY PARA NOME DO PRODUTO
+            product_name = parameters["product_name"]
+            print(f">>> CONSOLE: Buscando produto direto por nome: '{product_name}'")
+
+            product_to_add = get_product_details_fuzzy(product_name)
+
+            if not product_to_add:
+                # Tenta busca mais ampla
+                search_result = search_products_with_suggestions(product_name, limit=1)
+                if search_result["products"]:
+                    product_to_add = search_result["products"][0]
+
+        if product_to_add:
+            term_to_learn = None
+            is_correction = last_bot_action == "AWAITING_CORRECTION_SELECTION"
+            is_new_learning = last_bot_action == "AWAITING_PRODUCT_SELECTION" and last_search_type == "by_name"
+
+            if is_correction:
+                term_to_learn = last_kb_search_term
+            elif is_new_learning:
+                term_to_learn = last_search_params.get("product_name")
+
+            session['pending_product_for_cart'] = product_to_add
+            session['term_to_learn_after_quantity'] = term_to_learn
+            session['pending_action'] = 'AWAITING_QUANTITY'
+            pending_action = 'AWAITING_QUANTITY'
+
+            response_text = f"Quantas unidades de {get_product_name(product_to_add)} você deseja adicionar?"
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_QUANTITY')
+
+        else:
+            response_text = "🤖 Produto não encontrado. Você pode tentar buscar novamente?"
+            add_message_to_history(session, 'assistant', response_text, 'PRODUCT_NOT_FOUND')
+
+    elif tool_name == "show_more_products":
+        if not last_search_type:
+            response_text = "🤖 Para eu mostrar mais, primeiro você precisa fazer uma busca."
+            add_message_to_history(session, 'assistant', response_text, 'NO_PREVIOUS_SEARCH')
+        else:
+            offset_before_call = current_offset
+            products = []
+            title = ""
+            if last_search_type == "top_selling":
+                products = database.get_top_selling_products(offset=current_offset)
+                title = "Mostrando mais produtos populares:"
+            elif last_search_type == "by_name":
+                product_name = last_search_params.get("product_name", "")
+                products = database.get_top_selling_products_by_name(product_name, offset=current_offset)
+                title = f"Mostrando mais produtos relacionados a '{product_name}':"
+
+            if not products:
+                response_text = "🤖 Não encontrei mais produtos para essa busca."
+                add_message_to_history(session, 'assistant', response_text, 'NO_MORE_PRODUCTS')
+            else:
+                current_offset += 5
+                last_shown_products.extend(products)
+                response_text = format_product_list_for_display(products, title, len(products) == 5, offset=offset_before_call)
+                last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                add_message_to_history(session, 'assistant', response_text, 'SHOW_MORE_PRODUCTS')
+
+    elif tool_name == 'view_cart':
+        response_text = format_cart_for_display(shopping_cart)
+        add_message_to_history(session, 'assistant', response_text, 'SHOW_CART')
+
+    elif tool_name == 'start_new_order':
+        customer_context, shopping_cart, last_shown_products, last_search_type, last_search_params, current_offset, last_kb_search_term = None, [], [], None, {}, 0, None
+        pending_action = None
+        last_bot_action = None
+        clear_session(sender_phone)
+        session.clear()
+        session['shopping_cart'] = shopping_cart
+        session['pending_action'] = pending_action
+        session['last_bot_action'] = last_bot_action
+        response_text = "🧹 Certo! Carrinho e dados limpos. Vamos começar de novo!"
+        add_message_to_history(session, 'assistant', response_text, 'NEW_ORDER')
+
+    elif tool_name == 'checkout':
+        if not shopping_cart:
+            response_text = "🤖 Seu carrinho está vazio!"
+            add_message_to_history(session, 'assistant', response_text, 'EMPTY_CART')
+        elif not customer_context:
+            response_text = "⭐ Para finalizar a compra, preciso do seu CNPJ."
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CNPJ')
+        else:
+            response_text = f"✅ Pedido para {customer_context['nome']} pronto para ser finalizado!\n\n{format_cart_for_display(shopping_cart)}\n(Funcionalidade de inserção do pedido no sistema será implementada futuramente)"
+            add_message_to_history(session, 'assistant', response_text, 'CHECKOUT_READY')
+
+    elif tool_name == 'find_customer_by_cnpj':
+        cnpj = parameters.get("cnpj")
+        if cnpj:
+            customer = database.find_customer_by_cnpj(cnpj)
+            if customer:
+                customer_context = customer
+                response_text = f"🤖 Olá, {customer_context['nome']}! Bem-vindo(a) de volta."
+                add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_IDENTIFIED')
+            else:
+                response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}."
+                add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_NOT_FOUND')
+        else:
+            response_text = "🤖 Por favor, informe seu CNPJ."
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CNPJ')
+
+    elif tool_name == 'handle_chitchat':
+        response_text = parameters.get('response_text', 'Entendi!')
+        add_message_to_history(session, 'assistant', response_text, 'CHITCHAT')
+
+    elif not tool_name and "response_text" in intent:
+        response_text = intent['response_text']
+        add_message_to_history(session, 'assistant', response_text, 'GENERIC_RESPONSE')
+
+    else:
+        logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")
+        response_text = "🤖 Hum, não entendi muito bem. Que tal começarmos pelos produtos mais vendidos? Posso te mostrar?"
+        pending_action = "show_top_selling"
+        add_message_to_history(session, 'assistant', response_text, 'FALLBACK')
+
+    state.update({
+        "customer_context": customer_context,
+        "shopping_cart": shopping_cart,
+        "last_search_type": last_search_type,
+        "last_search_params": last_search_params,
+        "current_offset": current_offset,
+        "last_shown_products": last_shown_products,
+        "last_bot_action": last_bot_action,
+        "pending_action": pending_action,
+        "last_kb_search_term": last_kb_search_term,
+    })
+
+    return response_text
+
+
+def _finalize_session(sender_phone: str, session: Dict, state: Dict, response_text: str) -> None:
+    """Atualiza e persiste a sessão, além de enviar a resposta ao usuário."""
+    session.update({
+        "customer_context": state.get("customer_context"),
+        "shopping_cart": state.get("shopping_cart", []),
+        "last_search_type": state.get("last_search_type"),
+        "last_search_params": state.get("last_search_params", {}),
+        "current_offset": state.get("current_offset", 0),
+        "last_shown_products": state.get("last_shown_products", []),
+        "last_bot_action": state.get("last_bot_action"),
+        "pending_action": state.get("pending_action"),
+        "last_kb_search_term": state.get("last_kb_search_term"),
+    })
+    save_session(sender_phone, session)
+
+    if response_text:
+        print(f">>> CONSOLE: Enviando resposta para o usuário: '{response_text[:80]}...'")
+        twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
+                
+def process_message_async(sender_phone: str, incoming_msg: str):
+    """
+    Esta função faz todo o trabalho pesado em segundo plano (thread) para não causar timeout.
+    ATUALIZADA COM MEMÓRIA CONVERSACIONAL COMPLETA
+    """
+    with app.app_context():
+        try:
+            print(f"\n--- INÍCIO DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---")
+            session = load_session(sender_phone)
+
+            # 📝 REGISTRA A MENSAGEM DO USUÁRIO NO HISTÓRICO
+            add_message_to_history(session, 'user', incoming_msg)
+
+            # Carrega estado atual da sessão
+            state = _extract_state(session)
+
+            # 1. Trata ações pendentes
+            intent, response_text = _handle_pending_action(session, state, incoming_msg)
+
+            # 2. Se não houve resposta ou intenção, determina a intenção
+            if not intent and not response_text:
+                intent, response_text = _determine_intent(session, state, incoming_msg)
+
+            # 3. Executa a intenção identificada
+            if intent and not response_text:
+                response_text = _route_tool(session, state, intent, sender_phone)
+
+            # 4. Mensagem padrão caso nenhuma resposta seja definida
+            if not response_text and not state.get('pending_action'):
+                response_text = "Operação concluída. O que mais posso fazer por você?"
+                add_message_to_history(session, 'assistant', response_text, 'OPERATION_COMPLETE')
+
+            # 5. Atualiza e persiste a sessão, enviando a resposta
+            _finalize_session(sender_phone, session, state, response_text)
+
+            logging.info(f"THREAD: Processamento finalizado para '{incoming_msg}'")
+            print(f"--- FIM DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---\n")
+        except Exception as e:
+            logging.error(f"ERRO CRÍTICO NA THREAD: {e}", exc_info=True)
+            print(f"!!! ERRO CRÍTICO NA THREAD: {e}")
+
+            error_response = "🤖 Desculpe, ocorreu um erro interno. Tente novamente!"
+            twilio_client.send_whatsapp_message(to=sender_phone, body=error_response)
+
+            # Registra o erro no histórico também
+            try:
+                session = load_session(sender_phone)
+                add_message_to_history(session, 'assistant', error_response, 'ERROR')
+                save_session(sender_phone, session)
+            except:
+                pass  # Se falhar aqui, apenas ignora para não causar loop de erro
+
+@app.route("/webhook", methods=['POST'])
+def webhook():
+    incoming_msg = request.values.get('Body', '').strip()
+    sender_phone = request.values.get('From', '')
+    thread = threading.Thread(target=process_message_async, args=(sender_phone, incoming_msg))
+    thread.start()
+    return "", 200
 
 if __name__ == "__main__":
-    # Inicializa aplicação
-    if initialize_application():
-        # Configurações do servidor
-        host = os.getenv("FLASK_HOST", "0.0.0.0")
-        port = int(os.getenv("FLASK_PORT", 8080))
-        debug = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-        
-        logging.info(f"🚀 Iniciando servidor Flask em {host}:{port} (debug={debug})")
-        
-        # Inicia servidor
-        app.run(
-            host=host,
-            port=port,
-            debug=debug,
-            threaded=True
-        )
-    else:
-        logging.error("❌ Falha na inicialização. Encerrando aplicação.")
-        exit(1)
+    app.run(host='0.0.0.0', port=8080, debug=True)

@@ -1,14 +1,21 @@
-# file: IA/ai_llm/llm_interface.py
+"""
+Interface LLM - Comunicação com Modelo de Linguagem
+Otimizado para respostas rápidas e fallback inteligente
+"""
+
 import os
 import ollama
 import json
 import logging
 import re
 from typing import Union, Dict, List
+import time
 
 # --- Configurações Globais ---
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+USE_AI_FALLBACK = os.getenv("USE_AI_FALLBACK", "true").lower() == "true"
+AI_TIMEOUT = int(os.getenv("AI_TIMEOUT", "5"))  # Timeout em segundos
 
 AVAILABLE_TOOLS = [
     "find_customer_by_cnpj",
@@ -25,15 +32,27 @@ AVAILABLE_TOOLS = [
     "ask_continue_or_checkout"
 ]
 
+# Cache do prompt para evitar leitura repetida do arquivo
+_prompt_cache = None
+_prompt_cache_time = 0
+
 def load_prompt_template() -> str:
-    """Carrega o prompt do arquivo de texto 'gav_prompt.txt'."""
+    """Carrega o prompt do arquivo de texto 'gav_prompt.txt' com cache."""
+    global _prompt_cache, _prompt_cache_time
+    
+    # Usa cache se foi carregado há menos de 5 minutos
+    if _prompt_cache and (time.time() - _prompt_cache_time) < 300:
+        return _prompt_cache
+    
     prompt_path = os.path.join("ai_llm", "gav_prompt.txt")
     
     try:
-        logging.info(f"[llm_interface.py] Tentando carregar prompt de: {prompt_path}")
+        logging.info(f"[llm_interface.py] Carregando prompt de: {prompt_path}")
         with open(prompt_path, "r", encoding="utf-8") as f:
             content = f.read()
-            logging.info(f"[llm_interface.py] Prompt carregado com sucesso. Tamanho: {len(content)} caracteres")
+            _prompt_cache = content
+            _prompt_cache_time = time.time()
+            logging.info(f"[llm_interface.py] Prompt carregado e cacheado. Tamanho: {len(content)} caracteres")
             return content
     except FileNotFoundError:
         logging.warning(f"[llm_interface.py] Arquivo '{prompt_path}' não encontrado. Usando prompt de fallback.")
@@ -162,17 +181,39 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
 def get_intent(user_message: str, session_data: Dict, customer_context: Union[Dict, None] = None, cart_items_count: int = 0) -> Dict:
     """
     Usa o LLM para interpretar a mensagem do usuário e traduzir em uma ferramenta.
-    Melhorado com consciência contextual e processamento de gírias.
+    Com fallback rápido para mensagens simples e timeout para evitar demoras.
     """
     try:
         logging.info(f"[llm_interface.py] Iniciando get_intent para mensagem: '{user_message}'")
         
+        # Melhora consciência contextual
+        enhanced_context = enhance_context_awareness(user_message, session_data)
+        
+        # Para mensagens simples, usa detecção rápida sem IA
+        message_lower = user_message.lower().strip()
+        simple_patterns = [
+            r'^\s*[123]\s*$',  # Números 1, 2 ou 3
+            r'^(oi|olá|ola|e aí|e ai|boa|bom dia|boa tarde|boa noite)$',  # Saudações
+            r'^(carrinho|ver carrinho)$',  # Carrinho
+            r'^(finalizar|fechar)$',  # Checkout
+            r'^(ajuda|help)$',  # Ajuda
+            r'^(produtos|mais vendidos)$',  # Produtos populares
+            r'^(mais)$',  # Mais produtos
+            r'^(novo|nova)$'  # Novo pedido
+        ]
+        
+        for pattern in simple_patterns:
+            if re.match(pattern, message_lower):
+                logging.info("[llm_interface.py] Mensagem simples detectada, usando fallback rápido")
+                return create_fallback_intent(user_message, enhanced_context)
+        
+        # Se não for habilitado uso de IA ou for mensagem muito curta, usa fallback
+        if not USE_AI_FALLBACK or len(user_message.strip()) < 3:
+            return create_fallback_intent(user_message, enhanced_context)
+        
         # Carrega template do prompt
         system_prompt = load_prompt_template()
         logging.info(f"[llm_interface.py] System prompt preparado. Tamanho: {len(system_prompt)} caracteres")
-        
-        # Melhora consciência contextual
-        enhanced_context = enhance_context_awareness(user_message, session_data)
         
         # Formata histórico de conversa
         conversation_history = format_conversation_history(
@@ -223,67 +264,58 @@ CONTEXTO ADICIONAL:
 - Quantidade inferida: {enhanced_context.get('inferred_quantity', 'Não especificada')}
 - Gíria detectada: {enhanced_context.get('detected_slang', 'Nenhuma')}
 
-IMPORTANTE: Baseie sua resposta no contexto acima. Se há produtos mostrados e o usuário digitou um número (1, 2 ou 3), use add_item_to_cart. Se há itens no carrinho e usuário quer finalizar, use checkout.
+IMPORTANTE: Baseie sua resposta no contexto acima. Se há produtos mostrados e o usuário digitou um número (Ex: 1, 2 ou 3), use add_item_to_cart. Se há itens no carrinho e usuário quer finalizar, use checkout.
 """
         
+        # Prepara mensagens para o modelo
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": full_context}
+        ]
+        
         # Configura cliente Ollama
+        client = ollama.Client(host=OLLAMA_HOST)
+        
         logging.info(f"[llm_interface.py] Configurando Ollama Host: '{OLLAMA_HOST}'")
-        ollama_client = ollama.Client(host=OLLAMA_HOST)
         
-        # Verifica disponibilidade do modelo
+        # Tenta chamar o modelo com timeout
+        start_time = time.time()
         try:
-            logging.info(f"[llm_interface.py] Verificando disponibilidade do modelo: {OLLAMA_MODEL_NAME}")
-            models = ollama_client.list()
-            available_models = [model.get("name", model.get("model", "")) for model in models.get("models", [])]
-            logging.info(f"[llm_interface.py] Modelos disponíveis: {available_models}")
-        except Exception as e:
-            logging.warning(f"[llm_interface.py] Não foi possível verificar modelos disponíveis: {e}")
-        
-        # Envia requisição para o LLM
-        logging.info(f"[llm_interface.py] Enviando requisição para o modelo {OLLAMA_MODEL_NAME}")
-        
-        response = ollama_client.chat(
-            model=OLLAMA_MODEL_NAME,
-            messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt
+            # Faz chamada ao modelo
+            response = client.chat(
+                model=OLLAMA_MODEL_NAME,
+                messages=messages,
+                options={
+                    "temperature": 0.3,  # Mais determinístico
+                    "top_p": 0.9,
+                    "num_predict": 150,  # Limita tamanho da resposta
+                    "stop": ["\n\n", "```"]  # Para em quebras duplas ou markdown
                 },
-                {
-                    "role": "user",
-                    "content": full_context
-                }
-            ],
-            options={
-                "temperature": 0.1,  # Baixa criatividade para respostas mais consistentes
-                "top_p": 0.9,
-                "top_k": 40
-            }
-        )
-        
-        # Processa resposta
-        content = response["message"]["content"].strip()
-        logging.info(f"[llm_interface.py] Resposta recebida do LLM. Tamanho: {len(content)} caracteres")
-        logging.debug(f"[llm_interface.py] Conteúdo da resposta: {content}")
-        
-        # Limpa e parseia JSON
-        cleaned_content = clean_json_response(content)
-        
-        try:
+                stream=False
+            )
+            
+            elapsed_time = time.time() - start_time
+            logging.info(f"[llm_interface.py] Resposta recebida do LLM em {elapsed_time:.2f}s")
+            
+            # Se demorou muito, considera usar fallback na próxima
+            if elapsed_time > AI_TIMEOUT:
+                logging.warning(f"[llm_interface.py] LLM demorou {elapsed_time:.2f}s (timeout: {AI_TIMEOUT}s)")
+            
+            # Extrai e processa resposta
+            content = response.get('message', {}).get('content', '')
+            logging.info(f"[llm_interface.py] Resposta do LLM: {content[:200]}...")
+            
+            cleaned_content = clean_json_response(content)
+            logging.debug(f"[llm_interface.py] Conteúdo limpo: {cleaned_content}")
+            
+            # Parse do JSON
             intent_data = json.loads(cleaned_content)
-            logging.info(f"[llm_interface.py] JSON parseado com sucesso: {intent_data}")
+            tool_name = intent_data.get("tool_name", "handle_chitchat")
             
-            # Valida estrutura da resposta
-            if not isinstance(intent_data, dict):
-                raise ValueError("Resposta não é um dicionário válido")
-            
-            if "tool_name" not in intent_data:
-                raise ValueError("Resposta não contém 'tool_name'")
-            
-            tool_name = intent_data["tool_name"]
+            # Valida se a ferramenta existe
             if tool_name not in AVAILABLE_TOOLS:
-                logging.warning(f"[llm_interface.py] Ferramenta desconhecida: {tool_name}")
-                return {"tool_name": "handle_chitchat", "parameters": {"response_text": "Tive um problema na consulta agora. Tentar novamente?"}}
+                logging.warning(f"[llm_interface.py] Ferramenta inválida: {tool_name}")
+                intent_data = {"tool_name": "handle_chitchat", "parameters": {"response_text": "Tive um problema na consulta agora. Tentar novamente?"}}
             
             # Enriquece parâmetros com contexto adicional
             parameters = intent_data.get("parameters", {})
@@ -296,20 +328,24 @@ IMPORTANTE: Baseie sua resposta no contexto acima. Se há produtos mostrados e o
                 if "qt" not in parameters:
                     parameters["qt"] = enhanced_context["inferred_quantity"]
             
-            intent_data["parameters"] = parameters
+            intent_data["parameters"] = validate_intent_parameters(tool_name, parameters)
             
+            logging.info(f"[llm_interface.py] JSON parseado com sucesso: {intent_data}")
             return intent_data
             
         except (json.JSONDecodeError, ValueError) as e:
             logging.error(f"[llm_interface.py] Erro ao parsear JSON: {e}")
-            logging.error(f"[llm_interface.py] Conteúdo problemático: {cleaned_content}")
-            
             # Fallback baseado em padrões simples
+            return create_fallback_intent(user_message, enhanced_context)
+        
+        except TimeoutError:
+            logging.warning(f"[llm_interface.py] Timeout ao chamar LLM após {AI_TIMEOUT}s")
             return create_fallback_intent(user_message, enhanced_context)
         
     except Exception as e:
         logging.error(f"[llm_interface.py] Erro geral: {e}", exc_info=True)
-        return {"tool_name": "handle_chitchat", "parameters": {"response_text": "Tive um problema na consulta agora. Tentar novamente?"}}
+        # Usa fallback em caso de erro
+        return create_fallback_intent(user_message, enhance_context_awareness(user_message, session_data))
 
 def clean_json_response(content: str) -> str:
     """Limpa a resposta do LLM para extrair JSON válido."""
@@ -325,7 +361,7 @@ def clean_json_response(content: str) -> str:
     return content.strip()
 
 def create_fallback_intent(user_message: str, context: Dict) -> Dict:
-    """Cria intenção de fallback baseada em padrões simples quando LLM falha."""
+    """Cria intenção de fallback baseada em padrões simples quando LLM falha ou demora."""
     message_lower = user_message.lower().strip()
     
     # Seleção numérica direta
@@ -365,18 +401,43 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
                 "parameters": {"product_name": product_name}
             }
     
+    # Comandos de produtos populares
+    if any(word in message_lower for word in ['produtos', 'mais vendidos', 'populares', 'top']):
+        return {"tool_name": "get_top_selling_products", "parameters": {}}
+    
     # Saudações
-    greetings = ['oi', 'olá', 'boa', 'bom dia', 'boa tarde', 'boa noite', 'e aí']
+    greetings = ['oi', 'olá', 'ola', 'boa', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
     if any(greeting in message_lower for greeting in greetings):
         return {
             "tool_name": "handle_chitchat", 
             "parameters": {"response_text": "Olá! Sou o G.A.V. do Comercial Esperança. Posso mostrar nossos produtos mais vendidos ou você já sabe o que procura?"}
         }
     
-    # Fallback padrão
+    # Ajuda
+    if any(word in message_lower for word in ['ajuda', 'help', 'como', 'funciona']):
+        return {
+            "tool_name": "handle_chitchat",
+            "parameters": {"response_text": "Como posso ajudar? Digite o nome de um produto para buscar, 'carrinho' para ver suas compras, ou 'produtos' para ver os mais vendidos."}
+        }
+    
+    # Novo pedido
+    if 'novo' in message_lower or 'nova' in message_lower:
+        return {"tool_name": "start_new_order", "parameters": {}}
+    
+    # Comando "mais" para ver mais produtos
+    if 'mais' in message_lower and context.get("last_action") == "AWAITING_PRODUCT_SELECTION":
+        return {"tool_name": "show_more_products", "parameters": {}}
+    
+    # Fallback padrão - tenta buscar o termo completo
+    if len(message_lower) > 2:
+        return {
+            "tool_name": "get_top_selling_products_by_name",
+            "parameters": {"product_name": message_lower}
+        }
+    
     return {
         "tool_name": "handle_chitchat", 
-        "parameters": {"response_text": "Não entendi. Diga o nome do produto (ex.: 'Arroz 5kg')."}
+        "parameters": {"response_text": "Não entendi. Digite o nome do produto que procura ou 'ajuda' para ver as opções."}
     }
 
 def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
@@ -434,3 +495,12 @@ def get_enhanced_intent(user_message: str, session_data: Dict, customer_context:
         "tool_name": tool_name,
         "parameters": validated_parameters
     }
+    
+def get_intent_fast(user_message: str, session_data: Dict) -> Dict:
+    """Versão rápida de detecção de intenção sem usar IA."""
+    # Melhora consciência contextual
+    context = enhance_context_awareness(user_message, session_data)
+    
+    # Retorna intenção baseada em padrões
+    return create_fallback_intent(user_message, context)
+    

@@ -1,152 +1,147 @@
 # file: IA/core/session_manager.py
+"""
+Session Manager - Gerenciamento de Sessões do G.A.V.
+"""
+
+import os
 import json
 import logging
-import os
-import re
-from typing import List, Dict, Optional
+import pickle
 from datetime import datetime, timedelta
-
+from typing import Dict, List, Optional, Union, Any
 import redis
+import re
 
+# Configurações
+REDIS_ENABLED = os.getenv("REDIS_ENABLED", "false").lower() == "true"
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+REDIS_DB = int(os.getenv("REDIS_DB", 0))
+SESSION_TTL = int(os.getenv("SESSION_TTL", 86400))  # 24 horas em segundos
 
-_redis_password = os.getenv("REDIS_PASSWORD", "").strip()
-_redis_config = {
-    "host": os.getenv("REDIS_HOST", "redis"),  # Use "redis" como padrão (nome do serviço)
-    "port": int(os.getenv("REDIS_PORT", 6379)),
-    "db": 0,
-    "decode_responses": True,
-}
-
-
-# Só adiciona senha se ela existir e não for vazia
-if _redis_password and _redis_password not in ["", "<password>"]:
-    _redis_config["password"] = _redis_password
-
-try:
-    redis_client = redis.Redis(**_redis_config)
-    redis_client.ping()  # Testa a conexão imediatamente
-    logging.info("[SESSION] Redis conectado com sucesso")
-except Exception as e:
-    logging.warning(f"[SESSION] Redis não disponível, usando fallback para arquivo: {e}")
-    redis_client = None
-
-
-def get_redis_client() -> Optional[redis.Redis]:
-    """Retorna o cliente Redis global se a conexão estiver ativa."""
-    global redis_client
+# Cliente Redis (opcional)
+redis_client = None
+if REDIS_ENABLED:
     try:
-        if redis_client:
-            redis_client.ping()
-            return redis_client
+        redis_client = redis.Redis(
+            host=REDIS_HOST,
+            port=REDIS_PORT,
+            db=REDIS_DB,
+            decode_responses=False  # Usamos pickle para serialização
+        )
+        redis_client.ping()
+        logging.info(f"Redis conectado: {REDIS_HOST}:{REDIS_PORT}")
     except Exception as e:
-        logging.error(f"[SESSION] Falha ao conectar-se ao Redis: {e}")
-    return None
+        logging.warning(f"Redis não disponível: {e}. Usando armazenamento em arquivo.")
+        redis_client = None
 
+# ================================================================================
+# FUNÇÕES DE SESSÃO
+# ================================================================================
 
-def save_session(session_id: str, data: Dict):
-    """Salva os dados da sessão no Redis com TTL de 1 hora e fallback para arquivo."""
-    if not session_id or not data:
-        logging.warning("[SESSION] Tentativa de salvar sessão com dados inválidos")
-        return
-        
-    try:
-        client = get_redis_client()
-        if client:
-            client.set(session_id, json.dumps(data), ex=3600)
-            logging.debug(f"[SESSION] Sessão salva no Redis: {session_id}")
-        else:
-            # Fallback para arquivo se Redis não estiver disponível
-            _save_session_to_file(session_id, data)
-            
-    except Exception as e:
-        logging.error(f"[SESSION] Erro ao salvar sessão no Redis: {e}")
-        # Fallback para arquivo
-        _save_session_to_file(session_id, data)
-
+def _get_session_file_path(session_id: str) -> str:
+    """Retorna o caminho do arquivo de sessão."""
+    sessions_dir = "data"
+    if not os.path.exists(sessions_dir):
+        os.makedirs(sessions_dir)
+    
+    # Sanitiza o ID da sessão para uso como nome de arquivo
+    safe_id = session_id.replace(":", "_").replace("/", "_")
+    return os.path.join(sessions_dir, f"session_{safe_id}.json")
 
 def load_session(session_id: str) -> Dict:
-    """Carrega os dados da sessão do Redis com fallback para arquivo."""
-    if not session_id:
-        logging.warning("[SESSION] Tentativa de carregar sessão sem ID")
-        return {}
-        
-    try:
-        client = get_redis_client()
-        if client:
-            raw = client.get(session_id)
-            if raw:
-                data = json.loads(raw)
+    """Carrega dados da sessão do armazenamento."""
+    default_session = {
+        "customer_context": None,
+        "shopping_cart": [],
+        "conversation_history": [],
+        "last_search_type": None,
+        "last_search_params": {},
+        "current_offset": 0,
+        "last_shown_products": [],
+        "last_bot_action": None,
+        "pending_action": None,
+        "pending_product_selection": None,
+        "pending_quantity": None,
+        "last_kb_search_term": None,
+        "last_search_results": [],
+        "last_search_analysis": {},
+        "last_search_suggestions": [],
+        "created_at": datetime.now().isoformat(),
+        "last_activity": datetime.now().isoformat()
+    }
+    
+    # Tenta carregar do Redis primeiro
+    if redis_client:
+        try:
+            data = redis_client.get(f"session:{session_id}")
+            if data:
+                session = pickle.loads(data)
                 logging.debug(f"[SESSION] Sessão carregada do Redis: {session_id}")
-                return data
-        
-        # Fallback para arquivo se não encontrar no Redis
-        return _load_session_from_file(session_id)
-        
-    except Exception as e:
-        logging.error(f"[SESSION] Erro ao carregar sessão do Redis: {e}")
-        # Fallback para arquivo
-        return _load_session_from_file(session_id)
+                return session
+        except Exception as e:
+            logging.warning(f"Erro ao carregar sessão do Redis: {e}")
+    
+    # Fallback para arquivo
+    file_path = _get_session_file_path(session_id)
+    
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                session = json.load(f)
+                logging.debug(f"[SESSION] Sessão carregada do arquivo: {file_path}")
+                
+                # Garante que todos os campos necessários existam
+                for key, value in default_session.items():
+                    if key not in session:
+                        session[key] = value
+                
+                return session
+        except Exception as e:
+            logging.error(f"Erro ao carregar sessão do arquivo: {e}")
+    
+    logging.info(f"[SESSION] Nova sessão criada: {session_id}")
+    return default_session
 
+def save_session(session_id: str, session_data: Dict):
+    """Salva dados da sessão no armazenamento."""
+    # Atualiza timestamp
+    session_data["last_activity"] = datetime.now().isoformat()
+    
+    # Salva no Redis se disponível
+    if redis_client:
+        try:
+            redis_client.setex(
+                f"session:{session_id}",
+                SESSION_TTL,
+                pickle.dumps(session_data)
+            )
+            logging.debug(f"[SESSION] Sessão salva no Redis: {session_id}")
+            return
+        except Exception as e:
+            logging.warning(f"Erro ao salvar sessão no Redis: {e}")
+    
+    # Fallback para arquivo
+    file_path = _get_session_file_path(session_id)
+    
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(session_data, f, ensure_ascii=False, indent=2)
+        logging.debug(f"[SESSION] Sessão salva no arquivo: {file_path}")
+    except Exception as e:
+        logging.error(f"Erro ao salvar sessão no arquivo: {e}")
 
 def clear_session(session_id: str):
-    """Remove os dados da sessão do Redis e arquivo."""
-    if not session_id:
-        return
-        
-    try:
-        client = get_redis_client()
-        if client:
-            client.delete(session_id)
+    """Limpa dados da sessão."""
+    # Remove do Redis se disponível
+    if redis_client:
+        try:
+            redis_client.delete(f"session:{session_id}")
             logging.debug(f"[SESSION] Sessão removida do Redis: {session_id}")
-        
-        # Remove também do arquivo
-        _clear_session_file(session_id)
-        
-    except Exception as e:
-        logging.error(f"[SESSION] Erro ao limpar sessão: {e}")
-        # Tenta remover do arquivo mesmo se Redis falhar
-        _clear_session_file(session_id)
-
-# Funções de fallback para arquivo
-def _get_session_file_path(session_id: str) -> str:
-    """Retorna caminho do arquivo de sessão."""
-    # Sanitiza o session_id para nome de arquivo seguro
-    safe_id = re.sub(r'[^\w\-_.]', '_', session_id)
-    return f"data/session_{safe_id}.json"
-
-def _save_session_to_file(session_id: str, data: Dict):
-    """Salva sessão em arquivo como fallback."""
-    try:
-        os.makedirs("data", exist_ok=True)
-        file_path = _get_session_file_path(session_id)
-        
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-        
-        logging.info(f"[SESSION] Sessão salva em arquivo (fallback): {file_path}")
-        
-    except Exception as e:
-        logging.error(f"[SESSION] Erro ao salvar sessão em arquivo: {e}")
-
-def _load_session_from_file(session_id: str) -> Dict:
-    """Carrega sessão de arquivo como fallback."""
-    try:
-        file_path = _get_session_file_path(session_id)
-        
-        if os.path.exists(file_path):
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            logging.info(f"[SESSION] Sessão carregada de arquivo (fallback): {file_path}")
-            return data
-            
-    except Exception as e:
-        logging.error(f"[SESSION] Erro ao carregar sessão de arquivo: {e}")
+        except Exception as e:
+            logging.warning(f"Erro ao remover sessão do Redis: {e}")
     
-    return {}
-
-def _clear_session_file(session_id: str):
-    """Remove arquivo de sessão."""
+    # Remove arquivo
     try:
         file_path = _get_session_file_path(session_id)
         if os.path.exists(file_path):
@@ -180,17 +175,23 @@ def clear_old_sessions():
                         os.remove(filepath)
                         logging.info(f"Sessão antiga removida: {filename}")
                 except Exception as e:
-                    logging.warning(f"Erro ao processar {filename}: {e}")    
-    
+                    logging.warning(f"Erro ao processar {filename}: {e}")
+
+# ================================================================================
+# FORMATAÇÃO DE EXIBIÇÃO PARA WHATSAPP
+# ================================================================================
+
 def format_product_list_for_display(products: List[Dict], title: str, has_more: bool, offset: int = 0) -> str:
-    """Formata lista de produtos para exibição com estilo direto e objetivo."""
+    """Formata lista de produtos para exibição no WhatsApp."""
     if not products:
-        return f"{title}\nNão achei esse item. Posso sugerir similares?"
+        return f"❌ {title}\nNão achei esse item. Posso sugerir similares?"
     
-    # Limita a 3 produtos conforme especificação
-    limited_products = products[:3]
+    # Conta produtos reais disponíveis
+    actual_count = len(products)
+    limited_products = products[:min(actual_count, 3)]
     
-    response = f"{title}:\n"
+    response = f"📦 *{title}:*\n\n"
+    
     for i, p in enumerate(limited_products, 1):
         price = p.get('pvenda') or p.get('preco_varejo', 0.0)
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -198,20 +199,29 @@ def format_product_list_for_display(products: List[Dict], title: str, has_more: 
         # Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
         product_name = p.get('descricao') or p.get('canonical_name', 'Produto sem nome')
         
-        response += f"{i}. {product_name} — {price_str}\n"
+        response += f"*{i}.* {product_name}\n"
+        response += f"    💰 {price_str}\n\n"
     
-    response += "Qual você quer? Responda 1, 2 ou 3."
+    # Ajusta mensagem conforme quantidade real de produtos
+    if actual_count == 1:
+        response += "Digite *1* para selecionar este produto."
+    elif actual_count == 2:
+        response += "Qual você quer? Digite *1* ou *2*."
+    else:
+        response += "Qual você quer? Digite *1*, *2* ou *3*."
+    
     if has_more:
-        response += "\nOu digite 'mais' para ver outros resultados!"
+        response += "\n📝 Digite *mais* para ver outros produtos!"
+    
     return response
 
 def format_cart_for_display(cart: List[Dict]) -> str:
-    """Formata o carrinho para exibição com estilo direto."""
+    """Formata o carrinho para exibição no WhatsApp."""
     if not cart:
-        return "Seu carrinho está vazio."
+        return "🛒 Seu carrinho está vazio."
     
-    response = "**SEU CARRINHO:**\n"
-    response += "-" * 25 + "\n"
+    response = "🛒 *SEU CARRINHO:*\n"
+    response += "━━━━━━━━━━━━━━━━━━━━\n"
     total = 0.0
     
     for i, item in enumerate(cart, 1):
@@ -232,14 +242,18 @@ def format_cart_for_display(cart: List[Dict]) -> str:
         else:
             qty_display = str(qt)
         
-        response += f"{i}. {product_name}\n"
-        response += f"   {qty_display}× {price_str} = {subtotal_str}\n"
+        response += f"*{i}.* {product_name}\n"
+        response += f"   {qty_display}× {price_str} = *{subtotal_str}*\n\n"
     
-    response += "-" * 25 + "\n"
+    response += "━━━━━━━━━━━━━━━━━━━━\n"
     total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    response += f"**Total: {total_str}**"
+    response += f"💵 *Total: {total_str}*"
     
     return response
+
+# ================================================================================
+# GESTÃO DO HISTÓRICO DE CONVERSA
+# ================================================================================
 
 def add_message_to_history(session_data: Dict, role: str, message: str, action_type: str = ""):
     """Adiciona mensagem ao histórico da conversa com contexto aprimorado."""
@@ -273,51 +287,9 @@ def get_conversation_context(session_data: Dict, max_messages: int = 10) -> str:
     
     return context
 
-def get_session_stats(session_data: Dict) -> Dict:
-    """Retorna estatísticas da sessão atual."""
-    stats = {
-        "cart_items": len(session_data.get("shopping_cart", [])),
-        "conversation_length": len(session_data.get("conversation_history", [])),
-        "customer_identified": bool(session_data.get("customer_context")),
-        "last_action": session_data.get("last_bot_action", "NONE"),
-        "has_pending_selection": bool(session_data.get("last_shown_products"))
-    }
-    
-    # Calcula valor total do carrinho
-    cart = session_data.get("shopping_cart", [])
-    total_value = 0.0
-    for item in cart:
-        price = item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
-        qt = item.get('qt', 0)
-        total_value += price * qt
-    
-    stats["cart_total_value"] = total_value
-    
-    return stats
-
-def format_quick_actions(has_cart: bool = False, has_products: bool = False) -> str:
-    """Gera menu de ações rápidas baseado no contexto atual."""
-    actions = []
-    
-    if has_products:
-        actions.extend(["1 Selecionar", "2 Ver mais"])
-    
-    if has_cart:
-        actions.extend(["Ver carrinho", "Finalizar"])
-    else:
-        actions.append("Ver produtos")
-    
-    if not actions:
-        actions = ["Ver produtos", "Buscar item"]
-    
-    # Limita a 3 opções conforme especificação
-    limited_actions = actions[:3]
-    
-    menu = "Opções: "
-    for i, action in enumerate(limited_actions, 1):
-        menu += f"[{i} {action}] "
-    
-    return menu.strip()
+# ================================================================================
+# DETECÇÃO E ANÁLISE DE INTENÇÕES
+# ================================================================================
 
 def detect_user_intent_type(message: str, session_data: Dict) -> str:
     """Detecta tipo de intenção do usuário para melhor contexto."""
@@ -342,7 +314,7 @@ def detect_user_intent_type(message: str, session_data: Dict) -> str:
         return "SEARCH_PRODUCT"
     
     # Saudações
-    greetings = ['oi', 'olá', 'boa', 'bom dia', 'boa tarde', 'boa noite']
+    greetings = ['oi', 'olá', 'ola', 'boa', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
     if any(greeting in message_lower for greeting in greetings):
         return "GREETING"
     
@@ -351,6 +323,63 @@ def detect_user_intent_type(message: str, session_data: Dict) -> str:
         return "QUANTITY_SPECIFICATION"
     
     return "GENERAL"
+
+# ================================================================================
+# ESTATÍSTICAS E MÉTRICAS
+# ================================================================================
+
+def get_session_stats(session_data: Dict) -> Dict:
+    """Retorna estatísticas da sessão atual."""
+    stats = {
+        "cart_items": len(session_data.get("shopping_cart", [])),
+        "conversation_length": len(session_data.get("conversation_history", [])),
+        "customer_identified": bool(session_data.get("customer_context")),
+        "last_action": session_data.get("last_bot_action", "NONE"),
+        "has_pending_selection": bool(session_data.get("last_shown_products")),
+        "has_pending_quantity": bool(session_data.get("pending_product_selection"))
+    }
+    
+    # Calcula valor total do carrinho
+    cart = session_data.get("shopping_cart", [])
+    total_value = 0.0
+    for item in cart:
+        price = item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
+        qt = item.get('qt', 0)
+        total_value += price * qt
+    
+    stats["cart_total_value"] = total_value
+    
+    return stats
+
+# ================================================================================
+# AÇÕES RÁPIDAS E MENUS
+# ================================================================================
+
+def format_quick_actions(has_cart: bool = False, has_products: bool = False) -> str:
+    """Gera menu de ações rápidas baseado no contexto atual para WhatsApp."""
+    actions = []
+    
+    if has_products:
+        return "Digite o número (1, 2 ou 3) do produto desejado"
+    
+    if has_cart:
+        actions = [
+            "*1* - 🔍 Buscar produtos",
+            "*2* - 🛒 Ver carrinho",
+            "*3* - ✅ Finalizar pedido"
+        ]
+    else:
+        actions = [
+            "🔍 Digite o nome do produto",
+            "📦 Digite *produtos* para ver os mais vendidos",
+            "❓ Digite *ajuda* para mais opções"
+        ]
+    
+    return "\n".join(actions)
+
+# ================================================================================
+# ATUALIZAÇÃO DE CONTEXTO
+# ================================================================================
 
 def update_session_context(session_data: Dict, new_context: Dict):
     """Atualiza contexto da sessão de forma inteligente."""
@@ -362,7 +391,9 @@ def update_session_context(session_data: Dict, new_context: Dict):
         "last_shown_products",
         "current_offset",
         "last_search_type",
-        "last_search_params"
+        "last_search_params",
+        "pending_product_selection",
+        "pending_quantity"
     ]
     
     for key in important_keys:

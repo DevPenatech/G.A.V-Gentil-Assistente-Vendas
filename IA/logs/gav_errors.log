@@ -1,0 +1,7 @@
+2025-08-12 13:06:36,769 [ERROR] [root:710] [process_message_async] ERRO CRÍTICO NA THREAD: module 'communication.twilio_client' has no attribute 'send_whatsapp_message'
+Traceback (most recent call last):
+  File "/app/app.py", line 705, in process_message_async
+    _finalize_session(sender_phone, session, state, response_text)
+  File "/app/app.py", line 670, in _finalize_session
+    twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
+AttributeError: module 'communication.twilio_client' has no attribute 'send_whatsapp_message'

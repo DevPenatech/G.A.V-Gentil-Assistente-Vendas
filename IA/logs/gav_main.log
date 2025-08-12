@@ -1,0 +1,158 @@
+2025-08-12 12:59:56,157 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 12:59:56,562 [INFO] [root:58] [_initialize_client] Cliente Twilio inicializado: My first Twilio account
+2025-08-12 12:59:56,566 [INFO] [root:989] [<module>] Iniciando G.A.V. Bot...
+2025-08-12 12:59:56,599 [INFO] [werkzeug:97] [_log] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.18.0.4:5000
+2025-08-12 12:59:56,600 [INFO] [werkzeug:97] [_log] [33mPress CTRL+C to quit[0m
+2025-08-12 12:59:56,602 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 12:59:57,226 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 12:59:57,557 [INFO] [root:58] [_initialize_client] Cliente Twilio inicializado: My first Twilio account
+2025-08-12 12:59:57,561 [INFO] [root:989] [<module>] Iniciando G.A.V. Bot...
+2025-08-12 12:59:57,590 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 12:59:57,592 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 441-271-811
+2025-08-12 13:02:38,946 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/communication/twilio_client.py', reloading
+2025-08-12 13:02:38,993 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 13:02:39,628 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:05:28,298 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:05:28,451 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 13:05:28,457 [INFO] [root:989] [<module>] Iniciando G.A.V. Bot...
+2025-08-12 13:05:28,493 [INFO] [werkzeug:97] [_log] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.18.0.4:5000
+2025-08-12 13:05:28,494 [INFO] [werkzeug:97] [_log] [33mPress CTRL+C to quit[0m
+2025-08-12 13:05:28,496 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 13:05:29,202 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:05:29,308 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 13:05:29,311 [INFO] [root:989] [<module>] Iniciando G.A.V. Bot...
+2025-08-12 13:05:29,340 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 13:05:29,342 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 137-776-989
+2025-08-12 13:05:50,538 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/communication/twilio_client.py', reloading
+2025-08-12 13:05:50,586 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 13:05:51,248 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:05:51,641 [INFO] [root:58] [_initialize_client] Cliente Twilio inicializado: My first Twilio account
+2025-08-12 13:05:51,646 [INFO] [root:989] [<module>] Iniciando G.A.V. Bot...
+2025-08-12 13:05:51,673 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 13:05:51,674 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 137-776-989
+2025-08-12 13:05:54,930 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-12 13:05:54,976 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 13:05:55,677 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:05:56,055 [INFO] [root:58] [_initialize_client] Cliente Twilio inicializado: My first Twilio account
+2025-08-12 13:05:56,087 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 13:05:56,088 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 137-776-989
+2025-08-12 13:06:31,003 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:06:31,492 [INFO] [root:58] [_initialize_client] Cliente Twilio inicializado: My first Twilio account
+2025-08-12 13:06:31,598 [INFO] [werkzeug:97] [_log] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.4:8080
+2025-08-12 13:06:31,599 [INFO] [werkzeug:97] [_log] [33mPress CTRL+C to quit[0m
+2025-08-12 13:06:31,610 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 13:06:32,652 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:06:33,180 [INFO] [root:58] [_initialize_client] Cliente Twilio inicializado: My first Twilio account
+2025-08-12 13:06:33,310 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 13:06:33,314 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 114-164-611
+2025-08-12 13:06:36,760 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [12/Aug/2025 13:06:36] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 13:06:36,762 [INFO] [root:103] [load_session] [SESSION] Nova sessão criada: 5511940726493***
+2025-08-12 13:06:36,764 [INFO] [root:187] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'Oi'
+2025-08-12 13:06:36,765 [INFO] [root:207] [get_intent] [llm_interface.py] Mensagem simples detectada, usando fallback rápido
+2025-08-12 13:06:36,768 [DEBUG] [root:130] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:06:36,769 [ERROR] [root:710] [process_message_async] ERRO CRÍTICO NA THREAD: module 'communication.twilio_client' has no attribute 'send_whatsapp_message'
+Traceback (most recent call last):
+  File "/app/app.py", line 705, in process_message_async
+    _finalize_session(sender_phone, session, state, response_text)
+  File "/app/app.py", line 670, in _finalize_session
+    twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
+AttributeError: module 'communication.twilio_client' has no attribute 'send_whatsapp_message'
+2025-08-12 13:06:47,174 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/communication/twilio_client.py', reloading
+2025-08-12 13:06:47,217 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 13:06:47,882 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:06:47,964 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 13:06:47,965 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 114-164-611
+2025-08-12 13:06:56,498 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/communication/twilio_client.py', reloading
+2025-08-12 13:06:56,542 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-12 13:06:57,203 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-12 13:06:57,301 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-12 13:06:57,332 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-12 13:06:57,333 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 114-164-611
+2025-08-12 13:07:04,209 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [12/Aug/2025 13:07:04] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 13:07:04,213 [DEBUG] [root:92] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:07:04,213 [INFO] [root:187] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'Oi'
+2025-08-12 13:07:04,214 [INFO] [root:207] [get_intent] [llm_interface.py] Mensagem simples detectada, usando fallback rápido
+2025-08-12 13:07:04,218 [DEBUG] [root:130] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:07:04,218 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Olá! Sou o G.A.V. do Comercial Esperança. Posso mostrar nossos produtos mais vendidos ou você já sab...'
+2025-08-12 13:07:04,540 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMb3005a1edb76aa164001b80b48e81588
+2025-08-12 13:07:04,541 [INFO] [root:707] [process_message_async] THREAD: Processamento finalizado para 'Oi'
+2025-08-12 13:08:06,951 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [12/Aug/2025 13:08:06] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 13:08:06,959 [DEBUG] [root:92] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:06,960 [INFO] [root:187] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'quero coca cola'
+2025-08-12 13:08:06,961 [INFO] [root:50] [load_prompt_template] [llm_interface.py] Carregando prompt de: ai_llm/gav_prompt.txt
+2025-08-12 13:08:06,975 [INFO] [root:55] [load_prompt_template] [llm_interface.py] Prompt carregado e cacheado. Tamanho: 5321 caracteres
+2025-08-12 13:08:06,976 [INFO] [root:216] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 5321 caracteres
+2025-08-12 13:08:06,992 [INFO] [root:279] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-12 13:08:06,993 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-12 13:08:06,997 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a27ece700>
+2025-08-12 13:08:06,997 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-12 13:08:06,998 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-12 13:08:06,999 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-12 13:08:06,999 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-12 13:08:07,000 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-12 13:08:13,957 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 12 Aug 2025 13:08:13 GMT'), (b'Content-Length', b'401')])
+2025-08-12 13:08:13,958 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-12 13:08:13,959 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-12 13:08:13,960 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-12 13:08:13,961 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-12 13:08:13,961 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-12 13:08:13,962 [INFO] [root:298] [get_intent] [llm_interface.py] Resposta recebida do LLM em 6.97s
+2025-08-12 13:08:13,963 [WARNING] [root:302] [get_intent] [llm_interface.py] LLM demorou 6.97s (timeout: 5s)
+2025-08-12 13:08:13,964 [INFO] [root:306] [get_intent] [llm_interface.py] Resposta do LLM: {"tool_name": "get_top_selling_products_by_name", "parameters": {"product_name": "coca cola"}}...
+2025-08-12 13:08:13,964 [DEBUG] [root:309] [get_intent] [llm_interface.py] Conteúdo limpo: {"tool_name": "get_top_selling_products_by_name", "parameters": {"product_name": "coca cola"}}
+2025-08-12 13:08:13,965 [INFO] [root:333] [get_intent] [llm_interface.py] JSON parseado com sucesso: {'tool_name': 'get_top_selling_products_by_name', 'parameters': {'product_name': 'coca cola'}}
+2025-08-12 13:08:13,980 [INFO] [root:101] [_load_kb] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 3 produtos e 58 termos.
+2025-08-12 13:08:13,981 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'coca cola'
+2025-08-12 13:08:13,987 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 0 produtos com similaridade >= 0.8
+2025-08-12 13:08:13,989 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'coca cola'
+2025-08-12 13:08:13,990 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 2 produtos com similaridade >= 0.6
+2025-08-12 13:08:13,991 [INFO] [root:169] [find_product_in_kb] [KB] Busca fuzzy (média) encontrou 2 produtos para: coca cola
+2025-08-12 13:08:14,025 [INFO] [root:352] [fuzzy_search_products] [FUZZY] Busca fuzzy no banco para: 'coca cola'
+2025-08-12 13:08:14,030 [INFO] [root:397] [fuzzy_search_products] [FUZZY] Retornando 2 produtos do banco
+2025-08-12 13:08:14,036 [DEBUG] [root:130] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:14,037 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '📦 *📦 Encontrei estes produtos relacionados a 'coca cola'::*
+
+*1.* REFRIG.COCA-COLA PET 2L
+    💰 R$ 8...'
+2025-08-12 13:08:14,273 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM23b6379f09005d378286bf11ce870367
+2025-08-12 13:08:14,274 [INFO] [root:707] [process_message_async] THREAD: Processamento finalizado para 'quero coca cola'
+2025-08-12 13:08:23,329 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [12/Aug/2025 13:08:23] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 13:08:23,332 [DEBUG] [root:92] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:23,335 [DEBUG] [root:130] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:23,339 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Quantas unidades de REFRIG.COCA-COLA LT 350ML você deseja adicionar?'
+2025-08-12 13:08:23,567 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMf5d9163893e705eb53b1843ee5d26012
+2025-08-12 13:08:23,571 [INFO] [root:707] [process_message_async] THREAD: Processamento finalizado para '2'
+2025-08-12 13:08:30,939 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [12/Aug/2025 13:08:30] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 13:08:30,944 [DEBUG] [root:92] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:30,949 [INFO] [root:258] [update_kb] Adicionado termo 'coca cola' ao produto REFRIG.COCA-COLA LT 350ML
+2025-08-12 13:08:30,962 [INFO] [root:263] [update_kb] KB atualizado com novo termo relacionado 'coca cola'
+2025-08-12 13:08:30,979 [DEBUG] [root:130] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:30,979 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '✅ Perfeito! Adicionei 10 REFRIG.COCA-COLA LT 350ML ao seu carrinho.
+
+🛒 *SEU CARRINHO:*
+━━━━━━━━━━━━━...'
+2025-08-12 13:08:31,201 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM1bf0a2687b8e92251e79c45846c71fa3
+2025-08-12 13:08:31,202 [INFO] [root:707] [process_message_async] THREAD: Processamento finalizado para '10'
+2025-08-12 13:08:39,965 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [12/Aug/2025 13:08:39] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 13:08:39,980 [DEBUG] [root:92] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:39,982 [INFO] [root:187] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'finalizar'
+2025-08-12 13:08:39,983 [INFO] [root:207] [get_intent] [llm_interface.py] Mensagem simples detectada, usando fallback rápido
+2025-08-12 13:08:39,987 [DEBUG] [root:130] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:39,988 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '⭐ Para finalizar a compra, preciso do seu CNPJ.'
+2025-08-12 13:08:40,197 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SMdb101757db647f31fbc176a60c88d630
+2025-08-12 13:08:40,198 [INFO] [root:707] [process_message_async] THREAD: Processamento finalizado para 'finalizar'
+2025-08-12 13:08:48,552 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [12/Aug/2025 13:08:48] "POST /webhook HTTP/1.1" 200 -
+2025-08-12 13:08:48,567 [DEBUG] [root:92] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:48,584 [DEBUG] [root:130] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp_+5511940726493.json
+2025-08-12 13:08:48,585 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Produto não encontrado. Você pode tentar buscar novamente?'
+2025-08-12 13:08:48,805 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM3832e61a7c6ea608fc2ff8301cebafe6
+2025-08-12 13:08:48,806 [INFO] [root:707] [process_message_async] THREAD: Processamento finalizado para '12345678910'
