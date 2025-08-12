@@ -372,6 +372,8 @@ Qual quantidade você quer?"""
             )
             add_message_to_history(session, 'assistant', response_text, 'CHITCHAT')
             pending_action = None
+            state['last_shown_products'] = []
+            state['last_bot_action'] = 'AWAITING_MENU_SELECTION'
         else:
             pending_action = None
 
@@ -393,11 +395,14 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
                 "🤖 Não entendi. Quer selecionar um dos produtos da lista? Se sim, me diga o número.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
             )
+            state['last_bot_action'] = 'AWAITING_PRODUCT_SELECTION'
         else:
             response_text = (
                 "🤖 Por favor, me diga o que você precisa.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
             )
+            state['last_shown_products'] = []
+            state['last_bot_action'] = 'AWAITING_MENU_SELECTION'
         add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
         return intent, response_text
 
@@ -409,6 +414,22 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
         intent = {"tool_name": "checkout", "parameters": {}}
     elif intent_type == "NUMERIC_SELECTION" and last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
         intent = {"tool_name": "add_item_to_cart", "parameters": {"index": int(incoming_msg)}}
+    elif intent_type == "NUMERIC_SELECTION" and last_bot_action == "AWAITING_MENU_SELECTION":
+        if incoming_msg == "1":
+            intent = {"tool_name": "get_top_selling_products", "parameters": {}}
+        elif incoming_msg == "2":
+            intent = {"tool_name": "view_cart", "parameters": {}}
+        elif incoming_msg == "3":
+            intent = {"tool_name": "checkout", "parameters": {}}
+        else:
+            response_text = (
+                "🤖 Opção inválida. Escolha 1, 2 ou 3.\n\n"
+                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+            )
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
+            state['last_shown_products'] = []
+            state['last_bot_action'] = 'AWAITING_MENU_SELECTION'
+            return intent, response_text
     elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
         intent = {"tool_name": "show_more_products", "parameters": {}}
     elif intent_type in ["GENERAL", "SEARCH_PRODUCT"]:
@@ -636,6 +657,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             f"{format_quick_actions(has_cart=bool(shopping_cart))}"
         )
         add_message_to_history(session, 'assistant', response_text, 'SHOW_CART')
+        last_shown_products = []
+        last_bot_action = 'AWAITING_MENU_SELECTION'
 
     elif tool_name == 'start_new_order':
         customer_context, shopping_cart, last_shown_products, last_search_type, last_search_params, current_offset, last_kb_search_term = None, [], [], None, {}, 0, None
@@ -663,9 +686,13 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 f"{format_quick_actions(has_cart=False)}"
             )
             add_message_to_history(session, 'assistant', response_text, 'EMPTY_CART')
+            last_shown_products = []
+            last_bot_action = 'AWAITING_MENU_SELECTION'
         elif not customer_context:
             response_text = "⭐ Para finalizar a compra, preciso do seu CNPJ."
             add_message_to_history(session, 'assistant', response_text, 'REQUEST_CNPJ')
+            last_shown_products = []
+            last_bot_action = None
         else:
             response_text = (
                 f"✅ Pedido para {customer_context['nome']} pronto para ser finalizado!\n\n"
@@ -673,6 +700,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
             )
             add_message_to_history(session, 'assistant', response_text, 'CHECKOUT_READY')
+            last_shown_products = []
+            last_bot_action = 'AWAITING_MENU_SELECTION'
 
     elif tool_name == 'find_customer_by_cnpj':
         cnpj = parameters.get("cnpj")
@@ -685,6 +714,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     f"{format_quick_actions(has_cart=bool(shopping_cart))}"
                 )
                 add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_IDENTIFIED')
+                last_shown_products = []
+                last_bot_action = 'AWAITING_MENU_SELECTION'
             else:
                 response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}."
                 add_message_to_history(session, 'assistant', response_text, 'CUSTOMER_NOT_FOUND')
@@ -698,6 +729,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             f"{format_quick_actions(has_cart=bool(shopping_cart))}"
         )
         add_message_to_history(session, 'assistant', response_text, 'CHITCHAT')
+        last_shown_products = []
+        last_bot_action = 'AWAITING_MENU_SELECTION'
 
     elif not tool_name and "response_text" in intent:
         response_text = (
@@ -705,6 +738,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             f"{format_quick_actions(has_cart=bool(shopping_cart))}"
         )
         add_message_to_history(session, 'assistant', response_text, 'GENERIC_RESPONSE')
+        last_shown_products = []
+        last_bot_action = 'AWAITING_MENU_SELECTION'
 
     else:
         logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")

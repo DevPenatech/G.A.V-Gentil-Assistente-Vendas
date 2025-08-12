@@ -189,26 +189,31 @@ def format_product_list_for_display(products: List[Dict], title: str, has_more: 
     # Conta produtos reais disponíveis
     actual_count = len(products)
     limited_products = products[:min(actual_count, 3)]
-    
+    display_count = len(limited_products)
+
     response = f"📦 *{title}:*\n\n"
-    
-    for i, p in enumerate(limited_products, 1):
+
+    for i, p in enumerate(limited_products, start=offset + 1):
         price = p.get('pvenda') or p.get('preco_varejo', 0.0)
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        
+
         # Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
         product_name = p.get('descricao') or p.get('canonical_name', 'Produto sem nome')
         
         response += f"*{i}.* {product_name}\n"
         response += f"    💰 {price_str}\n\n"
     
-    # Ajusta mensagem conforme quantidade real de produtos
-    if actual_count == 1:
-        response += "Digite *1* para selecionar este produto."
-    elif actual_count == 2:
-        response += "Qual você quer? Digite *1* ou *2*."
+    # Ajusta mensagem conforme quantidade exibida e offset
+    if display_count == 1:
+        response += f"Digite *{offset + 1}* para selecionar este produto."
+    elif display_count == 2:
+        response += (
+            f"Qual você quer? Digite *{offset + 1}* ou *{offset + 2}*."
+        )
     else:
-        response += "Qual você quer? Digite *1*, *2* ou *3*."
+        response += (
+            f"Qual você quer? Digite *{offset + 1}*, *{offset + 2}* ou *{offset + 3}*."
+        )
     
     if has_more:
         response += "\n📝 Digite *mais* para ver outros produtos!"
