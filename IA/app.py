@@ -574,7 +574,6 @@ Qual quantidade você quer?"""
 
     return intent, response_text
 
-
 def _process_user_message(
     session: Dict, state: Dict, incoming_msg: str
 ) -> Tuple[Union[Dict, None], str]:
@@ -628,6 +627,7 @@ def _process_user_message(
         elif incoming_msg == "3":
             intent = {"tool_name": "checkout", "parameters": {}}
         else:
+
             response_text = (
                 "🤖 Opção inválida. Escolha 1, 2 ou 3.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
@@ -638,9 +638,16 @@ def _process_user_message(
             state["last_shown_products"] = []
             state["last_bot_action"] = "AWAITING_MENU_SELECTION"
             return intent, response_text
-    elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
-        intent = {"tool_name": "show_more_products", "parameters": {}}
-    elif intent_type in ["GENERAL", "SEARCH_PRODUCT"]:
+
+    if msg_lower in ["mais", "proximo", "próximo", "mais produtos"]:
+        return {"tool_name": "show_more_products", "parameters": {}}, response_text
+    if msg_lower in ["carrinho", "ver carrinho"]:
+        return {"tool_name": "view_cart", "parameters": {}}, response_text
+    if msg_lower in ["checkout", "finalizar", "finalizar pedido", "fechar pedido"]:
+        return {"tool_name": "checkout", "parameters": {}}, response_text
+
+    # --- Consulta à IA ---
+    try:
         print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
         intent = llm_interface.get_intent(
             user_message=incoming_msg,
@@ -649,6 +656,7 @@ def _process_user_message(
             cart_items_count=len(shopping_cart),
         )
         print(f">>> CONSOLE: IA retornou a intenção: {intent}")
+
     elif intent_type == "GREETING":
         response_text = "🤖 Olá! Como posso ajudar você hoje?"
         add_message_to_history(session, "assistant", response_text, "GREETING")
