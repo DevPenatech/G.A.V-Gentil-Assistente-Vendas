@@ -13,6 +13,7 @@ from core.session_manager import (
     format_product_list_for_display, format_cart_for_display,
     add_message_to_history, get_conversation_context,
     detect_user_intent_type
+
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
