@@ -1,0 +1,69 @@
+{
+  "customer_context": null,
+  "shopping_cart": [],
+  "conversation_history": [
+    {
+      "role": "user",
+      "message": "oi",
+      "timestamp": "2025-08-12T19:03:46.424260",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Olá! Como posso ajudar você hoje?",
+      "timestamp": "2025-08-12T19:03:46.424951",
+      "action_type": "GREETING"
+    },
+    {
+      "role": "user",
+      "message": "class-sound",
+      "timestamp": "2025-08-12T19:03:55.683559",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Não encontrei produtos para 'class-sound'.\n\n💡 class sound\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'.",
+      "timestamp": "2025-08-12T19:03:59.623091",
+      "action_type": "NO_PRODUCTS_FOUND"
+    },
+    {
+      "role": "user",
+      "message": "oi",
+      "timestamp": "2025-08-12T19:04:12.956960",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Olá! Como posso ajudar você hoje?",
+      "timestamp": "2025-08-12T19:04:12.957600",
+      "action_type": "GREETING"
+    }
+  ],
+  "conversation_summary": "",
+  "last_search_type": "by_name",
+  "last_search_params": {
+    "product_name": "class-sound"
+  },
+  "current_offset": 0,
+  "last_shown_products": [],
+  "last_bot_action": null,
+  "pending_action": null,
+  "pending_product_selection": null,
+  "pending_quantity": null,
+  "last_kb_search_term": null,
+  "last_search_results": [],
+  "last_search_analysis": {},
+  "last_search_suggestions": [],
+  "created_at": "2025-08-12T19:03:46.421768",
+  "last_activity": "2025-08-12T19:04:12.957611",
+  "session_stats": {
+    "cart_items": 0,
+    "conversation_length": 6,
+    "customer_identified": false,
+    "last_action": null,
+    "has_pending_selection": false,
+    "has_pending_quantity": false,
+    "cart_total_value": 0.0
+  },
+  "purchase_stage": "greeting"
+}

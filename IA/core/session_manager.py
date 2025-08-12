@@ -9,10 +9,11 @@ import json
 import logging
 import pickle
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Union, Any
+from typing import Dict, List
 import redis
 import re
 from utils.quantity_extractor import detect_quantity_modifiers
+from utils.product_utils import get_product_price, get_product_name
 
 # Configurações
 REDIS_ENABLED = os.getenv("REDIS_ENABLED", "false").lower() == "true"
@@ -225,7 +226,7 @@ def format_product_list_for_display(products: List[Dict], title: str, has_more: 
     return response
 
 def format_cart_for_display(cart: List[Dict]) -> str:
-    """Formata o carrinho para exibição no WhatsApp."""
+    """🔧 CORREÇÃO: Versão simplificada usando funções utilitárias"""
     if not cart:
         return "🛒 Seu carrinho está vazio."
     
@@ -234,7 +235,8 @@ def format_cart_for_display(cart: List[Dict]) -> str:
     total = 0.0
     
     for i, item in enumerate(cart, 1):
-        price = item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
+        # 🔧 USA funções centralizadas
+        price = get_product_price(item)
         qt = item.get('qt', 0)
         subtotal = price * qt
         total += subtotal
@@ -242,10 +244,10 @@ def format_cart_for_display(cart: List[Dict]) -> str:
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         
-        # Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
-        product_name = item.get('descricao') or item.get('canonical_name', 'Produto sem nome')
+        # 🔧 USA função centralizada
+        product_name = get_product_name(item)
         
-        # Formata quantidade para exibição
+        # Formata quantidade
         if isinstance(qt, float):
             qty_display = f"{qt:.1f}".rstrip('0').rstrip('.')
         else:

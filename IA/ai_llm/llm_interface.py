@@ -17,6 +17,9 @@ import time
 from core.session_manager import get_conversation_context
 from utils.quantity_extractor import detect_quantity_modifiers
 
+from utils.command_detector import analyze_critical_command, is_valid_cnpj
+from utils.limited_cache import LimitedCache
+
 # --- Configurações Globais ---
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
@@ -40,8 +43,32 @@ AVAILABLE_TOOLS = [
 ]
 
 # Cache do prompt para evitar leitura repetida do arquivo
-_prompt_cache = None
-_prompt_cache_time = 0
+_prompt_cache = LimitedCache(max_size=10, ttl_seconds=300)  # 5 minutos TTL
+
+def load_prompt_template() -> str:
+    """🔧 CORREÇÃO: Cache melhorado com invalidação automática"""
+    # Verifica cache primeiro
+    cached_prompt = _prompt_cache.get("prompt_template")
+    if cached_prompt:
+        return cached_prompt
+
+    prompt_path = os.path.join("ai_llm", "gav_prompt.txt")
+
+    try:
+        logging.info(f"[llm_interface.py] Carregando prompt de: {prompt_path}")
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            
+            # Armazena no cache melhorado
+            _prompt_cache.set("prompt_template", content)
+            
+            logging.info(f"[llm_interface.py] Prompt carregado e cacheado. Tamanho: {len(content)} caracteres")
+            return content
+    except FileNotFoundError:
+        logging.warning(f"[llm_interface.py] Arquivo '{prompt_path}' não encontrado. Usando prompt de fallback.")
+        fallback = get_fallback_prompt()
+        _prompt_cache.set("prompt_template", fallback)
+        return fallback
 
 
 def is_valid_cnpj(cnpj: str) -> bool:
@@ -172,34 +199,6 @@ def detect_checkout_context(session_data: Dict) -> Dict:
     
     return context
 
-
-def load_prompt_template() -> str:
-    """Carrega o prompt do arquivo de texto 'gav_prompt.txt' com cache."""
-    global _prompt_cache, _prompt_cache_time
-
-    # Usa cache se foi carregado há menos de 5 minutos
-    if _prompt_cache and (time.time() - _prompt_cache_time) < 300:
-        return _prompt_cache
-
-    prompt_path = os.path.join("ai_llm", "gav_prompt.txt")
-
-    try:
-        logging.info(f"[llm_interface.py] Carregando prompt de: {prompt_path}")
-        with open(prompt_path, "r", encoding="utf-8") as f:
-            content = f.read()
-            _prompt_cache = content
-            _prompt_cache_time = time.time()
-            logging.info(
-                f"[llm_interface.py] Prompt carregado e cacheado. Tamanho: {len(content)} caracteres"
-            )
-            return content
-    except FileNotFoundError:
-        logging.warning(
-            f"[llm_interface.py] Arquivo '{prompt_path}' não encontrado. Usando prompt de fallback."
-        )
-        return get_fallback_prompt()
-
-
 def get_fallback_prompt() -> str:
     """Prompt de emergência caso o arquivo não seja encontrado."""
     return """Você é G.A.V., o Gentil Assistente de Vendas do Comercial Esperança. Seu tom é PROFISSIONAL, DIRETO e OBJETIVO. 
@@ -271,9 +270,11 @@ def detect_quantity_keywords(message: str) -> Union[float, None]:
 
 
 def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
-    """
-    🆕 VERSÃO MELHORADA: Melhora a consciência contextual analisando estado da sessão.
-    """
+    """🔧 CORREÇÃO: Versão simplificada usando funções centralizadas"""
+    
+    # Usa detecção centralizada
+    command_type, command_params = analyze_critical_command(user_message, session_data)
+    
     context = {
         "has_cart_items": len(session_data.get("shopping_cart", [])) > 0,
         "cart_count": len(session_data.get("shopping_cart", [])),
@@ -281,96 +282,28 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         "last_action": session_data.get("last_bot_action", ""),
         "customer_identified": bool(session_data.get("customer_context")),
         "recent_search": session_data.get("last_kb_search_term"),
-        "numeric_selection": extract_numeric_selection(user_message),
-        "inferred_quantity": detect_quantity_keywords(user_message),
-        "conversation_history": session_data.get("conversation_history", [])
+        "conversation_history": session_data.get("conversation_history", []),
+        
+        # 🔧 Usa detecção centralizada
+        "detected_command": command_type,
+        "command_parameters": command_params,
+        "is_critical_command": command_type != 'unknown'
     }
 
-    # 🆕 DETECTA COMANDOS DE LIMPEZA DE CARRINHO
-    context["clear_cart_command"] = detect_cart_clearing_intent(user_message)
-    
-    # 🆕 DETECTA CONTEXTO DE CHECKOUT/FINALIZAÇÃO
-    checkout_context = detect_checkout_context(session_data)
-    context.update(checkout_context)
-    
-    # 🆕 DETECTA SE É UM CNPJ VÁLIDO
-    context["is_valid_cnpj"] = is_valid_cnpj(user_message)
-    context["is_cnpj_in_checkout_context"] = (
-        context["is_valid_cnpj"] and 
-        (context["awaiting_cnpj"] or context["checkout_initiated"])
-    )
-
-    # Detecta padrões específicos
-    message_lower = user_message.lower().strip()
-
-    # Comandos diretos de carrinho
-    if any(cmd in message_lower for cmd in ["carrinho", "ver carrinho"]):
-        context["direct_cart_command"] = True
-
-    # Comandos de finalização
-    if any(cmd in message_lower for cmd in ["finalizar", "fechar", "checkout"]):
-        context["direct_checkout_command"] = True
-
-    # Comandos de continuar compra
-    if any(cmd in message_lower for cmd in ["continuar", "mais produtos", "outros"]):
-        context["continue_shopping"] = True
-        
+    # Análise simples de contexto conversacional
     context["conversation_context"] = analyze_conversation_context(
         context["conversation_history"], user_message
     )
 
-    # Detecta gírias de produtos
-    product_slang = {
-        "refri": "refrigerante",
-        "zero": "coca zero",
-        "lata": "lata",
-        "2l": "2 litros",
-        "pet": "garrafa pet",
-    }
-
-    for slang, meaning in product_slang.items():
-        if slang in message_lower:
-            context["detected_slang"] = {slang: meaning}
-            break
-
     # Determina estágio da compra
-    purchase_stage = session_data.get("purchase_stage", "greeting")
-
-    greeting_keywords = [
-        "oi",
-        "olá",
-        "ola",
-        "bom dia",
-        "boa tarde",
-        "boa noite",
-        "e aí",
-        "e ai",
-    ]
-    search_keywords = [
-        "buscar",
-        "procurar",
-        "produto",
-        "comprar",
-        "preciso",
-        "quero",
-        "produtos",
-        "mais vendidos",
-    ]
-
-    if context.get("direct_checkout_command") or context.get("awaiting_cnpj"):
+    if command_type == 'checkout' or context.get("customer_identified"):
         purchase_stage = "checkout"
-    elif context.get("direct_cart_command"):
+    elif command_type == 'view_cart' or context["has_cart_items"]:
         purchase_stage = "cart"
-    elif any(word in message_lower for word in greeting_keywords):
-        purchase_stage = "greeting"
-    elif (
-        any(word in message_lower for word in search_keywords)
-        or context.get("has_pending_products")
-        or context.get("recent_search")
-    ):
+    elif command_type in ['get_top_selling_products', 'get_top_selling_products_by_name']:
         purchase_stage = "search"
-    elif context.get("has_cart_items"):
-        purchase_stage = "cart"
+    else:
+        purchase_stage = "greeting"
 
     context["purchase_stage"] = purchase_stage
     session_data["purchase_stage"] = purchase_stage
@@ -428,235 +361,100 @@ def get_intent(
     customer_context: Union[Dict, None] = None,
     cart_items_count: int = 0,
 ) -> Dict:
-    """
-    🆕 VERSÃO CORRIGIDA: Usa o LLM para interpretar a mensagem do usuário e traduzir em uma ferramenta.
-    Com fallback rápido para mensagens simples e timeout para evitar demoras.
-    """
+    """🔧 CORREÇÃO: Versão robusta com fallback melhorado"""
     try:
-        logging.info(
-            f"[llm_interface.py] Iniciando get_intent para mensagem: '{user_message}'"
-        )
+        logging.info(f"[llm_interface.py] Iniciando get_intent para mensagem: '{user_message}'")
 
-        # 🆕 MELHORA CONSCIÊNCIA CONTEXTUAL
+        # 🔧 DETECÇÃO CENTRALIZADA PRIMEIRO
         enhanced_context = enhance_context_awareness(user_message, session_data)
         
-        # 🆕 PRIORIDADE MÁXIMA: CNPJ em contexto de checkout
-        if enhanced_context.get("is_cnpj_in_checkout_context"):
-            logging.info("[llm_interface.py] CNPJ detectado em contexto de checkout")
-            return {
-                "tool_name": "find_customer_by_cnpj",
-                "parameters": {"cnpj": user_message.strip()}
-            }
-        
-        # 🆕 PRIORIDADE ALTA: Comandos de limpeza de carrinho
-        if enhanced_context.get("clear_cart_command"):
-            logging.info("[llm_interface.py] Comando de limpeza de carrinho detectado")
-            return {"tool_name": "clear_cart", "parameters": {}}
+        # Se comando crítico foi detectado, retorna imediatamente
+        if enhanced_context.get("is_critical_command"):
+            command_type = enhanced_context["detected_command"]
+            command_params = enhanced_context["command_parameters"]
+            
+            logging.info(f"[llm_interface.py] Comando crítico detectado: {command_type}")
+            return {"tool_name": command_type, "parameters": command_params}
 
         # Para mensagens simples, usa detecção rápida sem IA
-        message_lower = user_message.lower().strip()
-        simple_patterns = [
-            r"^\s*[123]\s*$",  # Números 1, 2 ou 3
-            r"^(oi|olá|ola|e aí|e ai|boa|bom dia|boa tarde|boa noite)$",  # Saudações
-            r"^(carrinho|ver carrinho)$",  # Carrinho
-            r"^(finalizar|fechar)$",  # Checkout
-            r"^(ajuda|help)$",  # Ajuda
-            r"^(produtos|mais vendidos)$",  # Produtos populares
-            r"^(mais)$",  # Mais produtos
-            r"^(novo|nova)$",  # Novo pedido
-        ]
+        if _is_simple_message(user_message):
+            logging.info("[llm_interface.py] Mensagem simples detectada, usando fallback rápido")
+            return _create_simple_fallback(user_message, enhanced_context)
 
-        for pattern in simple_patterns:
-            if re.match(pattern, message_lower):
-                logging.info(
-                    "[llm_interface.py] Mensagem simples detectada, usando fallback rápido"
-                )
-                return create_fallback_intent(user_message, enhanced_context)
+        # Se não for habilitado uso de IA, usa fallback
+        if not USE_AI_FALLBACK:
+            return _create_simple_fallback(user_message, enhanced_context)
 
-        # Se não for habilitado uso de IA ou for mensagem muito curta, usa fallback
-        if not USE_AI_FALLBACK or len(user_message.strip()) < 3:
-            return create_fallback_intent(user_message, enhanced_context)
-
-        # Carrega template do prompt
-        system_prompt = load_prompt_template()
-        logging.info(
-            f"[llm_interface.py] System prompt preparado. Tamanho: {len(system_prompt)} caracteres"
-        )
-
-        # Obtém contexto da conversa a partir do gerenciador de sessão
-        conversation_context = get_conversation_context(session_data)
-
-        # Informações do carrinho
-        cart_info = ""
-        if cart_items_count > 0:
-            cart_info = f"CARRINHO ATUAL: {cart_items_count} itens"
-            cart_items = session_data.get("shopping_cart", [])
-            if cart_items:
-                cart_info += " ("
-                item_names = []
-                for item in cart_items[:3]:  # Mostra apenas primeiros 3
-                    name = item.get("descricao") or item.get(
-                        "canonical_name", "Produto"
-                    )
-                    qt = item.get("qt", 0)
-                    item_names.append(f"{name} x{qt}")
-                cart_info += ", ".join(item_names)
-                if len(cart_items) > 3:
-                    cart_info += f" e mais {len(cart_items) - 3}"
-                cart_info += ")"
-
-        # Produtos disponíveis para seleção
-        products_info = ""
-        last_shown = session_data.get("last_shown_products", [])
-        if last_shown and enhanced_context.get("numeric_selection"):
-            products_info = f"PRODUTOS MOSTRADOS RECENTEMENTE: {len(last_shown)} opções disponíveis para seleção numérica"
-
-        # Informações do cliente
-        customer_info = ""
-        if customer_context:
-            customer_info = f"CLIENTE: {customer_context.get('nome', 'Identificado')}"
-
-        # 🆕 CONSTRÓI CONTEXTO ESPECÍFICO PARA PROBLEMAS IDENTIFICADOS
-        special_context = ""
-        if enhanced_context.get("clear_cart_command"):
-            special_context += "⚠️ COMANDO DE LIMPEZA DE CARRINHO DETECTADO - Use clear_cart\n"
-        if enhanced_context.get("is_cnpj_in_checkout_context"):
-            special_context += "⚠️ CNPJ VÁLIDO EM CONTEXTO DE CHECKOUT - Use find_customer_by_cnpj\n"
-        if enhanced_context.get("awaiting_cnpj"):
-            special_context += "⚠️ BOT ESTÁ ESPERANDO CNPJ PARA FINALIZAR PEDIDO\n"
-
-        # Constrói contexto completo
-        full_context = f"""
-MENSAGEM DO USUÁRIO: "{user_message}"
-
-{special_context}
-
-CONTEXTO DA CONVERSA (MUITO IMPORTANTE):
-{conversation_context}
-
-ESTADO ATUAL DA SESSÃO:
-- Carrinho: {enhanced_context.get('cart_count', 0)} itens
-- Produtos mostrados: {'Sim' if enhanced_context.get('has_pending_products') else 'Não'}
-- Última ação do bot: {enhanced_context.get('last_action', 'Nenhuma')}
-- Cliente identificado: {'Sim' if enhanced_context.get('customer_identified') else 'Não'}
-- Esperando CNPJ: {'Sim' if enhanced_context.get('awaiting_cnpj') else 'Não'}
-
-ANÁLISE CONTEXTUAL:
-- Seleção numérica detectada: {enhanced_context.get('numeric_selection', 'Nenhuma')}
-- Quantidade inferida: {enhanced_context.get('inferred_quantity', 'Não especificada')}
-- É CNPJ válido: {'Sim' if enhanced_context.get('is_valid_cnpj') else 'Não'}
-- CNPJ em contexto checkout: {'Sim' if enhanced_context.get('is_cnpj_in_checkout_context') else 'Não'}
-- Comando limpar carrinho: {'Sim' if enhanced_context.get('clear_cart_command') else 'Não'}
-
-COMANDOS DETECTADOS:
-- Ver carrinho: {'Sim' if enhanced_context.get('direct_cart_command') else 'Não'}
-- Finalizar: {'Sim' if enhanced_context.get('direct_checkout_command') else 'Não'}
-- Continuar: {'Sim' if enhanced_context.get('continue_shopping') else 'Não'}
-
-INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
-1. ⚠️ Se "Comando limpar carrinho: Sim", SEMPRE use clear_cart
-2. ⚠️ Se "CNPJ em contexto checkout: Sim", SEMPRE use find_customer_by_cnpj
-3. ⚠️ Se "Esperando CNPJ: Sim" e mensagem parece CNPJ, use find_customer_by_cnpj
-4. Se há produtos mostrados e usuário digitou número, use add_item_to_cart
-5. Considere TODO o histórico da conversa para interpretar a intenção
-"""
-
-        # Prepara mensagens para o modelo
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": full_context},
-        ]
-
-        # Configura cliente Ollama
-        client = ollama.Client(host=OLLAMA_HOST)
-
-        logging.info(f"[llm_interface.py] Configurando Ollama Host: '{OLLAMA_HOST}'")
-
-        # Tenta chamar o modelo com timeout
-        start_time = time.time()
+        # 🔧 CONSULTA IA com timeout e fallback robusto
         try:
-            # Faz chamada ao modelo
+            logging.info("[llm_interface.py] Consultando IA...")
+            
+            # Prepara contexto para IA
+            ai_context = _prepare_ai_context(user_message, session_data, enhanced_context)
+            
+            # Configura cliente Ollama
+            client = ollama.Client(host=OLLAMA_HOST)
+            
+            # Carrega prompt template
+            system_prompt = load_prompt_template()
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": ai_context},
+            ]
+
+            # Faz chamada com timeout
+            start_time = time.time()
             response = client.chat(
                 model=OLLAMA_MODEL_NAME,
                 messages=messages,
                 options={
-                    "temperature": 0.1,  # 🆕 MAIS DETERMINÍSTICO para melhor detecção
+                    "temperature": 0.1,
                     "top_p": 0.9,
-                    "num_predict": 150,  # Limita tamanho da resposta
-                    "stop": ["\n\n", "```"],  # Para em quebras duplas ou markdown
+                    "num_predict": 150,
+                    "stop": ["\n\n", "```"],
                 },
                 stream=False,
             )
 
             elapsed_time = time.time() - start_time
-            logging.info(
-                f"[llm_interface.py] Resposta recebida do LLM em {elapsed_time:.2f}s"
-            )
+            logging.info(f"[llm_interface.py] Resposta da IA em {elapsed_time:.2f}s")
 
-            # Se demorou muito, considera usar fallback na próxima
-            if elapsed_time > AI_TIMEOUT:
-                logging.warning(
-                    f"[llm_interface.py] LLM demorou {elapsed_time:.2f}s (timeout: {AI_TIMEOUT}s)"
-                )
-
-            # Extrai e processa resposta
+            # Processa resposta da IA
             content = response.get("message", {}).get("content", "")
-            logging.info(f"[llm_interface.py] Resposta do LLM: {content[:100]}...")
+            logging.info(f"[llm_interface.py] Resposta da IA: {content[:100]}...")
 
-            cleaned_content = clean_json_response(content)
-            logging.debug(f"[llm_interface.py] Conteúdo limpo: {cleaned_content}")
+            # 🔧 PARSE ROBUSTO DO JSON
+            intent_data = _parse_ai_response(content)
+            
+            if intent_data and intent_data.get("tool_name"):
+                # Valida ferramenta
+                tool_name = intent_data.get("tool_name", "handle_chitchat")
+                if tool_name in AVAILABLE_TOOLS:
+                    # Valida parâmetros
+                    parameters = validate_intent_parameters(
+                        tool_name, intent_data.get("parameters", {})
+                    )
+                    intent_data["parameters"] = parameters
+                    
+                    logging.info(f"[llm_interface.py] IA retornou intent válido: {intent_data}")
+                    return intent_data
+                else:
+                    logging.warning(f"[llm_interface.py] IA retornou ferramenta inválida: {tool_name}")
 
-            # Parse do JSON
-            intent_data = json.loads(cleaned_content)
-            tool_name = intent_data.get("tool_name", "handle_chitchat")
+        except Exception as e:
+            logging.warning(f"[llm_interface.py] Erro na consulta IA: {e}")
 
-            # Valida se a ferramenta existe
-            if tool_name not in AVAILABLE_TOOLS:
-                logging.warning(f"[llm_interface.py] Ferramenta inválida: {tool_name}")
-                intent_data = {
-                    "tool_name": "handle_chitchat",
-                    "parameters": {
-                        "response_text": "Tive um problema na consulta agora. Tentar novamente?"
-                    },
-                }
-
-            # Enriquece parâmetros com contexto adicional
-            parameters = intent_data.get("parameters", {})
-
-            # Se é seleção numérica e temos produtos, adiciona quantidade se detectada
-            if (
-                tool_name == "add_item_to_cart"
-                and enhanced_context.get("numeric_selection")
-                and enhanced_context.get("inferred_quantity")
-            ):
-
-                if "qt" not in parameters:
-                    parameters["qt"] = enhanced_context["inferred_quantity"]
-
-            intent_data["parameters"] = validate_intent_parameters(
-                tool_name, parameters
-            )
-
-            logging.info(f"[llm_interface.py] JSON parseado com sucesso: {intent_data}")
-            return intent_data
-
-        except (json.JSONDecodeError, ValueError) as e:
-            logging.error(f"[llm_interface.py] Erro ao parsear JSON: {e}")
-            # Fallback baseado em padrões simples
-            return create_fallback_intent(user_message, enhanced_context)
-
-        except TimeoutError:
-            logging.warning(
-                f"[llm_interface.py] Timeout ao chamar LLM após {AI_TIMEOUT}s"
-            )
-            return create_fallback_intent(user_message, enhanced_context)
+        # 🔧 FALLBACK ROBUSTO se IA falhou
+        logging.info("[llm_interface.py] Usando fallback por falha da IA")
+        return _create_simple_fallback(user_message, enhanced_context)
 
     except Exception as e:
         logging.error(f"[llm_interface.py] Erro geral: {e}", exc_info=True)
-        # Usa fallback em caso de erro
-        return create_fallback_intent(
-            user_message, enhance_context_awareness(user_message, session_data)
-        )
+        # Fallback de emergência
+        return {
+            "tool_name": "handle_chitchat",
+            "parameters": {"response_text": "Desculpe, tive um problema. Pode tentar novamente?"}
+        }
 
 
 def clean_json_response(content: str) -> str:
@@ -671,6 +469,33 @@ def clean_json_response(content: str) -> str:
         return json_match.group(0).strip()
 
     return content.strip()
+
+def create_simple_fallback_intent(user_message: str, session_data: Dict) -> Dict:
+    """
+    🔧 CORREÇÃO: Fallback simplificado quando IA falha
+    Substitui create_fallback_intent que era muito complexa
+    """
+    if not user_message:
+        return {"tool_name": "handle_chitchat", "parameters": {"response_text": "Como posso ajudar?"}}
+    
+    # Usa detecção centralizada de comandos críticos
+    command_type, parameters = analyze_critical_command(user_message, session_data)
+    
+    if command_type != 'unknown':
+        return {"tool_name": command_type, "parameters": parameters}
+    
+    # Fallback final baseado no contexto da sessão
+    cart_items = len(session_data.get("shopping_cart", []))
+    
+    if cart_items > 0:
+        response_text = "Não entendi. Digite o nome de um produto, 'carrinho' para ver seus itens ou 'finalizar' para checkout."
+    else:
+        response_text = "Não entendi. Digite o nome de um produto ou 'produtos' para ver os mais vendidos."
+    
+    return {
+        "tool_name": "handle_chitchat",
+        "parameters": {"response_text": response_text}
+    }
 
 
 def create_fallback_intent(user_message: str, context: Dict) -> Dict:
