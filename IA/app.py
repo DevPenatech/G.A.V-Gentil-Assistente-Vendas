@@ -12,7 +12,7 @@ from core.session_manager import (
     load_session, save_session, clear_session,
     format_product_list_for_display, format_cart_for_display,
     add_message_to_history, get_conversation_context,
-    update_session_context
+    update_session_context,detect_user_intent_type
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
@@ -358,8 +358,8 @@ Qual quantidade você quer?"""
     return intent, response_text
 
 
-def _determine_intent(session: Dict, state: Dict, incoming_msg: str) -> Tuple[Union[Dict, None], str]:
-    """Determina a intenção do usuário quando não há ações pendentes."""
+def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tuple[Union[Dict, None], str]:
+    """Processa a mensagem do usuário e determina a intenção."""
     intent = None
     response_text = ""
     last_bot_action = state.get("last_bot_action")
@@ -367,25 +367,40 @@ def _determine_intent(session: Dict, state: Dict, incoming_msg: str) -> Tuple[Un
 
     if not incoming_msg:
         if last_bot_action == "AWAITING_PRODUCT_SELECTION":
-            response_text = "🤖 Não entendi. Quer selecionar um dos produtos da lista? Se sim, me diga o número. Se quiser buscar outra coisa, é só digitar o nome do produto."
+            response_text = (
+                "🤖 Não entendi. Quer selecionar um dos produtos da lista? Se sim, me diga o número. "
+                "Se quiser buscar outra coisa, é só digitar o nome do produto."
+            )
         else:
             response_text = "🤖 Por favor, me diga o que você precisa."
         add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
-    elif incoming_msg.isdigit() and last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
+        return intent, response_text
+
+    intent_type = detect_user_intent_type(incoming_msg, session)
+
+    if intent_type == "VIEW_CART":
+        intent = {"tool_name": "view_cart", "parameters": {}}
+    elif intent_type == "CHECKOUT":
+        intent = {"tool_name": "checkout", "parameters": {}}
+    elif intent_type == "NUMERIC_SELECTION" and last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
         intent = {"tool_name": "add_item_to_cart", "parameters": {"index": int(incoming_msg)}}
     elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
         intent = {"tool_name": "show_more_products", "parameters": {}}
-    else:
+    elif intent_type in ["GENERAL", "SEARCH_PRODUCT"]:
         print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
-
         intent = llm_interface.get_intent(
             user_message=incoming_msg,
-            session_data=session,  # ← PASSA OS DADOS COMPLETOS DA SESSÃO
-            customer_context=state.get("customer_context"),  # Mantém compatibilidade
-            cart_items_count=len(shopping_cart)  # Mantém compatibilidade
+            session_data=session,
+            customer_context=state.get("customer_context"),
+            cart_items_count=len(shopping_cart)
         )
-
         print(f">>> CONSOLE: IA retornou a intenção: {intent}")
+    elif intent_type == "GREETING":
+        response_text = "🤖 Olá! Como posso ajudar você hoje?"
+        add_message_to_history(session, 'assistant', response_text, 'GREETING')
+    else:
+        response_text = "🤖 Desculpe, não entendi. Pode reformular?"
+        add_message_to_history(session, 'assistant', response_text, 'REQUEST_CLARIFICATION')
 
     return intent, response_text
 
@@ -697,7 +712,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 
             # 2. Se não houve resposta ou intenção, determina a intenção
             if not intent and not response_text:
-                intent, response_text = _determine_intent(session, state, incoming_msg)
+                intent, response_text = _process_user_message(session, state, incoming_msg)
 
             # 3. Executa a intenção identificada
             if intent and not response_text:
