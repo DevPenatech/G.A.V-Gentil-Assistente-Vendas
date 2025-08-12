@@ -26,6 +26,56 @@ def get_product_name(product: Dict) -> str:
     """Extrai o nome do produto, compatível com produtos do banco (descricao) e da KB (canonical_name)."""
     return product.get('descricao') or product.get('canonical_name', 'Produto sem nome')
 
+def format_checkout_summary(cart: List[Dict], customer_context: Dict = None) -> str:
+    """
+    Formata um resumo completo e bonito do pedido finalizado.
+    """
+    if not cart:
+        return "🤖 Carrinho vazio - nenhum pedido para finalizar."
+    
+    # Cabeçalho
+    summary = "✅ **PEDIDO FINALIZADO COM SUCESSO!** ✅\n"
+    summary += "=" * 40 + "\n\n"
+    
+    # Dados do cliente
+    if customer_context:
+        summary += f"📋 **CLIENTE:** {customer_context.get('nome', 'Não identificado')}\n"
+        summary += f"📍 **CNPJ:** {customer_context.get('cnpj', 'Não informado')}\n"
+    else:
+        summary += "📋 **CLIENTE:** Não identificado\n"
+    
+    summary += f"📅 **DATA:** {datetime.now().strftime('%d/%m/%Y %H:%M')}\n"
+    summary += "\n" + "=" * 40 + "\n"
+    summary += "🛒 **ITENS DO PEDIDO:**\n\n"
+    
+    # Lista de itens
+    total = 0.0
+    for i, item in enumerate(cart, 1):
+        price = item.get('pvenda', 0.0)
+        qt = item.get('qt', 0)
+        subtotal = price * qt
+        total += subtotal
+        
+        product_name = get_product_name(item)
+        price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        
+        summary += f"**{i}.** {product_name}\n"
+        summary += f"   Qtd: {qt} x {price_str} = {subtotal_str}\n\n"
+    
+    # Total
+    summary += "=" * 40 + "\n"
+    total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    summary += f"💰 **TOTAL DO PEDIDO: {total_str}**\n"
+    summary += "=" * 40 + "\n\n"
+    
+    # Mensagem final
+    summary += "🎉 Obrigado pela sua compra!\n"
+    summary += "📞 Em breve entraremos em contato para confirmar a entrega.\n"
+    summary += "\n💚 Comercial Esperança agradece sua preferência!"
+    
+    return summary
+
 def find_products_in_cart_by_name(cart: List[Dict], product_name: str) -> List[Tuple[int, Dict]]:
     """
     Encontra produtos no carrinho pelo nome (busca fuzzy).
@@ -171,6 +221,70 @@ def update_cart_item_quantity(cart: List[Dict], index: int, new_qty: Union[int, 
     
     return True, message, cart
 
+def handle_update_cart_item(cart: List[Dict], parameters: Dict) -> Tuple[bool, str]:
+    """
+    Gerencia atualizações no carrinho (remover, atualizar quantidade, adicionar quantidade).
+    """
+    action = parameters.get('action', '').lower()
+    
+    if not cart:
+        return False, "🤖 Seu carrinho está vazio."
+    
+    if action == 'remove':
+        # Remove item por índice ou nome
+        index = parameters.get('index')
+        product_name = parameters.get('product_name')
+        
+        if index is not None:
+            if 0 <= index < len(cart):
+                removed = cart.pop(index)
+                return True, f"🗑️ {get_product_name(removed)} removido do carrinho."
+            else:
+                return False, f"❌ Índice inválido. Use um número entre 1 e {len(cart)}."
+        
+        elif product_name:
+            # Busca por nome
+            product_name_lower = product_name.lower()
+            for i, item in enumerate(cart):
+                if product_name_lower in get_product_name(item).lower():
+                    removed = cart.pop(i)
+                    return True, f"🗑️ {get_product_name(removed)} removido do carrinho."
+            return False, f"❌ Produto '{product_name}' não encontrado no carrinho."
+        
+        return False, "❌ Especifique o índice ou nome do produto para remover."
+    
+    elif action == 'update_quantity':
+        # Atualiza quantidade total
+        index = parameters.get('index')
+        qt = parameters.get('qt', 0)
+        
+        if not is_valid_quantity(qt):
+            return False, f"❌ Quantidade inválida: {qt}"
+        
+        if index is not None and 0 <= index < len(cart):
+            cart[index]['qt'] = qt
+            return True, f"✅ Quantidade de {get_product_name(cart[index])} atualizada para {qt}."
+        
+        return False, "❌ Índice inválido."
+    
+    elif action == 'add_quantity':
+        # Adiciona quantidade ao existente
+        index = parameters.get('index')
+        qt = parameters.get('qt', 0)
+        
+        if not is_valid_quantity(qt):
+            return False, f"❌ Quantidade inválida: {qt}"
+        
+        if index is not None and 0 <= index < len(cart):
+            cart[index]['qt'] = cart[index].get('qt', 0) + qt
+            return True, f"✅ Adicionado +{qt} ao {get_product_name(cart[index])}. Total: {cart[index]['qt']}."
+        
+        return False, "❌ Índice inválido."
+    
+    else:
+        return False, f"❌ Ação '{action}' não reconhecida. Use: remove, update_quantity ou add_quantity."
+
+
 def suggest_alternatives(failed_search_term: str) -> str:
     """Gera sugestões quando uma busca falha completamente."""
     
@@ -215,7 +329,7 @@ def suggest_alternatives(failed_search_term: str) -> str:
 
 
 def _extract_state(session: Dict) -> Dict:
-    """Extrai os dados relevantes da sessão em um dicionário mutável."""
+    """Extrai os dados relevantes da sessão."""
     return {
         "customer_context": session.get("customer_context"),
         "shopping_cart": session.get("shopping_cart", []),
@@ -226,6 +340,7 @@ def _extract_state(session: Dict) -> Dict:
         "last_bot_action": session.get("last_bot_action"),
         "pending_action": session.get("pending_action"),
         "last_kb_search_term": session.get("last_kb_search_term"),
+        "conversation_history": session.get("conversation_history", [])
     }
 
 
@@ -265,12 +380,14 @@ def _handle_pending_action(session: Dict, state: Dict, incoming_msg: str) -> Tup
 
                 product_name = get_product_name(product_to_add)
                 response_text = f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n{format_cart_for_display(shopping_cart)}"
+                response_text += format_cart_for_display(shopping_cart)
+                response_text += "\n\n🛒 Deseja continuar comprando ou finalizar o pedido?"
 
                 # 📝 REGISTRA A RESPOSTA DO BOT
                 add_message_to_history(session, 'assistant', response_text, 'ADD_TO_CART')
 
             else:
-                response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
+                response_text = "❌ Erro ao adicionar produto ao carrinho."
                 add_message_to_history(session, 'assistant', response_text, 'ERROR')
 
             session["pending_action"] = None
@@ -279,7 +396,7 @@ def _handle_pending_action(session: Dict, state: Dict, incoming_msg: str) -> Tup
         else:
             # 🆕 Mensagem de erro mais útil
             if qt is None:
-                response_text = """🤖 Não consegui entender a quantidade. Você pode usar:
+                response_text = """❓ Não entendi a quantidade. Digite um número válido, por favor. Você pode usar:
 • Números: 5, 10, 2.5
 • Por extenso: cinco, duas, dez
 • Expressões: meia duzia, uma duzia
@@ -334,6 +451,21 @@ Qual quantidade você quer?"""
 
         state['pending_action'] = pending_action
         state['shopping_cart'] = shopping_cart
+
+    elif pending_action == 'AWAITING_CONTINUE_OR_CHECKOUT':
+        # Cliente deve decidir se continua ou finaliza
+        msg_lower = incoming_msg.lower()
+        
+        if any(word in msg_lower for word in ['finalizar', 'fechar', 'checkout', 'terminar', 'concluir']):
+            intent = {"tool_name": "checkout", "parameters": {}}
+        elif any(word in msg_lower for word in ['continuar', 'mais', 'produtos', 'comprar']):
+            intent = {"tool_name": "get_top_selling_products", "parameters": {}}
+        else:
+            response_text = "Por favor, diga se deseja 'continuar comprando' ou 'finalizar pedido'."
+            add_message_to_history(session, 'assistant', response_text, 'REQUEST_DECISION')
+        
+        session["pending_action"] = None
+        state['pending_action'] = None
 
     elif pending_action:
         print(f">>> CONSOLE: Tratando ação pendente {pending_action}")
@@ -553,6 +685,12 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             response_text = "🤖 Produto não encontrado. Você pode tentar buscar novamente?"
             add_message_to_history(session, 'assistant', response_text, 'PRODUCT_NOT_FOUND')
 
+    elif tool_name == "ask_continue_or_checkout":
+        message = parameters.get('message', 'Deseja continuar comprando ou finalizar o pedido?')
+        response_text = message
+        session['pending_action'] = 'AWAITING_CONTINUE_OR_CHECKOUT'
+        add_message_to_history(session, 'assistant', response_text, 'ASK_CONTINUE')
+
     elif tool_name == "show_more_products":
         if not last_search_type:
             response_text = "🤖 Para eu mostrar mais, primeiro você precisa fazer uma busca."
@@ -624,7 +762,15 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     elif tool_name == 'handle_chitchat':
         response_text = parameters.get('response_text', 'Entendi!')
         add_message_to_history(session, 'assistant', response_text, 'CHITCHAT')
-
+        
+    elif tool_name == "update_cart_item":
+        success, message = handle_update_cart_item(shopping_cart, parameters)
+        response_text = message
+        if success:
+            response_text += f"\n\n{format_cart_for_display(shopping_cart)}"
+            state['shopping_cart'] = shopping_cart
+        add_message_to_history(session, 'assistant', response_text, 'UPDATE_CART')
+        
     elif not tool_name and "response_text" in intent:
         response_text = intent['response_text']
         add_message_to_history(session, 'assistant', response_text, 'GENERIC_RESPONSE')
@@ -646,6 +792,9 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         "pending_action": pending_action,
         "last_kb_search_term": last_kb_search_term,
     })
+    
+    for key, value in state.items():
+        session[key] = value
 
     return response_text
 
@@ -663,6 +812,10 @@ def _finalize_session(sender_phone: str, session: Dict, state: Dict, response_te
         "pending_action": state.get("pending_action"),
         "last_kb_search_term": state.get("last_kb_search_term"),
     })
+    
+    for key, value in state.items():
+        session[key] = value
+        
     save_session(sender_phone, session)
 
     if response_text:

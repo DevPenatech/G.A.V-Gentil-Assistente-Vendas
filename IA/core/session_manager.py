@@ -4,7 +4,7 @@ import logging
 import os
 import re
 from typing import List, Dict, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import redis
 
@@ -154,6 +154,32 @@ def _clear_session_file(session_id: str):
     except Exception as e:
         logging.error(f"[SESSION] Erro ao remover arquivo de sessão: {e}")
     
+def clear_old_sessions():
+    """Remove sessões antigas (mais de 7 dias)."""
+    if redis_client:
+        try:
+            # Redis já expira automaticamente com TTL
+            logging.info("Redis gerencia expiração automaticamente")
+        except Exception as e:
+            logging.warning(f"Erro ao limpar sessões Redis: {e}")
+    
+    # Limpa arquivos antigos
+    sessions_dir = "sessions"
+    if os.path.exists(sessions_dir):
+        cutoff_date = datetime.now() - timedelta(days=7)
+        
+        for filename in os.listdir(sessions_dir):
+            filepath = os.path.join(sessions_dir, filename)
+            
+            try:
+                # Verifica data de modificação
+                file_time = datetime.fromtimestamp(os.path.getmtime(filepath))
+                if file_time < cutoff_date:
+                    os.remove(filepath)
+                    logging.info(f"Sessão antiga removida: {filename}")
+            except Exception as e:
+                logging.warning(f"Erro ao processar {filename}: {e}")    
+    
 def format_product_list_for_display(products: List[Dict], title: str, has_more: bool, offset: int = 0) -> str:
     if not products:
         return f"🤖 {title}\nNenhum produto encontrado com esse critério."
@@ -174,26 +200,32 @@ def format_product_list_for_display(products: List[Dict], title: str, has_more: 
     return response
 
 def format_cart_for_display(cart: List[Dict]) -> str:
+    """Formata o carrinho para exibição."""
     if not cart:
-        return "🤖 Seu carrinho de compras está vazio."
+        return "🛒 Seu carrinho está vazio."
     
-    response = "🛒 Seu Carrinho de Compras:\n"
+    response = "🛒 **SEU CARRINHO:**\n"
+    response += "-" * 30 + "\n"
     total = 0.0
-    for item in cart:
-        price = item.get('pvenda') or 0.0
+    
+    for i, item in enumerate(cart, 1):
+        price = item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
         qt = item.get('qt', 0)
         subtotal = price * qt
         total += subtotal
+        
         price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         
-        # 🆕 CORREÇÃO: Compatibilidade com produtos do banco (descricao) e da KB (canonical_name)
-        product_name = item.get('descricao') or item.get('canonical_name', 'Produto sem nome')
+        product_name = item.get('descricao') or item.get('canonical_name', 'Produto')
         
-        response += f"- {product_name} (Qtd: {qt}) - Unit: {price_str} - Subtotal: {subtotal_str}\n"
+        response += f"{i}. {product_name}\n"
+        response += f"   Qtd: {qt} x {price_str} = {subtotal_str}\n"
     
+    response += "-" * 30 + "\n"
     total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    response += f"-----------------------------------\nTOTAL DO PEDIDO: {total_str}"
+    response += f"💰 **TOTAL: {total_str}**"
+    
     return response
 
 
