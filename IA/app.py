@@ -11,7 +11,8 @@ from utils import logger_config
 from core.session_manager import (
     load_session, save_session, clear_session,
     format_product_list_for_display, format_cart_for_display,
-    add_message_to_history, get_conversation_context
+    add_message_to_history, get_conversation_context,
+    update_session_context
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
 from communication import twilio_client
@@ -249,7 +250,7 @@ def _handle_pending_action(session: Dict, state: Dict, incoming_msg: str) -> Tup
                 if term_to_learn:
                     print(f">>> CONSOLE: Aprendendo que '{term_to_learn}' se refere a '{get_product_name(product_to_add)}'...")
                     knowledge.update_kb(term_to_learn, product_to_add)
-                    session["term_to_learn_after_quantity"] = None
+                    update_session_context(session, {"term_to_learn_after_quantity": None})
 
                 # Converte para int se for número inteiro
                 if isinstance(qt, float) and qt.is_integer():
@@ -273,8 +274,10 @@ def _handle_pending_action(session: Dict, state: Dict, incoming_msg: str) -> Tup
                 response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
                 add_message_to_history(session, 'assistant', response_text, 'ERROR')
 
-            session["pending_action"] = None
-            session["pending_product_for_cart"] = None
+            update_session_context(session, {
+                "pending_action": None,
+                "pending_product_for_cart": None
+            })
 
         else:
             # 🆕 Mensagem de erro mais útil
@@ -541,9 +544,11 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             elif is_new_learning:
                 term_to_learn = last_search_params.get("product_name")
 
-            session['pending_product_for_cart'] = product_to_add
-            session['term_to_learn_after_quantity'] = term_to_learn
-            session['pending_action'] = 'AWAITING_QUANTITY'
+            update_session_context(session, {
+                'pending_product_for_cart': product_to_add,
+                'term_to_learn_after_quantity': term_to_learn,
+                'pending_action': 'AWAITING_QUANTITY'
+            })
             pending_action = 'AWAITING_QUANTITY'
 
             response_text = f"Quantas unidades de {get_product_name(product_to_add)} você deseja adicionar?"
@@ -589,9 +594,11 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         last_bot_action = None
         clear_session(sender_phone)
         session.clear()
-        session['shopping_cart'] = shopping_cart
-        session['pending_action'] = pending_action
-        session['last_bot_action'] = last_bot_action
+        update_session_context(session, {
+            'shopping_cart': shopping_cart,
+            'pending_action': pending_action,
+            'last_bot_action': last_bot_action
+        })
         response_text = "🧹 Certo! Carrinho e dados limpos. Vamos começar de novo!"
         add_message_to_history(session, 'assistant', response_text, 'NEW_ORDER')
 
@@ -652,7 +659,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
 
 def _finalize_session(sender_phone: str, session: Dict, state: Dict, response_text: str) -> None:
     """Atualiza e persiste a sessão, além de enviar a resposta ao usuário."""
-    session.update({
+    update_session_context(session, {
         "customer_context": state.get("customer_context"),
         "shopping_cart": state.get("shopping_cart", []),
         "last_search_type": state.get("last_search_type"),

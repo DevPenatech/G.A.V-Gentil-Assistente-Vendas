@@ -382,26 +382,12 @@ def format_quick_actions(has_cart: bool = False, has_products: bool = False) -> 
 # ================================================================================
 
 def update_session_context(session_data: Dict, new_context: Dict):
-    """Atualiza contexto da sessão de forma inteligente."""
-    # Preserva dados importantes
-    important_keys = [
-        "customer_context", 
-        "shopping_cart", 
-        "conversation_history",
-        "last_shown_products",
-        "current_offset",
-        "last_search_type",
-        "last_search_params",
-        "pending_product_selection",
-        "pending_quantity"
-    ]
-    
-    for key in important_keys:
-        if key in new_context:
-            session_data[key] = new_context[key]
-    
+    """Atualiza dados da sessão garantindo recálculo de métricas."""
+    # Atualiza apenas os campos fornecidos, preservando os demais
+    session_data.update(new_context)
+
     # Atualiza timestamp da última atividade
     session_data["last_activity"] = datetime.now().isoformat()
-    
-    # Calcula métricas da sessão
+
+    # Recalcula estatísticas da sessão
     session_data["session_stats"] = get_session_stats(session_data)
