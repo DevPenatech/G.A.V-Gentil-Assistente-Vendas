@@ -1,0 +1,35 @@
+2025-08-12 18:10:23,654 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:10:23,656 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:10:33,041 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:10:33,042 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:10:41,833 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:10:41,835 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:10:56,506 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:10:56,508 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:11:04,415 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:11:04,421 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:11:17,771 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:11:17,773 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:11:29,119 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:11:29,121 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:18:35,152 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:18:35,154 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:18:48,274 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:18:48,275 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:18:59,810 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-12 18:19:00,063 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:19:00,075 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:19:06,176 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:19:06,177 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:19:15,367 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:19:15,370 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:19:22,468 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:19:22,470 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:19:33,983 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:19:33,987 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:19:53,959 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:19:53,961 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:20:18,492 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:20:18,495 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-12 18:20:31,639 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
+2025-08-12 18:20:31,641 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido

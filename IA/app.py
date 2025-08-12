@@ -1,5 +1,5 @@
-# file: IA/app.py
-from flask import Flask, request
+# file: IA/app.py - CORREÇÕES APLICADAS
+from flask import Flask, request, jsonify
 from twilio.twiml.messaging_response import MessagingResponse
 import logging
 import threading
@@ -205,10 +205,89 @@ def update_cart_item_quantity(
     return True, message, cart
 
 
+def clear_cart_completely(cart: List[Dict]) -> Tuple[str, List[Dict]]:
+    """
+    🆕 NOVA FUNÇÃO: Esvazia completamente o carrinho.
+    
+    Returns:
+        Tupla (mensagem, carrinho_vazio)
+    """
+    if not cart:
+        message = "🤖 Seu carrinho já está vazio."
+    else:
+        item_count = len(cart)
+        cart.clear()  # Limpa completamente
+        
+        message = f"🗑️ Carrinho esvaziado! {item_count} {'item' if item_count == 1 else 'itens'} removido{'s' if item_count > 1 else ''}."
+        message += f"\n\n{format_quick_actions(has_cart=False)}"
+    
+    return message, []
+
+
 def generate_continue_or_checkout_message(cart: List[Dict]) -> str:
     """Gera uma mensagem amigável perguntando se o cliente deseja continuar ou finalizar."""
     quick_actions = format_quick_actions(has_cart=bool(cart))
     return "🛍️ Deseja continuar comprando ou finalizar o pedido?\n\n" f"{quick_actions}"
+
+
+def generate_checkout_summary(cart: List[Dict], customer_context: Dict = None) -> str:
+    """
+    🆕 NOVA FUNÇÃO: Gera resumo completo para finalização do pedido.
+    """
+    if not cart:
+        return "🤖 Não é possível finalizar: carrinho vazio."
+    
+    # Cabeçalho
+    summary = "✅ *RESUMO DO PEDIDO*\n"
+    summary += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    
+    # Informações do cliente
+    if customer_context:
+        summary += f"👤 *Cliente:* {customer_context.get('nome', 'Não identificado')}\n"
+        if customer_context.get('cnpj'):
+            cnpj_formatted = customer_context['cnpj']
+            # Formata CNPJ se tiver 14 dígitos
+            if len(cnpj_formatted) == 14:
+                cnpj_formatted = f"{cnpj_formatted[:2]}.{cnpj_formatted[2:5]}.{cnpj_formatted[5:8]}/{cnpj_formatted[8:12]}-{cnpj_formatted[12:14]}"
+            summary += f"📄 *CNPJ:* {cnpj_formatted}\n\n"
+    
+    # Itens do pedido
+    summary += "📦 *ITENS DO PEDIDO:*\n"
+    total_geral = 0.0
+    
+    for i, item in enumerate(cart, 1):
+        price = item.get("pvenda") or item.get("preco_varejo", 0.0)
+        qt = item.get("qt", 0)
+        subtotal = price * qt
+        total_geral += subtotal
+        
+        # Formatação da quantidade
+        if isinstance(qt, float):
+            qty_display = f"{qt:.1f}".rstrip("0").rstrip(".")
+        else:
+            qty_display = str(qt)
+        
+        # Formatação dos valores
+        price_str = f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        subtotal_str = f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        
+        product_name = get_product_name(item)
+        summary += f"*{i}.* {product_name}\n"
+        summary += f"    {qty_display}× {price_str} = *{subtotal_str}*\n\n"
+    
+    # Total
+    summary += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+    total_str = f"R$ {total_geral:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    summary += f"💰 *TOTAL GERAL: {total_str}*\n\n"
+    
+    # Status
+    summary += "✅ *Pedido registrado com sucesso!*\n"
+    summary += "📞 Em breve entraremos em contato para confirmação.\n\n"
+    
+    # Opções finais
+    summary += f"{format_quick_actions(has_cart=False)}"
+    
+    return summary
 
 
 def suggest_alternatives(failed_search_term: str) -> str:
@@ -578,7 +657,9 @@ Qual quantidade você quer?"""
 def _process_user_message(
     session: Dict, state: Dict, incoming_msg: str
 ) -> Tuple[Union[Dict, None], str]:
-    """Processa a mensagem do usuário e determina a intenção."""
+    """
+    🆕 VERSÃO CORRIGIDA: Processa a mensagem do usuário e determina a intenção.
+    """
     intent = None
     response_text = ""
     last_bot_action = state.get("last_bot_action")
@@ -603,8 +684,35 @@ def _process_user_message(
         )
         return intent, response_text
 
+    # 🆕 DETECÇÃO DIRETA DE COMANDOS CRÍTICOS - PRIORIDADE MÁXIMA
     intent_type = detect_user_intent_type(incoming_msg, session)
+    
+    # 🆕 COMANDO DE LIMPEZA DE CARRINHO - PRIORIDADE ABSOLUTA
+    if intent_type == "CLEAR_CART":
+        print(f">>> CONSOLE: Comando de limpeza detectado diretamente: '{incoming_msg}'")
+        intent = {"tool_name": "clear_cart", "parameters": {}}
+        return intent, response_text
 
+    # 🆕 DETECÇÃO DIRETA DE CNPJ (14 dígitos) EM CONTEXTO DE FINALIZAÇÃO
+    if re.match(r'^\d{14}$', incoming_msg.strip()):
+        # Verifica se o contexto indica que estamos esperando CNPJ
+        history = session.get('conversation_history', [])
+        recent_bot_messages = []
+        for msg in reversed(history):
+            if msg.get('role') == 'assistant':
+                recent_bot_messages.append(msg.get('message', '').lower())
+                if len(recent_bot_messages) >= 2:
+                    break
+        
+        # Se a última mensagem do bot mencionou CNPJ, finalização ou checkout
+        if recent_bot_messages:
+            last_bot_msg = recent_bot_messages[0]
+            if any(keyword in last_bot_msg for keyword in ['cnpj', 'finalizar', 'checkout', 'compra']):
+                print(f">>> CONSOLE: CNPJ detectado em contexto de checkout: '{incoming_msg}'")
+                intent = {"tool_name": "find_customer_by_cnpj", "parameters": {"cnpj": incoming_msg.strip()}}
+                return intent, response_text
+
+    # Continua com detecção normal
     if intent_type == "VIEW_CART":
         intent = {"tool_name": "view_cart", "parameters": {}}
     elif intent_type == "CHECKOUT":
@@ -628,7 +736,6 @@ def _process_user_message(
         elif incoming_msg == "3":
             intent = {"tool_name": "checkout", "parameters": {}}
         else:
-
             response_text = (
                 "🤖 Opção inválida. Escolha 1, 2 ou 3.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
@@ -653,7 +760,6 @@ def _process_user_message(
     elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
         intent = {"tool_name": "show_more_products", "parameters": {}}
     elif intent_type in ["GENERAL", "SEARCH_PRODUCT"]:
-
         print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
         intent = llm_interface.get_intent(
             user_message=incoming_msg,
@@ -662,6 +768,18 @@ def _process_user_message(
             cart_items_count=len(shopping_cart),
         )
         print(f">>> CONSOLE: IA retornou a intenção: {intent}")
+        
+        # 🆕 VALIDAÇÃO FINAL: Se a IA não detectou limpeza mas deveria ter detectado
+        if intent.get("tool_name") != "clear_cart":
+            message_lower = incoming_msg.lower().strip()
+            clear_phrases = [
+                'esvaziar carrinho', 'limpar carrinho', 'zerar carrinho',
+                'esvaziar tudo', 'limpar tudo', 'zerar tudo',
+                'apagar carrinho', 'deletar carrinho'
+            ]
+            if any(phrase in message_lower for phrase in clear_phrases):
+                print(f">>> CONSOLE: CORREÇÃO - IA não detectou comando de limpeza, forçando clear_cart")
+                intent = {"tool_name": "clear_cart", "parameters": {}}
 
     elif intent_type == "GREETING":
         response_text = "🤖 Olá! Como posso ajudar você hoje?"
@@ -701,7 +819,23 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     if tool_name in db_intensive_tools:
         print(f">>> CONSOLE: Acessando o Banco de Dados (ferramenta: {tool_name})...")
 
-    if tool_name in ["get_top_selling_products", "get_top_selling_products_by_name"]:
+    # 🆕 NOVA FERRAMENTA: clear_cart
+    if tool_name == "clear_cart":
+        print(">>> CONSOLE: Executando limpeza completa do carrinho...")
+        message, empty_cart = clear_cart_completely(shopping_cart)
+        shopping_cart.clear()  # Garante que o carrinho está vazio
+        
+        response_text = message
+        add_message_to_history(session, "assistant", response_text, "CLEAR_CART")
+        
+        # Atualiza estado
+        last_shown_products = []
+        last_bot_action = "AWAITING_MENU_SELECTION"
+        pending_action = None
+        
+        print(f">>> CONSOLE: Carrinho limpo. Resposta: {response_text}")
+
+    elif tool_name in ["get_top_selling_products", "get_top_selling_products_by_name"]:
         last_kb_search_term, last_shown_products = None, []
 
         if tool_name == "get_top_selling_products_by_name":
@@ -1101,37 +1235,64 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             last_shown_products = []
             last_bot_action = None
         else:
-            response_text = (
-                f"✅ Pedido para {customer_context['nome']} pronto para ser finalizado!\n\n"
-                f"{format_cart_for_display(shopping_cart)}\n(Funcionalidade de inserção do pedido no sistema será implementada futuramente)\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-            )
+            # 🆕 GERA RESUMO COMPLETO DO PEDIDO
+            response_text = generate_checkout_summary(shopping_cart, customer_context)
             add_message_to_history(
-                session, "assistant", response_text, "CHECKOUT_READY"
+                session, "assistant", response_text, "CHECKOUT_COMPLETE"
             )
+            
+            # 🆕 LIMPA CARRINHO APÓS FINALIZAÇÃO
+            shopping_cart.clear()
             last_shown_products = []
             last_bot_action = "AWAITING_MENU_SELECTION"
 
     elif tool_name == "find_customer_by_cnpj":
         cnpj = parameters.get("cnpj")
         if cnpj:
+            print(f">>> CONSOLE: Buscando cliente por CNPJ: {cnpj}")
             customer = database.find_customer_by_cnpj(cnpj)
             if customer:
                 customer_context = customer
-                response_text = (
-                    f"🤖 Olá, {customer_context['nome']}! Bem-vindo(a) de volta.\n\n"
-                    f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-                )
-                add_message_to_history(
-                    session, "assistant", response_text, "CUSTOMER_IDENTIFIED"
-                )
-                last_shown_products = []
-                last_bot_action = "AWAITING_MENU_SELECTION"
+                
+                # 🆕 FINALIZA AUTOMATICAMENTE SE TEMOS CARRINHO E CLIENTE
+                if shopping_cart:
+                    response_text = generate_checkout_summary(shopping_cart, customer_context)
+                    add_message_to_history(
+                        session, "assistant", response_text, "CHECKOUT_COMPLETE"
+                    )
+                    
+                    # Limpa carrinho após finalização
+                    shopping_cart.clear()
+                    last_shown_products = []
+                    last_bot_action = "AWAITING_MENU_SELECTION"
+                else:
+                    response_text = (
+                        f"🤖 Olá, {customer_context['nome']}! Bem-vindo(a) de volta.\n\n"
+                        f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                    )
+                    add_message_to_history(
+                        session, "assistant", response_text, "CUSTOMER_IDENTIFIED"
+                    )
+                    last_shown_products = []
+                    last_bot_action = "AWAITING_MENU_SELECTION"
             else:
-                response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}."
-            add_message_to_history(
-                session, "assistant", response_text, "CUSTOMER_NOT_FOUND"
-            )
+                response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}. Mas posso registrar seu pedido mesmo assim!"
+                
+                # 🆕 PERMITE FINALIZAR MESMO SEM CADASTRO
+                if shopping_cart:
+                    response_text += f"\n\n{generate_checkout_summary(shopping_cart)}"
+                    add_message_to_history(
+                        session, "assistant", response_text, "CHECKOUT_COMPLETE"
+                    )
+                    
+                    # Limpa carrinho após finalização
+                    shopping_cart.clear()
+                    last_shown_products = []
+                    last_bot_action = "AWAITING_MENU_SELECTION"
+                else:
+                    add_message_to_history(
+                        session, "assistant", response_text, "CUSTOMER_NOT_FOUND"
+                    )
         else:
             response_text = "🤖 Por favor, informe seu CNPJ."
             add_message_to_history(session, "assistant", response_text, "REQUEST_CNPJ")
@@ -1214,7 +1375,7 @@ def _finalize_session(
 
     if response_text:
         print(
-            f">>> CONSOLE: Enviando resposta para o usuário: '{response_text}...'"
+            f">>> CONSOLE: Enviando resposta para o usuário: '{response_text[:100]}...'"
         )
         twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
 
@@ -1290,35 +1451,31 @@ def webhook():
     return "", 200
 
 @app.route("/clear_cart", methods=["POST"])
-def clear_cart():
-    """Esvazia completamente o carrinho - NOVA FUNÇÃO."""
+def clear_cart_endpoint():
+    """🆕 ENDPOINT PARA LIMPEZA DE CARRINHO VIA API."""
     data = request.get_json() or {}
     user_id = data.get("user_id")
     
     if not user_id:
         return jsonify({"error": "user_id é obrigatório"}), 400
     
-    session = get_session(user_id)
+    session = load_session(user_id)
     shopping_cart = session.get("shopping_cart", [])
     
-    if not shopping_cart:
-        response_text = "🤖 Seu carrinho já está vazio."
-        add_message_to_history(session, "assistant", response_text, "CLEAR_CART_EMPTY")
-    else:
-        item_count = len(shopping_cart)
-        session["shopping_cart"] = []
-        response_text = f"🗑️ Carrinho esvaziado! {item_count} {'item' if item_count == 1 else 'itens'} removido{'s' if item_count > 1 else ''}.\n\n{format_quick_actions(has_cart=False)}"
-        add_message_to_history(session, "assistant", response_text, "CLEAR_CART_SUCCESS")
+    message, empty_cart = clear_cart_completely(shopping_cart)
+    session["shopping_cart"] = empty_cart
     
     # Atualiza estado da sessão
     session["last_bot_action"] = "AWAITING_MENU_SELECTION"
     session["pending_action"] = None
+    session["last_shown_products"] = []
     
+    add_message_to_history(session, "assistant", message, "CLEAR_CART_API")
     save_session(user_id, session)
     
     return jsonify({
         "success": True,
-        "response_text": response_text,
+        "response_text": message,
         "session_data": session
     })
 

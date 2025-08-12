@@ -1,6 +1,7 @@
-# file: IA/core/session_manager.py
+# file: IA/core/session_manager.py - CORREÇÕES APLICADAS
 """
 Session Manager - Gerenciamento de Sessões do G.A.V.
+🆕 VERSÃO CORRIGIDA: Melhora detecção de comandos de carrinho
 """
 
 import os
@@ -329,9 +330,53 @@ def get_conversation_context(session_data: Dict, max_messages: int = 10) -> str:
 # DETECÇÃO E ANÁLISE DE INTENÇÕES
 # ================================================================================
 
-def detect_user_intent_type(message: str, session_data: Dict) -> str:
-    """Detecta tipo de intenção do usuário para melhor contexto."""
+def detect_cart_clear_commands(message: str) -> bool:
+    """
+    🆕 NOVA FUNÇÃO: Detecta comandos específicos de limpeza de carrinho.
+    """
     message_lower = message.lower().strip()
+    
+    # Comandos diretos e explícitos
+    clear_commands = [
+        'esvaziar carrinho', 'limpar carrinho', 'zerar carrinho',
+        'resetar carrinho', 'apagar carrinho', 'deletar carrinho',
+        'esvaziar tudo', 'limpar tudo', 'zerar tudo',
+        'apagar tudo', 'deletar tudo', 'remover tudo',
+        'começar de novo', 'recomeçar', 'reiniciar',
+        'do zero', 'novo pedido', 'nova compra',
+        'limpa carrinho', 'esvazia carrinho', 'zera carrinho'
+    ]
+    
+    # Verifica comandos exatos
+    if message_lower in clear_commands:
+        return True
+    
+    # Padrões com regex mais flexíveis
+    clear_patterns = [
+        r'\b(esvaziar|limpar|zerar|apagar|deletar|remover)\s+(o\s+)?carrinho\b',
+        r'\b(carrinho|tudo)\s+(vazio|limpo|zerado)\b',
+        r'\bcomeca\w*\s+de\s+novo\b',
+        r'\bdo\s+zero\b',
+        r'\breinicia\w*\s+(carrinho|tudo|compra)\b',
+        r'\b(esvazia|limpa|zera)\s+(carrinho|tudo)?\b'
+    ]
+    
+    for pattern in clear_patterns:
+        if re.search(pattern, message_lower):
+            return True
+    
+    return False
+
+def detect_user_intent_type(message: str, session_data: Dict) -> str:
+    """
+    🆕 VERSÃO MELHORADA: Detecta tipo de intenção do usuário para melhor contexto.
+    """
+    message_lower = message.lower().strip()
+    
+    # 🆕 PRIORIDADE MÁXIMA: Comandos de limpeza de carrinho
+    if detect_cart_clear_commands(message):
+        logging.info(f"[INTENT] Comando de limpeza detectado: '{message}'")
+        return "CLEAR_CART"
     
     # Comandos numéricos diretos
     if re.match(r'^\s*[123]\s*$', message_lower):

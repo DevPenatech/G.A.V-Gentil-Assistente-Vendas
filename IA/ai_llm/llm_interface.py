@@ -1,6 +1,8 @@
+# file: IA/ai_llm/llm_interface.py
 """
 Interface LLM - Comunicação com Modelo de Linguagem
 Otimizado para respostas rápidas e fallback inteligente
+VERSÃO CORRIGIDA: Melhora detecção de CNPJ e comandos de carrinho
 """
 
 import os
@@ -34,11 +36,141 @@ AVAILABLE_TOOLS = [
     "show_more_products",
     "report_incorrect_product",
     "ask_continue_or_checkout",
+    "clear_cart",  # 🆕 ADICIONADO
 ]
 
 # Cache do prompt para evitar leitura repetida do arquivo
 _prompt_cache = None
 _prompt_cache_time = 0
+
+
+def is_valid_cnpj(cnpj: str) -> bool:
+    """
+    🆕 NOVA FUNÇÃO: Valida se uma string é um CNPJ válido.
+    """
+    # Remove caracteres não numéricos
+    cnpj_digits = re.sub(r'\D', '', cnpj)
+    
+    # Verifica se tem 14 dígitos
+    if len(cnpj_digits) != 14:
+        return False
+    
+    # Verifica se não são todos iguais (ex: 11111111111111)
+    if cnpj_digits == cnpj_digits[0] * 14:
+        return False
+    
+    # Validação básica (formato correto)
+    try:
+        # Verifica primeiro dígito verificador
+        sequence = [int(cnpj_digits[i]) for i in range(12)]
+        weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+        sum1 = sum(sequence[i] * weights1[i] for i in range(12))
+        digit1 = ((sum1 % 11) < 2) and 0 or (11 - (sum1 % 11))
+        
+        if digit1 != int(cnpj_digits[12]):
+            return False
+        
+        # Verifica segundo dígito verificador
+        sequence.append(digit1)
+        weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+        sum2 = sum(sequence[i] * weights2[i] for i in range(13))
+        digit2 = ((sum2 % 11) < 2) and 0 or (11 - (sum2 % 11))
+        
+        return digit2 == int(cnpj_digits[13])
+        
+    except (ValueError, IndexError):
+        return False
+
+
+def detect_cart_clearing_intent(message: str) -> bool:
+    """
+    🆕 NOVA FUNÇÃO: Detecta intenção de limpar/esvaziar carrinho.
+    """
+    message_lower = message.lower().strip()
+    
+    # Comandos explícitos de limpeza de carrinho
+    clear_commands = [
+        # Comandos diretos
+        'esvaziar carrinho', 'limpar carrinho', 'zerar carrinho',
+        'resetar carrinho', 'apagar carrinho', 'deletar carrinho',
+        
+        # Variações com "tudo"
+        'esvaziar tudo', 'limpar tudo', 'zerar tudo', 
+        'apagar tudo', 'deletar tudo', 'remover tudo',
+        
+        # Comandos de reinício
+        'começar de novo', 'recomeçar', 'reiniciar',
+        'do zero', 'novo pedido', 'nova compra',
+        
+        # Comandos informais
+        'limpa', 'esvazia', 'zera', 'apaga'
+    ]
+    
+    # Verifica comandos exatos
+    for command in clear_commands:
+        if command in message_lower:
+            return True
+    
+    # Padrões mais flexíveis
+    clear_patterns = [
+        r'\b(limpar|esvaziar|zerar|apagar|deletar|remover)\s+(o\s+)?carrinho\b',
+        r'\b(carrinho|tudo)\s+(limpo|vazio|zerado)\b',
+        r'\bcomeca\w*\s+de\s+novo\b',
+        r'\bdo\s+zero\b',
+        r'\breinicia\w*\s+(carrinho|tudo|compra)\b'
+    ]
+    
+    for pattern in clear_patterns:
+        if re.search(pattern, message_lower):
+            return True
+    
+    return False
+
+
+def detect_checkout_context(session_data: Dict) -> Dict:
+    """
+    🆕 NOVA FUNÇÃO: Detecta se estamos em contexto de finalização/checkout.
+    """
+    context = {
+        'awaiting_cnpj': False,
+        'last_request_was_cnpj': False,
+        'checkout_initiated': False
+    }
+    
+    # Verifica histórico recente
+    history = session_data.get('conversation_history', [])
+    
+    if not history:
+        return context
+    
+    # Analisa últimas 3 mensagens do bot
+    recent_bot_messages = []
+    for msg in reversed(history):
+        if msg.get('role') == 'assistant':
+            recent_bot_messages.append(msg.get('message', '').lower())
+            if len(recent_bot_messages) >= 3:
+                break
+    
+    # Verifica se a última mensagem do bot pediu CNPJ
+    if recent_bot_messages:
+        last_bot_msg = recent_bot_messages[0]
+        
+        cnpj_request_patterns = [
+            'cnpj', 'finalizar', 'checkout', 'compra',
+            'identificar', 'cadastro', 'cliente'
+        ]
+        
+        if any(pattern in last_bot_msg for pattern in cnpj_request_patterns):
+            context['awaiting_cnpj'] = True
+            context['last_request_was_cnpj'] = True
+    
+    # Verifica se checkout foi iniciado recentemente
+    for msg in recent_bot_messages:
+        if any(word in msg for word in ['finalizar', 'checkout', 'cnpj']):
+            context['checkout_initiated'] = True
+            break
+    
+    return context
 
 
 def load_prompt_template() -> str:
@@ -74,7 +206,11 @@ def get_fallback_prompt() -> str:
 
 ESTILO: Respostas curtas com próxima ação explícita. Liste até 3 opções por vez; peça escolha por número ("1, 2 ou 3").
 
-FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, ask_continue_or_checkout
+FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, ask_continue_or_checkout, clear_cart
+
+COMANDOS ESPECIAIS:
+- "esvaziar carrinho", "limpar carrinho" → use clear_cart
+- CNPJ (14 dígitos) quando solicitado → use find_customer_by_cnpj
 
 SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!"""
 
@@ -135,7 +271,9 @@ def detect_quantity_keywords(message: str) -> Union[float, None]:
 
 
 def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
-    """Melhora a consciência contextual analisando estado da sessão."""
+    """
+    🆕 VERSÃO MELHORADA: Melhora a consciência contextual analisando estado da sessão.
+    """
     context = {
         "has_cart_items": len(session_data.get("shopping_cart", [])) > 0,
         "cart_count": len(session_data.get("shopping_cart", [])),
@@ -148,16 +286,22 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         "conversation_history": session_data.get("conversation_history", [])
     }
 
+    # 🆕 DETECTA COMANDOS DE LIMPEZA DE CARRINHO
+    context["clear_cart_command"] = detect_cart_clearing_intent(user_message)
+    
+    # 🆕 DETECTA CONTEXTO DE CHECKOUT/FINALIZAÇÃO
+    checkout_context = detect_checkout_context(session_data)
+    context.update(checkout_context)
+    
+    # 🆕 DETECTA SE É UM CNPJ VÁLIDO
+    context["is_valid_cnpj"] = is_valid_cnpj(user_message)
+    context["is_cnpj_in_checkout_context"] = (
+        context["is_valid_cnpj"] and 
+        (context["awaiting_cnpj"] or context["checkout_initiated"])
+    )
+
     # Detecta padrões específicos
     message_lower = user_message.lower().strip()
-    
-    # NOVO: Detecção aprimorada de comandos de carrinho
-    clear_cart_commands = [
-        "esvaziar carrinho", "limpar carrinho", "zerar carrinho", 
-        "resetar carrinho", "apagar carrinho", "esvaziar tudo",
-        "limpar tudo", "zerar tudo", "começar de novo",
-        "recomeçar", "reiniciar carrinho", "apagar tudo"
-    ]
 
     # Comandos diretos de carrinho
     if any(cmd in message_lower for cmd in ["carrinho", "ver carrinho"]):
@@ -213,7 +357,7 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         "mais vendidos",
     ]
 
-    if context.get("direct_checkout_command"):
+    if context.get("direct_checkout_command") or context.get("awaiting_cnpj"):
         purchase_stage = "checkout"
     elif context.get("direct_cart_command"):
         purchase_stage = "cart"
@@ -285,7 +429,7 @@ def get_intent(
     cart_items_count: int = 0,
 ) -> Dict:
     """
-    Usa o LLM para interpretar a mensagem do usuário e traduzir em uma ferramenta.
+    🆕 VERSÃO CORRIGIDA: Usa o LLM para interpretar a mensagem do usuário e traduzir em uma ferramenta.
     Com fallback rápido para mensagens simples e timeout para evitar demoras.
     """
     try:
@@ -293,11 +437,20 @@ def get_intent(
             f"[llm_interface.py] Iniciando get_intent para mensagem: '{user_message}'"
         )
 
-        # Melhora consciência contextual
+        # 🆕 MELHORA CONSCIÊNCIA CONTEXTUAL
         enhanced_context = enhance_context_awareness(user_message, session_data)
         
-        # Verifica se é comando direto que pode ser resolvido sem LLM
+        # 🆕 PRIORIDADE MÁXIMA: CNPJ em contexto de checkout
+        if enhanced_context.get("is_cnpj_in_checkout_context"):
+            logging.info("[llm_interface.py] CNPJ detectado em contexto de checkout")
+            return {
+                "tool_name": "find_customer_by_cnpj",
+                "parameters": {"cnpj": user_message.strip()}
+            }
+        
+        # 🆕 PRIORIDADE ALTA: Comandos de limpeza de carrinho
         if enhanced_context.get("clear_cart_command"):
+            logging.info("[llm_interface.py] Comando de limpeza de carrinho detectado")
             return {"tool_name": "clear_cart", "parameters": {}}
 
         # Para mensagens simples, usa detecção rápida sem IA
@@ -363,9 +516,20 @@ def get_intent(
         if customer_context:
             customer_info = f"CLIENTE: {customer_context.get('nome', 'Identificado')}"
 
+        # 🆕 CONSTRÓI CONTEXTO ESPECÍFICO PARA PROBLEMAS IDENTIFICADOS
+        special_context = ""
+        if enhanced_context.get("clear_cart_command"):
+            special_context += "⚠️ COMANDO DE LIMPEZA DE CARRINHO DETECTADO - Use clear_cart\n"
+        if enhanced_context.get("is_cnpj_in_checkout_context"):
+            special_context += "⚠️ CNPJ VÁLIDO EM CONTEXTO DE CHECKOUT - Use find_customer_by_cnpj\n"
+        if enhanced_context.get("awaiting_cnpj"):
+            special_context += "⚠️ BOT ESTÁ ESPERANDO CNPJ PARA FINALIZAR PEDIDO\n"
+
         # Constrói contexto completo
         full_context = f"""
 MENSAGEM DO USUÁRIO: "{user_message}"
+
+{special_context}
 
 CONTEXTO DA CONVERSA (MUITO IMPORTANTE):
 {conversation_context}
@@ -375,24 +539,26 @@ ESTADO ATUAL DA SESSÃO:
 - Produtos mostrados: {'Sim' if enhanced_context.get('has_pending_products') else 'Não'}
 - Última ação do bot: {enhanced_context.get('last_action', 'Nenhuma')}
 - Cliente identificado: {'Sim' if enhanced_context.get('customer_identified') else 'Não'}
+- Esperando CNPJ: {'Sim' if enhanced_context.get('awaiting_cnpj') else 'Não'}
 
 ANÁLISE CONTEXTUAL:
 - Seleção numérica detectada: {enhanced_context.get('numeric_selection', 'Nenhuma')}
 - Quantidade inferida: {enhanced_context.get('inferred_quantity', 'Não especificada')}
-- Gíria detectada: {enhanced_context.get('detected_slang', 'Nenhuma')}
-- Contexto da conversa: {enhanced_context.get('conversation_context', {})}
+- É CNPJ válido: {'Sim' if enhanced_context.get('is_valid_cnpj') else 'Não'}
+- CNPJ em contexto checkout: {'Sim' if enhanced_context.get('is_cnpj_in_checkout_context') else 'Não'}
+- Comando limpar carrinho: {'Sim' if enhanced_context.get('clear_cart_command') else 'Não'}
 
 COMANDOS DETECTADOS:
-- Esvaziar carrinho: {'Sim' if enhanced_context.get('clear_cart_command') else 'Não'}
 - Ver carrinho: {'Sim' if enhanced_context.get('direct_cart_command') else 'Não'}
 - Finalizar: {'Sim' if enhanced_context.get('direct_checkout_command') else 'Não'}
 - Continuar: {'Sim' if enhanced_context.get('continue_shopping') else 'Não'}
 
-INSTRUÇÕES ESPECIAIS:
-1. Se detectou "Esvaziar carrinho: Sim", use clear_cart
-2. Se há produtos mostrados e usuário digitou número, use add_item_to_cart
-3. Considere TODO o histórico da conversa para interpretar a intenção
-4. Se ambíguo, escolha a ação mais provável baseada no contexto
+INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
+1. ⚠️ Se "Comando limpar carrinho: Sim", SEMPRE use clear_cart
+2. ⚠️ Se "CNPJ em contexto checkout: Sim", SEMPRE use find_customer_by_cnpj
+3. ⚠️ Se "Esperando CNPJ: Sim" e mensagem parece CNPJ, use find_customer_by_cnpj
+4. Se há produtos mostrados e usuário digitou número, use add_item_to_cart
+5. Considere TODO o histórico da conversa para interpretar a intenção
 """
 
         # Prepara mensagens para o modelo
@@ -414,18 +580,12 @@ INSTRUÇÕES ESPECIAIS:
                 model=OLLAMA_MODEL_NAME,
                 messages=messages,
                 options={
-                    "temperature": 0.3,  # Mais determinístico
+                    "temperature": 0.1,  # 🆕 MAIS DETERMINÍSTICO para melhor detecção
                     "top_p": 0.9,
                     "num_predict": 150,  # Limita tamanho da resposta
                     "stop": ["\n\n", "```"],  # Para em quebras duplas ou markdown
                 },
                 stream=False,
-            )
-            
-            response = ollama.generate(
-                model=OLLAMA_MODEL_NAME,
-                prompt=f"{system_prompt}\n\n{full_context}",
-                options={"temperature": 0.1}
             )
 
             elapsed_time = time.time() - start_time
@@ -441,7 +601,7 @@ INSTRUÇÕES ESPECIAIS:
 
             # Extrai e processa resposta
             content = response.get("message", {}).get("content", "")
-            logging.info(f"[llm_interface.py] Resposta do LLM: {content}...")
+            logging.info(f"[llm_interface.py] Resposta do LLM: {content[:100]}...")
 
             cleaned_content = clean_json_response(content)
             logging.debug(f"[llm_interface.py] Conteúdo limpo: {cleaned_content}")
@@ -514,9 +674,22 @@ def clean_json_response(content: str) -> str:
 
 
 def create_fallback_intent(user_message: str, context: Dict) -> Dict:
-    """Cria intenção de fallback baseada em padrões simples quando LLM falha ou demora."""
+    """
+    🆕 VERSÃO CORRIGIDA: Cria intenção de fallback baseada em padrões simples quando LLM falha ou demora.
+    """
     message_lower = user_message.lower().strip()
     stage = context.get("purchase_stage", "greeting")
+
+    # 🆕 PRIORIDADE MÁXIMA: CNPJ em contexto de checkout
+    if context.get("is_cnpj_in_checkout_context"):
+        return {
+            "tool_name": "find_customer_by_cnpj",
+            "parameters": {"cnpj": user_message.strip()}
+        }
+
+    # 🆕 PRIORIDADE ALTA: Comandos de limpeza de carrinho
+    if context.get("clear_cart_command"):
+        return {"tool_name": "clear_cart", "parameters": {}}
 
     modifiers = detect_quantity_modifiers(message_lower)
     if modifiers.get("action") == "remove":
@@ -526,10 +699,6 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
             "tool_name": "handle_chitchat",
             "parameters": {"response_text": "Seu carrinho está vazio."},
         }
-
-    # Comando para esvaziar carrinho
-    if context.get("clear_cart_command"):
-        return {"tool_name": "clear_cart", "parameters": {}}
 
     modifiers = detect_quantity_modifiers(message_lower)
     if modifiers.get("action") == "clear":
@@ -541,7 +710,7 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
         return {
             "tool_name": "add_item_to_cart",
             "parameters": {
-                "codprod": 0,  # Será resolvido no app.py
+                "index": context.get("numeric_selection"),  # 🆕 CORRIGIDO
                 "qt": context.get("inferred_quantity", 1),
             },
         }
@@ -566,7 +735,7 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
         for keyword in product_keywords:
             product_name = product_name.replace(keyword, "").strip()
 
-        if product_name:
+        if product_name and not context.get("is_valid_cnpj"):  # 🆕 EVITA BUSCAR CNPJ COMO PRODUTO
             return {
                 "tool_name": "get_top_selling_products_by_name",
                 "parameters": {"product_name": product_name},
@@ -627,13 +796,21 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     ):
         return {"tool_name": "show_more_products", "parameters": {}}
 
-    # Fallback padrão - tenta buscar o termo completo
-    if len(message_lower) > 2:
+    # Fallback padrão - tenta buscar o termo completo (EXCETO se for CNPJ)
+    if len(message_lower) > 2 and not context.get("is_valid_cnpj"):
         return {
             "tool_name": "get_top_selling_products_by_name",
             "parameters": {"product_name": message_lower},
         }
 
+    # 🆕 SE FOR CNPJ MAS NÃO ESTAMOS EM CONTEXTO DE CHECKOUT
+    if context.get("is_valid_cnpj") and not context.get("checkout_initiated"):
+        return {
+            "tool_name": "handle_chitchat",
+            "parameters": {"response_text": "Identifico que você digitou um CNPJ. Para usá-lo, primeiro adicione itens ao carrinho e depois digite 'finalizar pedido'."},
+        }
+
+    # Mensagens padrão baseadas no estágio
     if stage == "cart":
         default_text = "Não entendi. Você pode digitar o nome de um produto para adicionar mais itens ou 'checkout' para finalizar."
     elif stage == "checkout":
@@ -681,6 +858,13 @@ def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
         valid_actions = ["remove", "update_quantity", "add_quantity"]
         if "action" not in parameters or parameters["action"] not in valid_actions:
             parameters["action"] = "remove"
+    
+    elif tool_name == "find_customer_by_cnpj":
+        # 🆕 VALIDA CNPJ
+        cnpj = parameters.get("cnpj", "")
+        # Remove caracteres especiais do CNPJ
+        clean_cnpj = re.sub(r'\D', '', cnpj)
+        parameters["cnpj"] = clean_cnpj
 
     return parameters
 
