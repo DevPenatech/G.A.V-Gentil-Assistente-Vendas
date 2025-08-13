@@ -261,6 +261,8 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
     quantity = extract_quantity(incoming_msg, last_shown)
     if not is_valid_quantity(quantity):
         quantity = 1
+    pending_selection = state.get("pending_product_selection") or {}
+    stored_quantity = pending_selection.get("quantity") if isinstance(pending_selection, dict) else None
 
     # Detecção imediata de comandos de limpeza do carrinho
     if detect_cart_clear_commands(incoming_msg):
@@ -290,6 +292,13 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
             logging.info(f"[PROCESS] CNPJ detectado: {cnpj_match.group()}")
             return intent, response_text
     
+    # Quantidade informada sem produto definido
+    if intent_type == "QUANTITY_SPECIFICATION" and is_valid_quantity(quantity):
+        pending_selection.setdefault("quantity", quantity)
+        state["pending_product_selection"] = pending_selection
+        response_text = "Entendi! Agora me diga o número do produto desejado."
+        return intent, response_text
+
     # Seleção numérica
     if intent_type == "NUMERIC_SELECTION":
         last_shown = state.get("last_shown_products", [])
@@ -299,7 +308,9 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
                 selection = int(selection_text.split()[0]) - 1
                 if 0 <= selection < len(last_shown):
                     product = last_shown[selection]
-                    qt = quantity if (not selection_text.isdigit() and is_valid_quantity(quantity)) else 1
+                    qt = quantity if (not selection_text.isdigit() and is_valid_quantity(quantity)) else (
+                        stored_quantity if is_valid_quantity(stored_quantity) else 1
+                    )
                     intent = {
                         "tool_name": "add_item_to_cart",
                         "parameters": {
@@ -307,6 +318,7 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
                             "qt": qt
                         }
                     }
+                    state["pending_product_selection"] = None
                     logging.info(f"[PROCESS] Seleção numérica: produto {selection+1} - qtd {qt}")
                     return intent, response_text
             except ValueError:
