@@ -307,7 +307,37 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
     if incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
         intent = {"tool_name": "show_more_products", "parameters": {}}
         return intent, response_text
-    
+
+    # Detecção de padrões explícitos de compra
+    compra_match = re.search(r"\b(?:quero\s+comprar|comprar)\s+(.+)", incoming_msg, re.IGNORECASE)
+    if compra_match:
+        product_name = compra_match.group(1).strip()
+        search_result = search_products_with_suggestions(product_name, limit=3)
+        products = search_result.get("products", [])
+        suggestions = search_result.get("suggestions", [])
+
+        if products:
+            response_text = format_product_list_for_display(products, 0, 3)
+            state["last_shown_products"] = products[:3]
+            state["last_search_type"] = "by_name"
+            state["last_search_params"] = {"product_name": product_name}
+            state["current_offset"] = 0
+        elif suggestions:
+            suggestion_text = ", ".join(suggestions)
+            response_text = (
+                f"🤖 Não encontrei produtos para '{product_name}'. \n"
+                f"Você quis dizer: {suggestion_text}?"
+            )
+        else:
+            response_text = (
+                f"🤖 Não encontrei produtos para '{product_name}'.\n\n"
+                "Tente buscar por categoria ou marca."
+            )
+
+        add_message_to_history(session, "assistant", response_text, "SEARCH_PRODUCTS")
+        state["last_bot_action"] = "PRODUCTS_SEARCHED"
+        return intent, response_text
+
     # Processamento com IA para casos gerais
     if intent_type in ["GENERAL", "SEARCH_PRODUCT"]:
         logging.info("[PROCESS] Consultando IA com contexto completo...")
