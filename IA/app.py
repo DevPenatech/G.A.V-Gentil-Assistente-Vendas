@@ -220,12 +220,24 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
     intent = None
     response_text = ""
     shopping_cart = state.get("shopping_cart", [])
-    
+    last_shown = state.get("last_shown_products", [])
+
+    # Extrai quantidade do texto e valida
+    quantity = extract_quantity(incoming_msg, last_shown)
+    if not is_valid_quantity(quantity):
+        quantity = 1
+
+    # Detecção imediata de comandos de limpeza do carrinho
+    if detect_cart_clear_commands(incoming_msg):
+        intent = {"tool_name": "clear_cart", "parameters": {}}
+        logging.info("[PROCESS] Comando de limpeza detectado (detect_cart_clear_commands)")
+        return intent, response_text
+
     # Detecta tipo de intenção
     intent_type = detect_user_intent_type(incoming_msg, session)
-    
+
     logging.info(f"[INTENT_TYPE] Detectado: {intent_type} para mensagem: '{incoming_msg}'")
-    
+
     # PRIORIDADE MÁXIMA: Comandos de limpeza
     if intent_type == "CLEAR_CART":
         intent = {"tool_name": "clear_cart", "parameters": {}}
@@ -248,17 +260,19 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
         last_shown = state.get("last_shown_products", [])
         if last_shown:
             try:
-                selection = int(incoming_msg.strip()) - 1
+                selection_text = incoming_msg.strip()
+                selection = int(selection_text.split()[0]) - 1
                 if 0 <= selection < len(last_shown):
                     product = last_shown[selection]
+                    qt = quantity if (not selection_text.isdigit() and is_valid_quantity(quantity)) else 1
                     intent = {
                         "tool_name": "add_item_to_cart",
                         "parameters": {
                             "codprod": product.get("codprod"),
-                            "qt": 1
+                            "qt": qt
                         }
                     }
-                    logging.info(f"[PROCESS] Seleção numérica: produto {selection+1}")
+                    logging.info(f"[PROCESS] Seleção numérica: produto {selection+1} - qtd {qt}")
                     return intent, response_text
             except ValueError:
                 pass
@@ -301,19 +315,27 @@ def _process_user_message(session: Dict, state: Dict, incoming_msg: str) -> Tupl
         # Log do estado atual
         stats = get_session_stats(session)
         logging.info(f"[SESSION_STATS] {stats}")
-        
+        logging.debug(f"[CTX_CART] {format_cart_context(shopping_cart)}")
+        logging.debug(f"[CTX_CUSTOMER] {format_customer_context(state.get('customer_context'))}")
+        logging.debug(f"[CTX_PRODUCTS] {format_products_context(state.get('last_shown_products'))}")
+
         intent = llm_interface.get_intent(
             user_message=incoming_msg,
             session_data=session,  # Passa sessão completa com histórico
             customer_context=state.get("customer_context"),
             cart_items_count=len(shopping_cart)
         )
-        
+
+        if intent.get("tool_name") == "add_item_to_cart":
+            params = intent.setdefault("parameters", {})
+            if "qt" not in params or not is_valid_quantity(params.get("qt")):
+                params["qt"] = quantity
+
         logging.info(f"[AI_RESPONSE] Tool: {intent.get('tool_name')} | Params: {intent.get('parameters')}")
-        
+
         # Validação final de segurança
         intent = validate_and_correct_intent(intent, incoming_msg, session)
-        
+
         return intent, response_text
     
     # Saudações
@@ -450,18 +472,38 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     elif tool_name == "get_top_selling_products_by_name":
         product_name = parameters.get("product_name", "")
         logging.info(f"[TOOL] Buscando produtos por nome: {product_name}")
-        
-        products = database.search_products_by_name(product_name, limit=3)
-        
+
+        search_result = search_products_with_suggestions(product_name, limit=3)
+        products = search_result.get("products", [])
+        suggestions = search_result.get("suggestions", [])
+
         if products:
             response_text = format_product_list_for_display(products, 0, 3)
             state["last_shown_products"] = products[:3]
             state["last_search_type"] = "by_name"
             state["last_search_params"] = {"product_name": product_name}
             state["current_offset"] = 0
+        elif suggestions:
+            suggestion_text = ", ".join(suggestions)
+            response_text = (
+                f"🤖 Não encontrei produtos para '{product_name}'. \n"
+                f"Você quis dizer: {suggestion_text}?"
+            )
         else:
-            response_text = f"🤖 Não encontrei produtos para '{product_name}'.\n\nTente buscar por categoria ou marca."
-        
+            kb_products, kb_analysis = find_product_in_kb_with_analysis(product_name)
+            if kb_products:
+                logging.info(f"[KB_ANALYSIS] {kb_analysis}")
+                response_text = format_product_list_for_display(kb_products, 0, min(3, len(kb_products)))
+                state["last_shown_products"] = kb_products[:3]
+                state["last_search_type"] = "kb"
+                state["last_search_params"] = {"product_name": product_name}
+                state["current_offset"] = 0
+            else:
+                response_text = (
+                    f"🤖 Não encontrei produtos para '{product_name}'.\n\n"
+                    "Tente buscar por categoria ou marca."
+                )
+
         add_message_to_history(session, "assistant", response_text, "SEARCH_PRODUCTS")
         state["last_bot_action"] = "PRODUCTS_SEARCHED"
     
@@ -469,37 +511,45 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     elif tool_name == "add_item_to_cart":
         codprod = parameters.get("codprod")
         quantity = parameters.get("qt", 1)
-        
+        if not is_valid_quantity(quantity):
+            quantity = 1
+
+        product = None
+
         if codprod:
             logging.info(f"[TOOL] Adicionando produto {codprod} ao carrinho. Quantidade: {quantity}")
             product = database.get_product_by_codprod(codprod)
-            
-            if product:
-                # Verifica se já existe no carrinho
-                existing_item = None
-                for item in shopping_cart:
-                    if item.get("codprod") == codprod:
-                        existing_item = item
-                        break
-                
-                if existing_item:
-                    existing_item["qt"] += quantity
-                    response_text = f"✅ Adicionei mais {quantity} {get_product_name(product)} ao carrinho."
-                else:
-                    product["qt"] = quantity
-                    shopping_cart.append(product)
-                    response_text = f"✅ Adicionei {quantity} {get_product_name(product)} ao carrinho."
-                
-                response_text += "\n\n" + generate_continue_or_checkout_message(shopping_cart)
-                
-                add_message_to_history(session, "assistant", response_text, "ADD_TO_CART")
-                state["last_bot_action"] = "ITEM_ADDED"
+        elif parameters.get("product_name"):
+            name_search = parameters.get("product_name")
+            logging.info(f"[TOOL] Buscando produto por nome fuzzy: {name_search}")
+            fuzzy_results = get_product_details_fuzzy(name_search)
+            if fuzzy_results:
+                product = fuzzy_results[0]
+                codprod = product.get("codprod")
+
+        if product:
+            # Verifica se já existe no carrinho
+            existing_item = None
+            for item in shopping_cart:
+                if item.get("codprod") == codprod:
+                    existing_item = item
+                    break
+
+            if existing_item:
+                existing_item["qt"] += quantity
+                response_text = f"✅ Adicionei mais {quantity} {get_product_name(product)} ao carrinho."
             else:
-                response_text = "🤖 Produto não encontrado. Tente buscar novamente."
-                add_message_to_history(session, "assistant", response_text, "PRODUCT_NOT_FOUND")
+                product["qt"] = quantity
+                shopping_cart.append(product)
+                response_text = f"✅ Adicionei {quantity} {get_product_name(product)} ao carrinho."
+
+            response_text += "\n\n" + generate_continue_or_checkout_message(shopping_cart)
+
+            add_message_to_history(session, "assistant", response_text, "ADD_TO_CART")
+            state["last_bot_action"] = "ITEM_ADDED"
         else:
-            response_text = "🤖 Por favor, selecione um produto válido."
-            add_message_to_history(session, "assistant", response_text, "INVALID_SELECTION")
+            response_text = "🤖 Produto não encontrado. Tente buscar novamente."
+            add_message_to_history(session, "assistant", response_text, "PRODUCT_NOT_FOUND")
     
     # FERRAMENTA: handle_chitchat
     elif tool_name == "handle_chitchat":
@@ -509,12 +559,13 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     
     # FERRAMENTA: start_new_order
     elif tool_name == "start_new_order":
+        clear_session(sender_phone)
         shopping_cart.clear()
         state["shopping_cart"] = []
         state["customer_context"] = None
         state["last_shown_products"] = []
         state["last_bot_action"] = "NEW_ORDER_STARTED"
-        
+
         response_text = "🆕 Novo pedido iniciado! Carrinho limpo.\n\n" + format_quick_actions(has_cart=False)
         add_message_to_history(session, "assistant", response_text, "NEW_ORDER")
     
@@ -624,10 +675,12 @@ def webhook():
 @app.route('/health', methods=['GET'])
 def health():
     """Endpoint de health check."""
+    kb_stats = knowledge.get_kb_statistics()
     return jsonify({
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "version": "2.0"
+        "version": "2.0",
+        "knowledge_base": kb_stats
     })
 
 
