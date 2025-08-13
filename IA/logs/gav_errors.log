@@ -39,3 +39,14 @@
 2025-08-12 20:39:02,448 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
 2025-08-12 20:39:10,445 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
 2025-08-12 20:43:34,780 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-13 00:30:16,883 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACad7b82d94a6416ade9b1d19a8194499f exceeded the 9 daily messages limit
+2025-08-13 00:30:16,884 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-13 00:31:27,993 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACad7b82d94a6416ade9b1d19a8194499f exceeded the 9 daily messages limit
+2025-08-13 00:31:27,995 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-13 00:32:17,868 [ERROR] [root:545] [get_intent] [llm_interface.py] Erro geral: Invalid format specifier
+Traceback (most recent call last):
+  File "/app/ai_llm/llm_interface.py", line 449, in get_intent
+    full_context = f"""
+ValueError: Invalid format specifier
+2025-08-13 00:32:18,063 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACad7b82d94a6416ade9b1d19a8194499f exceeded the 9 daily messages limit
+2025-08-13 00:32:18,067 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido

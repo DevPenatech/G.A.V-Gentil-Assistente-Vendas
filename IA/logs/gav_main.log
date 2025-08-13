@@ -645,3 +645,94 @@ Ou tente buscar por categoria: 'refrigerantes', 'de...'
 2025-08-12 20:43:53,302 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Olá! Como posso ajudar você hoje?'
 2025-08-12 20:43:53,516 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM90461c4f1d69afba31179218051473c7
 2025-08-12 20:43:53,518 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'Adiciona mais 5 coca cola'
+2025-08-13 00:20:53,002 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-13 00:20:53,196 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-13 00:20:53,946 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-13 00:20:54,013 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-13 00:20:54,039 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-13 00:20:54,040 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
+2025-08-13 00:26:30,826 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/session_manager.py', reloading
+2025-08-13 00:26:30,876 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-13 00:26:31,599 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-13 00:26:31,670 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-13 00:26:31,700 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-13 00:26:31,701 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
+2025-08-13 00:26:42,390 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/session_manager.py', reloading
+2025-08-13 00:26:42,430 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-13 00:26:43,061 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-13 00:26:43,123 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-13 00:26:43,151 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-13 00:26:43,152 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
+2025-08-13 00:29:56,359 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-13 00:29:56,411 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-13 00:29:57,053 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-13 00:29:57,127 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-13 00:29:57,153 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-13 00:29:57,154 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
+2025-08-13 00:30:09,904 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [13/Aug/2025 00:30:09] "POST /webhook HTTP/1.1" 200 -
+2025-08-13 00:30:09,905 [INFO] [root:69] [load_session] [SESSION] Nova sessão criada para: 5511940726493***
+2025-08-13 00:30:09,909 [DEBUG] [root:83] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:30:09,909 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Olá! Como posso ajudar você hoje?'
+2025-08-13 00:30:10,236 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM2cce098f86115acfad6f43140b142aa1
+2025-08-13 00:30:10,237 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'Oi'
+2025-08-13 00:30:16,708 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [13/Aug/2025 00:30:16] "POST /webhook HTTP/1.1" 200 -
+2025-08-13 00:30:16,712 [DEBUG] [root:38] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:30:16,714 [DEBUG] [root:83] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:30:16,715 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🛒 Seu carrinho está vazio.
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos...'
+2025-08-13 00:30:16,883 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACad7b82d94a6416ade9b1d19a8194499f exceeded the 9 daily messages limit
+2025-08-13 00:30:16,884 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-13 00:30:16,886 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'meu carrinho'
+2025-08-13 00:31:05,509 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [13/Aug/2025 00:31:05] "POST /webhook HTTP/1.1" 200 -
+2025-08-13 00:31:05,515 [DEBUG] [root:38] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:31:05,533 [DEBUG] [root:83] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:31:05,534 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Olá! Como posso ajudar você hoje?'
+2025-08-13 00:31:05,777 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM0708d4623964fb1e89f8d9bf373743bf
+2025-08-13 00:31:05,778 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'Adiciona 5 coca cola lata'
+2025-08-13 00:31:12,353 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [13/Aug/2025 00:31:12] "POST /webhook HTTP/1.1" 200 -
+2025-08-13 00:31:12,360 [DEBUG] [root:38] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:31:12,363 [DEBUG] [root:83] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:31:12,363 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Olá! Como posso ajudar você hoje?'
+2025-08-13 00:31:12,574 [INFO] [root:57] [send_whatsapp_message] Mensagem enviada com sucesso. SID: SM2496969ad4dd40ce23eecda6581d3569
+2025-08-13 00:31:12,577 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'coca cola'
+2025-08-13 00:31:27,801 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [13/Aug/2025 00:31:27] "POST /webhook HTTP/1.1" 200 -
+2025-08-13 00:31:27,809 [DEBUG] [root:38] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:31:27,826 [DEBUG] [root:83] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:31:27,833 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: '🤖 Seu carrinho está vazio!
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos...'
+2025-08-13 00:31:27,993 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACad7b82d94a6416ade9b1d19a8194499f exceeded the 9 daily messages limit
+2025-08-13 00:31:27,995 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-13 00:31:27,996 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'Quero comprar coca cola'
+2025-08-13 00:32:17,834 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [13/Aug/2025 00:32:17] "POST /webhook HTTP/1.1" 200 -
+2025-08-13 00:32:17,845 [DEBUG] [root:38] [load_session] [SESSION] Sessão carregada do arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:32:17,852 [INFO] [root:389] [get_intent] [llm_interface.py] Processando mensagem: 'quero coca cola'
+2025-08-13 00:32:17,854 [INFO] [root:396] [get_intent] [CONTEXT] História: 11 mensagens
+2025-08-13 00:32:17,857 [INFO] [root:397] [get_intent] [CONTEXT] Carrinho: 0 itens
+2025-08-13 00:32:17,858 [INFO] [root:398] [get_intent] [CONTEXT] Cliente identificado: False
+2025-08-13 00:32:17,860 [INFO] [root:197] [load_prompt_template] [llm_interface.py] Carregando prompt de: ai_llm/gav_prompt.txt
+2025-08-13 00:32:17,863 [INFO] [root:202] [load_prompt_template] [llm_interface.py] Prompt carregado. Tamanho: 5376 caracteres
+2025-08-13 00:32:17,868 [ERROR] [root:545] [get_intent] [llm_interface.py] Erro geral: Invalid format specifier
+Traceback (most recent call last):
+  File "/app/ai_llm/llm_interface.py", line 449, in get_intent
+    full_context = f"""
+ValueError: Invalid format specifier
+2025-08-13 00:32:17,898 [DEBUG] [root:83] [save_session] [SESSION] Sessão salva no arquivo: data/session_whatsapp5511940726493.json
+2025-08-13 00:32:17,899 [INFO] [root:48] [send_whatsapp_message] Enviando mensagem proativa para 5511940726493***: 'Olá! Bem-vindo ao Comercial Esperança. Como posso ajudar?
+
+🔍 Digite o nome do produto
+📦 Digite *prod...'
+2025-08-13 00:32:18,063 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACad7b82d94a6416ade9b1d19a8194499f exceeded the 9 daily messages limit
+2025-08-13 00:32:18,067 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
+2025-08-13 00:32:18,071 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para 'quero coca cola'
+2025-08-13 00:34:04,069 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-13 00:34:04,123 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-13 00:34:05,115 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-13 00:34:05,193 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
+2025-08-13 00:34:05,198 [INFO] [root:650] [<module>] 🚀 G.A.V. 2.0 - Sistema iniciado com sucesso!
+2025-08-13 00:34:05,199 [INFO] [root:651] [<module>] 📊 Contexto: COMPLETO | Histórico: ATIVO | Validações: ATIVAS
+2025-08-13 00:34:05,235 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-13 00:34:05,236 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 353-219-865
