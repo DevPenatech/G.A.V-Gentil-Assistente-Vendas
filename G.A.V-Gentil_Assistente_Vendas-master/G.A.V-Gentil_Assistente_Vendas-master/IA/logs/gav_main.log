@@ -217,15 +217,3 @@
 2025-08-12 18:20:31,639 [ERROR] [root:61] [send_whatsapp_message] Falha ao enviar mensagem via API da Twilio: HTTP 429 error: Unable to create record: Account ACd2a6cd60871d661c034ecb40ddbd51e7 exceeded the 9 daily messages limit
 2025-08-12 18:20:31,641 [ERROR] [root:65] [send_whatsapp_message] Limite de mensagens diário atingido
 2025-08-12 18:20:31,642 [INFO] [root:1425] [process_message_async] THREAD: Processamento finalizado para '12345678910236'
-2025-08-13 11:01:59,663 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
-2025-08-13 11:01:59,721 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
-2025-08-13 11:01:59,748 [INFO] [werkzeug:97] [_log] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on all addresses (0.0.0.0)
- * Running on http://127.0.0.1:8080
- * Running on http://172.20.0.4:8080
-2025-08-13 11:01:59,748 [INFO] [werkzeug:97] [_log] [33mPress CTRL+C to quit[0m
-2025-08-13 11:01:59,750 [INFO] [werkzeug:97] [_log]  * Restarting with stat
-2025-08-13 11:02:00,427 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
-2025-08-13 11:02:00,482 [INFO] [root:21] [<module>] Cliente Twilio inicializado com sucesso
-2025-08-13 11:02:00,510 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
-2025-08-13 11:02:00,511 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 100-502-274

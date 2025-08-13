@@ -41,3 +41,758 @@
 2025-08-11 11:43:36,826 [INFO] Total de entradas: 3
 2025-08-11 11:43:36,827 [INFO] Total de termos relacionados: 57
 2025-08-11 11:43:36,827 [INFO] Cache em memória limpo. Próxima consulta carregará a nova base.
+2025-08-13 11:19:08,520 [INFO] === INICIANDO GERAÇÃO DA BASE DE CONHECIMENTO ===
+2025-08-13 11:19:08,533 [INFO] Backup criado: /app/knowledge/knowledge_base.json.backup
+2025-08-13 11:19:08,533 [INFO] Consultando produtos ativos no banco de dados...
+2025-08-13 11:19:08,709 [INFO] Encontrados 19037 produtos ativos no banco
+2025-08-13 11:19:08,710 [INFO] Processando produto 1/19037: ABACAXI CALDA MARIZA EM PEDACOS
+2025-08-13 11:19:18,515 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:18,516 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:18,516 [INFO] Processando produto 2/19037: ABACAXI CALDA MARIZA EM RODELAS
+2025-08-13 11:19:22,705 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:22,706 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:22,706 [INFO] Processando produto 3/19037: ABACAXI CALDA TOZZI
+2025-08-13 11:19:27,990 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:27,991 [INFO]   -> Geradas 24 variações
+2025-08-13 11:19:27,991 [INFO] Processando produto 4/19037: ABELHA MUSICAL DIVERTIDA*
+2025-08-13 11:19:30,198 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:30,198 [INFO]   -> Geradas 18 variações
+2025-08-13 11:19:30,199 [INFO] Processando produto 5/19037: ABRIDOR SIMONAGGIO LATA/GAR MONIZ
+2025-08-13 11:19:33,337 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:33,340 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:33,341 [INFO] Processando produto 6/19037: ABS.ALWAYS C/ABAS BASICO SECA C/8UN
+2025-08-13 11:19:38,939 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:38,940 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:38,940 [INFO] Processando produto 7/19037: ABS.ALWAYS C/ABAS BASICO SUAVE C/8UN
+2025-08-13 11:19:40,879 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:40,880 [INFO]   -> Geradas 24 variações
+2025-08-13 11:19:40,880 [INFO] Processando produto 8/19037: ABS.ALWAYS C/ABAS NOITES.SUAVE
+2025-08-13 11:19:44,699 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:44,700 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:44,700 [INFO] Processando produto 9/19037: ABS.ALWAYS C/ABAS NOTURNO LV32PG28
+2025-08-13 11:19:48,230 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:48,231 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:48,231 [INFO] Processando produto 10/19037: ABS.ALWAYS C/ABAS N.TRANQ.SUAVE C/32UN
+2025-08-13 11:19:54,350 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:54,351 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:54,351 [INFO] Processando produto 11/19037: ABS.ALWAYS C/ABAS PROT.SUAVE M GTS5UN
+2025-08-13 11:19:57,619 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:19:57,620 [INFO]   -> Geradas 25 variações
+2025-08-13 11:19:57,621 [INFO] Processando produto 12/19037: ABS.ALWAYS C/ABAS SECA NOITE 48UN GTS8UN
+2025-08-13 11:20:01,631 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:01,631 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:01,632 [INFO] Processando produto 13/19037: ABS.ALWAYS C/ABAS SECA NOTURNO C/8UN
+2025-08-13 11:20:04,924 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:04,925 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:04,925 [INFO] Processando produto 14/19037: ABS.ALWAYS C/ABAS SECA S.PROTEC.C/32UN
+2025-08-13 11:20:08,903 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:08,903 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:08,904 [INFO] Processando produto 15/19037: ABS.ALWAYS C/ABAS SUAVE LV10.PG08
+2025-08-13 11:20:12,531 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:12,531 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:12,532 [INFO] Processando produto 16/19037: ABS.ALWAYS C/ABAS SUAVE M 8UN.
+2025-08-13 11:20:15,444 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:15,445 [INFO]   -> Geradas 24 variações
+2025-08-13 11:20:15,446 [INFO] Processando produto 17/19037: ABS.ALWAYS C/ABAS SUAVE PEQ.48UN GTS7UN
+2025-08-13 11:20:19,899 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:19,899 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:19,899 [INFO] Processando produto 18/19037: ABS.ALWAYS C/ABAS SUAVE S.PROTEC.C/32UN
+2025-08-13 11:20:23,459 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:23,459 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:23,459 [INFO] Processando produto 19/19037: ABS.ALWAYS C/ABAS SUAV.NOITE 48UN GTS8UN
+2025-08-13 11:20:25,281 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:25,281 [INFO]   -> Geradas 24 variações
+2025-08-13 11:20:25,282 [INFO] Processando produto 20/19037: ABS.ALWAYS C/ABAS SVE N.TRAN.26UN GTS4UN
+2025-08-13 11:20:28,680 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:28,681 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:28,682 [INFO] Processando produto 21/19037: ABS.ALWAYS NOTURNO SUAVE C/16UN.LV+PG-
+2025-08-13 11:20:32,229 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:32,230 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:32,230 [INFO] Processando produto 22/19037: ABS.ALWAYS S/ABAS BASICO SECA C/8UN
+2025-08-13 11:20:35,831 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:35,833 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:35,835 [INFO] Processando produto 23/19037: ABS.ALWAYS S/ABAS BASICO SUAVE C/8UN
+2025-08-13 11:20:38,923 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:38,930 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:38,931 [INFO] Processando produto 24/19037: ABS.ALWAYS S/ABAS DIARIO HIPO.*
+2025-08-13 11:20:42,212 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:42,213 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:42,213 [INFO] Processando produto 25/19037: ABS.ALWAYS S/ABAS PF.DIARIO 80UN.LV+PG-
+2025-08-13 11:20:46,088 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:46,088 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:46,088 [INFO] Processando produto 26/19037: ABS.BIGFRAL PLUS REG.INCONT.20UN
+2025-08-13 11:20:48,397 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:48,398 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:48,398 [INFO] Processando produto 27/19037: ABS.CAREFREE DIARIO C/PERF.1A1 15UN.*
+2025-08-13 11:20:52,675 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:52,678 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:52,679 [INFO] Processando produto 28/19037: ABS.CAREFREE DIARIO PROT.C/PERF.15UN.
+2025-08-13 11:20:54,404 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:54,405 [INFO]   -> Geradas 22 variações
+2025-08-13 11:20:54,405 [INFO] Processando produto 29/19037: ABS.CAREFREE DIARIO PROT.C/PERF.60UN.
+2025-08-13 11:20:57,788 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:20:57,789 [INFO]   -> Geradas 25 variações
+2025-08-13 11:20:57,789 [INFO] Processando produto 30/19037: ABS.CAREFREE NEUTRALIZE 1A1 15UN.*
+2025-08-13 11:21:00,203 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:00,203 [INFO]   -> Geradas 23 variações
+2025-08-13 11:21:00,204 [INFO] Processando produto 31/19037: ABS.CAREFREE ORIGINAL EMB.ECON.40UN.
+2025-08-13 11:21:02,640 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:02,640 [INFO]   -> Geradas 23 variações
+2025-08-13 11:21:02,642 [INFO] Processando produto 32/19037: ABS.CAREFREE PROTECAO C/PERF.LV+PG- C/80
+2025-08-13 11:21:05,745 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:05,751 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:05,751 [INFO] Processando produto 33/19037: ABS.CAREFREE S/PERF.BRISA 1A1 15UN.*
+2025-08-13 11:21:10,143 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:10,144 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:10,144 [INFO] Processando produto 34/19037: ABS.CAREFREE S/PERF.BRISA EMB.ECON.40UN.
+2025-08-13 11:21:13,769 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:13,769 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:13,770 [INFO] Processando produto 35/19037: ABS.CAREFREE S/PERF.C/40UN.*
+2025-08-13 11:21:17,418 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:17,419 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:17,419 [INFO] Processando produto 36/19037: ABS.CAREFREE TODO DIA LV+PG- C/80
+2025-08-13 11:21:20,734 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:20,735 [INFO]   -> Geradas 23 variações
+2025-08-13 11:21:20,735 [INFO] Processando produto 37/19037: ABS.CLESS INTIMA PARA SEIOS C/12UN*
+2025-08-13 11:21:23,900 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:23,901 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:23,901 [INFO] Processando produto 38/19037: ABS.CLESS INTIMA PARA SEIOS LV30PG24*
+2025-08-13 11:21:26,816 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:26,817 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:26,817 [INFO] Processando produto 39/19037: ABS.COTTON LINE SUAVE C/ABAS
+2025-08-13 11:21:28,800 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:28,801 [INFO]   -> Geradas 23 variações
+2025-08-13 11:21:28,801 [INFO] Processando produto 40/19037: ABS.COTTON LINE SUAVE S/ABAS
+2025-08-13 11:21:32,390 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:32,391 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:32,391 [INFO] Processando produto 41/19037: ABS.INTERNO INTIMUS ANTIBAC.40UN LV+PG-*
+2025-08-13 11:21:35,521 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:35,526 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:35,527 [INFO] Processando produto 42/19037: ABS.INTERNO INTIMUS MEDIO 8UN.
+2025-08-13 11:21:38,509 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:38,509 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:38,510 [INFO] Processando produto 43/19037: ABS.INTERNO INTIMUS MINI 8UN.*
+2025-08-13 11:21:41,452 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:41,452 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:41,453 [INFO] Processando produto 44/19037: ABS.INTERNO INTIMUS MINI C/16*
+2025-08-13 11:21:44,690 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:44,694 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:44,695 [INFO] Processando produto 45/19037: ABS.INTERNO INTIMUS SUPER 8UN.
+2025-08-13 11:21:48,024 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:48,027 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:48,030 [INFO] Processando produto 46/19037: ABS.INTERNO OB.MEDIO LV10.PG8
+2025-08-13 11:21:51,192 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:51,192 [INFO]   -> Geradas 22 variações
+2025-08-13 11:21:51,193 [INFO] Processando produto 47/19037: ABS.INTERNO OB.PROCOMFORT MINI*
+2025-08-13 11:21:54,876 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:54,877 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:54,877 [INFO] Processando produto 48/19037: ABS.INTERNO OB.S.LIVRE MEDIO 16UNID
+2025-08-13 11:21:58,461 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:21:58,461 [INFO]   -> Geradas 25 variações
+2025-08-13 11:21:58,462 [INFO] Processando produto 49/19037: ABS.INTERNO OB.S.LIVRE PROCOMFORT 16UNID
+2025-08-13 11:22:00,438 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:00,439 [INFO]   -> Geradas 23 variações
+2025-08-13 11:22:00,439 [INFO] Processando produto 50/19037: ABS.INTERNO OB.SUPER LV10PG8*
+2025-08-13 11:22:02,465 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:02,472 [INFO]   -> Geradas 22 variações
+2025-08-13 11:22:02,472 [INFO] Processando produto 51/19037: ABS.INTIMUS DAYS P.DIARIO S/ABAS 15UN.*
+2025-08-13 11:22:06,119 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:06,120 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:06,120 [INFO] Processando produto 52/19037: ABS.INTIMUS GEL C/ABAS ULT.ANTIBC.14UN*
+2025-08-13 11:22:10,163 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:10,164 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:10,164 [INFO] Processando produto 53/19037: ABS.INTIMUS GEL C/ABAS ULT.ANTIBC.28UN*
+2025-08-13 11:22:14,871 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:14,872 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:14,872 [INFO] Processando produto 54/19037: ABS.INTIMUS GEL C/ABAS ULT.DIA/NOI.28UN*
+2025-08-13 11:22:19,018 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:19,019 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:19,019 [INFO] Processando produto 55/19037: ABS.INTIMUS GEL C/ABAS ULT.DIA/NOIT.14U*
+2025-08-13 11:22:23,436 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:23,436 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:23,437 [INFO] Processando produto 56/19037: ABS.INTIMUS GEL LONGO NOT.SEC.C/ABAS 8UN
+2025-08-13 11:22:26,164 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:26,165 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:26,165 [INFO] Processando produto 57/19037: ABS.INTIMUS GEL LONGO NOT.SUAV.C/ABA 8UN
+2025-08-13 11:22:29,578 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:29,579 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:29,579 [INFO] Processando produto 58/19037: ABS.INTIMUS GEL NOR.SECA C/ABAS 8UN.
+2025-08-13 11:22:34,078 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:34,078 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:34,079 [INFO] Processando produto 59/19037: ABS.INTIMUS GEL NOR.SECA S/ABAS 8UN.
+2025-08-13 11:22:36,692 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:36,698 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:36,699 [INFO] Processando produto 60/19037: ABS.INTIMUS GEL NOR.SV.C/ABAS 8UN.
+2025-08-13 11:22:39,629 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:39,630 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:39,630 [INFO] Processando produto 61/19037: ABS.INTIMUS GEL NOR.SV.S/ABAS 8UN.
+2025-08-13 11:22:43,693 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:43,694 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:43,694 [INFO] Processando produto 62/19037: ABS.INTIMUS GEL SC.C/ABAS LV16PG14UN*
+2025-08-13 11:22:47,282 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:47,282 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:47,283 [INFO] Processando produto 63/19037: ABS.INTIMUS GEL SV.C/ABAS LV16PG14UN*
+2025-08-13 11:22:50,775 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:50,777 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:50,780 [INFO] Processando produto 64/19037: ABS.INTIMUS GEL TRIP.SV.C/ABAS PROM.32UN
+2025-08-13 11:22:54,146 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:54,147 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:54,148 [INFO] Processando produto 65/19037: ABS.INTIMUS GEL TRI.SECA.C/ABA PROM.32UN
+2025-08-13 11:22:56,973 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:22:56,976 [INFO]   -> Geradas 25 variações
+2025-08-13 11:22:56,978 [INFO] Processando produto 66/19037: ABS.INTIMUS PR.DIARIO C.AVANCADO LV+PG-*
+2025-08-13 11:23:00,027 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:00,029 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:00,030 [INFO] Processando produto 67/19037: ABS.INTIMUS PR.DIARIO CUID.AVANC.15UN*
+2025-08-13 11:23:03,051 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:03,051 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:03,051 [INFO] Processando produto 68/19037: ABS.PLENITUD C/ABAS NORMAL C/8
+2025-08-13 11:23:08,033 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:08,039 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:08,040 [INFO] Processando produto 69/19037: ABS.PLENITUD PROT.DIARIO S/ABAS C/14*
+2025-08-13 11:23:11,320 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:11,320 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:11,321 [INFO] Processando produto 70/19037: ABS.PLENITUD S/ABAS NOTURNO C/8*
+2025-08-13 11:23:14,100 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:14,100 [INFO]   -> Geradas 22 variações
+2025-08-13 11:23:14,101 [INFO] Processando produto 71/19037: ABS.S.LIVRE ADAPT NOITE/DIA C.ABAS 32UN
+2025-08-13 11:23:17,030 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:17,030 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:17,031 [INFO] Processando produto 72/19037: ABS.S.LIVRE ADAPT PLUS N.S.LV+PG- C/ABAS
+2025-08-13 11:23:22,119 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:22,120 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:22,120 [INFO] Processando produto 73/19037: ABS.S.LIVRE ADAPT PLUS SUAV LV+PG- C/AB*
+2025-08-13 11:23:26,155 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:26,155 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:26,156 [INFO] Processando produto 74/19037: ABS.S.LIVRE ADAPT SUAVE C/ABAS C/32UN
+2025-08-13 11:23:28,616 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:28,619 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:28,619 [INFO] Processando produto 75/19037: ABS.S.LIVRE ADAPT SUAVE LV+PG- C/ABAS
+2025-08-13 11:23:32,100 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:32,101 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:32,101 [INFO] Processando produto 76/19037: ABS.S.LIVRE ADAPT SUAVE S/ABAS 
+2025-08-13 11:23:36,109 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:36,109 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:36,110 [INFO] Processando produto 77/19037: ABS.S.LIVRE ADAPT SV C/ABAS L8P7.
+2025-08-13 11:23:38,302 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:38,308 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:38,309 [INFO] Processando produto 78/19037: ABS.S.LIVRE ESPECIAL SUAVE C/ABAS 
+2025-08-13 11:23:43,178 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:43,179 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:43,179 [INFO] Processando produto 79/19037: ABS.S.LIVRE NOTURNO T.SV.C/ABAS 8UN.
+2025-08-13 11:23:45,637 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:45,644 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:45,645 [INFO] Processando produto 80/19037: ABS.SYM C/ABAS COB.SECA GEL 
+2025-08-13 11:23:49,272 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:49,273 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:49,274 [INFO] Processando produto 81/19037: ABS.SYM C/ABAS COB.SUAVE 8UN.
+2025-08-13 11:23:51,493 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:51,494 [INFO]   -> Geradas 24 variações
+2025-08-13 11:23:51,494 [INFO] Processando produto 82/19037: ABS.SYM C/ABAS GEL NOITE&DIA 8UN.
+2025-08-13 11:23:54,108 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:54,109 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:54,109 [INFO] Processando produto 83/19037: ABS.SYM C/ABAS NOITE&DIA SV 30UN LV+PG-
+2025-08-13 11:23:56,829 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:23:56,830 [INFO]   -> Geradas 25 variações
+2025-08-13 11:23:56,830 [INFO] Processando produto 84/19037: ABS.SYM C/ABAS PREM.COB.SUAV.16UN LV+PG-
+2025-08-13 11:24:01,612 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:01,612 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:01,612 [INFO] Processando produto 85/19037: ABS.SYM C/ABAS PREM.NOT.SV 30UN LV+PG-
+2025-08-13 11:24:04,500 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:04,501 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:04,501 [INFO] Processando produto 86/19037: ABS.SYM PROTETOR DIARIO S/PERF.15UN. 
+2025-08-13 11:24:07,208 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:07,215 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:07,215 [INFO] Processando produto 87/19037: ABS.SYM S/ABAS GEL 8UN.
+2025-08-13 11:24:09,431 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:09,432 [INFO]   -> Geradas 22 variações
+2025-08-13 11:24:09,432 [INFO] Processando produto 88/19037: ACENDEDOR ARCO IRIS EM BASTAO C/3UN.
+2025-08-13 11:24:12,342 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:12,342 [INFO]   -> Geradas 23 variações
+2025-08-13 11:24:12,343 [INFO] Processando produto 89/19037: ACENDEDOR FIAT LUX BASTAO C/5UN
+2025-08-13 11:24:16,223 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:16,224 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:16,224 [INFO] Processando produto 90/19037: ACENDEDOR FIAT LUX EM BASTAO C/10UN.
+2025-08-13 11:24:18,240 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:18,241 [INFO]   -> Geradas 24 variações
+2025-08-13 11:24:18,241 [INFO] Processando produto 91/19037: ACENDEDOR FIAT LUX GEL GARRAFA 420G
+2025-08-13 11:24:21,312 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:21,313 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:21,313 [INFO] Processando produto 92/19037: ACENDEDOR PRIME GRILL ALCOOL
+2025-08-13 11:24:23,679 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:23,679 [INFO]   -> Geradas 22 variações
+2025-08-13 11:24:23,680 [INFO] Processando produto 93/19037: ACENDEDOR ZULU ALCOOL GEL 
+2025-08-13 11:24:27,042 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:27,042 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:27,043 [INFO] Processando produto 94/19037: ACETO BALSAMICO LA PASTINA VIDRO
+2025-08-13 11:24:31,574 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:31,575 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:31,575 [INFO] Processando produto 95/19037: ACETO LA PASTINA BALSAMICO D.MOD.ORG.
+2025-08-13 11:24:35,035 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:35,042 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:35,042 [INFO] Processando produto 96/19037: ACHOC.BEB.LAC.DANETTE
+2025-08-13 11:24:37,509 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:37,510 [INFO]   -> Geradas 22 variações
+2025-08-13 11:24:37,511 [INFO] Processando produto 97/19037: ACHOC.BEB.LAC.ITALAC CHOCOLATE
+2025-08-13 11:24:39,493 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:39,495 [INFO]   -> Geradas 23 variações
+2025-08-13 11:24:39,496 [INFO] Processando produto 98/19037: ACHOC.BEB.LAC.ITALAC CHOCOLATE
+2025-08-13 11:24:41,952 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:41,955 [INFO]   -> Geradas 24 variações
+2025-08-13 11:24:41,956 [INFO] Processando produto 99/19037: ACHOC.BEB.LAC.MOCOQUINHA CHOCOLATE
+2025-08-13 11:24:44,846 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:44,846 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:44,847 [INFO] Processando produto 100/19037: ACHOC.BEB.LAC.NESCAU
+2025-08-13 11:24:48,329 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:48,329 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:48,329 [INFO] Processando produto 101/19037: ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M
+2025-08-13 11:24:51,414 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:51,414 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:51,414 [INFO] Processando produto 102/19037: ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24
+2025-08-13 11:24:55,677 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:55,683 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:55,690 [INFO] Processando produto 103/19037: ACHOC.BEB.LAC.NESCAU CHOCOLATE
+2025-08-13 11:24:58,587 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:24:58,589 [INFO]   -> Geradas 25 variações
+2025-08-13 11:24:58,590 [INFO] Processando produto 104/19037: ACHOC.BEB.LAC.PIRAKIDS CHOCOLATE
+2025-08-13 11:25:01,071 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:01,078 [INFO]   -> Geradas 24 variações
+2025-08-13 11:25:01,078 [INFO] Processando produto 105/19037: ACHOC.BEB.LAC.PIRAKIDS CHOCOLATE
+2025-08-13 11:25:05,077 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:05,078 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:05,078 [INFO] Processando produto 106/19037: ACHOC.BEB.LAC.PIRAKIDS Z.LACT.CHOCOLATE
+2025-08-13 11:25:07,901 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:07,903 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:07,904 [INFO] Processando produto 107/19037: ACHOC.BEB.LAC.SHOWKINHO CHOCOLATE
+2025-08-13 11:25:10,294 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:10,294 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:10,296 [INFO] Processando produto 108/19037: ACHOC.BEB.LAC.SHOWKINHO CHOCOLATE
+2025-08-13 11:25:13,175 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:13,176 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:13,177 [INFO] Processando produto 109/19037: ACHOC.BEB.LAC.TODDYNHO CHOCOLATE
+2025-08-13 11:25:16,171 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:16,172 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:16,172 [INFO] Processando produto 110/19037: ACHOC.BEB.LAC.TODDYNHO CHOCOLATE LEV.
+2025-08-13 11:25:19,606 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:19,607 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:19,607 [INFO] Processando produto 111/19037: ACHOC.BEB.LAC.VIGOR MINIONS CHOCOLATE
+2025-08-13 11:25:22,635 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:22,636 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:22,636 [INFO] Processando produto 112/19037: ACHOC.PO 3 CORACOES CHOCOLATTO LT
+2025-08-13 11:25:24,443 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:24,443 [INFO]   -> Geradas 20 variações
+2025-08-13 11:25:24,444 [INFO] Processando produto 113/19037: ACHOC.PO 3 CORACOES CHOCOLATTO SACHE
+2025-08-13 11:25:27,359 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:27,372 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:27,372 [INFO] Processando produto 114/19037: ACHOC.PO 3 CORACOES CHOCOLATTO SACHE
+2025-08-13 11:25:30,707 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:30,707 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:30,710 [INFO] Processando produto 115/19037: ACHOC.PO 3 CORACOES CHOCOLATTO SACHE
+2025-08-13 11:25:33,426 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:33,427 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:33,427 [INFO] Processando produto 116/19037: ACHOC.PO 3 CORACOES CHOCOLATTO SACHE*
+2025-08-13 11:25:36,565 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:36,565 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:36,565 [INFO] Processando produto 117/19037: ACHOC.PO APTI MORANGO
+2025-08-13 11:25:40,025 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:40,026 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:40,026 [INFO] Processando produto 118/19037: ACHOC.PO APTI POWER PT
+2025-08-13 11:25:43,176 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:43,176 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:43,177 [INFO] Processando produto 119/19037: ACHOC.PO APTI POWER REFIL
+2025-08-13 11:25:45,583 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:45,584 [INFO]   -> Geradas 22 variações
+2025-08-13 11:25:45,584 [INFO] Processando produto 120/19037: ACHOC.PO APTI SACHE
+2025-08-13 11:25:49,486 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:49,487 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:49,487 [INFO] Processando produto 121/19037: ACHOC.PO GOLD DIET POTE
+2025-08-13 11:25:52,618 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:52,618 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:52,619 [INFO] Processando produto 122/19037: ACHOC.PO ITALAC MORANGO
+2025-08-13 11:25:56,408 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:56,409 [INFO]   -> Geradas 25 variações
+2025-08-13 11:25:56,410 [INFO] Processando produto 123/19037: ACHOC.PO ITALAC SACHE
+2025-08-13 11:25:59,801 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:25:59,802 [INFO]   -> Geradas 20 variações
+2025-08-13 11:25:59,802 [INFO] Processando produto 124/19037: ACHOC.PO ITALAC SACHE
+2025-08-13 11:26:03,223 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:03,224 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:03,224 [INFO] Processando produto 125/19037: ACHOC.PO LINEA ZERO ACUCAR
+2025-08-13 11:26:05,414 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:05,414 [INFO]   -> Geradas 21 variações
+2025-08-13 11:26:05,415 [INFO] Processando produto 126/19037: ACHOC.PO LOWCUCAR N.CHOC
+2025-08-13 11:26:09,012 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:09,012 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:09,013 [INFO] Processando produto 127/19037: ACHOC.PO MUKY CHOCOLATE
+2025-08-13 11:26:12,135 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:12,135 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:12,136 [INFO] Processando produto 128/19037: ACHOC.PO MUKY CHOCOLATE
+2025-08-13 11:26:15,316 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:15,317 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:15,321 [INFO] Processando produto 129/19037: ACHOC.PO MUKY CHOCOLATE
+2025-08-13 11:26:19,395 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:19,395 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:19,396 [INFO] Processando produto 130/19037: ACHOC.PO MUKY MORANGO
+2025-08-13 11:26:22,842 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:22,843 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:22,843 [INFO] Processando produto 131/19037: ACHOC.PO NESCAU EMB.ECONOMICA PC.
+2025-08-13 11:26:26,297 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:26,297 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:26,298 [INFO] Processando produto 132/19037: ACHOC.PO NESCAU GTS120G SACHET
+2025-08-13 11:26:29,714 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:29,715 [INFO]   -> Geradas 24 variações
+2025-08-13 11:26:29,715 [INFO] Processando produto 133/19037: ACHOC.PO NESCAU LT.
+2025-08-13 11:26:32,658 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:32,659 [INFO]   -> Geradas 22 variações
+2025-08-13 11:26:32,660 [INFO] Processando produto 134/19037: ACHOC.PO NESCAU LT.
+2025-08-13 11:26:36,055 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:36,056 [INFO]   -> Geradas 24 variações
+2025-08-13 11:26:36,056 [INFO] Processando produto 135/19037: ACHOC.PO NESCAU LT.*
+2025-08-13 11:26:39,971 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:39,972 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:39,972 [INFO] Processando produto 136/19037: ACHOC.PO NESCAU LT 33% MENOS ACUCAR
+2025-08-13 11:26:44,377 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:44,378 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:44,378 [INFO] Processando produto 137/19037: ACHOC.PO NESCAU PROFISSIONAL PC.
+2025-08-13 11:26:47,500 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:47,500 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:47,501 [INFO] Processando produto 138/19037: ACHOC.PO NESCAU SACHET
+2025-08-13 11:26:51,733 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:51,733 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:51,734 [INFO] Processando produto 139/19037: ACHOC.PO NESCAU SACHET LV+PG-*
+2025-08-13 11:26:56,067 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:56,067 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:56,068 [INFO] Processando produto 140/19037: ACHOC.PO NESQUIK LT.MORANGO
+2025-08-13 11:26:59,506 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:26:59,506 [INFO]   -> Geradas 25 variações
+2025-08-13 11:26:59,507 [INFO] Processando produto 141/19037: ACHOC.PO NESQUIK SACHE MORANGO
+2025-08-13 11:27:03,322 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:03,323 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:03,323 [INFO] Processando produto 142/19037: ACHOC.PO NESTLE ALPINO PC.
+2025-08-13 11:27:06,471 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:06,471 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:06,472 [INFO] Processando produto 143/19037: ACHOC.PO NESTLE GALAK
+2025-08-13 11:27:09,964 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:09,965 [INFO]   -> Geradas 22 variações
+2025-08-13 11:27:09,965 [INFO] Processando produto 144/19037: ACHOC.PO NESTLE GALAK LT
+2025-08-13 11:27:12,636 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:12,637 [INFO]   -> Geradas 22 variações
+2025-08-13 11:27:12,637 [INFO] Processando produto 145/19037: ACHOC.PO NESTLE SENSACAO
+2025-08-13 11:27:15,398 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:15,399 [INFO]   -> Geradas 24 variações
+2025-08-13 11:27:15,399 [INFO] Processando produto 146/19037: ACHOC.PO OVOMALTINE FLOCOS CROC
+2025-08-13 11:27:20,131 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:20,131 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:20,132 [INFO] Processando produto 147/19037: ACHOC.PO OVOMALTINE FLOCOS CROC
+2025-08-13 11:27:22,913 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:22,914 [INFO]   -> Geradas 22 variações
+2025-08-13 11:27:22,914 [INFO] Processando produto 148/19037: ACHOC.PO OVOMALTINE FLOCOS CROC
+2025-08-13 11:27:25,893 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:25,895 [INFO]   -> Geradas 20 variações
+2025-08-13 11:27:25,896 [INFO] Processando produto 149/19037: ACHOC.PO TODDY
+2025-08-13 11:27:28,886 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:28,887 [INFO]   -> Geradas 24 variações
+2025-08-13 11:27:28,889 [INFO] Processando produto 150/19037: ACHOC.PO TODDY
+2025-08-13 11:27:33,232 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:33,233 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:33,233 [INFO] Processando produto 151/19037: ACHOC.PO TODDY 
+2025-08-13 11:27:35,396 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:35,397 [INFO]   -> Geradas 19 variações
+2025-08-13 11:27:35,397 [INFO] Processando produto 152/19037: ACHOC.PO TODDY LIGHT
+2025-08-13 11:27:39,123 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:39,123 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:39,124 [INFO] Processando produto 153/19037: ACHOC.PO TODDY LIGHT SACHET+ECONOMIA
+2025-08-13 11:27:43,184 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:43,184 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:43,185 [INFO] Processando produto 154/19037: ACHOC.PO TODDY PT
+2025-08-13 11:27:44,674 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:44,675 [INFO]   -> Geradas 17 variações
+2025-08-13 11:27:44,675 [INFO] Processando produto 155/19037: ACHOC.PO TODDY SACHET
+2025-08-13 11:27:46,986 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:46,987 [INFO]   -> Geradas 19 variações
+2025-08-13 11:27:46,988 [INFO] Processando produto 156/19037: ACHOC.PO TODDY SACHET + ECONOMICA
+2025-08-13 11:27:50,331 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:50,334 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:50,335 [INFO] Processando produto 157/19037: ACHOC.PO TODDY SACHET + ECONOMICA
+2025-08-13 11:27:54,503 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:54,503 [INFO]   -> Geradas 25 variações
+2025-08-13 11:27:54,503 [INFO] Processando produto 158/19037: ACQUA POSTO
+2025-08-13 11:27:57,399 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:27:57,400 [INFO]   -> Geradas 18 variações
+2025-08-13 11:27:57,400 [INFO] Processando produto 159/19037: ACUCAR ALTO ALEGRE CRISTAL PC.
+2025-08-13 11:28:00,630 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:00,630 [INFO]   -> Geradas 25 variações
+2025-08-13 11:28:00,630 [INFO] Processando produto 160/19037: ACUCAR ALTO ALEGRE CRISTAL PC.
+2025-08-13 11:28:04,176 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:04,176 [INFO]   -> Geradas 23 variações
+2025-08-13 11:28:04,177 [INFO] Processando produto 161/19037: ACUCAR ALTO ALEGRE DEMERARA 
+2025-08-13 11:28:07,918 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:07,918 [INFO]   -> Geradas 24 variações
+2025-08-13 11:28:07,919 [INFO] Processando produto 162/19037: ACUCAR ALTO ALEGRE REFINADO PC.
+2025-08-13 11:28:11,274 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:11,274 [INFO]   -> Geradas 24 variações
+2025-08-13 11:28:11,275 [INFO] Processando produto 163/19037: ACUCAR BRETZKE CONFEITEIRO
+2025-08-13 11:28:15,371 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:15,372 [INFO]   -> Geradas 21 variações
+2025-08-13 11:28:15,372 [INFO] Processando produto 164/19037: ACUCAR COPRA DE COCO
+2025-08-13 11:28:17,725 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:17,726 [INFO]   -> Geradas 22 variações
+2025-08-13 11:28:17,726 [INFO] Processando produto 165/19037: ACUCAR DA BARRA DEMERARA
+2025-08-13 11:28:21,023 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:21,024 [INFO]   -> Geradas 25 variações
+2025-08-13 11:28:21,024 [INFO] Processando produto 166/19037: ACUCAR DA BARRA REFINADO PC.
+2025-08-13 11:28:24,587 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:24,587 [INFO]   -> Geradas 25 variações
+2025-08-13 11:28:24,587 [INFO] Processando produto 167/19037: ACUCAR DACOLONIA MASCAVO
+2025-08-13 11:28:27,908 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:27,908 [INFO]   -> Geradas 21 variações
+2025-08-13 11:28:27,909 [INFO] Processando produto 168/19037: ACUCAR DEMERARA NATURALE UNIAO
+2025-08-13 11:28:31,597 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:31,597 [INFO]   -> Geradas 25 variações
+2025-08-13 11:28:31,598 [INFO] Processando produto 169/19037: ACUCAR FAVINHO MASCAVO
+2025-08-13 11:28:34,155 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:34,157 [INFO]   -> Geradas 16 variações
+2025-08-13 11:28:34,158 [INFO] Processando produto 170/19037: ACUCAR MAE TERRA DEMERARA
+2025-08-13 11:28:36,912 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:36,913 [INFO]   -> Geradas 22 variações
+2025-08-13 11:28:36,915 [INFO] Processando produto 171/19037: ACUCAR MAE TERRA MASCAVO TRAD.
+2025-08-13 11:28:40,252 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:40,255 [INFO]   -> Geradas 25 variações
+2025-08-13 11:28:40,256 [INFO] Processando produto 172/19037: ACUCAR MAGRO LIGHT
+2025-08-13 11:28:42,872 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:42,878 [INFO]   -> Geradas 20 variações
+2025-08-13 11:28:42,879 [INFO] Processando produto 173/19037: ACUCAR NATIVE ORG.CLARO
+2025-08-13 11:28:46,915 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:46,916 [INFO]   -> Geradas 25 variações
+2025-08-13 11:28:46,916 [INFO] Processando produto 174/19037: ACUCAR NATIVE ORG.CLARO
+2025-08-13 11:28:49,552 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:49,553 [INFO]   -> Geradas 25 variações
+2025-08-13 11:28:49,553 [INFO] Processando produto 175/19037: ACUCAR NATIVE ORG.DEMERADO
+2025-08-13 11:28:51,830 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:51,830 [INFO]   -> Geradas 21 variações
+2025-08-13 11:28:51,830 [INFO] Processando produto 176/19037: ACUCAR SANTA ISABEL CRISTAL
+2025-08-13 11:28:55,469 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:55,469 [INFO]   -> Geradas 24 variações
+2025-08-13 11:28:55,470 [INFO] Processando produto 177/19037: ACUCAR SANTA ISABEL CRISTAL
+2025-08-13 11:28:58,085 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:28:58,085 [INFO]   -> Geradas 23 variações
+2025-08-13 11:28:58,085 [INFO] Processando produto 178/19037: ACUCAR SANTA ISABEL CRISTAL 1000UN.SACHE
+2025-08-13 11:29:01,607 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:01,608 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:01,609 [INFO] Processando produto 179/19037: ACUCAR SANTA ISABEL DEMERARA
+2025-08-13 11:29:04,842 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:04,843 [INFO]   -> Geradas 24 variações
+2025-08-13 11:29:04,843 [INFO] Processando produto 180/19037: ACUCAR SANTA ISABEL EXTRA FINO
+2025-08-13 11:29:07,947 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:07,947 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:07,947 [INFO] Processando produto 181/19037: ACUCAR UNIAO CRISTALCUCAR
+2025-08-13 11:29:11,665 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:11,666 [INFO]   -> Geradas 24 variações
+2025-08-13 11:29:11,666 [INFO] Processando produto 182/19037: ACUCAR UNIAO CRISTALCUCAR
+2025-08-13 11:29:13,935 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:13,936 [INFO]   -> Geradas 23 variações
+2025-08-13 11:29:13,936 [INFO] Processando produto 183/19037: ACUCAR UNIAO CRISTALCUCAR
+2025-08-13 11:29:17,648 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:17,648 [INFO]   -> Geradas 23 variações
+2025-08-13 11:29:17,649 [INFO] Processando produto 184/19037: ACUCAR UNIAO CRISTAL ORGANICO
+2025-08-13 11:29:20,344 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:20,344 [INFO]   -> Geradas 19 variações
+2025-08-13 11:29:20,345 [INFO] Processando produto 185/19037: ACUCAR UNIAO DOCUCAR
+2025-08-13 11:29:21,932 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:21,932 [INFO]   -> Geradas 15 variações
+2025-08-13 11:29:21,933 [INFO] Processando produto 186/19037: ACUCAR UNIAO GLACUCAR
+2025-08-13 11:29:25,438 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:25,438 [INFO]   -> Geradas 24 variações
+2025-08-13 11:29:25,439 [INFO] Processando produto 187/19037: ACUCAR UNIAO MASCAVO
+2025-08-13 11:29:28,416 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:28,417 [INFO]   -> Geradas 20 variações
+2025-08-13 11:29:28,417 [INFO] Processando produto 188/19037: ACUCAR UNIAO PREMIUM SACHE
+2025-08-13 11:29:32,060 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:32,063 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:32,064 [INFO] Processando produto 189/19037: ACUCAR UNIAO PREMIUM SACHE
+2025-08-13 11:29:35,912 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:35,913 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:35,913 [INFO] Processando produto 190/19037: ACUCAR UNIAO REFINADO PC.
+2025-08-13 11:29:38,462 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:38,462 [INFO]   -> Geradas 19 variações
+2025-08-13 11:29:38,463 [INFO] Processando produto 191/19037: ACUCAR VITAO MASCAVO TRAD.
+2025-08-13 11:29:42,070 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:42,071 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:42,071 [INFO] Processando produto 192/19037: ADITIVO RODABRIL RADIADOR COKPIT
+2025-08-13 11:29:45,900 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:45,902 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:45,904 [INFO] Processando produto 193/19037: ADOCANTE LIQ.ADOCYL SAC.CICL.
+2025-08-13 11:29:49,255 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:49,256 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:49,256 [INFO] Processando produto 194/19037: ADOCANTE LIQ.ADOCYL SAC.CICL.
+2025-08-13 11:29:52,210 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:52,211 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:52,211 [INFO] Processando produto 195/19037: ADOCANTE LIQ.ADOCYL STEVIA
+2025-08-13 11:29:55,518 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:55,519 [INFO]   -> Geradas 25 variações
+2025-08-13 11:29:55,519 [INFO] Processando produto 196/19037: ADOCANTE LIQ.ADOCYL SUCRALOSE
+2025-08-13 11:29:58,091 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:29:58,092 [INFO]   -> Geradas 19 variações
+2025-08-13 11:29:58,093 [INFO] Processando produto 197/19037: ADOCANTE LIQ.ADOCYL SUCRALOSE
+2025-08-13 11:30:01,780 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:01,780 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:01,781 [INFO] Processando produto 198/19037: ADOCANTE LIQ.ASSUGRIN STEVIA
+2025-08-13 11:30:06,673 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:06,673 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:06,673 [INFO] Processando produto 199/19037: ADOCANTE LIQ.ASSUGRIN SUCRALOSE
+2025-08-13 11:30:10,797 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:10,798 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:10,798 [INFO] Processando produto 200/19037: ADOCANTE LIQ.ASSUGRIN TRAD.
+2025-08-13 11:30:14,727 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:14,727 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:14,728 [INFO] Processando produto 201/19037: ADOCANTE LIQ.ASSUGRIN TRAD.
+2025-08-13 11:30:18,132 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:18,132 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:18,133 [INFO] Processando produto 202/19037: ADOCANTE LIQ.DOCE MENOR SAC.CICL.
+2025-08-13 11:30:22,223 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:22,224 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:22,224 [INFO] Processando produto 203/19037: ADOCANTE LIQ.FINN 100%STEVIA*
+2025-08-13 11:30:26,427 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:26,428 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:26,428 [INFO] Processando produto 204/19037: ADOCANTE LIQ.FINN SUCRALOSE*
+2025-08-13 11:30:30,984 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:30,985 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:30,985 [INFO] Processando produto 205/19037: ADOCANTE LIQ.FINN  XYLITOL*
+2025-08-13 11:30:35,249 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:35,250 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:35,250 [INFO] Processando produto 206/19037: ADOCANTE LIQ.GOLD STEVIA
+2025-08-13 11:30:39,787 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:39,787 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:39,787 [INFO] Processando produto 207/19037: ADOCANTE LIQ.GOLD SUCRALOSE
+2025-08-13 11:30:42,340 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:42,340 [INFO]   -> Geradas 20 variações
+2025-08-13 11:30:42,340 [INFO] Processando produto 208/19037: ADOCANTE LIQ.LINEA STEVIA
+2025-08-13 11:30:44,443 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:44,444 [INFO]   -> Geradas 21 variações
+2025-08-13 11:30:44,444 [INFO] Processando produto 209/19037: ADOCANTE LIQ.LINEA STEVIA
+2025-08-13 11:30:46,381 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:46,381 [INFO]   -> Geradas 20 variações
+2025-08-13 11:30:46,382 [INFO] Processando produto 210/19037: ADOCANTE LIQ.LINEA STEVIA C/2 50%DESC
+2025-08-13 11:30:49,150 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:49,150 [INFO]   -> Geradas 21 variações
+2025-08-13 11:30:49,155 [INFO] Processando produto 211/19037: ADOCANTE LIQ.LINEA SUCRALOSE
+2025-08-13 11:30:53,254 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:53,255 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:53,256 [INFO] Processando produto 212/19037: ADOCANTE LIQ.LINEA SUCRALOSE
+2025-08-13 11:30:58,048 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:30:58,049 [INFO]   -> Geradas 25 variações
+2025-08-13 11:30:58,049 [INFO] Processando produto 213/19037: ADOCANTE LIQ.LINEA SUCRALOSE C/2 50%DESC
+2025-08-13 11:31:04,830 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:04,831 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:04,831 [INFO] Processando produto 214/19037: ADOCANTE LIQ.LINEA XILITOL & SUCRALOSE
+2025-08-13 11:31:09,173 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:09,173 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:09,174 [INFO] Processando produto 215/19037: ADOCANTE LIQ.LOWCUCAR PLUS
+2025-08-13 11:31:14,083 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:14,084 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:14,084 [INFO] Processando produto 216/19037: ADOCANTE LIQ.LOWCUCAR PLUS C/ STEVIA
+2025-08-13 11:31:18,016 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:18,017 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:18,018 [INFO] Processando produto 217/19037: ADOCANTE LIQ.LOWCUCAR SO STEVIA
+2025-08-13 11:31:22,879 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:22,880 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:22,880 [INFO] Processando produto 218/19037: ADOCANTE LIQ.LOWCUCAR SO STEVIA
+2025-08-13 11:31:25,298 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:25,299 [INFO]   -> Geradas 22 variações
+2025-08-13 11:31:25,299 [INFO] Processando produto 219/19037: ADOCANTE LIQ.LOWCUCAR SUCRALOSE
+2025-08-13 11:31:29,854 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:29,855 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:29,855 [INFO] Processando produto 220/19037: ADOCANTE LIQ.MAGRO
+2025-08-13 11:31:32,892 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:32,894 [INFO]   -> Geradas 22 variações
+2025-08-13 11:31:32,894 [INFO] Processando produto 221/19037: ADOCANTE LIQ.UNIAO SUCRALOSE
+2025-08-13 11:31:37,331 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:37,331 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:37,331 [INFO] Processando produto 222/19037: ADOCANTE LIQ.ZERO CAL ASPARTAME
+2025-08-13 11:31:42,109 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:42,111 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:42,112 [INFO] Processando produto 223/19037: ADOCANTE LIQ.ZERO CAL ERITRITOL
+2025-08-13 11:31:45,835 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:45,836 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:45,836 [INFO] Processando produto 224/19037: ADOCANTE LIQ.ZERO CAL SAC.CICL.
+2025-08-13 11:31:47,950 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:47,951 [INFO]   -> Geradas 24 variações
+2025-08-13 11:31:47,951 [INFO] Processando produto 225/19037: ADOCANTE LIQ.ZERO CAL SAC.CICL.
+2025-08-13 11:31:51,185 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:51,186 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:51,186 [INFO] Processando produto 226/19037: ADOCANTE LIQ.ZERO CAL STEVIA
+2025-08-13 11:31:56,332 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:56,332 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:56,333 [INFO] Processando produto 227/19037: ADOCANTE LIQ.ZERO CAL SUCR.50% DESC.
+2025-08-13 11:31:58,960 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:31:58,961 [INFO]   -> Geradas 25 variações
+2025-08-13 11:31:58,961 [INFO] Processando produto 228/19037: ADOCANTE LIQ.ZERO CAL SUCRALOSE
+2025-08-13 11:32:03,442 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:03,443 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:03,445 [INFO] Processando produto 229/19037: ADOCANTE LIQ.ZERO CAL XILITOL
+2025-08-13 11:32:05,970 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:05,971 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:05,973 [INFO] Processando produto 230/19037: ADOCANTE LOWCUCAR TANTO QUANDO F.FOGAO
+2025-08-13 11:32:09,894 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:09,894 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:09,895 [INFO] Processando produto 231/19037: ADOCANTE LOWCUCAR XILITOL
+2025-08-13 11:32:14,332 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:14,332 [INFO]   -> Geradas 23 variações
+2025-08-13 11:32:14,333 [INFO] Processando produto 232/19037: ADOCANTE PO.ADOCYL CULINARIO
+2025-08-13 11:32:17,144 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:17,144 [INFO]   -> Geradas 23 variações
+2025-08-13 11:32:17,145 [INFO] Processando produto 233/19037: ADOCANTE PO.FINN STEVIA*
+2025-08-13 11:32:20,759 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:20,760 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:20,761 [INFO] Processando produto 234/19037: ADOCANTE PO.FINN SUCRALOSE SACHE*
+2025-08-13 11:32:23,887 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:23,887 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:23,888 [INFO] Processando produto 235/19037: ADOCANTE PO.GOLD STEVIA
+2025-08-13 11:32:27,126 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:27,127 [INFO]   -> Geradas 23 variações
+2025-08-13 11:32:27,127 [INFO] Processando produto 236/19037: ADOCANTE PO.GOLD SUCRALOSE
+2025-08-13 11:32:30,463 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:30,464 [INFO]   -> Geradas 23 variações
+2025-08-13 11:32:30,464 [INFO] Processando produto 237/19037: ADOCANTE PO.LINEA C/50ENV.STEVIA
+2025-08-13 11:32:33,761 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:33,761 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:33,762 [INFO] Processando produto 238/19037: ADOCANTE PO.LINEA C/50ENV.SUCRALOSE
+2025-08-13 11:32:38,219 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:38,220 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:38,221 [INFO] Processando produto 239/19037: ADOCANTE PO.LINEA CULIN.SUCRALOSE
+2025-08-13 11:32:41,559 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:41,560 [INFO]   -> Geradas 24 variações
+2025-08-13 11:32:41,561 [INFO] Processando produto 240/19037: ADOCANTE PO.TAL E QUAL
+2025-08-13 11:32:44,467 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:44,468 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:44,469 [INFO] Processando produto 241/19037: ADOCANTE PO.TAL E QUAL
+2025-08-13 11:32:48,171 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:48,177 [INFO]   -> Geradas 24 variações
+2025-08-13 11:32:48,177 [INFO] Processando produto 242/19037: ADOCANTE PO.ZERO CAL ASPARTAME SC.50UN
+2025-08-13 11:32:51,397 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:51,398 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:51,398 [INFO] Processando produto 243/19037: ADOCANTE PO.ZERO CAL STEVIA
+2025-08-13 11:32:55,070 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:55,070 [INFO]   -> Geradas 25 variações
+2025-08-13 11:32:55,071 [INFO] Processando produto 244/19037: ADOCANTE PO.ZERO CAL SUCRALOSE
+2025-08-13 11:32:57,715 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:32:57,715 [INFO]   -> Geradas 24 variações
+2025-08-13 11:32:57,716 [INFO] Processando produto 245/19037: ADOCANTE PO.ZERO CAL SUCRALOSE LV100PG75
+2025-08-13 11:33:01,587 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:33:01,588 [INFO]   -> Geradas 25 variações
+2025-08-13 11:33:01,588 [INFO] Processando produto 246/19037: ADOCANTE UNIAO LINHA CLASSICOS FIT
+2025-08-13 11:33:05,797 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:33:05,797 [INFO]   -> Geradas 25 variações
+2025-08-13 11:33:05,797 [INFO] Processando produto 247/19037: AF.BAX BALAO METALIZADO N.0
+2025-08-13 11:33:08,182 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:33:08,183 [INFO]   -> Geradas 21 variações
+2025-08-13 11:33:08,185 [INFO] Processando produto 248/19037: AF.BAX BALAO METALIZADO N.1
+2025-08-13 11:33:12,123 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:33:12,125 [INFO]   -> Geradas 25 variações
+2025-08-13 11:33:12,125 [INFO] Processando produto 249/19037: AF.BAX BALAO METALIZADO N.2
+2025-08-13 11:33:14,288 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:33:14,289 [INFO]   -> Geradas 20 variações
+2025-08-13 11:33:14,289 [INFO] Processando produto 250/19037: AF.BAX BALAO METALIZADO N.3
+2025-08-13 11:33:17,657 [INFO] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-13 11:33:17,658 [INFO]   -> Geradas 24 variações
+2025-08-13 11:33:17,658 [INFO] Processando produto 251/19037: AF.BAX BALAO METALIZADO N.4
