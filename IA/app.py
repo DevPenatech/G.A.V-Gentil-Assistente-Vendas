@@ -205,13 +205,48 @@ def _handle_pending_action(session: Dict, state: Dict, incoming_msg: str) -> Tup
     intent = None
     response_text = ""
     pending_action = state.get("pending_action")
-    
+
+    # Seleção de produto pendente
+    pending_selection = session.get("pending_product_selection")
+    if pending_selection:
+        options = pending_selection.get("options", [])
+        quantity = pending_selection.get("quantity", 1)
+        choice_text = incoming_msg.strip()
+
+        if choice_text.isdigit():
+            choice = int(choice_text) - 1
+            if 0 <= choice < len(options):
+                product = options[choice]
+                codprod = product.get("codprod")
+                shopping_cart = state.get("shopping_cart", [])
+                existing_item = next((item for item in shopping_cart if item.get("codprod") == codprod), None)
+
+                if existing_item:
+                    existing_item["qt"] += quantity
+                    response_text = f"✅ Adicionei mais {quantity} {get_product_name(product)} ao carrinho."
+                else:
+                    product_copy = dict(product)
+                    product_copy["qt"] = quantity
+                    shopping_cart.append(product_copy)
+                    response_text = f"✅ Adicionei {quantity} {get_product_name(product)} ao carrinho."
+
+                response_text += "\n\n" + generate_continue_or_checkout_message(shopping_cart)
+                add_message_to_history(session, "assistant", response_text, "ADD_TO_CART")
+                state["last_bot_action"] = "ITEM_ADDED"
+                session.pop("pending_product_selection", None)
+            else:
+                response_text = "🤖 Opção inválida. Por favor, escolha um número válido."
+                add_message_to_history(session, "assistant", response_text, "INVALID_SELECTION")
+            return intent, response_text
+        else:
+            response_text = "🤖 Por favor, responda com o número da opção desejada."
+            add_message_to_history(session, "assistant", response_text, "REQUEST_SELECTION")
+            return intent, response_text
+
     if not pending_action:
         return intent, response_text
-    
-    # Implementar lógica de ações pendentes aqui
-    # ...
-    
+
+    # Implementar lógica de outras ações pendentes aqui
     return intent, response_text
 
 
@@ -554,8 +589,26 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             logging.info(f"[TOOL] Buscando produto por nome fuzzy: {name_search}")
             fuzzy_results = get_product_details_fuzzy(name_search)
             if fuzzy_results:
-                product = fuzzy_results[0]
-                codprod = product.get("codprod")
+                if len(fuzzy_results) == 1:
+                    product = fuzzy_results[0]
+                    codprod = product.get("codprod")
+                else:
+                    options = fuzzy_results[:5]
+                    session["pending_product_selection"] = {
+                        "options": options,
+                        "quantity": quantity,
+                    }
+                    option_lines = [
+                        f"{i+1}. {get_product_name(p)}" for i, p in enumerate(options)
+                    ]
+                    response_text = (
+                        "🤖 Encontrei mais de um produto com esse nome:\n" +
+                        "\n".join(option_lines) +
+                        "\n\nDigite o número da opção desejada."
+                    )
+                    add_message_to_history(session, "assistant", response_text, "REQUEST_PRODUCT_SELECTION")
+                    state["last_bot_action"] = "AWAITING_PRODUCT_SELECTION"
+                    return response_text
 
         if product:
             # Verifica se já existe no carrinho
