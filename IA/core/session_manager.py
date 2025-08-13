@@ -58,6 +58,7 @@ def load_session(sender_phone: str) -> Dict:
         "last_shown_products": [],
         "last_bot_action": None,
         "pending_action": None,
+        "pending_product_selection": None,
         "last_kb_search_term": None,
         "conversation_history": [],
         "conversation_summary": "",
@@ -359,7 +360,7 @@ def get_session_stats(session_data: Dict) -> Dict:
         "customer_identified": bool(session_data.get("customer_context")),
         "last_action": session_data.get("last_bot_action", "NONE"),
         "has_pending_selection": bool(session_data.get("last_shown_products")),
-        "has_pending_quantity": bool(session_data.get("pending_product_selection")),
+        "has_pending_quantity": bool((session_data.get("pending_product_selection") or {}).get("quantity")),
         "purchase_stage": session_data.get("purchase_stage", "greeting")
     }
     
@@ -482,6 +483,7 @@ def validate_and_correct_session(session_data: Dict) -> Dict:
         "last_shown_products": [],
         "last_bot_action": None,
         "pending_action": None,
+        "pending_product_selection": None,
         "last_kb_search_term": None,
         "conversation_history": [],
         "conversation_summary": "",
@@ -501,5 +503,12 @@ def validate_and_correct_session(session_data: Dict) -> Dict:
     
     if not isinstance(session_data.get("last_shown_products"), list):
         session_data["last_shown_products"] = []
-    
+
+    pps = session_data.get("pending_product_selection")
+    if pps is not None:
+        if not isinstance(pps, dict):
+            session_data["pending_product_selection"] = None
+        else:
+            pps.setdefault("quantity", None)
+
     return session_data
