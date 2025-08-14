@@ -3,132 +3,6 @@
   "shopping_cart": [],
   "conversation_history": [
     {
-      "role": "assistant",
-      "message": "🤖 Não encontrei um cliente com o CNPJ 12.345.678/0001-95. Mas posso registrar seu pedido mesmo assim!\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n    2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n    5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n    1× R$ 15,79 = *R$ 15,79*\n\n*4.* REFRIG.ANTARCTICA LT. SODA DIET\n    6× R$ 3,29 = *R$ 19,74*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GER",
-      "timestamp": "2025-08-14T17:57:00.046936",
-      "action_type": "CHECKOUT_COMPLETE"
-    },
-    {
-      "role": "user",
-      "message": "meu carrinho",
-      "timestamp": "2025-08-14T17:57:08.444871",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🛒 Seu carrinho está vazio.",
-      "timestamp": "2025-08-14T17:57:08.444922",
-      "action_type": "SHOW_CART"
-    },
-    {
-      "role": "user",
-      "message": "quero vassoura",
-      "timestamp": "2025-08-14T17:57:16.329968",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'vassoura'::*\n\n*1.* VASSOURA ALKLIN DENTRO E FORA\n    💰 R$ 14,90\n\n*2.* VASSOURA CONDOR MADRI\n    💰 R$ 10,90\n\n*3.* VASSOURA CONDOR VARRE FACIL V35\n    💰 R$ 13,90\n\n*4.* VASSOURA CONDOR VARRE FORTE V52\n    💰 R$ 20,90\n\n*5.* VASSOURA CONDOR VARRE MUITO V9\n    💰 R$ 19,90\n\n*6.* VASSOURA NOVICA ORIGINAL\n    💰 R$ 7,99\n\n*7.* VASSOURA STA MARIA PHENIX\n    💰 R$ 16,90\n\n*8.* VASSOURA STA MARIA PIACALUX\n    💰 R$ 24,90\n\n*9.* VASSOURA STA MARIA VARRECASA PELO\n    💰 R$",
-      "timestamp": "2025-08-14T17:57:31.302882",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
-    },
-    {
-      "role": "user",
-      "message": "10",
-      "timestamp": "2025-08-14T17:57:36.778678",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de VASSOURA STA MARIA VIP PP você deseja adicionar?",
-      "timestamp": "2025-08-14T17:57:36.778739",
-      "action_type": "REQUEST_QUANTITY"
-    },
-    {
-      "role": "user",
-      "message": "2",
-      "timestamp": "2025-08-14T17:57:42.672068",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "✅ Perfeito! Adicionei 2 VASSOURA STA MARIA VIP PP ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* VASSOURA STA MARIA VIP PP\n   2× R$ 7,99 = *R$ 15,98*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 15,98*\n\n🏁 *1.* Finalizar Pedido",
-      "timestamp": "2025-08-14T17:57:43.232381",
-      "action_type": "ADD_TO_CART"
-    },
-    {
-      "role": "user",
-      "message": "finalizar pedido",
-      "timestamp": "2025-08-14T17:57:49.287509",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "⭐ Para finalizar a compra, preciso do seu CNPJ.",
-      "timestamp": "2025-08-14T17:57:49.287590",
-      "action_type": "REQUEST_CNPJ"
-    },
-    {
-      "role": "user",
-      "message": "10203060504022",
-      "timestamp": "2025-08-14T17:57:56.441245",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🤖 Não encontrei um cliente com o CNPJ 10203060504022. Mas posso registrar seu pedido mesmo assim!\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* VASSOURA STA MARIA VIP PP\n    2× R$ 7,99 = *R$ 15,98*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 15,98*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T17:57:56.445172",
-      "action_type": "CHECKOUT_COMPLETE"
-    },
-    {
-      "role": "user",
-      "message": "Oi",
-      "timestamp": "2025-08-14T17:58:17.361537",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🤖 Olá! Como posso ajudar você hoje?",
-      "timestamp": "2025-08-14T17:58:17.361597",
-      "action_type": "GREETING"
-    },
-    {
-      "role": "user",
-      "message": "Oi",
-      "timestamp": "2025-08-14T18:08:19.242363",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Oi! Tudo bem? Sou o G.A.V. e tô aqui pra te ajudar com o que precisar! 😊",
-      "timestamp": "2025-08-14T18:08:19.243074",
-      "action_type": "GREETING"
-    },
-    {
-      "role": "user",
-      "message": "quero comprar cerveja",
-      "timestamp": "2025-08-14T18:08:31.513046",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T18:08:31.513114",
-      "action_type": "EMPTY_CART"
-    },
-    {
-      "role": "user",
-      "message": "quero cerveja",
-      "timestamp": "2025-08-14T18:10:43.921015",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*\n\n*1.* BALDE UNIBRASIL P/CERVEJA 6L\n    💰 R$ 29,90\n\n*2.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*5.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*6.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*7.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n*8.* CERVEJA ANTARCTICA ORIGINAL\n    💰 R$ 10,49\n\n*9.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 3,29\n\n*10.* CERVEJA ANTARTICA ORIGINAL LT\n  ",
-      "timestamp": "2025-08-14T18:10:51.351075",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
-    },
-    {
       "role": "user",
       "message": "meu carrinho",
       "timestamp": "2025-08-14T18:10:57.373790",
@@ -199,12 +73,156 @@
       "message": "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
       "timestamp": "2025-08-14T18:11:51.604827",
       "action_type": "CHITCHAT"
+    },
+    {
+      "role": "user",
+      "message": "quero ccerveja",
+      "timestamp": "2025-08-14T18:23:50.973341",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Não achei nada com 'ccerveja', mas vou te ajudar a encontrar!\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'.",
+      "timestamp": "2025-08-14T18:24:07.202599",
+      "action_type": "NO_PRODUCTS_FOUND"
+    },
+    {
+      "role": "user",
+      "message": "skol beats",
+      "timestamp": "2025-08-14T18:24:25.825285",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol beats'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,",
+      "timestamp": "2025-08-14T18:24:28.439517",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-14T18:24:34.341409",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mostrando mais produtos relacionados a 'skol beats'::*\n\n*11.* BEB.MISTA SKOL BEATS TROPICAL LT\n    💰 R$ 5,69\n\nDigite *11* para selecionar este produto.",
+      "timestamp": "2025-08-14T18:24:34.365864",
+      "action_type": "SHOW_MORE_PRODUCTS"
+    },
+    {
+      "role": "user",
+      "message": "11",
+      "timestamp": "2025-08-14T18:24:40.445907",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de BEB.MISTA SKOL BEATS TROPICAL LT você deseja adicionar?",
+      "timestamp": "2025-08-14T18:24:40.445979",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "20",
+      "timestamp": "2025-08-14T18:24:50.456414",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 20 BEB.MISTA SKOL BEATS TROPICAL LT ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* BEB.MISTA SKOL BEATS TROPICAL LT\n   20× R$ 5,69 = *R$ 113,80*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 113,80*\n\n🏁 *1.* Finalizar Pedido",
+      "timestamp": "2025-08-14T18:24:51.062127",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "fechar pedido",
+      "timestamp": "2025-08-14T18:24:59.335250",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "⭐ Para finalizar a compra, preciso do seu CNPJ.",
+      "timestamp": "2025-08-14T18:24:59.335323",
+      "action_type": "REQUEST_CNPJ"
+    },
+    {
+      "role": "user",
+      "message": "12345678910230",
+      "timestamp": "2025-08-14T18:25:16.368416",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Não achei esse CNPJ 12345678910230 no nosso sistema, mas tudo bem! Posso registrar seu pedido assim mesmo.\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* BEB.MISTA SKOL BEATS TROPICAL LT\n    20× R$ 5,69 = *R$ 113,80*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 113,80*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opçõe",
+      "timestamp": "2025-08-14T18:25:16.379798",
+      "action_type": "CHECKOUT_COMPLETE"
+    },
+    {
+      "role": "user",
+      "message": "quero cerveja",
+      "timestamp": "2025-08-14T18:27:44.068816",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*\n\n*1.* BALDE UNIBRASIL P/CERVEJA 6L\n    💰 R$ 29,90\n\n*2.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*5.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*6.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*7.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n*8.* CERVEJA ANTARCTICA ORIGINAL\n    💰 R$ 10,49\n\n*9.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 3,29\n\n*10.* CERVEJA ANTARTICA ORIGINAL LT\n  ",
+      "timestamp": "2025-08-14T18:27:48.245108",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-14T18:28:01.108920",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mostrando mais produtos relacionados a 'cerveja'::*\n\n*11.* CERVEJA BADEN AMERICAN GF\n    💰 R$ 13,49\n\n*12.* CERVEJA BADEN CRISTAL PILSEN GF\n    💰 R$ 13,49\n\n*13.* CERVEJA BADEN CRISTAL PILSEN LT.\n    💰 R$ 5,69\n\n*14.* CERVEJA BADEN GOLD ALE GF\n    💰 R$ 13,49\n\n*15.* CERVEJA BADEN IPA MARACUJA P.MALTE LT.\n    💰 R$ 5,69\n\n*16.* CERVEJA BADEN PEACH GF\n    💰 R$ 13,49\n\n*17.* CERVEJA BADEN PEACH PESSEGO LT.\n    💰 R$ 5,69\n\n*18.* CERVEJA BADEN WEISS GF\n    💰 R$ 13,49\n\n*19.* CERVEJA BADEN WITBIER GF\n    💰 ",
+      "timestamp": "2025-08-14T18:28:01.127898",
+      "action_type": "SHOW_MORE_PRODUCTS"
+    },
+    {
+      "role": "user",
+      "message": "19",
+      "timestamp": "2025-08-14T18:28:07.387362",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CERVEJA BADEN WITBIER GF você deseja adicionar?",
+      "timestamp": "2025-08-14T18:28:07.387449",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "20",
+      "timestamp": "2025-08-14T18:28:18.195406",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 20 CERVEJA BADEN WITBIER GF ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* CERVEJA BADEN WITBIER GF\n   20× R$ 13,49 = *R$ 269,80*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 269,80*\n\n🏁 *1.* Finalizar Pedido",
+      "timestamp": "2025-08-14T18:28:19.008739",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "esvaziar carrinho",
+      "timestamp": "2025-08-14T18:28:26.977182",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🗑️ Carrinho esvaziado! 1 item removido.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T18:28:26.978124",
+      "action_type": "CLEAR_CART"
     }
   ],
-  "conversation_summary": "ARCTICA LT. SODA DIET    6× R$ 3,29 = *R$ 19,74*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 89,78*  🏁 *1.* Finalizar Pedido  *1* - 🔍 Buscar produtos *2* - 🛒 Ver carrin | Cliente: 1 | G.A.V.: Quantas unidades de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK você deseja adicionar? | Cliente: 1 | G.A.V.: Você já possui **REFRIG.ANTARCTICA GUARANA+PEPSI BLACK** com **1** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade? | Cliente: 2 | G.A.V.: ✅ Quantidade de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK atualizada para 1  🛒 *SEU CARRINHO:* ━━━━━━━━━━━━━━━━━━━━ *1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H    2× R$ 18,90 = *R$ 37,80*  *2.* REFRIG.ANTARCTICA LT. ZERO GUARANA    5× R$ 3,29 = *R$ 16,45*  *3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK    1× R$ 15,79 = *R$ 15,79*  *4.* REFRIG.ANTARCTICA LT. SODA DIET    6× R$ 3,29 = *R$ 19,74*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 89,78*  🏁 *1.* Finalizar Pedido | Cliente: 1 | G.A.V.: ⭐ Para finalizar a compra, preciso do seu CNPJ. | Cliente: 12.345.678/0001-95",
+  "conversation_summary": "nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | Cliente: Oi | G.A.V.: 🤖 Olá! Como posso ajudar você hoje? | Cliente: Oi | G.A.V.: Oi! Tudo bem? Sou o G.A.V. e tô aqui pra te ajudar com o que precisar! 😊 | Cliente: quero comprar cerveja | G.A.V.: Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | Cliente: quero cerveja | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*  *1.* BALDE UNIBRASIL P/CERVEJA 6L     💰 R$ 29,90  *2.* CERVEJA AMSTEL GFA     💰 R$ 8,49  *3.* CERVEJA AMSTEL LT     💰 R$ 3,49  *4.* CERVEJA AMSTEL LT     💰 R$ 2,98  *5.* CERVEJA AMSTEL P.MALTE GFA     💰 R$ 4,49  *6.* CERVEJA AMSTEL ULTRA L.NECK     💰 R$ 4,19  *7.* CERVEJA AMSTEL ULTRA LT     💰 R$ 3,79  *8.* CERVEJA ANTARCTICA ORIGINAL     💰 R$ 10,49  *9.* CERVEJA ANTARTICA ORIGINAL LT     💰 R$ 3,29  *10.* CERVEJA ANTARTICA ORIGINAL LT",
   "last_search_type": "by_name",
   "last_search_params": {
-    "product_name": "skol"
+    "product_name": "cerveja"
   },
   "current_offset": 20,
   "last_shown_products": [],
@@ -217,11 +235,11 @@
   "last_search_analysis": {},
   "last_search_suggestions": [],
   "created_at": "2025-08-13T23:52:19.120794",
-  "last_activity": "2025-08-14T18:11:51.604845",
-  "purchase_stage": "search",
+  "last_activity": "2025-08-14T18:28:26.978154",
+  "purchase_stage": "checkout",
   "session_stats": {
     "cart_items": 0,
-    "conversation_length": 33,
+    "conversation_length": 36,
     "customer_identified": false,
     "last_action": "AWAITING_MENU_SELECTION",
     "has_pending_selection": false,

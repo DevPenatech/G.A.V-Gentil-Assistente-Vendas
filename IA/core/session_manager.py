@@ -391,8 +391,8 @@ def detect_user_intent_type(message: str, session_data: Dict) -> str:
         logging.info(f"[INTENT] Comando de limpeza detectado: '{message}'")
         return "CLEAR_CART"
     
-    # Comandos numéricos diretos (1-10)
-    if re.match(r'^\s*([1-9]|10)\s*$', message_lower):
+    # Comandos numéricos diretos (aceita qualquer número positivo para seleção de produtos)
+    if re.match(r'^\s*\d+\s*$', message_lower):
         return "NUMERIC_SELECTION"
     
     # Comandos de carrinho
