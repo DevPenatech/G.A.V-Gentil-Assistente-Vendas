@@ -3,132 +3,6 @@
   "shopping_cart": [],
   "conversation_history": [
     {
-      "role": "user",
-      "message": "5",
-      "timestamp": "2025-08-14T17:45:31.813055",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "✅ Perfeito! Adicionei 5 REFRIG.ANTARCTICA LT. ZERO GUARANA ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 54,25*\n\n🏁 *1.* Finalizar Pedido\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
-      "timestamp": "2025-08-14T17:45:32.378850",
-      "action_type": "ADD_TO_CART"
-    },
-    {
-      "role": "user",
-      "message": "1",
-      "timestamp": "2025-08-14T17:45:59.880577",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK você deseja adicionar?",
-      "timestamp": "2025-08-14T17:45:59.880641",
-      "action_type": "REQUEST_QUANTITY"
-    },
-    {
-      "role": "user",
-      "message": "meu carrinho",
-      "timestamp": "2025-08-14T17:49:27.771020",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "✅ Perfeito! Adicionei 1 REFRIG.ANTARCTICA GUARANA+PEPSI BLACK ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n   1× R$ 15,79 = *R$ 15,79*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 70,04*\n\n🏁 *1.* Finalizar Pedido\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
-      "timestamp": "2025-08-14T17:49:28.296292",
-      "action_type": "ADD_TO_CART"
-    },
-    {
-      "role": "user",
-      "message": "refri",
-      "timestamp": "2025-08-14T17:50:37.914342",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'refri'::*\n\n*1.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n    💰 R$ 15,79\n\n*2.* REFRIG.ANTARCTICA GUARANA+PEPSI COLA\n    💰 R$ 15,98\n\n*3.* REFRIG.ANTARCTICA LT. GUARANA\n    💰 R$ 3,29\n\n*4.* REFRIG.ANTARCTICA LT. SODA\n    💰 R$ 3,29\n\n*5.* REFRIG.ANTARCTICA LT. SODA DIET\n    💰 R$ 3,29\n\n*6.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n    💰 R$ 3,29\n\n*7.* REFRIG.ANTARCTICA PET. DIET SODA\n    💰 R$ 7,89\n\n*8.* REFRIG.ANTARCTICA PET. GUARANA\n    💰 R$ 6,48\n\n*9.* REFRIG.ANTARC",
-      "timestamp": "2025-08-14T17:50:44.628414",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
-    },
-    {
-      "role": "user",
-      "message": "5",
-      "timestamp": "2025-08-14T17:50:54.992006",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de REFRIG.ANTARCTICA LT. SODA DIET você deseja adicionar?",
-      "timestamp": "2025-08-14T17:50:54.992093",
-      "action_type": "REQUEST_QUANTITY"
-    },
-    {
-      "role": "user",
-      "message": "6",
-      "timestamp": "2025-08-14T17:51:00.976769",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "✅ Perfeito! Adicionei 6 REFRIG.ANTARCTICA LT. SODA DIET ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n   1× R$ 15,79 = *R$ 15,79*\n\n*4.* REFRIG.ANTARCTICA LT. SODA DIET\n   6× R$ 3,29 = *R$ 19,74*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 89,78*\n\n🏁 *1.* Finalizar Pedido\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrin",
-      "timestamp": "2025-08-14T17:51:01.525983",
-      "action_type": "ADD_TO_CART"
-    },
-    {
-      "role": "user",
-      "message": "1",
-      "timestamp": "2025-08-14T17:51:13.463599",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK você deseja adicionar?",
-      "timestamp": "2025-08-14T17:51:13.463677",
-      "action_type": "REQUEST_QUANTITY"
-    },
-    {
-      "role": "user",
-      "message": "1",
-      "timestamp": "2025-08-14T17:56:35.965659",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Você já possui **REFRIG.ANTARCTICA GUARANA+PEPSI BLACK** com **1** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade?",
-      "timestamp": "2025-08-14T17:56:37.602514",
-      "action_type": "REQUEST_DUPLICATE_DECISION"
-    },
-    {
-      "role": "user",
-      "message": "2",
-      "timestamp": "2025-08-14T17:56:45.325650",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "✅ Quantidade de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK atualizada para 1\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n   1× R$ 15,79 = *R$ 15,79*\n\n*4.* REFRIG.ANTARCTICA LT. SODA DIET\n   6× R$ 3,29 = *R$ 19,74*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 89,78*\n\n🏁 *1.* Finalizar Pedido",
-      "timestamp": "2025-08-14T17:56:45.325726",
-      "action_type": "UPDATE_CART_ITEM_QUANTITY"
-    },
-    {
-      "role": "user",
-      "message": "1",
-      "timestamp": "2025-08-14T17:56:52.039016",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "⭐ Para finalizar a compra, preciso do seu CNPJ.",
-      "timestamp": "2025-08-14T17:56:52.039706",
-      "action_type": "REQUEST_CNPJ"
-    },
-    {
-      "role": "user",
-      "message": "12.345.678/0001-95",
-      "timestamp": "2025-08-14T17:57:00.037485",
-      "action_type": ""
-    },
-    {
       "role": "assistant",
       "message": "🤖 Não encontrei um cliente com o CNPJ 12.345.678/0001-95. Mas posso registrar seu pedido mesmo assim!\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n    2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n    5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n    1× R$ 15,79 = *R$ 15,79*\n\n*4.* REFRIG.ANTARCTICA LT. SODA DIET\n    6× R$ 3,29 = *R$ 19,74*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GER",
       "timestamp": "2025-08-14T17:57:00.046936",
@@ -217,14 +91,122 @@
       "message": "🤖 Olá! Como posso ajudar você hoje?",
       "timestamp": "2025-08-14T17:58:17.361597",
       "action_type": "GREETING"
+    },
+    {
+      "role": "user",
+      "message": "Oi",
+      "timestamp": "2025-08-14T18:08:19.242363",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Oi! Tudo bem? Sou o G.A.V. e tô aqui pra te ajudar com o que precisar! 😊",
+      "timestamp": "2025-08-14T18:08:19.243074",
+      "action_type": "GREETING"
+    },
+    {
+      "role": "user",
+      "message": "quero comprar cerveja",
+      "timestamp": "2025-08-14T18:08:31.513046",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T18:08:31.513114",
+      "action_type": "EMPTY_CART"
+    },
+    {
+      "role": "user",
+      "message": "quero cerveja",
+      "timestamp": "2025-08-14T18:10:43.921015",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*\n\n*1.* BALDE UNIBRASIL P/CERVEJA 6L\n    💰 R$ 29,90\n\n*2.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*5.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*6.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*7.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n*8.* CERVEJA ANTARCTICA ORIGINAL\n    💰 R$ 10,49\n\n*9.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 3,29\n\n*10.* CERVEJA ANTARTICA ORIGINAL LT\n  ",
+      "timestamp": "2025-08-14T18:10:51.351075",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "user",
+      "message": "meu carrinho",
+      "timestamp": "2025-08-14T18:10:57.373790",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Seu carrinho está vazio.",
+      "timestamp": "2025-08-14T18:10:57.373839",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "user",
+      "message": "ver carrinho",
+      "timestamp": "2025-08-14T18:11:02.095135",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Seu carrinho está vazio.",
+      "timestamp": "2025-08-14T18:11:02.095186",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "user",
+      "message": "5",
+      "timestamp": "2025-08-14T18:11:09.219792",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T18:11:09.221021",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "user",
+      "message": "skol",
+      "timestamp": "2025-08-14T18:11:28.391792",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,98\n\n*9",
+      "timestamp": "2025-08-14T18:11:30.044772",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-14T18:11:38.786046",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mostrando mais produtos relacionados a 'skol'::*\n\n*11.* BEB.MISTA SKOL BEATS TROPICAL LT\n    💰 R$ 5,69\n\n*12.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*13.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\nQual você quer? Digite 11, 12 ou *13*.",
+      "timestamp": "2025-08-14T18:11:38.807635",
+      "action_type": "SHOW_MORE_PRODUCTS"
+    },
+    {
+      "role": "user",
+      "message": "13",
+      "timestamp": "2025-08-14T18:11:51.603512",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T18:11:51.604827",
+      "action_type": "CHITCHAT"
     }
   ],
-  "conversation_summary": " deseja adicionar? | Cliente: 2 | G.A.V.: ✅ Perfeito! Adicionei 2 DESOD.REXONA AERO CLINICAL CLASSIC 96H ao seu carrinho.  🛒 *SEU CARRINHO:* ━━━━━━━━━━━━━━━━━━━━ *1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H    2× R$ 18,90 = *R$ 37,80*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 37,80*  🏁 *1.* Finalizar Pedido  *1* - 🔍 Buscar produtos *2* - 🛒 Ver carrinho *3* - ✅ Finalizar pedido | Cliente: refri | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'refri'::*  *1.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK     💰 R$ 15,79  *2.* REFRIG.ANTARCTICA GUARANA+PEPSI COLA     💰 R$ 15,98  *3.* REFRIG.ANTARCTICA LT. GUARANA     💰 R$ 3,29  *4.* REFRIG.ANTARCTICA LT. SODA     💰 R$ 3,29  *5.* REFRIG.ANTARCTICA LT. SODA DIET     💰 R$ 3,29  *6.* REFRIG.ANTARCTICA LT. ZERO GUARANA     💰 R$ 3,29  *7.* REFRIG.ANTARCTICA PET. DIET SODA     💰 R$ 7,89  *8.* REFRIG.ANTARCTICA PET. GUARANA     💰 R$ 6,48  *9.* REFRIG.ANTARC | Cliente: 6 | G.A.V.: Quantas unidades de REFRIG.ANTARCTICA LT. ZERO GUARANA você deseja adicionar?",
+  "conversation_summary": "ARCTICA LT. SODA DIET    6× R$ 3,29 = *R$ 19,74*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 89,78*  🏁 *1.* Finalizar Pedido  *1* - 🔍 Buscar produtos *2* - 🛒 Ver carrin | Cliente: 1 | G.A.V.: Quantas unidades de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK você deseja adicionar? | Cliente: 1 | G.A.V.: Você já possui **REFRIG.ANTARCTICA GUARANA+PEPSI BLACK** com **1** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade? | Cliente: 2 | G.A.V.: ✅ Quantidade de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK atualizada para 1  🛒 *SEU CARRINHO:* ━━━━━━━━━━━━━━━━━━━━ *1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H    2× R$ 18,90 = *R$ 37,80*  *2.* REFRIG.ANTARCTICA LT. ZERO GUARANA    5× R$ 3,29 = *R$ 16,45*  *3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK    1× R$ 15,79 = *R$ 15,79*  *4.* REFRIG.ANTARCTICA LT. SODA DIET    6× R$ 3,29 = *R$ 19,74*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 89,78*  🏁 *1.* Finalizar Pedido | Cliente: 1 | G.A.V.: ⭐ Para finalizar a compra, preciso do seu CNPJ. | Cliente: 12.345.678/0001-95",
   "last_search_type": "by_name",
   "last_search_params": {
-    "product_name": "vassoura"
+    "product_name": "skol"
   },
-  "current_offset": 10,
+  "current_offset": 20,
   "last_shown_products": [],
   "last_bot_action": "AWAITING_MENU_SELECTION",
   "pending_action": null,
@@ -235,11 +217,11 @@
   "last_search_analysis": {},
   "last_search_suggestions": [],
   "created_at": "2025-08-13T23:52:19.120794",
-  "last_activity": "2025-08-14T17:58:17.361608",
+  "last_activity": "2025-08-14T18:11:51.604845",
   "purchase_stage": "search",
   "session_stats": {
     "cart_items": 0,
-    "conversation_length": 36,
+    "conversation_length": 33,
     "customer_identified": false,
     "last_action": "AWAITING_MENU_SELECTION",
     "has_pending_selection": false,
