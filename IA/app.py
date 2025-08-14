@@ -73,7 +73,7 @@ def find_products_in_cart_by_name(
 def format_cart_with_indices(cart: List[Dict]) -> str:
     """Formata o carrinho com índices para facilitar seleção."""
     if not cart:
-        return "🤖 Seu carrinho de compras está vazio."
+        return "Seu carrinho tá vazio ainda! Que tal começarmos escolhendo alguns produtos?"
 
     response = "🛒 Seu Carrinho de Compras:\n"
     total = 0.0
@@ -107,10 +107,10 @@ def remove_item_from_cart(cart: List[Dict], index: int) -> Tuple[bool, str, List
         Tupla (sucesso, mensagem, novo_carrinho)
     """
     if not cart:
-        return False, "🤖 Seu carrinho está vazio.", cart
+        return False, "Opa, seu carrinho tá vazio!", cart
 
     if not (1 <= index <= len(cart)):
-        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+        return False, f"Hmm, esse número não tá na lista. Escolha entre 1 e {len(cart)}, por favor!", cart
 
     removed_item = cart.pop(index - 1)
     product_name = get_product_name(removed_item)
@@ -137,13 +137,13 @@ def add_quantity_to_cart_item(
         Tupla (sucesso, mensagem, novo_carrinho)
     """
     if not cart:
-        return False, "🤖 Seu carrinho está vazio.", cart
+        return False, "Opa, seu carrinho tá vazio!", cart
 
     if not (1 <= index <= len(cart)):
-        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+        return False, f"Hmm, esse número não tá na lista. Escolha entre 1 e {len(cart)}, por favor!", cart
 
     if not is_valid_quantity(additional_qty):
-        return False, f"🤖 Quantidade inválida: {additional_qty}", cart
+        return False, f"Essa quantidade ({additional_qty}) não tá valendo! Tenta outra.", cart
 
     cart[index - 1]["qt"] += additional_qty
     product_name = get_product_name(cart[index - 1])
@@ -176,13 +176,13 @@ def update_cart_item_quantity(
         Tupla (sucesso, mensagem, novo_carrinho)
     """
     if not cart:
-        return False, "🤖 Seu carrinho está vazio.", cart
+        return False, "Opa, seu carrinho tá vazio!", cart
 
     if not (1 <= index <= len(cart)):
-        return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
+        return False, f"Hmm, esse número não tá na lista. Escolha entre 1 e {len(cart)}, por favor!", cart
 
     if not is_valid_quantity(new_qty):
-        return False, f"🤖 Quantidade inválida: {new_qty}", cart
+        return False, f"Opa, quantidade ({new_qty}) não tá certa! Pode tentar outra?", cart
 
     cart[index - 1]["qt"] = new_qty
     product_name = get_product_name(cart[index - 1])
@@ -207,7 +207,7 @@ def clear_cart_completely(cart: List[Dict]) -> Tuple[str, List[Dict]]:
         Tupla (mensagem, carrinho_vazio)
     """
     if not cart:
-        message = "🤖 Seu carrinho já está vazio."
+        message = "Seu carrinho já tá vazio mesmo! Mas posso te ajudar a escolher uns produtos legais."
     else:
         item_count = len(cart)
         cart.clear()  # Limpa completamente
@@ -229,7 +229,7 @@ def generate_checkout_summary(cart: List[Dict], customer_context: Dict = None) -
     🆕 NOVA FUNÇÃO: Gera resumo completo para finalização do pedido.
     """
     if not cart:
-        return "🤖 Não é possível finalizar: carrinho vazio."
+        return "Não dá pra finalizar com o carrinho vazio! Que tal escolher alguns produtos primeiro?"
     
     # Cabeçalho
     summary = "✅ *RESUMO DO PEDIDO*\n"
@@ -455,7 +455,7 @@ def _handle_pending_action(
                     state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
 
             else:
-                response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
+                response_text = "Ops, algo deu errado! Não consegui identificar qual produto você quer adicionar. Pode tentar de novo?"
                 add_message_to_history(session, "assistant", response_text, "ERROR")
                 update_session_context(
                     session,
@@ -469,7 +469,7 @@ def _handle_pending_action(
         else:
             # 🆕 Mensagem de erro mais útil
             if qt is None:
-                response_text = """🤖 Não consegui entender a quantidade. Você pode usar:
+                response_text = """Não entendi direito a quantidade que você quer. Você pode falar assim:
 • Números: 5, 10, 2.5
 • Por extenso: cinco, duas, dez
 • Expressões: meia duzia, uma duzia
@@ -477,7 +477,7 @@ def _handle_pending_action(
 
 Qual quantidade você quer?"""
             else:
-                response_text = f"🤖 A quantidade {qt} parece muito alta. Por favor, digite uma quantidade entre 1 e 1000."
+                response_text = f"Opa, essa quantidade ({qt}) tá meio alta, né? Que tal algo entre 1 e 1000?"
 
             add_message_to_history(
                 session, "assistant", response_text, "REQUEST_QUANTITY"
@@ -528,7 +528,7 @@ Qual quantidade você quer?"""
                         session, "assistant", response_text, "UPDATE_CART_ITEM"
                     )
                 else:
-                    response_text = "🤖 Ação inválida."
+                    response_text = "Não entendi essa opção. Pode me ajudar escolhendo uma das opções que mostrei?"
                     add_message_to_history(session, "assistant", response_text, "ERROR")
 
                 # Limpa estado pendente
@@ -538,7 +538,7 @@ Qual quantidade você quer?"""
                 session.pop("pending_cart_quantity", None)
             else:
                 response_text = (
-                    f"🤖 Número inválido. Escolha um dos números listados: {', '.join(map(str, valid_indices))}\n\n"
+                    f"Esse número não tá na lista! Escolhe um desses: {', '.join(map(str, valid_indices))}\n\n"
                     f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
                 )
                 add_message_to_history(
@@ -546,7 +546,7 @@ Qual quantidade você quer?"""
                 )
         else:
             response_text = (
-                "🤖 Por favor, digite o número do item que você quer selecionar.\n\n"
+                "Digita o número do item que você quer, por favor!\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
             )
             add_message_to_history(
@@ -668,13 +668,13 @@ def _process_user_message(
     if not incoming_msg:
         if last_bot_action == "AWAITING_PRODUCT_SELECTION":
             response_text = (
-                "🤖 Não entendi. Quer selecionar um dos produtos da lista? Se sim, me diga o número.\n\n"
+                "Não consegui entender! Você quer escolher um dos produtos da lista? Se sim, é só me falar o número.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
             )
             state["last_bot_action"] = "AWAITING_PRODUCT_SELECTION"
         else:
             response_text = (
-                "🤖 Por favor, me diga o que você precisa.\n\n"
+                "Me conta o que você precisa que eu te ajudo!\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
             )
             state["last_shown_products"] = []
@@ -756,7 +756,7 @@ def _process_user_message(
             intent = {"tool_name": "checkout", "parameters": {}}
         else:
             response_text = (
-                "🤖 Opção inválida. Escolha 1, 2 ou 3 do menu principal.\n\n"
+                "Hmm, não conheço essa opção! Escolhe 1, 2 ou 3 do menu aí, por favor.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
             )
             add_message_to_history(
@@ -803,7 +803,7 @@ def _process_user_message(
                 intent = {"tool_name": "clear_cart", "parameters": {}}
 
     elif intent_type == "GREETING":
-        response_text = "🤖 Olá! Como posso ajudar você hoje?"
+        response_text = "Oi! Tudo bem? Sou o G.A.V. e tô aqui pra te ajudar com o que precisar! 😊"
         add_message_to_history(session, "assistant", response_text, "GREETING")
     else:
         # Para casos não cobertos, sempre consulta a IA para entender a intenção
@@ -816,7 +816,7 @@ def _process_user_message(
         )
         print(f">>> CONSOLE: IA retornou a intenção: {intent}")
         if not intent:
-            response_text = "🤖 Desculpe, não entendi. Pode reformular?"
+            response_text = "Opa, não consegui entender direito! Pode me explicar de novo?"
             add_message_to_history(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )
@@ -949,7 +949,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                         f">>> CONSOLE: Nenhum produto encontrado para '{product_name}'"
                     )
 
-                    response_text = f"🤖 Não encontrei produtos para '{product_name}'."
+                    response_text = f"Não achei nada com '{product_name}', mas vou te ajudar a encontrar!"
 
                     # Adiciona sugestões de correção
                     if suggestions:
@@ -1074,7 +1074,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 )
             else:
                 pending_action = None
-                response_text = "🤖 Seu carrinho está vazio."
+                response_text = "Seu carrinho tá vazio! Que tal escolhermos alguns produtos juntos?"
                 add_message_to_history(
                     session, "assistant", response_text, "CART_EMPTY"
                 )
@@ -1174,7 +1174,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     elif tool_name == "show_more_products":
         if not last_search_type:
             response_text = (
-                "🤖 Para eu mostrar mais, primeiro você precisa fazer uma busca."
+                "Pra eu mostrar mais produtos, você precisa fazer uma busca antes! O que você tá procurando?"
             )
             add_message_to_history(
                 session, "assistant", response_text, "NO_PREVIOUS_SEARCH"
@@ -1195,7 +1195,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
 
             if not products:
                 response_text = (
-                    "🤖 Não encontrei mais produtos para essa busca.\n\n"
+                    "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n"
                     f"{format_quick_actions(has_cart=bool(shopping_cart))}"
                 )
                 add_message_to_history(
@@ -1251,7 +1251,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     elif tool_name == "checkout":
         if not shopping_cart:
             response_text = (
-                "🤖 Seu carrinho está vazio!\n\n"
+                "Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?\n\n"
                 f"{format_quick_actions(has_cart=False)}"
             )
             add_message_to_history(session, "assistant", response_text, "EMPTY_CART")
@@ -1295,7 +1295,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     last_bot_action = "AWAITING_MENU_SELECTION"
                 else:
                     response_text = (
-                        f"🤖 Olá, {customer_context['nome']}! Bem-vindo(a) de volta.\n\n"
+                        f"Oi, {customer_context['nome']}! Que bom te ver por aqui de novo! 😊\n\n"
                         f"{format_quick_actions(has_cart=bool(shopping_cart))}"
                     )
                     add_message_to_history(
@@ -1304,7 +1304,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     last_shown_products = []
                     last_bot_action = "AWAITING_MENU_SELECTION"
             else:
-                response_text = f"🤖 Não encontrei um cliente com o CNPJ {cnpj}. Mas posso registrar seu pedido mesmo assim!"
+                response_text = f"Não achei esse CNPJ {cnpj} no nosso sistema, mas tudo bem! Posso registrar seu pedido assim mesmo."
                 
                 # 🆕 PERMITE FINALIZAR MESMO SEM CADASTRO
                 if shopping_cart:
@@ -1322,7 +1322,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                         session, "assistant", response_text, "CUSTOMER_NOT_FOUND"
                     )
         else:
-            response_text = "🤖 Por favor, informe seu CNPJ."
+            response_text = "Pra finalizar, vou precisar do seu CNPJ. Pode me passar?"
             add_message_to_history(session, "assistant", response_text, "REQUEST_CNPJ")
 
     elif tool_name == "ask_continue_or_checkout":
@@ -1333,7 +1333,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             )
         else:
             response_text = (
-                "🤖 Seu carrinho está vazio. Que tal começar adicionando um produto?\n\n"
+                "Seu carrinho tá vazio ainda! Bora escolher uns produtos maneiros?\n\n"
                 f"{format_quick_actions(has_cart=False)}"
             )
             add_message_to_history(session, "assistant", response_text, "EMPTY_CART")
@@ -1360,7 +1360,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
 
     else:
         logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")
-        response_text = "🤖 Hum, não entendi muito bem. Que tal começarmos pelos produtos mais vendidos? Posso te mostrar?"
+        response_text = "Não consegui entender direito, mas sem problemas! Que tal começar vendo nossos produtos mais populares?"
         pending_action = "show_top_selling"
         add_message_to_history(session, "assistant", response_text, "FALLBACK")
 
@@ -1479,7 +1479,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
             logging.error(f"ERRO CRÍTICO NA THREAD: {e}", exc_info=True)
             print(f"!!! ERRO CRÍTICO NA THREAD: {e}")
 
-            error_response = "🤖 Desculpe, ocorreu um erro interno. Tente novamente!"
+            error_response = "Opa, algo deu errado aqui! Pode tentar de novo, por favor?"
             
             # 📝 SEMPRE salva o erro no histórico primeiro
             try:

@@ -2229,3 +2229,221 @@ Traceback (most recent call last):
     raise HTTPError(http_error_msg, response=self)
 requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
 2025-08-14 17:58:18,428 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'Oi'
+2025-08-14 18:04:32,654 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:04:32,739 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:04:33,578 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:04:33,809 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:04:33,811 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:04:53,048 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:04:53,117 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:04:54,131 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:04:54,453 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:04:54,457 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:05:32,772 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:05:32,824 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:05:33,479 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:05:33,681 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:05:33,684 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:06:14,598 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:06:14,655 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:06:15,328 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:06:15,543 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:06:15,544 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:06:45,809 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:06:45,872 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:06:46,637 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:06:46,844 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:06:46,846 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:07:06,749 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:07:06,807 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:07:07,729 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:07:08,052 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:07:08,054 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:07:40,147 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:07:40,191 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:07:40,987 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:07:41,203 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:07:41,204 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:08:19,023 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:08:19,224 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: Oi
+2025-08-14 18:08:19,227 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:08:19] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:08:19,236 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:08:19,247 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:08:20,550 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:08:20,574 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'Oi'
+2025-08-14 18:08:31,494 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:08:31,496 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: quero comprar cerveja
+2025-08-14 18:08:31,504 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:08:31] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:08:31,512 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:08:31,519 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:08:32,459 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:08:32,463 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'quero comprar cerveja'
+2025-08-14 18:10:43,907 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:10:43,908 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: quero cerveja
+2025-08-14 18:10:43,911 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:10:43] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:10:43,919 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:10:43,921 [INFO] [root:438] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'quero cerveja'
+2025-08-14 18:10:43,923 [INFO] [root:187] [load_prompt_template] [llm_interface.py] Carregando prompt de: ai_llm/gav_prompt.txt
+2025-08-14 18:10:43,926 [INFO] [root:192] [load_prompt_template] [llm_interface.py] Prompt carregado e cacheado. Tamanho: 7848 caracteres
+2025-08-14 18:10:43,928 [INFO] [root:484] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 7848 caracteres
+2025-08-14 18:10:43,933 [INFO] [root:582] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-14 18:10:43,935 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-14 18:10:43,939 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f704158fdc0>
+2025-08-14 18:10:43,940 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-14 18:10:43,940 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-14 18:10:43,941 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-14 18:10:43,942 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-14 18:10:43,942 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-14 18:10:49,021 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 14 Aug 2025 18:10:49 GMT'), (b'Content-Length', b'334')])
+2025-08-14 18:10:49,022 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-14 18:10:49,026 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-14 18:10:49,026 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-14 18:10:49,027 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-14 18:10:49,027 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-14 18:10:49,028 [INFO] [root:601] [get_intent] [llm_interface.py] Resposta recebida do LLM em 5.09s
+2025-08-14 18:10:49,029 [WARNING] [root:607] [get_intent] [llm_interface.py] LLM demorou 5.09s (timeout: 5s)
+2025-08-14 18:10:49,029 [INFO] [root:613] [get_intent] [llm_interface.py] Resposta do LLM: **ANÁLISE DA MENSAGEM DO USUÁRIO:**...
+2025-08-14 18:10:49,031 [DEBUG] [root:616] [get_intent] [llm_interface.py] Conteúdo limpo: **ANÁLISE DA MENSAGEM DO USUÁRIO:**
+2025-08-14 18:10:49,032 [ERROR] [root:653] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-14 18:10:50,766 [INFO] [root:101] [_load_kb] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 15970 produtos e 254979 termos.
+2025-08-14 18:10:50,772 [INFO] [root:156] [find_product_in_kb] [KB] Busca exata encontrou: cerveja
+2025-08-14 18:10:51,353 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:10:52,173 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:10:52,177 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'quero cerveja'
+2025-08-14 18:10:57,364 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:10:57,366 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: meu carrinho
+2025-08-14 18:10:57,370 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:10:57] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:10:57,373 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:10:57,375 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:10:58,109 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:10:58,112 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'meu carrinho'
+2025-08-14 18:11:02,088 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:11:02,089 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: ver carrinho
+2025-08-14 18:11:02,091 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:11:02] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:11:02,094 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:11:02,101 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:11:02,836 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:11:02,840 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'ver carrinho'
+2025-08-14 18:11:09,209 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:11:09,210 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: 5
+2025-08-14 18:11:09,212 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:11:09] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:11:09,219 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:11:09,219 [INFO] [root:438] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: '5'
+2025-08-14 18:11:09,223 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:11:10,143 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:11:10,150 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para '5'
+2025-08-14 18:11:28,378 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:11:28,380 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: skol
+2025-08-14 18:11:28,385 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:11:28] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:11:28,390 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:11:28,391 [INFO] [root:438] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'skol'
+2025-08-14 18:11:28,393 [INFO] [root:484] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 7848 caracteres
+2025-08-14 18:11:28,398 [INFO] [root:582] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-14 18:11:28,400 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-14 18:11:28,404 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f70416b0640>
+2025-08-14 18:11:28,405 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-14 18:11:28,406 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-14 18:11:28,406 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-14 18:11:28,407 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-14 18:11:28,408 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-14 18:11:29,972 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 14 Aug 2025 18:11:29 GMT'), (b'Content-Length', b'330')])
+2025-08-14 18:11:29,972 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-14 18:11:29,974 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-14 18:11:29,974 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-14 18:11:29,975 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-14 18:11:29,975 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-14 18:11:29,976 [INFO] [root:601] [get_intent] [llm_interface.py] Resposta recebida do LLM em 1.58s
+2025-08-14 18:11:29,976 [INFO] [root:613] [get_intent] [llm_interface.py] Resposta do LLM: **ANÁLISE DA MENSAGEM DO USUÁRIO:**...
+2025-08-14 18:11:29,978 [DEBUG] [root:616] [get_intent] [llm_interface.py] Conteúdo limpo: **ANÁLISE DA MENSAGEM DO USUÁRIO:**
+2025-08-14 18:11:29,978 [ERROR] [root:653] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-14 18:11:29,979 [INFO] [root:156] [find_product_in_kb] [KB] Busca exata encontrou: skol
+2025-08-14 18:11:30,049 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:11:30,900 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:11:30,903 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'skol'
+2025-08-14 18:11:38,771 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:11:38,773 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: mais
+2025-08-14 18:11:38,775 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:11:38] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:11:38,785 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:11:38,810 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:11:39,586 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:11:39,600 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para 'mais'
+2025-08-14 18:11:51,584 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:11:51,593 [INFO] [root:1523] [inbound_message] Received message from 5511940726493: 13
+2025-08-14 18:11:51,596 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:11:51] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:11:51,602 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:11:51,603 [INFO] [root:438] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: '13'
+2025-08-14 18:11:51,613 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:11:52,306 [ERROR] [root:1427] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1423, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:11:52,310 [INFO] [root:1476] [process_message_async] THREAD: Processamento finalizado para '13'
