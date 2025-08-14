@@ -990,6 +990,17 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 idx = int(parameters["index"]) - 1
                 if 0 <= idx < len(last_shown_products):
                     product_to_add = last_shown_products[idx]
+                else:
+                    # Índice inválido - fora do range
+                    response_text = f"Número {parameters['index']} não está na lista. Escolha um número entre 1 e {len(last_shown_products)}.\n\n"
+                    if last_shown_products:
+                        # Mostra os produtos novamente de forma resumida
+                        response_text += "📦 *Produtos disponíveis:*\n"
+                        for i, prod in enumerate(last_shown_products, 1):
+                            response_text += f"*{i}.* {get_product_name(prod)}\n"
+                        response_text += f"\nDigite o número de *1* a *{len(last_shown_products)}*."
+                    add_message_to_history(session, "assistant", response_text, "INVALID_SELECTION")
+                    return response_text
             except (ValueError, IndexError):
                 pass
 
@@ -1341,13 +1352,25 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         last_bot_action = "AWAITING_MENU_SELECTION"
 
     elif tool_name == "handle_chitchat":
-        response_text = (
-            f"{parameters.get('response_text', 'Entendi!')}\n\n"
-            f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-        )
+        # Preserva o estado se estiver aguardando seleção de produtos
+        if last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
+            # Resposta mais contextualizada durante seleção de produtos
+            response_text = f"{parameters.get('response_text', 'Não entendi!')}"
+            if last_shown_products:
+                response_text += f"\n\n📦 *Escolha um produto da lista:*\n"
+                for i, prod in enumerate(last_shown_products, 1):
+                    response_text += f"*{i}.* {get_product_name(prod)}\n"
+                response_text += f"\nDigite o número de *1* a *{len(last_shown_products)}*."
+            # Mantém o estado atual - não reseta
+        else:
+            response_text = (
+                f"{parameters.get('response_text', 'Entendi!')}\n\n"
+                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+            )
+            last_shown_products = []
+            last_bot_action = "AWAITING_MENU_SELECTION"
+        
         add_message_to_history(session, "assistant", response_text, "CHITCHAT")
-        last_shown_products = []
-        last_bot_action = "AWAITING_MENU_SELECTION"
 
     elif not tool_name and "response_text" in intent:
         response_text = (
