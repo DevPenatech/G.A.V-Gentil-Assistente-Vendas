@@ -2724,3 +2724,219 @@ Traceback (most recent call last):
     raise HTTPError(http_error_msg, response=self)
 requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
 2025-08-14 18:28:27,568 [INFO] [root:1499] [process_message_async] THREAD: Processamento finalizado para 'esvaziar carrinho'
+2025-08-14 18:35:41,296 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-14 18:35:41,375 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:35:42,092 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:35:42,318 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:35:42,320 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:35:55,329 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:35:55,399 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:35:56,106 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:35:56,296 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:35:56,298 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:36:08,270 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:36:08,339 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:36:09,000 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:36:09,197 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:36:09,198 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:36:29,169 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:36:29,233 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:36:29,943 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:36:30,140 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:36:30,141 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:36:40,986 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:36:41,042 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:36:41,702 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:36:41,917 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:36:41,918 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:36:48,583 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:36:48,639 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:36:49,359 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:36:49,570 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:36:49,571 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:37:25,175 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:37:25,249 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:37:25,960 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:37:26,161 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:37:26,163 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:37:34,200 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:37:34,291 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:37:35,285 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:37:35,717 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:37:35,719 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:37:42,811 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:37:42,869 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:37:43,544 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:37:43,750 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:37:43,751 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:37:50,352 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:37:50,417 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:37:51,193 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:37:51,429 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:37:51,430 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:37:57,982 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:37:58,035 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:37:58,686 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:37:58,879 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:37:58,881 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:38:04,992 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:38:05,043 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:38:05,671 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:38:05,864 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:38:05,865 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:38:16,703 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:38:16,759 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:38:17,425 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:38:17,628 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:38:17,629 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:38:27,400 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:38:27,453 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:38:28,104 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:38:28,321 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:38:28,322 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:38:36,006 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:38:36,064 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:38:36,837 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:38:37,173 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:38:37,177 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:38:49,919 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:38:49,986 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:38:50,669 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:38:50,867 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:38:50,869 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:38:55,372 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-14 18:38:55,431 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:38:56,136 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:38:56,353 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:38:56,354 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:40:09,250 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:40:09,251 [INFO] [root:1544] [inbound_message] Received message from 5511940726493: Oi
+2025-08-14 18:40:09,253 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:40:09] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:40:09,257 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:40:09,259 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-14 18:40:09,262 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fdedef32e80>
+2025-08-14 18:40:09,263 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-14 18:40:09,263 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-14 18:40:09,264 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-14 18:40:09,267 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-14 18:40:09,268 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-14 18:40:12,545 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 14 Aug 2025 18:40:12 GMT'), (b'Content-Length', b'424')])
+2025-08-14 18:40:12,547 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-14 18:40:12,548 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-14 18:40:12,549 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-14 18:40:12,550 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-14 18:40:12,550 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-14 18:40:12,551 [INFO] [root:974] [generate_personalized_response] [llm_interface.py] Resposta dinâmica gerada para greeting: Olá pessoal! Eu sou G.A.V., seu assistente de vend...
+2025-08-14 18:40:12,554 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:40:13,209 [ERROR] [root:1448] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1444, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:40:13,218 [INFO] [root:1497] [process_message_async] THREAD: Processamento finalizado para 'Oi'
+2025-08-14 18:42:06,329 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-14 18:42:06,402 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:42:07,357 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:42:07,695 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:42:07,699 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:42:43,412 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-14 18:42:43,495 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:42:44,209 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:42:44,413 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:42:44,418 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:43:07,204 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-14 18:43:07,266 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:43:07,968 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:43:08,157 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:43:08,158 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:44:31,918 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/ai_llm/llm_interface.py', reloading
+2025-08-14 18:44:32,001 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:44:32,972 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:44:33,498 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:44:33,505 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:45:11,478 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/communication/twilio_client.py', reloading
+2025-08-14 18:45:11,540 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:45:12,260 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:45:12,476 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:45:12,477 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:45:23,402 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/communication/twilio_client.py', reloading
+2025-08-14 18:45:23,452 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-14 18:45:24,169 [INFO] [root:534] [setup_main_logging] 🚀 Sistema de logging G.A.V. inicializado
+2025-08-14 18:45:24,427 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-14 18:45:24,429 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 133-768-190
+2025-08-14 18:48:23,222 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:48:23,224 [INFO] [root:1544] [inbound_message] Received message from 5511940726493: oi
+2025-08-14 18:48:23,228 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:48:23] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:48:23,231 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:48:23,233 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-14 18:48:23,236 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f67e63b1e80>
+2025-08-14 18:48:23,237 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-14 18:48:23,238 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-14 18:48:23,238 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-14 18:48:23,239 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-14 18:48:23,239 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-14 18:48:26,499 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 14 Aug 2025 18:48:26 GMT'), (b'Content-Length', b'419')])
+2025-08-14 18:48:26,500 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-14 18:48:26,501 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-14 18:48:26,503 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-14 18:48:26,504 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-14 18:48:26,504 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-14 18:48:26,505 [INFO] [root:977] [generate_personalized_response] [llm_interface.py] Resposta dinâmica gerada para greeting: Olá! Eu sou G.A.V., seu assistente de vendas mais ...
+2025-08-14 18:48:26,509 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:48:27,217 [ERROR] [root:1448] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1444, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:48:27,223 [INFO] [root:1497] [process_message_async] THREAD: Processamento finalizado para 'oi'
+2025-08-14 18:51:27,649 [DEBUG] [asyncio:54] [__init__] Using selector: EpollSelector
+2025-08-14 18:51:27,655 [INFO] [root:1544] [inbound_message] Received message from 5511940726493: quero ver cerveja
+2025-08-14 18:51:27,659 [INFO] [werkzeug:97] [_log] 172.20.0.1 - - [14/Aug/2025 18:51:27] "POST /webhooks/inbound-message HTTP/1.1" 200 -
+2025-08-14 18:51:27,674 [DEBUG] [root:95] [load_session] [SESSION] Sessão carregada do arquivo: data/session_5511940726493.json
+2025-08-14 18:51:27,681 [INFO] [root:438] [get_intent] [llm_interface.py] Iniciando get_intent para mensagem: 'quero ver cerveja'
+2025-08-14 18:51:27,683 [INFO] [root:187] [load_prompt_template] [llm_interface.py] Carregando prompt de: ai_llm/gav_prompt.txt
+2025-08-14 18:51:27,696 [INFO] [root:192] [load_prompt_template] [llm_interface.py] Prompt carregado e cacheado. Tamanho: 8210 caracteres
+2025-08-14 18:51:27,700 [INFO] [root:484] [get_intent] [llm_interface.py] System prompt preparado. Tamanho: 8210 caracteres
+2025-08-14 18:51:27,705 [INFO] [root:582] [get_intent] [llm_interface.py] Configurando Ollama Host: 'http://host.docker.internal:11434'
+2025-08-14 18:51:27,707 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-14 18:51:27,711 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f67e649fb50>
+2025-08-14 18:51:27,712 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-14 18:51:27,714 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-14 18:51:27,715 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-14 18:51:27,717 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-14 18:51:27,719 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-14 18:51:31,658 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 14 Aug 2025 18:51:31 GMT'), (b'Content-Length', b'473')])
+2025-08-14 18:51:31,660 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-14 18:51:31,661 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-14 18:51:31,662 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-14 18:51:31,663 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-14 18:51:31,667 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-14 18:51:31,669 [INFO] [root:601] [get_intent] [llm_interface.py] Resposta recebida do LLM em 3.96s
+2025-08-14 18:51:31,675 [INFO] [root:613] [get_intent] [llm_interface.py] Resposta do LLM: Com base no histórico da conversa e na mensagem atual do cliente ("quero ver cerveja"), posso inferi...
+2025-08-14 18:51:31,679 [DEBUG] [root:616] [get_intent] [llm_interface.py] Conteúdo limpo: Com base no histórico da conversa e na mensagem atual do cliente ("quero ver cerveja"), posso inferir que o cliente está interessado em produtos relacionados à "cerveja".
+2025-08-14 18:51:31,684 [ERROR] [root:653] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-14 18:51:33,628 [INFO] [root:101] [_load_kb] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 15970 produtos e 254979 termos.
+2025-08-14 18:51:33,635 [INFO] [root:292] [fuzzy_search_kb] [FUZZY] Iniciando busca fuzzy para: 'ver cerveja'
+2025-08-14 18:51:55,743 [INFO] [root:331] [fuzzy_search_kb] [FUZZY] Encontrados 168 produtos com similaridade >= 0.8
+2025-08-14 18:51:55,747 [INFO] [root:163] [find_product_in_kb] [KB] Busca fuzzy (alta) encontrou 168 produtos para: ver cerveja
+2025-08-14 18:51:56,350 [INFO] [root:352] [fuzzy_search_products] [FUZZY] Busca fuzzy no banco para: 'ver cerveja'
+2025-08-14 18:51:58,405 [INFO] [root:397] [fuzzy_search_products] [FUZZY] Retornando 10 produtos do banco
+2025-08-14 18:51:58,411 [DEBUG] [root:134] [save_session] [SESSION] Sessão salva no arquivo: data/session_5511940726493.json
+2025-08-14 18:51:59,254 [ERROR] [root:1448] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1444, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 18:51:59,265 [INFO] [root:1497] [process_message_async] THREAD: Processamento finalizado para 'quero ver cerveja'

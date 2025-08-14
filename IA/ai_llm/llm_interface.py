@@ -788,7 +788,7 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
         elif stage == "checkout":
             response_text = "Para concluir digite 'finalizar'. Se quiser revisar os itens, digite 'carrinho'."
         else:
-            response_text = "Como posso ajudar? Digite o nome de um produto para buscar, 'carrinho' para ver suas compras, ou 'produtos' para ver os mais vendidos."
+            response_text = "Como posso te ajudar? Digite o nome de um produto que você quer buscar, 'carrinho' para ver suas compras, ou 'produtos' para ver os mais vendidos."
         return {
             "tool_name": "handle_chitchat",
             "parameters": {"response_text": response_text},
@@ -912,3 +912,83 @@ def get_intent_fast(user_message: str, session_data: Dict) -> Dict:
 
     # Retorna intenção baseada em padrões
     return create_fallback_intent(user_message, context)
+
+
+def generate_personalized_response(context_type: str, session_data: Dict, **kwargs) -> str:
+    """
+    Gera respostas personalizadas e dinâmicas usando a IA para situações específicas.
+    
+    Args:
+        context_type: Tipo de contexto (error, greeting, clarification, etc.)
+        session_data: Dados da sessão para contexto
+        **kwargs: Parâmetros específicos do contexto
+    """
+    try:
+        # Constrói o contexto baseado no tipo
+        conversation_history = session_data.get("conversation_history", [])
+        cart_items = len(session_data.get("shopping_cart", []))
+        
+        # Prompt específico para geração de resposta - sempre direcionado a UMA pessoa
+        contexts = {
+            "error": "Algo deu errado com o que o usuário tentou fazer. Responda diretamente a ELE de forma amigável, explicando que houve um problema e pedindo para tentar novamente. Use 'você' e seja pessoal.",
+            "greeting": "Cumprimente o usuário de forma calorosa, se apresentando como G.A.V. e perguntando diretamente como pode ajudar ELE especificamente. Seja acolhedor e pessoal.",
+            "clarification": "O usuário disse algo que você não entendeu. Peça esclarecimento diretamente a ELE de forma amigável, usando 'você' e tratamento pessoal.",
+            "invalid_quantity": "O usuário informou uma quantidade inválida. Explique diretamente a ELE como informar a quantidade corretamente, de forma didática mas amigável.",
+            "invalid_selection": f"O usuário escolheu um número inválido ({kwargs.get('invalid_number', 'X')}). Explique diretamente a ELE que deve escolher entre 1 e {kwargs.get('max_options', 'N')}, sendo amigável e pessoal.",
+            "empty_cart": "O carrinho do usuário está vazio. Sugira diretamente a ELE ver produtos, sendo animado e natural. Use 'seu carrinho' e fale diretamente com ele.",
+            "cnpj_request": "Peça diretamente ao usuário o CNPJ dele para finalizar a compra. Seja profissional mas amigável, explicando que precisa dessa informação.",
+            "operation_success": f"A operação que o usuário fez deu certo! Comemore diretamente com ELE de forma natural: {kwargs.get('success_details', '')}. Seja caloroso e pessoal.",
+        }
+        
+        context_prompt = contexts.get(context_type, "Responda de forma natural e amigável.")
+        
+        prompt = f"""Você é G.A.V., assistente de vendas carismático e natural falando com UMA pessoa via WhatsApp.
+
+CONTEXTO: {context_prompt}
+
+HISTÓRICO DA CONVERSA: {conversation_history[-3:] if conversation_history else 'Primeira interação'}
+
+CARRINHO: {cart_items} itens
+
+INSTRUÇÕES CRÍTICAS:
+- Seja NATURAL, HUMANO e BRASILEIRO 
+- SEMPRE fale com UMA pessoa: use "você", "seu", "sua" (NUNCA "vocês", "pessoal")
+- WhatsApp é conversa 1-para-1, trate como amigo atendente
+- Use expressões como "Opa!", "Tranquilo!", "Perfeito!", "Que tal?"
+- VARIE as respostas - nunca seja repetitivo
+- Mantenha tom caloroso e prestativo
+- Resposta CURTA (máximo 2 frases)
+- Exemplos: "Como posso te ajudar?" (✅) vs "Como posso ajudar vocês?" (❌)
+
+Responda APENAS o texto da mensagem, sem explicações extras:"""
+
+        # Faz a chamada para a IA
+        response = ollama.chat(
+            model=OLLAMA_MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0.8, "num_predict": 100}  # Mais criatividade, resposta curta
+        )
+        
+        generated_text = response["message"]["content"].strip()
+        
+        # Remove aspas ou formatação extra se houver
+        generated_text = generated_text.strip('"\'')
+        
+        logging.info(f"[llm_interface.py] Resposta dinâmica gerada para {context_type}: {generated_text[:50]}...")
+        return generated_text
+        
+    except Exception as e:
+        logging.error(f"[llm_interface.py] Erro ao gerar resposta personalizada: {e}")
+        
+        # Fallbacks individuais por contexto
+        fallbacks = {
+            "error": "Opa, algo deu errado aqui! Que tal você tentar de novo?",
+            "greeting": "Oi! Sou o G.A.V. e estou aqui pra te ajudar! 😊 Como posso te atender?",
+            "clarification": "Não consegui entender direito o que você quis dizer. Pode me explicar de novo?",
+            "invalid_quantity": "Não entendi a quantidade que você quer. Pode me falar o número?",
+            "invalid_selection": f"Esse número não tá na lista que te mostrei. Escolhe entre 1 e {kwargs.get('max_options', 'os números mostrados')}!",
+            "empty_cart": "Seu carrinho tá vazio ainda! Que tal você dar uma olhada nos nossos produtos?",
+            "cnpj_request": "Pra finalizar sua compra, vou precisar do seu CNPJ. Pode me passar?",
+            "operation_success": "Pronto! Deu tudo certo pra você!",
+        }
+        return fallbacks.get(context_type, "Ops, tive um probleminha. Pode tentar de novo?")

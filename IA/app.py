@@ -7,6 +7,7 @@ import re
 from typing import Dict, List, Tuple, Union
 from db import database
 from ai_llm import llm_interface
+from ai_llm.llm_interface import generate_personalized_response
 from knowledge import knowledge
 from utils import logger_config
 from core.session_manager import (
@@ -455,7 +456,7 @@ def _handle_pending_action(
                     state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
 
             else:
-                response_text = "Ops, algo deu errado! Não consegui identificar qual produto você quer adicionar. Pode tentar de novo?"
+                response_text = generate_personalized_response("error", session)
                 add_message_to_history(session, "assistant", response_text, "ERROR")
                 update_session_context(
                     session,
@@ -469,15 +470,9 @@ def _handle_pending_action(
         else:
             # 🆕 Mensagem de erro mais útil
             if qt is None:
-                response_text = """Não entendi direito a quantidade que você quer. Você pode falar assim:
-• Números: 5, 10, 2.5
-• Por extenso: cinco, duas, dez
-• Expressões: meia duzia, uma duzia
-• Com unidade: 2 pacotes, 3 unidades
-
-Qual quantidade você quer?"""
+                response_text = generate_personalized_response("invalid_quantity", session)
             else:
-                response_text = f"Opa, essa quantidade ({qt}) tá meio alta, né? Que tal algo entre 1 e 1000?"
+                response_text = generate_personalized_response("invalid_quantity", session, invalid_quantity=qt)
 
             add_message_to_history(
                 session, "assistant", response_text, "REQUEST_QUANTITY"
@@ -528,7 +523,7 @@ Qual quantidade você quer?"""
                         session, "assistant", response_text, "UPDATE_CART_ITEM"
                     )
                 else:
-                    response_text = "Não entendi essa opção. Pode me ajudar escolhendo uma das opções que mostrei?"
+                    response_text = generate_personalized_response("clarification", session)
                     add_message_to_history(session, "assistant", response_text, "ERROR")
 
                 # Limpa estado pendente
@@ -614,7 +609,7 @@ Qual quantidade você quer?"""
                     "Deseja *1* somar ou *2* substituir pela nova quantidade?"
                 )
             else:
-                response_text = "Por favor, responda com *1* para somar ou *2* substituir pela nova quantidade."
+                response_text = generate_personalized_response("clarification", session)
             add_message_to_history(
                 session, "assistant", response_text, "REQUEST_DUPLICATE_DECISION"
             )
@@ -668,7 +663,7 @@ def _process_user_message(
     if not incoming_msg:
         if last_bot_action == "AWAITING_PRODUCT_SELECTION":
             response_text = (
-                "Não consegui entender! Você quer escolher um dos produtos da lista? Se sim, é só me falar o número.\n\n"
+                f"{generate_personalized_response('clarification', session)}\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
             )
             state["last_bot_action"] = "AWAITING_PRODUCT_SELECTION"
@@ -803,7 +798,7 @@ def _process_user_message(
                 intent = {"tool_name": "clear_cart", "parameters": {}}
 
     elif intent_type == "GREETING":
-        response_text = "Oi! Tudo bem? Sou o G.A.V. e tô aqui pra te ajudar com o que precisar! 😊"
+        response_text = generate_personalized_response("greeting", session)
         add_message_to_history(session, "assistant", response_text, "GREETING")
     else:
         # Para casos não cobertos, sempre consulta a IA para entender a intenção
@@ -816,7 +811,7 @@ def _process_user_message(
         )
         print(f">>> CONSOLE: IA retornou a intenção: {intent}")
         if not intent:
-            response_text = "Opa, não consegui entender direito! Pode me explicar de novo?"
+            response_text = generate_personalized_response("clarification", session)
             add_message_to_history(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )
@@ -992,10 +987,15 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     product_to_add = last_shown_products[idx]
                 else:
                     # Índice inválido - fora do range
-                    response_text = f"Número {parameters['index']} não está na lista. Escolha um número entre 1 e {len(last_shown_products)}.\n\n"
+                    response_text = generate_personalized_response(
+                        "invalid_selection", 
+                        session, 
+                        invalid_number=parameters['index'],
+                        max_options=len(last_shown_products)
+                    )
                     if last_shown_products:
                         # Mostra os produtos novamente de forma resumida
-                        response_text += "📦 *Produtos disponíveis:*\n"
+                        response_text += "\n\n📦 *Produtos disponíveis:*\n"
                         for i, prod in enumerate(last_shown_products, 1):
                             response_text += f"*{i}.* {get_product_name(prod)}\n"
                         response_text += f"\nDigite o número de *1* a *{len(last_shown_products)}*."
@@ -1046,10 +1046,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             )
 
         else:
-            response_text = (
-                "🤖 Produto não encontrado. Você pode tentar buscar novamente?\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-            )
+            response_text = generate_personalized_response("error", session)
+            response_text += f"\n\n{format_quick_actions(has_cart=bool(shopping_cart))}"
             add_message_to_history(
                 session, "assistant", response_text, "PRODUCT_NOT_FOUND"
             )
@@ -1085,7 +1083,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 )
             else:
                 pending_action = None
-                response_text = "Seu carrinho tá vazio! Que tal escolhermos alguns produtos juntos?"
+                response_text = generate_personalized_response("empty_cart", session)
                 add_message_to_history(
                     session, "assistant", response_text, "CART_EMPTY"
                 )
@@ -1167,7 +1165,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     session, "assistant", response_text, "UPDATE_CART_ITEM"
                 )
             else:
-                response_text = "🤖 Ação inválida."
+                response_text = generate_personalized_response("error", session)
                 add_message_to_history(session, "assistant", response_text, "ERROR")
             last_bot_action = "AWAITING_MENU_SELECTION"
             pending_action = None
@@ -1269,7 +1267,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             last_shown_products = []
             last_bot_action = "AWAITING_MENU_SELECTION"
         elif not customer_context:
-            response_text = "⭐ Para finalizar a compra, preciso do seu CNPJ."
+            response_text = generate_personalized_response("cnpj_request", session)
             add_message_to_history(session, "assistant", response_text, "REQUEST_CNPJ")
             last_shown_products = []
             last_bot_action = None
@@ -1333,7 +1331,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                         session, "assistant", response_text, "CUSTOMER_NOT_FOUND"
                     )
         else:
-            response_text = "Pra finalizar, vou precisar do seu CNPJ. Pode me passar?"
+            response_text = generate_personalized_response("cnpj_request", session)
             add_message_to_history(session, "assistant", response_text, "REQUEST_CNPJ")
 
     elif tool_name == "ask_continue_or_checkout":
@@ -1383,7 +1381,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
 
     else:
         logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")
-        response_text = "Não consegui entender direito, mas sem problemas! Que tal começar vendo nossos produtos mais populares?"
+        response_text = generate_personalized_response("clarification", session)
         pending_action = "show_top_selling"
         add_message_to_history(session, "assistant", response_text, "FALLBACK")
 
