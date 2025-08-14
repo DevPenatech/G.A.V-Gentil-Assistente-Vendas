@@ -782,10 +782,10 @@ def _process_user_message(
                 intent = {"tool_name": "clear_cart", "parameters": {}}
 
     elif intent_type == "GREETING":
-        response_text = "🤖 Olá! Como posso ajudar você hoje?"
+        response_text = "🤖 Oi! Sou o G.A.V. e estou aqui pra te ajudar! Como posso te atender hoje?"
         add_message_to_history(session, "assistant", response_text, "GREETING")
     else:
-        response_text = "🤖 Desculpe, não entendi. Pode reformular?"
+        response_text = "🤖 Desculpe, não entendi o que você quis dizer. Pode me explicar de outro jeito?"
         add_message_to_history(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )

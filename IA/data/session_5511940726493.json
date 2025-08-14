@@ -3,132 +3,6 @@
   "shopping_cart": [],
   "conversation_history": [
     {
-      "role": "user",
-      "message": "meu carrinho",
-      "timestamp": "2025-08-14T18:10:57.373790",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🛒 Seu carrinho está vazio.",
-      "timestamp": "2025-08-14T18:10:57.373839",
-      "action_type": "SHOW_CART"
-    },
-    {
-      "role": "user",
-      "message": "ver carrinho",
-      "timestamp": "2025-08-14T18:11:02.095135",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🛒 Seu carrinho está vazio.",
-      "timestamp": "2025-08-14T18:11:02.095186",
-      "action_type": "SHOW_CART"
-    },
-    {
-      "role": "user",
-      "message": "5",
-      "timestamp": "2025-08-14T18:11:09.219792",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T18:11:09.221021",
-      "action_type": "CHITCHAT"
-    },
-    {
-      "role": "user",
-      "message": "skol",
-      "timestamp": "2025-08-14T18:11:28.391792",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,98\n\n*9",
-      "timestamp": "2025-08-14T18:11:30.044772",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
-    },
-    {
-      "role": "user",
-      "message": "mais",
-      "timestamp": "2025-08-14T18:11:38.786046",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *Mostrando mais produtos relacionados a 'skol'::*\n\n*11.* BEB.MISTA SKOL BEATS TROPICAL LT\n    💰 R$ 5,69\n\n*12.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*13.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\nQual você quer? Digite 11, 12 ou *13*.",
-      "timestamp": "2025-08-14T18:11:38.807635",
-      "action_type": "SHOW_MORE_PRODUCTS"
-    },
-    {
-      "role": "user",
-      "message": "13",
-      "timestamp": "2025-08-14T18:11:51.603512",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T18:11:51.604827",
-      "action_type": "CHITCHAT"
-    },
-    {
-      "role": "user",
-      "message": "quero ccerveja",
-      "timestamp": "2025-08-14T18:23:50.973341",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Não achei nada com 'ccerveja', mas vou te ajudar a encontrar!\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'.",
-      "timestamp": "2025-08-14T18:24:07.202599",
-      "action_type": "NO_PRODUCTS_FOUND"
-    },
-    {
-      "role": "user",
-      "message": "skol beats",
-      "timestamp": "2025-08-14T18:24:25.825285",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol beats'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,",
-      "timestamp": "2025-08-14T18:24:28.439517",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
-    },
-    {
-      "role": "user",
-      "message": "mais",
-      "timestamp": "2025-08-14T18:24:34.341409",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *Mostrando mais produtos relacionados a 'skol beats'::*\n\n*11.* BEB.MISTA SKOL BEATS TROPICAL LT\n    💰 R$ 5,69\n\nDigite *11* para selecionar este produto.",
-      "timestamp": "2025-08-14T18:24:34.365864",
-      "action_type": "SHOW_MORE_PRODUCTS"
-    },
-    {
-      "role": "user",
-      "message": "11",
-      "timestamp": "2025-08-14T18:24:40.445907",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de BEB.MISTA SKOL BEATS TROPICAL LT você deseja adicionar?",
-      "timestamp": "2025-08-14T18:24:40.445979",
-      "action_type": "REQUEST_QUANTITY"
-    },
-    {
-      "role": "user",
-      "message": "20",
-      "timestamp": "2025-08-14T18:24:50.456414",
-      "action_type": ""
-    },
-    {
       "role": "assistant",
       "message": "✅ Perfeito! Adicionei 20 BEB.MISTA SKOL BEATS TROPICAL LT ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* BEB.MISTA SKOL BEATS TROPICAL LT\n   20× R$ 5,69 = *R$ 113,80*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 113,80*\n\n🏁 *1.* Finalizar Pedido",
       "timestamp": "2025-08-14T18:24:51.062127",
@@ -217,16 +91,163 @@
       "message": "🗑️ Carrinho esvaziado! 1 item removido.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
       "timestamp": "2025-08-14T18:28:26.978124",
       "action_type": "CLEAR_CART"
+    },
+    {
+      "role": "user",
+      "message": "Oi",
+      "timestamp": "2025-08-14T18:40:09.257782",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Olá pessoal! Eu sou G.A.V., seu assistente de vendas mais tranquilo do mundo! Como posso ajudar a encontrar algo legal hoje? 🤗",
+      "timestamp": "2025-08-14T18:40:12.551781",
+      "action_type": "GREETING"
+    },
+    {
+      "role": "user",
+      "message": "oi",
+      "timestamp": "2025-08-14T18:48:23.232330",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Eu sou G.A.V., seu assistente de vendas mais tranquilo do mundo! Como posso te ajudar a encontrar algo legal hoje? 😊",
+      "timestamp": "2025-08-14T18:48:26.506248",
+      "action_type": "GREETING"
+    },
+    {
+      "role": "user",
+      "message": "quero ver cerveja",
+      "timestamp": "2025-08-14T18:51:27.680806",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'ver cerveja'::*\n\n*1.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*2.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\n*3.* CERVEJA BECKS LT\n    💰 R$ 5,69\n\n*4.* CERVEJA SCHIN LT\n    💰 R$ 1,69\n\n*5.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*6.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*7.* CERVEJA BRAHMA LT.\n    💰 R$ 3,29\n\n*8.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*9.* CERVEJA BAVARIA LT\n    💰 R$ 2,69\n\n*10.* CERVEJA GLACIAL LT\n    💰 R$ 1,49\n\nQual você quer? Digite o número de *1* a *10*.\n📝 Digite *",
+      "timestamp": "2025-08-14T18:51:58.409019",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
     }
   ],
-  "conversation_summary": "nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | Cliente: Oi | G.A.V.: 🤖 Olá! Como posso ajudar você hoje? | Cliente: Oi | G.A.V.: Oi! Tudo bem? Sou o G.A.V. e tô aqui pra te ajudar com o que precisar! 😊 | Cliente: quero comprar cerveja | G.A.V.: Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | Cliente: quero cerveja | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*  *1.* BALDE UNIBRASIL P/CERVEJA 6L     💰 R$ 29,90  *2.* CERVEJA AMSTEL GFA     💰 R$ 8,49  *3.* CERVEJA AMSTEL LT     💰 R$ 3,49  *4.* CERVEJA AMSTEL LT     💰 R$ 2,98  *5.* CERVEJA AMSTEL P.MALTE GFA     💰 R$ 4,49  *6.* CERVEJA AMSTEL ULTRA L.NECK     💰 R$ 4,19  *7.* CERVEJA AMSTEL ULTRA LT     💰 R$ 3,79  *8.* CERVEJA ANTARCTICA ORIGINAL     💰 R$ 10,49  *9.* CERVEJA ANTARTICA ORIGINAL LT     💰 R$ 3,29  *10.* CERVEJA ANTARTICA ORIGINAL LT",
+  "conversation_summary": "es | Cliente: quero ccerveja | G.A.V.: Não achei nada com 'ccerveja', mas vou te ajudar a encontrar!  Tente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'. | Cliente: skol beats | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'skol beats'::*  *1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK     💰 R$ 7,98  *2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT     💰 R$ 5,69  *3.* BEB.MISTA SKOL BEATS GT L.NECK      💰 R$ 7,98  *4.* BEB.MISTA SKOL BEATS GT LT     💰 R$ 5,69  *5.* BEB.MISTA SKOL BEATS MOJITO LT     💰 R$ 5,98  *6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF     💰 R$ 7,98  *7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT     💰 R$ 5,69  *8.* BEB.MISTA SKOL BEATS SENSES L.NECK      💰 R$ 7, | Cliente: mais | G.A.V.: 📦 *Mostrando mais produtos relacionados a 'skol beats'::*  *11.* BEB.MISTA SKOL BEATS TROPICAL LT     💰 R$ 5,69  Digite *11* para selecionar este produto. | Cliente: 11 | G.A.V.: Quantas unidades de BEB.MISTA SKOL BEATS TROPICAL LT você deseja adicionar? | Cliente: 20",
   "last_search_type": "by_name",
   "last_search_params": {
-    "product_name": "cerveja"
+    "product_name": "ver cerveja"
   },
-  "current_offset": 20,
-  "last_shown_products": [],
-  "last_bot_action": "AWAITING_MENU_SELECTION",
+  "current_offset": 10,
+  "last_shown_products": [
+    {
+      "codprod": 25424,
+      "descricao": "CERVEJA SKOL LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 2.39,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.5445454545454547,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 7649,
+      "descricao": "CERVEJA SKOL LT.",
+      "unidade_venda": "UN",
+      "preco_varejo": 3.09,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.5445454545454547,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 54569,
+      "descricao": "CERVEJA BECKS LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 5.69,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.5334782608695653,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 8132,
+      "descricao": "CERVEJA SCHIN LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 1.69,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.5334782608695653,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 42968,
+      "descricao": "CERVEJA AMSTEL LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 2.98,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.5233333333333334,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 40573,
+      "descricao": "CERVEJA AMSTEL LT",
+      "unidade_venda": "LT",
+      "preco_varejo": 3.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.5233333333333334,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 7665,
+      "descricao": "CERVEJA BRAHMA LT.",
+      "unidade_venda": "UN",
+      "preco_varejo": 3.29,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.5233333333333334,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 40572,
+      "descricao": "CERVEJA AMSTEL GFA",
+      "unidade_venda": "PC",
+      "preco_varejo": 8.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.514,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 8226,
+      "descricao": "CERVEJA BAVARIA LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 2.69,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.514,
+      "matched_variation": "cerveja"
+    },
+    {
+      "codprod": 19615,
+      "descricao": "CERVEJA GLACIAL LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 1.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "status": "ativo",
+      "fuzzy_score": 0.514,
+      "matched_variation": "cerveja"
+    }
+  ],
+  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
   "pending_action": null,
   "pending_product_selection": null,
   "pending_quantity": null,
@@ -235,14 +256,14 @@
   "last_search_analysis": {},
   "last_search_suggestions": [],
   "created_at": "2025-08-13T23:52:19.120794",
-  "last_activity": "2025-08-14T18:28:26.978154",
-  "purchase_stage": "checkout",
+  "last_activity": "2025-08-14T18:51:58.409112",
+  "purchase_stage": "search",
   "session_stats": {
     "cart_items": 0,
-    "conversation_length": 36,
+    "conversation_length": 21,
     "customer_identified": false,
-    "last_action": "AWAITING_MENU_SELECTION",
-    "has_pending_selection": false,
+    "last_action": "AWAITING_PRODUCT_SELECTION",
+    "has_pending_selection": true,
     "has_pending_quantity": false,
     "cart_total_value": 0.0
   },
