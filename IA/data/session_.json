@@ -1,0 +1,138 @@
+{
+  "customer_context": null,
+  "shopping_cart": [],
+  "conversation_history": [
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T20:38:18.762236",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T20:38:18.762255",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T20:39:11.323967",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T20:39:11.323986",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T20:39:35.898119",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T20:39:35.898156",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T20:39:48.271405",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T20:39:48.271422",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T20:42:28.652496",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T20:42:28.652543",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T23:31:10.365657",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T23:31:10.365674",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T23:37:07.517797",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T23:37:07.517816",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T23:45:03.210437",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T23:45:03.210456",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "",
+      "timestamp": "2025-08-13T23:46:32.500770",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Por favor, me diga o que você precisa.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-13T23:46:32.500788",
+      "action_type": "REQUEST_CLARIFICATION"
+    }
+  ],
+  "conversation_summary": "",
+  "last_search_type": null,
+  "last_search_params": {},
+  "current_offset": 0,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_MENU_SELECTION",
+  "pending_action": null,
+  "pending_product_selection": null,
+  "pending_quantity": null,
+  "last_kb_search_term": null,
+  "last_search_results": [],
+  "last_search_analysis": {},
+  "last_search_suggestions": [],
+  "created_at": "2025-08-13T20:38:18.753325",
+  "last_activity": "2025-08-13T23:46:32.500799",
+  "session_stats": {
+    "cart_items": 0,
+    "conversation_length": 18,
+    "customer_identified": false,
+    "last_action": "AWAITING_MENU_SELECTION",
+    "has_pending_selection": false,
+    "has_pending_quantity": false,
+    "cart_total_value": 0.0
+  }
+}

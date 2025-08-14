@@ -216,12 +216,14 @@ SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!"""
 
 
 def extract_numeric_selection(message: str) -> Union[int, None]:
-    """Extrai seleção numérica (1, 2 ou 3) da mensagem do usuário."""
-    # Busca números 1, 2 ou 3 isolados na mensagem
-    numbers = re.findall(r"\b([123])\b", message.strip())
+    """Extrai seleção numérica (1 a 10) da mensagem do usuário."""
+    # Busca números de 1 a 10 isolados na mensagem
+    numbers = re.findall(r"\b([1-9]|10)\b", message.strip())
     if numbers:
         try:
-            return int(numbers[0])
+            num = int(numbers[0])
+            if 1 <= num <= 10:  # Validação adicional
+                return num
         except ValueError:
             pass
     return None
@@ -483,8 +485,9 @@ def get_intent(
             f"[llm_interface.py] System prompt preparado. Tamanho: {len(system_prompt)} caracteres"
         )
 
-        # Obtém contexto da conversa a partir do gerenciador de sessão
-        conversation_context = get_conversation_context(session_data)
+        # Obtém contexto EXPANDIDO da conversa (14 mensagens para melhor contexto)
+        conversation_context = get_conversation_context(session_data, max_messages=14)
+        print(f">>> CONSOLE: Contexto da conversa com {len(session_data.get('conversation_history', []))} mensagens totais")
 
         # Informações do carrinho
         cart_info = ""
@@ -531,8 +534,14 @@ MENSAGEM DO USUÁRIO: "{user_message}"
 
 {special_context}
 
-CONTEXTO DA CONVERSA (MUITO IMPORTANTE):
+CONTEXTO DA CONVERSA (ESSENCIAL PARA ENTENDER A SITUAÇÃO ATUAL):
 {conversation_context}
+
+⚠️ IMPORTANTE: Analise TODO o histórico acima para entender:
+- O que o cliente já pediu ou buscou
+- Onde a conversa parou
+- Se há ações pendentes
+- O contexto da mensagem atual
 
 ESTADO ATUAL DA SESSÃO:
 - Carrinho: {enhanced_context.get('cart_count', 0)} itens

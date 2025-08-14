@@ -453,11 +453,11 @@ Variações:"""
 
 def rebuild_knowledge_base():
     """
-    🆕 FUNÇÃO APRIMORADA: Reconstrói completamente a base de conhecimento.
+    Reconstrói a base de conhecimento gravando incrementalmente no disco
+    e permitindo interrupção segura com CTRL+C.
     """
-    logging.info("=== INICIANDO GERAÇÃO DA BASE DE CONHECIMENTO ===")
-    
-    # Backup da KB atual
+    logging.info("=== INICIANDO GERAÇÃO DA BASE DE CONHECIMENTO (stream) ===")
+
     if KB_PATH.exists():
         backup_path = KB_PATH.with_suffix(".json.backup")
         try:
@@ -466,74 +466,73 @@ def rebuild_knowledge_base():
             logging.info(f"Backup criado: {backup_path}")
         except Exception as e:
             logging.warning(f"Falha ao criar backup: {e}")
-    
-    # Busca produtos ativos
-    logging.info("Consultando produtos ativos no banco de dados...")
+
     products = database.get_all_active_products()
-    
     if not products:
         logging.error("Nenhum produto encontrado no banco de dados")
         return False
-    
-    logging.info(f"Encontrados {len(products)} produtos ativos no banco")
-    
-    knowledge_base = {}
+
+    temp_path = KB_PATH.with_suffix(".ndjson.tmp")
     processed_count = 0
     total_terms = 0
-    
-    for i, product in enumerate(products, 1):
-        codprod = product.get("codprod")
-        description = product.get("descricao", "")
-        
-        if not codprod or not description:
-            continue
-        
-        logging.info(f"Processando produto {i}/{len(products)}: {description}")
-        
-        # Gera variações usando IA ou heurística
-        variations = _generate_ai_variations(description)
-        
-        # Adiciona variações heurísticas como backup
-        heuristic_vars = _heuristic_related_words(description)
-        all_variations = list(set(variations + heuristic_vars))
-        
-        # Limita número total de variações
-        final_variations = all_variations[:25]
-        
-        # Estrutura da entrada na KB
-        kb_entry = {
-            "codprod": codprod,
-            "canonical_name": description,
-            "related_words": final_variations
-        }
-        
-        knowledge_base[description] = kb_entry
-        processed_count += 1
-        total_terms += len(final_variations)
-        
-        logging.info(f"  -> Geradas {len(final_variations)} variações")
-    
-    # Salva a nova base de conhecimento
+
     try:
+        with temp_path.open("w", encoding="utf-8") as f:
+            try:
+                for i, product in enumerate(products, 1):
+                    codprod = product.get("codprod")
+                    description = product.get("descricao", "")
+
+                    if not codprod or not description:
+                        continue
+
+                    logging.info(f"Processando produto {i}/{len(products)}: {description}")
+
+                    variations = _generate_ai_variations(description)
+                    heuristic_vars = _heuristic_related_words(description)
+                    all_variations = list(set(variations + heuristic_vars))[:25]
+
+                    kb_entry = {
+                        "codprod": codprod,
+                        "canonical_name": description,
+                        "related_words": all_variations
+                    }
+
+                    # Grava como NDJSON (1 produto por linha)
+                    f.write(json.dumps({description: kb_entry}, ensure_ascii=False) + "\n")
+                    f.flush()
+
+                    processed_count += 1
+                    total_terms += len(all_variations)
+
+            except KeyboardInterrupt:
+                logging.warning("⚠ Interrupção detectada (CTRL+C). Finalizando com dados parciais...")
+                # Continua para gerar o arquivo final com o que já foi processado
+
+        # Converte NDJSON para JSON final
+        from collections import ChainMap
+        with temp_path.open("r", encoding="utf-8") as f:
+            final_data = dict(ChainMap(*[json.loads(line) for line in f]))
+
         with KB_PATH.open("w", encoding="utf-8") as f:
-            json.dump(knowledge_base, f, indent=2, ensure_ascii=False)
-        
+            json.dump(final_data, f, indent=2, ensure_ascii=False)
+
         logging.info("=== BASE DE CONHECIMENTO GERADA COM SUCESSO ===")
-        logging.info(f"Arquivo: {KB_PATH}")
         logging.info(f"Produtos processados: {processed_count}")
-        logging.info(f"Total de entradas: {len(knowledge_base)}")
         logging.info(f"Total de termos relacionados: {total_terms}")
-        
-        # Limpa cache
+
         global _kb
         _kb = None
-        logging.info("Cache em memória limpo. Próxima consulta carregará a nova base.")
-        
         return True
-        
+
     except Exception as e:
-        logging.error(f"Erro ao salvar base de conhecimento: {e}")
+        logging.error(f"Erro ao gerar KB: {e}")
         return False
+    finally:
+        if temp_path.exists():
+            temp_path.unlink()
+
+
 
 def validate_kb_integrity() -> Dict:
     """🆕 NOVA FUNÇÃO: Valida integridade da base de conhecimento."""

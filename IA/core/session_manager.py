@@ -190,9 +190,9 @@ def format_product_list_for_display(products: List[Dict], title: str, has_more: 
     if not products:
         return f"❌ {title}\nNão achei esse item. Posso sugerir similares?"
     
-    # Conta produtos reais disponíveis
+    # Conta produtos reais disponíveis (agora mostra até 10)
     actual_count = len(products)
-    limited_products = products[:min(actual_count, 3)]
+    limited_products = products[:min(actual_count, 10)]
     display_count = len(limited_products)
 
     response = f"📦 *{title}:*\n\n"
@@ -214,10 +214,14 @@ def format_product_list_for_display(products: List[Dict], title: str, has_more: 
         response += (
             f"Qual você quer? Digite *{offset + 1}* ou *{offset + 2}*."
         )
+    elif display_count <= 5:
+        numbers = [str(offset + i + 1) for i in range(display_count)]
+        response += f"Qual você quer? Digite {', '.join(numbers[:-1])} ou *{numbers[-1]}*."
     else:
-        response += (
-            f"Qual você quer? Digite *{offset + 1}*, *{offset + 2}* ou *{offset + 3}*."
-        )
+        # Para mais de 5 produtos, dá instrução geral
+        first_num = offset + 1
+        last_num = offset + display_count
+        response += f"Qual você quer? Digite o número de *{first_num}* a *{last_num}*."
     
     if has_more:
         response += "\n📝 Digite *mais* para ver outros produtos!"
@@ -264,8 +268,10 @@ def format_cart_for_display(cart: List[Dict]) -> str:
 # GESTÃO DO HISTÓRICO DE CONVERSA
 # ================================================================================
 
-def _summarize_old_messages(session_data: Dict, max_history: int = 20, keep_recent: int = 10):
-    """Resumir mensagens antigas para evitar crescimento infinito do histórico."""
+def _summarize_old_messages(session_data: Dict, max_history: int = 40, keep_recent: int = 20):
+    """Resumir mensagens antigas para evitar crescimento infinito do histórico.
+    Agora mantém mais mensagens recentes para melhor contexto.
+    """
     history = session_data.get("conversation_history", [])
     if len(history) <= max_history:
         return
@@ -304,8 +310,10 @@ def add_message_to_history(session_data: Dict, role: str, message: str, action_t
     # Atualiza sumário caso o histórico fique grande demais
     _summarize_old_messages(session_data)
 
-def get_conversation_context(session_data: Dict, max_messages: int = 10) -> str:
-    """Retorna contexto da conversa incluindo sumário e últimas mensagens."""
+def get_conversation_context(session_data: Dict, max_messages: int = 14) -> str:
+    """Retorna contexto da conversa incluindo sumário e últimas mensagens.
+    Agora mostra 14 mensagens (7 do usuário + 7 do bot) para melhor contexto.
+    """
     history = session_data.get("conversation_history", [])
     summary = session_data.get("conversation_summary")
 
@@ -314,14 +322,18 @@ def get_conversation_context(session_data: Dict, max_messages: int = 10) -> str:
 
     parts = []
     if summary:
-        parts.append(f"RESUMO:\n{summary}")
+        parts.append(f"RESUMO ANTERIOR:\n{summary}")
 
     if history:
         recent_history = history[-max_messages:]
-        context = "HISTÓRICO RECENTE:\n"
-        for msg in recent_history:
+        context = "HISTÓRICO RECENTE DA CONVERSA:\n"
+        for i, msg in enumerate(recent_history, 1):
             role = "Cliente" if msg['role'] == 'user' else "G.A.V."
-            context += f"{role}: {msg['message'][:100]}...\n"
+            # Mostra mensagem completa para melhor contexto (sem truncar)
+            full_message = msg['message'] if len(msg['message']) <= 200 else msg['message'][:200] + "..."
+            action_type = msg.get('action_type', '')
+            action_info = f" [{action_type}]" if action_type else ""
+            context += f"{i}. {role}{action_info}: {full_message}\n"
         parts.append(context)
 
     return "\n\n".join(parts)
@@ -378,8 +390,8 @@ def detect_user_intent_type(message: str, session_data: Dict) -> str:
         logging.info(f"[INTENT] Comando de limpeza detectado: '{message}'")
         return "CLEAR_CART"
     
-    # Comandos numéricos diretos
-    if re.match(r'^\s*[123]\s*$', message_lower):
+    # Comandos numéricos diretos (1-10)
+    if re.match(r'^\s*([1-9]|10)\s*$', message_lower):
         return "NUMERIC_SELECTION"
     
     # Comandos de carrinho

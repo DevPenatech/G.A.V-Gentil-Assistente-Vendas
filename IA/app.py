@@ -22,7 +22,7 @@ from core.session_manager import (
     detect_user_intent_type,
 )
 from utils.quantity_extractor import extract_quantity, is_valid_quantity
-from communication import twilio_client
+from communication import twilio_client, vonage_client
 
 from db.database import search_products_with_suggestions, get_product_details_fuzzy
 from knowledge.knowledge import find_product_in_kb_with_analysis
@@ -686,6 +686,8 @@ def _process_user_message(
 
     # 🆕 DETECÇÃO DIRETA DE COMANDOS CRÍTICOS - PRIORIDADE MÁXIMA
     intent_type = detect_user_intent_type(incoming_msg, session)
+    print(f">>> CONSOLE: Intenção detectada: {intent_type}")
+    print(f">>> CONSOLE: Estado atual - last_bot_action: '{last_bot_action}', produtos: {len(state.get('last_shown_products', []))}")
     
     # 🆕 COMANDO DE LIMPEZA DE CARRINHO - PRIORIDADE ABSOLUTA
     if intent_type == "CLEAR_CART":
@@ -721,6 +723,8 @@ def _process_user_message(
         "AWAITING_PRODUCT_SELECTION",
         "AWAITING_CORRECTION_SELECTION",
     ]:
+        print(f">>> CONSOLE: SELEÇÃO NUMÉRICA detectada: '{incoming_msg}', last_bot_action: '{last_bot_action}'")
+        print(f">>> CONSOLE: Produtos disponíveis: {len(state.get('last_shown_products', []))}")
         intent = {
             "tool_name": "add_item_to_cart",
             "parameters": {"index": int(incoming_msg)},
@@ -737,7 +741,7 @@ def _process_user_message(
             intent = {"tool_name": "checkout", "parameters": {}}
         else:
             response_text = (
-                "🤖 Opção inválida. Escolha 1, 2 ou 3.\n\n"
+                "🤖 Opção inválida. Escolha 1, 2 ou 3 do menu principal.\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
             )
             add_message_to_history(
@@ -850,7 +854,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             if kb_products and kb_analysis.get("quality") in ["excellent", "good"]:
                 # Knowledge Base encontrou bons resultados
                 last_kb_search_term = product_name
-                last_shown_products = kb_products[:5]  # Limita a 5
+                last_shown_products = kb_products[:10]  # Limita a 10
 
                 quality_emoji = "⚡" if kb_analysis["quality"] == "excellent" else "🎯"
                 title = f"{quality_emoji} Encontrei isto para '{product_name}' (busca rápida):"
@@ -880,14 +884,14 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
 
                 # 🆕 USA BUSCA FUZZY COM SUGESTÕES
                 search_result = search_products_with_suggestions(
-                    product_name, limit=5, offset=current_offset
+                    product_name, limit=10, offset=current_offset
                 )
 
                 products = search_result["products"]
                 suggestions = search_result["suggestions"]
 
                 if products:
-                    current_offset += 5
+                    current_offset += 10
                     last_shown_products.extend(products)
 
                     # Determina emoji baseado na qualidade
@@ -900,7 +904,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
 
                     title = f"{title_emoji} Encontrei estes produtos relacionados a '{product_name}':"
                     response_text = format_product_list_for_display(
-                        products, title, len(products) == 5, 0
+                        products, title, len(products) == 10, 0
                     )
 
                     # 🆕 ADICIONA SUGESTÕES SE HOUVER
@@ -941,10 +945,10 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             last_search_type, last_search_params = "top_selling", parameters
             products = database.get_top_selling_products(offset=current_offset)
             title = "⭐ Estes são nossos produtos mais populares:"
-            current_offset += 5
+            current_offset += 10
             last_shown_products.extend(products)
             response_text = format_product_list_for_display(
-                products, title, len(products) == 5, 0
+                products, title, len(products) == 10, 0
             )
             last_bot_action = "AWAITING_PRODUCT_SELECTION"
             add_message_to_history(
@@ -1171,10 +1175,10 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     session, "assistant", response_text, "NO_MORE_PRODUCTS"
                 )
             else:
-                current_offset += 5
+                current_offset += 10
                 last_shown_products.extend(products)
                 response_text = format_product_list_for_display(
-                    products, title, len(products) == 5, offset=offset_before_call
+                    products, title, len(products) == 10, offset=offset_before_call
                 )
                 last_bot_action = "AWAITING_PRODUCT_SELECTION"
                 add_message_to_history(
@@ -1356,7 +1360,9 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
 def _finalize_session(
     sender_phone: str, session: Dict, state: Dict, response_text: str
 ) -> None:
-    """Atualiza e persiste a sessão, além de enviar a resposta ao usuário."""
+    """Atualiza e persiste a sessão, além de enviar a resposta ao usuário.
+    ATUALIZADO: Sempre salva resposta no histórico e exibe no console
+    """
     update_session_context(
         session,
         {
@@ -1371,13 +1377,30 @@ def _finalize_session(
             "last_kb_search_term": state.get("last_kb_search_term"),
         },
     )
+    
+    if response_text:
+        # 📝 SEMPRE salva a resposta no histórico antes de tentar enviar 
+        # (mas só se não foi salva anteriormente com tipo específico)
+        history = session.get("conversation_history", [])
+        last_msg = history[-1] if history else {}
+        if not (last_msg.get("role") == "assistant" and last_msg.get("message") == response_text[:500]):
+            add_message_to_history(session, "assistant", response_text, "BOT_RESPONSE")
+    
     save_session(sender_phone, session)
 
     if response_text:
-        print(
-            f">>> CONSOLE: Enviando resposta para o usuário: '{response_text[:100]}...'"
-        )
-        twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
+        # 📺 CONSOLE: Exibe a resposta completa
+        print(f"\n=== RESPOSTA DO BOT ===\n{response_text}\n=====================")
+        
+        # Tenta enviar por WhatsApp
+        try:
+            print(f">>> CONSOLE: Tentando enviar resposta para {sender_phone}...")
+            #twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
+            vonage_client.enviar_whatsapp(response_text)
+            print(f">>> CONSOLE: ✅ Mensagem enviada com sucesso!")
+        except Exception as e:
+            print(f">>> CONSOLE: ❌ ERRO ao enviar mensagem: {e}")
+            logging.error(f"Erro ao enviar mensagem WhatsApp: {e}", exc_info=True)
 
 
 def process_message_async(sender_phone: str, incoming_msg: str):
@@ -1429,26 +1452,53 @@ def process_message_async(sender_phone: str, incoming_msg: str):
             print(f"!!! ERRO CRÍTICO NA THREAD: {e}")
 
             error_response = "🤖 Desculpe, ocorreu um erro interno. Tente novamente!"
-            twilio_client.send_whatsapp_message(to=sender_phone, body=error_response)
-
-            # Registra o erro no histórico também
+            
+            # 📝 SEMPRE salva o erro no histórico primeiro
             try:
                 session = load_session(sender_phone)
                 add_message_to_history(session, "assistant", error_response, "ERROR")
                 save_session(sender_phone, session)
+                print(f"\n=== RESPOSTA DE ERRO ===\n{error_response}\n=====================")
             except:
                 pass  # Se falhar aqui, apenas ignora para não causar loop de erro
+            
+            # Tenta enviar por WhatsApp
+            try:
+                print(f">>> CONSOLE: Tentando enviar resposta de erro para {sender_phone}...")
+                #twilio_client.send_whatsapp_message(to=sender_phone, body=error_response)
+                vonage_client.enviar_whatsapp(error_response)
+                print(f">>> CONSOLE: ✅ Mensagem de erro enviada com sucesso!")
+            except Exception as send_error:
+                print(f">>> CONSOLE: ❌ ERRO ao enviar mensagem de erro: {send_error}")
 
-
+# twillio
 @app.route("/webhook", methods=["POST"])
 def webhook():
     incoming_msg = request.values.get("Body", "").strip()
     sender_phone = request.values.get("From", "")
+    logging.info(f"Received message from {sender_phone}: {incoming_msg}")
     thread = threading.Thread(
         target=process_message_async, args=(sender_phone, incoming_msg)
     )
     thread.start()
     return "", 200
+
+
+# Vonage
+@app.route("/webhooks/inbound-message", methods=["POST"])
+async def inbound_message():
+    incoming_msg = request.values.get("text", "").strip()
+    sender_phone = request.values.get("from", "")
+    data = request.get_json(silent=True) or {}
+    incoming_msg = (data.get("text") or "").strip() if data.get("message_type") == "text" else ""
+    sender_phone = str(data.get("from") or "").strip()
+    logging.info(f"Received message from {sender_phone}: {incoming_msg}")
+    thread = threading.Thread(
+        target=process_message_async, args=(sender_phone, incoming_msg)
+    )
+    thread.start()
+    return "", 200
+
 
 @app.route("/clear_cart", methods=["POST"])
 def clear_cart_endpoint():

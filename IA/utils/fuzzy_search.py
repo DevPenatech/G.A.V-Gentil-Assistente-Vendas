@@ -332,7 +332,7 @@ def fuzzy_search_kb(search_term: str, knowledge_base: Dict, min_similarity: floa
     
     return matching_products
 
-def fuzzy_search_products(search_term: str, limit: int = 5) -> List[Dict]:
+def fuzzy_search_products(search_term: str, limit: int = 10) -> List[Dict]:
     """
     Busca fuzzy diretamente no banco de dados.
     
@@ -523,7 +523,7 @@ def optimize_search_term(search_term: str) -> str:
     return ' '.join(meaningful_words)
 
 # Funções de conveniência para uso externo
-def quick_fuzzy_search(search_term: str, limit: int = 5) -> List[Dict]:
+def quick_fuzzy_search(search_term: str, limit: int = 10) -> List[Dict]:
     """Busca fuzzy rápida combinando KB e banco de dados."""
     # Primeiro tenta a KB
     from knowledge.knowledge import find_product_in_kb

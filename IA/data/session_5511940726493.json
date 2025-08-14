@@ -1,0 +1,203 @@
+{
+  "customer_context": null,
+  "shopping_cart": [],
+  "conversation_history": [
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CERVEJA ANTARCTICA ORIGINAL você deseja adicionar?",
+      "timestamp": "2025-08-14T17:21:00.266878",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "15",
+      "timestamp": "2025-08-14T17:21:06.850683",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 15 CERVEJA ANTARCTICA ORIGINAL ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* CERVEJA ANTARCTICA ORIGINAL\n   15× R$ 10,49 = *R$ 157,35*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 157,35*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-14T17:21:07.414659",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "limpar carrinho",
+      "timestamp": "2025-08-14T17:21:29.672103",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🗑️ Carrinho esvaziado! 1 item removido.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T17:21:29.673810",
+      "action_type": "CLEAR_CART"
+    },
+    {
+      "role": "user",
+      "message": "quero detergente",
+      "timestamp": "2025-08-14T17:21:43.566978",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *📦 Encontrei estes produtos relacionados a 'detergente'::*\n\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n    💰 R$ 18,90\n\nDigite *1* para selecionar este produto.",
+      "timestamp": "2025-08-14T17:21:47.076337",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-14T17:21:56.613366",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CJ.PLASUTIL PORTA DETERGENTE você deseja adicionar?",
+      "timestamp": "2025-08-14T17:21:56.613408",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "3",
+      "timestamp": "2025-08-14T17:22:05.032954",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 3 CJ.PLASUTIL PORTA DETERGENTE ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n   3× R$ 18,90 = *R$ 56,70*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 56,70*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-14T17:22:05.605591",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "finalizar carrinho",
+      "timestamp": "2025-08-14T17:24:14.478979",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n   3× R$ 18,90 = *R$ 56,70*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 56,70*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-14T17:24:14.479032",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "user",
+      "message": "3",
+      "timestamp": "2025-08-14T17:24:25.547855",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "⭐ Para finalizar a compra, preciso do seu CNPJ.",
+      "timestamp": "2025-08-14T17:24:25.547895",
+      "action_type": "REQUEST_CNPJ"
+    },
+    {
+      "role": "user",
+      "message": "12.345.678/0001-95",
+      "timestamp": "2025-08-14T17:24:45.939504",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Não encontrei um cliente com o CNPJ 12.345.678/0001-95. Mas posso registrar seu pedido mesmo assim!\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n    3× R$ 18,90 = *R$ 56,70*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 56,70*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T17:24:45.946545",
+      "action_type": "CHECKOUT_COMPLETE"
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Desculpe, ocorreu um erro interno. Tente novamente!",
+      "timestamp": "2025-08-14T17:28:53.648420",
+      "action_type": "ERROR"
+    },
+    {
+      "role": "user",
+      "message": "meu carrinho",
+      "timestamp": "2025-08-14T17:30:05.678471",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Seu carrinho está vazio.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T17:30:05.679139",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "user",
+      "message": "quero skol",
+      "timestamp": "2025-08-14T17:30:21.157609",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,98\n\n*9",
+      "timestamp": "2025-08-14T17:30:27.686870",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "user",
+      "message": "10",
+      "timestamp": "2025-08-14T17:30:38.294838",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de BEB.MISTA SKOL BEATS TROPICAL L.NECK você deseja adicionar?",
+      "timestamp": "2025-08-14T17:30:38.294902",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "5",
+      "timestamp": "2025-08-14T17:30:55.697789",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 5 BEB.MISTA SKOL BEATS TROPICAL L.NECK ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* BEB.MISTA SKOL BEATS TROPICAL L.NECK\n   5× R$ 7,98 = *R$ 39,90*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 39,90*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-14T17:30:56.932694",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "limpar carrinho",
+      "timestamp": "2025-08-14T17:31:08.156205",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🗑️ Carrinho esvaziado! 1 item removido.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T17:31:08.156836",
+      "action_type": "CLEAR_CART"
+    }
+  ],
+  "conversation_summary": "CERVEJA AMSTEL GFA     💰 R$ 8,49  *3.* CERVEJA AMSTEL LT     💰 R$ 3,49  *4.* CERVEJA AMSTEL LT     💰 R$ 2,98  *5.* CERVEJA AMSTEL P.MALTE GFA     💰 R$ 4,49  *6.* CERVEJA AMSTEL ULTRA L.NECK     💰 R$ 4,19  *7.* CERVEJA AMSTEL ULTRA LT     💰 R$ 3,79  *8.* CERVEJA ANTARCTICA ORIGINAL     💰 R$ 10,49  *9.* CERVEJA ANTARTICA ORIGINAL LT     💰 R$ 3,29  *10.* CERVEJA ANTARTICA ORIGINAL LT    | Cliente: 7 | G.A.V.: 🤖 Desculpe, não entendi. Pode reformular? | Cliente: quero cerveja | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*  *1.* BALDE UNIBRASIL P/CERVEJA 6L     💰 R$ 29,90  *2.* CERVEJA AMSTEL GFA     💰 R$ 8,49  *3.* CERVEJA AMSTEL LT     💰 R$ 3,49  *4.* CERVEJA AMSTEL LT     💰 R$ 2,98  *5.* CERVEJA AMSTEL P.MALTE GFA     💰 R$ 4,49  *6.* CERVEJA AMSTEL ULTRA L.NECK     💰 R$ 4,19  *7.* CERVEJA AMSTEL ULTRA LT     💰 R$ 3,79  *8.* CERVEJA ANTARCTICA ORIGINAL     💰 R$ 10,49  *9.* CERVEJA ANTARTICA ORIGINAL LT     💰 R$ 3,29  *10.* CERVEJA ANTARTICA ORIGINAL LT    | Cliente: 8",
+  "last_search_type": "by_name",
+  "last_search_params": {
+    "product_name": "skol"
+  },
+  "current_offset": 10,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_MENU_SELECTION",
+  "pending_action": null,
+  "pending_product_selection": null,
+  "pending_quantity": null,
+  "last_kb_search_term": null,
+  "last_search_results": [],
+  "last_search_analysis": {},
+  "last_search_suggestions": [],
+  "created_at": "2025-08-13T23:52:19.120794",
+  "last_activity": "2025-08-14T17:31:08.156857",
+  "purchase_stage": "search",
+  "session_stats": {
+    "cart_items": 0,
+    "conversation_length": 28,
+    "customer_identified": false,
+    "last_action": "AWAITING_MENU_SELECTION",
+    "has_pending_selection": false,
+    "has_pending_quantity": false,
+    "cart_total_value": 0.0
+  },
+  "pending_product_for_cart": null,
+  "term_to_learn_after_quantity": null
+}

@@ -66,7 +66,7 @@ def find_customer_by_cnpj(cnpj: str) -> Union[Dict, None]:
         logging.error(f"Erro ao buscar cliente por CNPJ {cnpj}: {e}")
         return None
 
-def get_top_selling_products(limit: int = 5, offset: int = 0, filial: int = 17) -> List[Dict]:
+def get_top_selling_products(limit: int = 10, offset: int = 0, filial: int = 17) -> List[Dict]:
     """Busca os produtos mais vendidos com base no histórico de orçamentos."""
     sql = """
     SELECT 
@@ -96,7 +96,7 @@ def get_top_selling_products(limit: int = 5, offset: int = 0, filial: int = 17) 
         logging.error(f"Erro ao buscar produtos mais vendidos: {e}")
         return []
 
-def get_top_selling_products_by_name(product_name: str, limit: int = 5, offset: int = 0) -> List[Dict]:
+def get_top_selling_products_by_name(product_name: str, limit: int = 10, offset: int = 0) -> List[Dict]:
     """Busca produtos por nome com ranking de vendas."""
     if not product_name or len(product_name.strip()) < 2:
         return []
@@ -134,7 +134,7 @@ def get_top_selling_products_by_name(product_name: str, limit: int = 5, offset: 
         logging.error(f"Erro ao buscar produtos por nome '{product_name}': {e}")
         return []
 
-def search_products_with_suggestions(product_name: str, limit: int = 5, offset: int = 0) -> Dict:
+def search_products_with_suggestions(product_name: str, limit: int = 10, offset: int = 0) -> Dict:
     """
     🆕 NOVA FUNÇÃO: Busca produtos com sugestões inteligentes e fuzzy search.
     
@@ -223,12 +223,12 @@ def get_product_details_fuzzy(search_term: str) -> List[Dict]:
         return []
     
     # Primeiro tenta busca exata
-    exact_results = get_top_selling_products_by_name(search_term, 5)
+    exact_results = get_top_selling_products_by_name(search_term, 10)
     if exact_results:
         return exact_results
     
     # Usa fuzzy search como fallback
-    return fuzzy_search_products(search_term, 5)
+    return fuzzy_search_products(search_term, 10)
 
 def get_all_active_products() -> List[Dict]:
     """Retorna todos os produtos ativos para geração da base de conhecimento."""

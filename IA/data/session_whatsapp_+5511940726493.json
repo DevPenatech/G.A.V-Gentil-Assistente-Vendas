@@ -1,0 +1,216 @@
+{
+  "customer_context": null,
+  "shopping_cart": [
+    {
+      "codprod": 57833,
+      "descricao": "BEB.CHOPP BLACK SKULL VINHO",
+      "unidade_venda": "UN",
+      "pvenda": 8.98,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "qt": 5
+    },
+    {
+      "codprod": 42597,
+      "descricao": "BALA FINI BANANAS",
+      "unidade_venda": "UN",
+      "pvenda": 12.98,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "qt": 1
+    }
+  ],
+  "conversation_history": [
+    {
+      "role": "assistant",
+      "message": "🤖 Desculpe, não entendi. Pode reformular?",
+      "timestamp": "2025-08-13T17:10:10.468631",
+      "action_type": "REQUEST_CLARIFICATION"
+    },
+    {
+      "role": "user",
+      "message": "3",
+      "timestamp": "2025-08-13T17:10:30.383947",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de BEB.CHOPP BLACK SKULL VINHO você deseja adicionar?",
+      "timestamp": "2025-08-13T17:10:30.383987",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "5",
+      "timestamp": "2025-08-13T17:10:58.796583",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 5 BEB.CHOPP BLACK SKULL VINHO ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* BEB.CHOPP BLACK SKULL VINHO\n   5× R$ 8,98 = *R$ 44,90*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 44,90*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-13T17:10:58.912113",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "quero bala fini",
+      "timestamp": "2025-08-13T17:11:51.703630",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'bala fini'::*\n\n*1.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*2.* BALA FINI BANANA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\nQual você quer? Digite *1*, *2* ou *3*.\n📝 Digite *mais* para ver outros produtos!",
+      "timestamp": "2025-08-13T17:11:53.431182",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "user",
+      "message": "3",
+      "timestamp": "2025-08-13T17:12:04.102847",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de BALA FINI BANANAS você deseja adicionar?",
+      "timestamp": "2025-08-13T17:12:04.102888",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "rubbed-nine",
+      "timestamp": "2025-08-13T23:28:36.136873",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 1 BALA FINI BANANAS ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* BEB.CHOPP BLACK SKULL VINHO\n   5× R$ 8,98 = *R$ 44,90*\n\n*2.* BALA FINI BANANAS\n   1× R$ 12,98 = *R$ 12,98*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 57,88*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-13T23:28:36.550386",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "Oi",
+      "timestamp": "2025-08-13T23:29:19.111612",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Olá! Como posso ajudar você hoje?",
+      "timestamp": "2025-08-13T23:29:19.112391",
+      "action_type": "GREETING"
+    },
+    {
+      "role": "user",
+      "message": "meu carrinho",
+      "timestamp": "2025-08-13T23:29:25.002243",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* BEB.CHOPP BLACK SKULL VINHO\n   5× R$ 8,98 = *R$ 44,90*\n\n*2.* BALA FINI BANANAS\n   1× R$ 12,98 = *R$ 12,98*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 57,88*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-13T23:29:25.002298",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "user",
+      "message": "produtos",
+      "timestamp": "2025-08-13T23:30:09.405232",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Não encontrei produtos para 's'.\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'.",
+      "timestamp": "2025-08-13T23:30:16.751653",
+      "action_type": "NO_PRODUCTS_FOUND"
+    },
+    {
+      "role": "user",
+      "message": "cerveja",
+      "timestamp": "2025-08-13T23:30:36.199869",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*\n\n*1.* BALDE UNIBRASIL P/CERVEJA 6L\n    💰 R$ 29,90\n\n*2.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\nQual você quer? Digite *1*, *2* ou *3*.\n📝 Digite *mais* para ver outros produtos!",
+      "timestamp": "2025-08-13T23:30:43.745517",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    }
+  ],
+  "conversation_summary": "odutos! | Cliente: skol beats | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'skol beats'::*  *1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK     💰 R$ 7,98  *2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT     💰 R$ 5,69  *3.* BEB.MISTA SKOL BEATS GT L.NECK      💰 R$ 7,98  Qual você quer? Digite *1*, *2* ou *3*. 📝 Digite *mais* para ver outros produtos! | Cliente: quero vinho | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'vinho'::*  *1.* ACUCAR FAVINHO MASCAVO     💰 R$ 13,98  *2.* ALIM.BASE GLICOSADO FAVINHO     💰 R$ 8,49  *3.* BEB.CHOPP BLACK SKULL VINHO     💰 R$ 8,98  Qual você quer? Digite *1*, *2* ou *3*. 📝 Digite *mais* para ver outros produtos! | Cliente: mais | G.A.V.: 📦 *Mostrando mais produtos relacionados a 'vinho'::*  *6.* BOLSA TERM P/VINHO BEL CZ P/2 GARRAFAS     💰 R$ 59,90  *7.* CD.COLGATE LUMINOUS LOV.REM.VINHO     💰 R$ 12,59  *8.* CERVEJA DE VINHO MASTERBIER     💰 R$ 11,98  Qual você quer? Digite *6*, *7* ou *8*. 📝 Digite *mais* para ver outros produtos! | Cliente: 7",
+  "last_search_type": "by_name",
+  "last_search_params": {
+    "product_name": "cerveja"
+  },
+  "current_offset": 5,
+  "last_shown_products": [
+    {
+      "codprod": 76430,
+      "descricao": "BALDE UNIBRASIL P/CERVEJA 6L",
+      "unidade_venda": "UN",
+      "pvenda": 29.9,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 40572,
+      "descricao": "CERVEJA AMSTEL GFA",
+      "unidade_venda": "PC",
+      "pvenda": 8.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 42968,
+      "descricao": "CERVEJA AMSTEL LT",
+      "unidade_venda": "UN",
+      "pvenda": 2.98,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 40573,
+      "descricao": "CERVEJA AMSTEL LT",
+      "unidade_venda": "LT",
+      "pvenda": 3.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 64796,
+      "descricao": "CERVEJA AMSTEL P.MALTE GFA",
+      "unidade_venda": "GF",
+      "pvenda": 4.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    }
+  ],
+  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
+  "pending_action": null,
+  "pending_product_selection": null,
+  "pending_quantity": null,
+  "last_kb_search_term": null,
+  "last_search_results": [],
+  "last_search_analysis": {},
+  "last_search_suggestions": [],
+  "created_at": "2025-08-13T12:39:17.511017",
+  "last_activity": "2025-08-13T23:30:43.745571",
+  "purchase_stage": "cart",
+  "session_stats": {
+    "cart_items": 2,
+    "conversation_length": 19,
+    "customer_identified": false,
+    "last_action": "AWAITING_PRODUCT_SELECTION",
+    "has_pending_selection": true,
+    "has_pending_quantity": false,
+    "cart_total_value": 57.88000000000001
+  },
+  "pending_product_for_cart": null,
+  "term_to_learn_after_quantity": null
+}
