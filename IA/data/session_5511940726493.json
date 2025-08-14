@@ -3,178 +3,226 @@
   "shopping_cart": [],
   "conversation_history": [
     {
-      "role": "assistant",
-      "message": "Quantas unidades de CERVEJA ANTARCTICA ORIGINAL você deseja adicionar?",
-      "timestamp": "2025-08-14T17:21:00.266878",
-      "action_type": "REQUEST_QUANTITY"
-    },
-    {
       "role": "user",
-      "message": "15",
-      "timestamp": "2025-08-14T17:21:06.850683",
+      "message": "5",
+      "timestamp": "2025-08-14T17:45:31.813055",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "✅ Perfeito! Adicionei 15 CERVEJA ANTARCTICA ORIGINAL ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* CERVEJA ANTARCTICA ORIGINAL\n   15× R$ 10,49 = *R$ 157,35*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 157,35*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
-      "timestamp": "2025-08-14T17:21:07.414659",
+      "message": "✅ Perfeito! Adicionei 5 REFRIG.ANTARCTICA LT. ZERO GUARANA ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 54,25*\n\n🏁 *1.* Finalizar Pedido\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-14T17:45:32.378850",
       "action_type": "ADD_TO_CART"
-    },
-    {
-      "role": "user",
-      "message": "limpar carrinho",
-      "timestamp": "2025-08-14T17:21:29.672103",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🗑️ Carrinho esvaziado! 1 item removido.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T17:21:29.673810",
-      "action_type": "CLEAR_CART"
-    },
-    {
-      "role": "user",
-      "message": "quero detergente",
-      "timestamp": "2025-08-14T17:21:43.566978",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *📦 Encontrei estes produtos relacionados a 'detergente'::*\n\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n    💰 R$ 18,90\n\nDigite *1* para selecionar este produto.",
-      "timestamp": "2025-08-14T17:21:47.076337",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
     },
     {
       "role": "user",
       "message": "1",
-      "timestamp": "2025-08-14T17:21:56.613366",
+      "timestamp": "2025-08-14T17:45:59.880577",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "Quantas unidades de CJ.PLASUTIL PORTA DETERGENTE você deseja adicionar?",
-      "timestamp": "2025-08-14T17:21:56.613408",
+      "message": "Quantas unidades de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK você deseja adicionar?",
+      "timestamp": "2025-08-14T17:45:59.880641",
       "action_type": "REQUEST_QUANTITY"
     },
     {
       "role": "user",
-      "message": "3",
-      "timestamp": "2025-08-14T17:22:05.032954",
+      "message": "meu carrinho",
+      "timestamp": "2025-08-14T17:49:27.771020",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "✅ Perfeito! Adicionei 3 CJ.PLASUTIL PORTA DETERGENTE ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n   3× R$ 18,90 = *R$ 56,70*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 56,70*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
-      "timestamp": "2025-08-14T17:22:05.605591",
+      "message": "✅ Perfeito! Adicionei 1 REFRIG.ANTARCTICA GUARANA+PEPSI BLACK ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n   1× R$ 15,79 = *R$ 15,79*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 70,04*\n\n🏁 *1.* Finalizar Pedido\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-14T17:49:28.296292",
       "action_type": "ADD_TO_CART"
     },
     {
       "role": "user",
-      "message": "finalizar carrinho",
-      "timestamp": "2025-08-14T17:24:14.478979",
+      "message": "refri",
+      "timestamp": "2025-08-14T17:50:37.914342",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n   3× R$ 18,90 = *R$ 56,70*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 56,70*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
-      "timestamp": "2025-08-14T17:24:14.479032",
-      "action_type": "SHOW_CART"
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'refri'::*\n\n*1.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n    💰 R$ 15,79\n\n*2.* REFRIG.ANTARCTICA GUARANA+PEPSI COLA\n    💰 R$ 15,98\n\n*3.* REFRIG.ANTARCTICA LT. GUARANA\n    💰 R$ 3,29\n\n*4.* REFRIG.ANTARCTICA LT. SODA\n    💰 R$ 3,29\n\n*5.* REFRIG.ANTARCTICA LT. SODA DIET\n    💰 R$ 3,29\n\n*6.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n    💰 R$ 3,29\n\n*7.* REFRIG.ANTARCTICA PET. DIET SODA\n    💰 R$ 7,89\n\n*8.* REFRIG.ANTARCTICA PET. GUARANA\n    💰 R$ 6,48\n\n*9.* REFRIG.ANTARC",
+      "timestamp": "2025-08-14T17:50:44.628414",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
     },
     {
       "role": "user",
-      "message": "3",
-      "timestamp": "2025-08-14T17:24:25.547855",
+      "message": "5",
+      "timestamp": "2025-08-14T17:50:54.992006",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de REFRIG.ANTARCTICA LT. SODA DIET você deseja adicionar?",
+      "timestamp": "2025-08-14T17:50:54.992093",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "6",
+      "timestamp": "2025-08-14T17:51:00.976769",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Perfeito! Adicionei 6 REFRIG.ANTARCTICA LT. SODA DIET ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n   1× R$ 15,79 = *R$ 15,79*\n\n*4.* REFRIG.ANTARCTICA LT. SODA DIET\n   6× R$ 3,29 = *R$ 19,74*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 89,78*\n\n🏁 *1.* Finalizar Pedido\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrin",
+      "timestamp": "2025-08-14T17:51:01.525983",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-14T17:51:13.463599",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK você deseja adicionar?",
+      "timestamp": "2025-08-14T17:51:13.463677",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-14T17:56:35.965659",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Você já possui **REFRIG.ANTARCTICA GUARANA+PEPSI BLACK** com **1** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade?",
+      "timestamp": "2025-08-14T17:56:37.602514",
+      "action_type": "REQUEST_DUPLICATE_DECISION"
+    },
+    {
+      "role": "user",
+      "message": "2",
+      "timestamp": "2025-08-14T17:56:45.325650",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Quantidade de REFRIG.ANTARCTICA GUARANA+PEPSI BLACK atualizada para 1\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n   2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n   5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n   1× R$ 15,79 = *R$ 15,79*\n\n*4.* REFRIG.ANTARCTICA LT. SODA DIET\n   6× R$ 3,29 = *R$ 19,74*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 89,78*\n\n🏁 *1.* Finalizar Pedido",
+      "timestamp": "2025-08-14T17:56:45.325726",
+      "action_type": "UPDATE_CART_ITEM_QUANTITY"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-14T17:56:52.039016",
       "action_type": ""
     },
     {
       "role": "assistant",
       "message": "⭐ Para finalizar a compra, preciso do seu CNPJ.",
-      "timestamp": "2025-08-14T17:24:25.547895",
+      "timestamp": "2025-08-14T17:56:52.039706",
       "action_type": "REQUEST_CNPJ"
     },
     {
       "role": "user",
       "message": "12.345.678/0001-95",
-      "timestamp": "2025-08-14T17:24:45.939504",
+      "timestamp": "2025-08-14T17:57:00.037485",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "🤖 Não encontrei um cliente com o CNPJ 12.345.678/0001-95. Mas posso registrar seu pedido mesmo assim!\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* CJ.PLASUTIL PORTA DETERGENTE\n    3× R$ 18,90 = *R$ 56,70*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 56,70*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T17:24:45.946545",
+      "message": "🤖 Não encontrei um cliente com o CNPJ 12.345.678/0001-95. Mas posso registrar seu pedido mesmo assim!\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H\n    2× R$ 18,90 = *R$ 37,80*\n\n*2.* REFRIG.ANTARCTICA LT. ZERO GUARANA\n    5× R$ 3,29 = *R$ 16,45*\n\n*3.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK\n    1× R$ 15,79 = *R$ 15,79*\n\n*4.* REFRIG.ANTARCTICA LT. SODA DIET\n    6× R$ 3,29 = *R$ 19,74*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GER",
+      "timestamp": "2025-08-14T17:57:00.046936",
       "action_type": "CHECKOUT_COMPLETE"
-    },
-    {
-      "role": "assistant",
-      "message": "🤖 Desculpe, ocorreu um erro interno. Tente novamente!",
-      "timestamp": "2025-08-14T17:28:53.648420",
-      "action_type": "ERROR"
     },
     {
       "role": "user",
       "message": "meu carrinho",
-      "timestamp": "2025-08-14T17:30:05.678471",
+      "timestamp": "2025-08-14T17:57:08.444871",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "🛒 Seu carrinho está vazio.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T17:30:05.679139",
+      "message": "🛒 Seu carrinho está vazio.",
+      "timestamp": "2025-08-14T17:57:08.444922",
       "action_type": "SHOW_CART"
     },
     {
       "role": "user",
-      "message": "quero skol",
-      "timestamp": "2025-08-14T17:30:21.157609",
+      "message": "quero vassoura",
+      "timestamp": "2025-08-14T17:57:16.329968",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,98\n\n*9",
-      "timestamp": "2025-08-14T17:30:27.686870",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'vassoura'::*\n\n*1.* VASSOURA ALKLIN DENTRO E FORA\n    💰 R$ 14,90\n\n*2.* VASSOURA CONDOR MADRI\n    💰 R$ 10,90\n\n*3.* VASSOURA CONDOR VARRE FACIL V35\n    💰 R$ 13,90\n\n*4.* VASSOURA CONDOR VARRE FORTE V52\n    💰 R$ 20,90\n\n*5.* VASSOURA CONDOR VARRE MUITO V9\n    💰 R$ 19,90\n\n*6.* VASSOURA NOVICA ORIGINAL\n    💰 R$ 7,99\n\n*7.* VASSOURA STA MARIA PHENIX\n    💰 R$ 16,90\n\n*8.* VASSOURA STA MARIA PIACALUX\n    💰 R$ 24,90\n\n*9.* VASSOURA STA MARIA VARRECASA PELO\n    💰 R$",
+      "timestamp": "2025-08-14T17:57:31.302882",
       "action_type": "SHOW_PRODUCTS_FROM_DB"
     },
     {
       "role": "user",
       "message": "10",
-      "timestamp": "2025-08-14T17:30:38.294838",
+      "timestamp": "2025-08-14T17:57:36.778678",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "Quantas unidades de BEB.MISTA SKOL BEATS TROPICAL L.NECK você deseja adicionar?",
-      "timestamp": "2025-08-14T17:30:38.294902",
+      "message": "Quantas unidades de VASSOURA STA MARIA VIP PP você deseja adicionar?",
+      "timestamp": "2025-08-14T17:57:36.778739",
       "action_type": "REQUEST_QUANTITY"
     },
     {
       "role": "user",
-      "message": "5",
-      "timestamp": "2025-08-14T17:30:55.697789",
+      "message": "2",
+      "timestamp": "2025-08-14T17:57:42.672068",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "✅ Perfeito! Adicionei 5 BEB.MISTA SKOL BEATS TROPICAL L.NECK ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* BEB.MISTA SKOL BEATS TROPICAL L.NECK\n   5× R$ 7,98 = *R$ 39,90*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 39,90*\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
-      "timestamp": "2025-08-14T17:30:56.932694",
+      "message": "✅ Perfeito! Adicionei 2 VASSOURA STA MARIA VIP PP ao seu carrinho.\n\n🛒 *SEU CARRINHO:*\n━━━━━━━━━━━━━━━━━━━━\n*1.* VASSOURA STA MARIA VIP PP\n   2× R$ 7,99 = *R$ 15,98*\n\n━━━━━━━━━━━━━━━━━━━━\n💵 *Total: R$ 15,98*\n\n🏁 *1.* Finalizar Pedido",
+      "timestamp": "2025-08-14T17:57:43.232381",
       "action_type": "ADD_TO_CART"
     },
     {
       "role": "user",
-      "message": "limpar carrinho",
-      "timestamp": "2025-08-14T17:31:08.156205",
+      "message": "finalizar pedido",
+      "timestamp": "2025-08-14T17:57:49.287509",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "🗑️ Carrinho esvaziado! 1 item removido.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-14T17:31:08.156836",
-      "action_type": "CLEAR_CART"
+      "message": "⭐ Para finalizar a compra, preciso do seu CNPJ.",
+      "timestamp": "2025-08-14T17:57:49.287590",
+      "action_type": "REQUEST_CNPJ"
+    },
+    {
+      "role": "user",
+      "message": "10203060504022",
+      "timestamp": "2025-08-14T17:57:56.441245",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Não encontrei um cliente com o CNPJ 10203060504022. Mas posso registrar seu pedido mesmo assim!\n\n✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📦 *ITENS DO PEDIDO:*\n*1.* VASSOURA STA MARIA VIP PP\n    2× R$ 7,99 = *R$ 15,98*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 15,98*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-14T17:57:56.445172",
+      "action_type": "CHECKOUT_COMPLETE"
+    },
+    {
+      "role": "user",
+      "message": "Oi",
+      "timestamp": "2025-08-14T17:58:17.361537",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🤖 Olá! Como posso ajudar você hoje?",
+      "timestamp": "2025-08-14T17:58:17.361597",
+      "action_type": "GREETING"
     }
   ],
-  "conversation_summary": "CERVEJA AMSTEL GFA     💰 R$ 8,49  *3.* CERVEJA AMSTEL LT     💰 R$ 3,49  *4.* CERVEJA AMSTEL LT     💰 R$ 2,98  *5.* CERVEJA AMSTEL P.MALTE GFA     💰 R$ 4,49  *6.* CERVEJA AMSTEL ULTRA L.NECK     💰 R$ 4,19  *7.* CERVEJA AMSTEL ULTRA LT     💰 R$ 3,79  *8.* CERVEJA ANTARCTICA ORIGINAL     💰 R$ 10,49  *9.* CERVEJA ANTARTICA ORIGINAL LT     💰 R$ 3,29  *10.* CERVEJA ANTARTICA ORIGINAL LT    | Cliente: 7 | G.A.V.: 🤖 Desculpe, não entendi. Pode reformular? | Cliente: quero cerveja | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'cerveja'::*  *1.* BALDE UNIBRASIL P/CERVEJA 6L     💰 R$ 29,90  *2.* CERVEJA AMSTEL GFA     💰 R$ 8,49  *3.* CERVEJA AMSTEL LT     💰 R$ 3,49  *4.* CERVEJA AMSTEL LT     💰 R$ 2,98  *5.* CERVEJA AMSTEL P.MALTE GFA     💰 R$ 4,49  *6.* CERVEJA AMSTEL ULTRA L.NECK     💰 R$ 4,19  *7.* CERVEJA AMSTEL ULTRA LT     💰 R$ 3,79  *8.* CERVEJA ANTARCTICA ORIGINAL     💰 R$ 10,49  *9.* CERVEJA ANTARTICA ORIGINAL LT     💰 R$ 3,29  *10.* CERVEJA ANTARTICA ORIGINAL LT    | Cliente: 8",
+  "conversation_summary": " deseja adicionar? | Cliente: 2 | G.A.V.: ✅ Perfeito! Adicionei 2 DESOD.REXONA AERO CLINICAL CLASSIC 96H ao seu carrinho.  🛒 *SEU CARRINHO:* ━━━━━━━━━━━━━━━━━━━━ *1.* DESOD.REXONA AERO CLINICAL CLASSIC 96H    2× R$ 18,90 = *R$ 37,80*  ━━━━━━━━━━━━━━━━━━━━ 💵 *Total: R$ 37,80*  🏁 *1.* Finalizar Pedido  *1* - 🔍 Buscar produtos *2* - 🛒 Ver carrinho *3* - ✅ Finalizar pedido | Cliente: refri | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'refri'::*  *1.* REFRIG.ANTARCTICA GUARANA+PEPSI BLACK     💰 R$ 15,79  *2.* REFRIG.ANTARCTICA GUARANA+PEPSI COLA     💰 R$ 15,98  *3.* REFRIG.ANTARCTICA LT. GUARANA     💰 R$ 3,29  *4.* REFRIG.ANTARCTICA LT. SODA     💰 R$ 3,29  *5.* REFRIG.ANTARCTICA LT. SODA DIET     💰 R$ 3,29  *6.* REFRIG.ANTARCTICA LT. ZERO GUARANA     💰 R$ 3,29  *7.* REFRIG.ANTARCTICA PET. DIET SODA     💰 R$ 7,89  *8.* REFRIG.ANTARCTICA PET. GUARANA     💰 R$ 6,48  *9.* REFRIG.ANTARC | Cliente: 6 | G.A.V.: Quantas unidades de REFRIG.ANTARCTICA LT. ZERO GUARANA você deseja adicionar?",
   "last_search_type": "by_name",
   "last_search_params": {
-    "product_name": "skol"
+    "product_name": "vassoura"
   },
   "current_offset": 10,
   "last_shown_products": [],
@@ -187,11 +235,11 @@
   "last_search_analysis": {},
   "last_search_suggestions": [],
   "created_at": "2025-08-13T23:52:19.120794",
-  "last_activity": "2025-08-14T17:31:08.156857",
+  "last_activity": "2025-08-14T17:58:17.361608",
   "purchase_stage": "search",
   "session_stats": {
     "cart_items": 0,
-    "conversation_length": 28,
+    "conversation_length": 36,
     "customer_identified": false,
     "last_action": "AWAITING_MENU_SELECTION",
     "has_pending_selection": false,
@@ -199,5 +247,7 @@
     "cart_total_value": 0.0
   },
   "pending_product_for_cart": null,
-  "term_to_learn_after_quantity": null
+  "term_to_learn_after_quantity": null,
+  "duplicate_item_index": null,
+  "duplicate_item_qty": null
 }

@@ -260,7 +260,8 @@ def format_cart_for_display(cart: List[Dict]) -> str:
     
     response += "━━━━━━━━━━━━━━━━━━━━\n"
     total_str = f"R$ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    response += f"💵 *Total: {total_str}*"
+    response += f"💵 *Total: {total_str}*\n\n"
+    response += "🏁 *1.* Finalizar Pedido"
     
     return response
 

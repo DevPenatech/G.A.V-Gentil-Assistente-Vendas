@@ -163,9 +163,6 @@ def add_quantity_to_cart_item(
     cart_display = format_cart_for_display(cart)
     message = f"✅ Adicionei +{qty_display} {product_name}. Total agora: {total_display}\n\n{cart_display}"
 
-    quick_actions = format_quick_actions(has_cart=bool(cart))
-    message = f"{message}\n\n{quick_actions}"
-
     return True, message, cart
 
 
@@ -198,9 +195,6 @@ def update_cart_item_quantity(
 
     cart_display = format_cart_for_display(cart)
     message = f"✅ Quantidade de {product_name} atualizada para {qty_display}\n\n{cart_display}"
-
-    quick_actions = format_quick_actions(has_cart=bool(cart))
-    message = f"{message}\n\n{quick_actions}"
 
     return True, message, cart
 
@@ -440,8 +434,7 @@ def _handle_pending_action(
                     product_name = get_product_name(product_to_add)
                     response_text = (
                         f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n"
-                        f"{format_cart_for_display(shopping_cart)}\n\n"
-                        f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                        f"{format_cart_for_display(shopping_cart)}"
                     )
 
                     # 📝 REGISTRA A RESPOSTA DO BOT
@@ -454,9 +447,12 @@ def _handle_pending_action(
                         {
                             "pending_action": None,
                             "pending_product_for_cart": None,
+                            "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
                         },
                     )
                     pending_action = None
+                    # Define o estado correto para aguardar confirmação de checkout
+                    state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
 
             else:
                 response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
@@ -581,8 +577,10 @@ Qual quantidade você quer?"""
                     "duplicate_item_index": None,
                     "duplicate_item_qty": None,
                     "pending_action": None,
+                    "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
                 },
             )
+            state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
         elif choice == "2":
             success, message, shopping_cart = update_cart_item_quantity(
                 shopping_cart, index, qty
@@ -598,8 +596,10 @@ Qual quantidade você quer?"""
                     "duplicate_item_index": None,
                     "duplicate_item_qty": None,
                     "pending_action": None,
+                    "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
                 },
             )
+            state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
         else:
             if index and 1 <= index <= len(shopping_cart):
                 existing_item = shopping_cart[index - 1]
@@ -731,6 +731,21 @@ def _process_user_message(
         }
     elif (
         intent_type == "NUMERIC_SELECTION"
+        and last_bot_action == "AWAITING_CHECKOUT_CONFIRMATION"
+    ):
+        if incoming_msg == "1":
+            intent = {"tool_name": "checkout", "parameters": {}}
+        else:
+            # Deixa a IA processar outras intenções mesmo estando em checkout
+            print(">>> CONSOLE: Número diferente de 1 em checkout, consultando IA...")
+            intent = llm_interface.get_intent(
+                user_message=incoming_msg,
+                session_data=session,
+                customer_context=state.get("customer_context"),
+                cart_items_count=len(shopping_cart),
+            )
+    elif (
+        intent_type == "NUMERIC_SELECTION"
         and last_bot_action == "AWAITING_MENU_SELECTION"
     ):
         if incoming_msg == "1":
@@ -763,8 +778,10 @@ def _process_user_message(
         intent = {"tool_name": "update_cart_item", "parameters": params}
     elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
         intent = {"tool_name": "show_more_products", "parameters": {}}
-    elif intent_type in ["GENERAL", "SEARCH_PRODUCT"]:
+    elif intent_type in ["GENERAL", "SEARCH_PRODUCT"] or last_bot_action == "AWAITING_CHECKOUT_CONFIRMATION":
         print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
+        if last_bot_action == "AWAITING_CHECKOUT_CONFIRMATION":
+            print(">>> CONSOLE: Usuário em tela de checkout, mas IA vai processar intenção da mensagem")
         intent = llm_interface.get_intent(
             user_message=incoming_msg,
             session_data=session,
@@ -789,8 +806,18 @@ def _process_user_message(
         response_text = "🤖 Olá! Como posso ajudar você hoje?"
         add_message_to_history(session, "assistant", response_text, "GREETING")
     else:
-        response_text = "🤖 Desculpe, não entendi. Pode reformular?"
-        add_message_to_history(
+        # Para casos não cobertos, sempre consulta a IA para entender a intenção
+        print(f">>> CONSOLE: Caso não coberto (intent_type: {intent_type}), consultando IA...")
+        intent = llm_interface.get_intent(
+            user_message=incoming_msg,
+            session_data=session,
+            customer_context=state.get("customer_context"),
+            cart_items_count=len(shopping_cart),
+        )
+        print(f">>> CONSOLE: IA retornou a intenção: {intent}")
+        if not intent:
+            response_text = "🤖 Desculpe, não entendi. Pode reformular?"
+            add_message_to_history(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )
 
@@ -1186,13 +1213,10 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 )
 
     elif tool_name == "view_cart":
-        response_text = (
-            f"{format_cart_for_display(shopping_cart)}\n\n"
-            f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-        )
+        response_text = format_cart_for_display(shopping_cart)
         add_message_to_history(session, "assistant", response_text, "SHOW_CART")
         last_shown_products = []
-        last_bot_action = "AWAITING_MENU_SELECTION"
+        last_bot_action = "AWAITING_CHECKOUT_CONFIRMATION"
 
     elif tool_name == "start_new_order":
         (
@@ -1434,10 +1458,14 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 
             # 4. Mensagem padrão caso nenhuma resposta seja definida
             if not response_text and not state.get("pending_action"):
-                response_text = (
-                    "Operação concluída. O que mais posso fazer por você?\n\n"
-                    f"{format_quick_actions(has_cart=bool(state.get('shopping_cart', [])))}"
-                )
+                # Não adiciona quick_actions se estiver aguardando confirmação de checkout
+                if state.get("last_bot_action") == "AWAITING_CHECKOUT_CONFIRMATION":
+                    response_text = "Operação concluída."
+                else:
+                    response_text = (
+                        "Operação concluída. O que mais posso fazer por você?\n\n"
+                        f"{format_quick_actions(has_cart=bool(state.get('shopping_cart', [])))}"
+                    )
                 add_message_to_history(
                     session, "assistant", response_text, "OPERATION_COMPLETE"
                 )

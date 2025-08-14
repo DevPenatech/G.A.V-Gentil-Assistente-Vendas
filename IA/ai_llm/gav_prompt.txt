@@ -58,6 +58,11 @@ Se recebeu CNPJ (14 dígitos) e há contexto de finalização de pedido, use SEM
 - `update_cart_item` - Atualiza item do carrinho
 - `checkout` - Finaliza compra
 - `handle_chitchat` - Conversas gerais
+
+**⚠️ CONTEXTO DE CHECKOUT ESPECIAL:**
+Quando o usuário está vendo o carrinho (última ação do bot foi mostrar carrinho), qualquer mensagem que demonstre intenção de finalizar deve usar `checkout`:
+- "1", "finalizar", "fechar", "comprar", "concluir", "prosseguir", "sim", "ok", "confirmar", etc.
+- Analise o CONTEXTO e a INTENÇÃO, não apenas palavras específicas!
 - `start_new_order` - Inicia novo pedido
 - `show_more_products` - Mostra mais produtos
 - `ask_continue_or_checkout` - Pergunta se quer continuar ou finalizar
@@ -79,6 +84,24 @@ Resposta: {"tool_name": "handle_chitchat", "parameters": {"response_text": "Seu 
 ✅ **SEMPRE FAÇA ASSIM:**
 Usuário: "limpar carrinho"
 Resposta: {"tool_name": "clear_cart", "parameters": {}}
+
+**EXEMPLOS DE FINALIZAÇÃO (após mostrar carrinho):**
+
+✅ **CONTEXTO: Carrinho foi mostrado com opção "1. Finalizar Pedido"**
+Usuário: "1"
+Resposta: {"tool_name": "checkout", "parameters": {}}
+
+✅ **CONTEXTO: Carrinho foi mostrado**
+Usuário: "finalizar"
+Resposta: {"tool_name": "checkout", "parameters": {}}
+
+✅ **CONTEXTO: Carrinho foi mostrado**
+Usuário: "quero fechar o pedido"
+Resposta: {"tool_name": "checkout", "parameters": {}}
+
+✅ **CONTEXTO: Carrinho foi mostrado**
+Usuário: "confirmar compra"
+Resposta: {"tool_name": "checkout", "parameters": {}}
 
 ❌ **JAMAIS FAÇA ISSO:**
 Usuário: "zerar tudo"
