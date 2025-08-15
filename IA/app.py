@@ -9,6 +9,7 @@ from db import database
 from ai_llm import llm_interface
 from ai_llm.llm_interface import generate_personalized_response
 from knowledge import knowledge
+from utils.response_parser import extract_json_from_ai_response
 from utils import logger_config
 from core.session_manager import (
     load_session,
@@ -646,6 +647,67 @@ def _handle_pending_action(
             pending_action = None
 
         state["pending_action"] = pending_action
+    
+    elif pending_action == "AWAITING_SMART_UPDATE_SELECTION":
+        # 🆕 Tratamento para seleção em smart_cart_update
+        try:
+            selection = int(incoming_msg.strip())
+            pending_smart_update = session.get("pending_smart_update", {})
+            matching_items = pending_smart_update.get("matching_items", [])
+            
+            if 1 <= selection <= len(matching_items):
+                cart_idx, item = matching_items[selection - 1]
+                action = pending_smart_update.get("action", "add")
+                quantity = pending_smart_update.get("quantity", 1)
+                old_qty = item.get("qt", 1)
+                
+                if action == "add":
+                    new_qty = old_qty + quantity
+                elif action == "set":
+                    new_qty = quantity
+                elif action == "remove":
+                    new_qty = max(0, old_qty - quantity)
+                else:
+                    new_qty = old_qty
+                
+                if new_qty <= 0:
+                    # Remove do carrinho
+                    removed_item = shopping_cart.pop(cart_idx)
+                    product_display_name = get_product_name(removed_item)
+                    response_text = generate_personalized_response(
+                        "operation_success", 
+                        session, 
+                        success_details=f"{product_display_name} removido do carrinho"
+                    )
+                else:
+                    # Atualiza quantidade
+                    shopping_cart[cart_idx]["qt"] = new_qty
+                    product_display_name = get_product_name(item)
+                    response_text = generate_personalized_response(
+                        "operation_success", 
+                        session, 
+                        success_details=f"{product_display_name} atualizado para {new_qty} unidades"
+                    )
+                
+                add_message_to_history(session, "assistant", response_text, "SMART_UPDATE_COMPLETED")
+            else:
+                response_text = generate_personalized_response("invalid_selection", session, 
+                    invalid_number=selection, max_options=len(matching_items))
+                add_message_to_history(session, "assistant", response_text, "INVALID_SELECTION")
+            
+            # Limpa estado pendente
+            update_session_context(session, {
+                "pending_smart_update": None,
+                "pending_action": None
+            })
+            pending_action = None
+            state["pending_action"] = pending_action
+            
+            return None, response_text
+            
+        except ValueError:
+            # Não é um número, deixa continuar com o processamento normal
+            pass
 
     return intent, response_text
 
@@ -653,170 +715,33 @@ def _process_user_message(
     session: Dict, state: Dict, incoming_msg: str
 ) -> Tuple[Union[Dict, None], str]:
     """
-    🆕 VERSÃO CORRIGIDA: Processa a mensagem do usuário e determina a intenção.
+    Processa a mensagem do usuário e determina a intenção usando o novo fluxo de IA.
     """
-    intent = None
     response_text = ""
-    last_bot_action = state.get("last_bot_action")
     shopping_cart = state.get("shopping_cart", [])
 
     if not incoming_msg:
-        if last_bot_action == "AWAITING_PRODUCT_SELECTION":
-            response_text = (
-                f"{generate_personalized_response('clarification', session)}\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
-            )
-            state["last_bot_action"] = "AWAITING_PRODUCT_SELECTION"
-        else:
-            response_text = (
-                "Me conta o que você precisa que eu te ajudo!\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-            )
-            state["last_shown_products"] = []
-            state["last_bot_action"] = "AWAITING_MENU_SELECTION"
+        response_text = (
+            "Me conta o que você precisa que eu te ajudo!\n\n"
+            f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+        )
+        state["last_shown_products"] = []
+        state["last_bot_action"] = "AWAITING_MENU_SELECTION"
         add_message_to_history(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )
-        return intent, response_text
+        return None, response_text
 
-    # 🆕 DETECÇÃO DIRETA DE COMANDOS CRÍTICOS - PRIORIDADE MÁXIMA
-    intent_type = detect_user_intent_type(incoming_msg, session)
-    print(f">>> CONSOLE: Intenção detectada: {intent_type}")
-    print(f">>> CONSOLE: Estado atual - last_bot_action: '{last_bot_action}', produtos: {len(state.get('last_shown_products', []))}")
-    
-    # 🆕 COMANDO DE LIMPEZA DE CARRINHO - PRIORIDADE ABSOLUTA
-    if intent_type == "CLEAR_CART":
-        print(f">>> CONSOLE: Comando de limpeza detectado diretamente: '{incoming_msg}'")
-        intent = {"tool_name": "clear_cart", "parameters": {}}
-        return intent, response_text
+    # 1. Chama a IA para obter a intenção com lógica de retry
+    intent = llm_interface.get_ai_intent_with_retry(
+        user_message=incoming_msg,
+        session_data=session
+    )
 
-    # 🆕 DETECÇÃO DIRETA DE CNPJ (14 dígitos) EM CONTEXTO DE FINALIZAÇÃO
-    if re.match(r'^\d{14}$', incoming_msg.strip()):
-        # Verifica se o contexto indica que estamos esperando CNPJ
-        history = session.get('conversation_history', [])
-        recent_bot_messages = []
-        for msg in reversed(history):
-            if msg.get('role') == 'assistant':
-                recent_bot_messages.append(msg.get('message', '').lower())
-                if len(recent_bot_messages) >= 2:
-                    break
-        
-        # Se a última mensagem do bot mencionou CNPJ, finalização ou checkout
-        if recent_bot_messages:
-            last_bot_msg = recent_bot_messages[0]
-            if any(keyword in last_bot_msg for keyword in ['cnpj', 'finalizar', 'checkout', 'compra']):
-                print(f">>> CONSOLE: CNPJ detectado em contexto de checkout: '{incoming_msg}'")
-                intent = {"tool_name": "find_customer_by_cnpj", "parameters": {"cnpj": incoming_msg.strip()}}
-                return intent, response_text
-
-    # Continua com detecção normal
-    if intent_type == "VIEW_CART":
-        intent = {"tool_name": "view_cart", "parameters": {}}
-    elif intent_type == "CHECKOUT":
-        intent = {"tool_name": "checkout", "parameters": {}}
-    elif intent_type == "NUMERIC_SELECTION" and last_bot_action in [
-        "AWAITING_PRODUCT_SELECTION",
-        "AWAITING_CORRECTION_SELECTION",
-    ]:
-        print(f">>> CONSOLE: SELEÇÃO NUMÉRICA detectada: '{incoming_msg}', last_bot_action: '{last_bot_action}'")
-        print(f">>> CONSOLE: Produtos disponíveis: {len(state.get('last_shown_products', []))}")
-        intent = {
-            "tool_name": "add_item_to_cart",
-            "parameters": {"index": int(incoming_msg)},
-        }
-    elif (
-        intent_type == "NUMERIC_SELECTION"
-        and last_bot_action == "AWAITING_CHECKOUT_CONFIRMATION"
-    ):
-        if incoming_msg == "1":
-            intent = {"tool_name": "checkout", "parameters": {}}
-        else:
-            # Deixa a IA processar outras intenções mesmo estando em checkout
-            print(">>> CONSOLE: Número diferente de 1 em checkout, consultando IA...")
-            intent = llm_interface.get_intent(
-                user_message=incoming_msg,
-                session_data=session,
-                customer_context=state.get("customer_context"),
-                cart_items_count=len(shopping_cart),
-            )
-    elif (
-        intent_type == "NUMERIC_SELECTION"
-        and last_bot_action == "AWAITING_MENU_SELECTION"
-    ):
-        if incoming_msg == "1":
-            intent = {"tool_name": "get_top_selling_products", "parameters": {}}
-        elif incoming_msg == "2":
-            intent = {"tool_name": "view_cart", "parameters": {}}
-        elif incoming_msg == "3":
-            intent = {"tool_name": "checkout", "parameters": {}}
-        else:
-            response_text = (
-                "Hmm, não conheço essa opção! Escolhe 1, 2 ou 3 do menu aí, por favor.\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
-            )
-            add_message_to_history(
-                session, "assistant", response_text, "REQUEST_CLARIFICATION"
-            )
-            state["last_shown_products"] = []
-            state["last_bot_action"] = "AWAITING_MENU_SELECTION"
-            return intent, response_text
-
-    elif intent_type == "REMOVE_CART_ITEM":
-        params = {"action": "remove"}
-        index_match = re.search(r"\b(\d+)\b", incoming_msg)
-        if index_match:
-            params["index"] = int(index_match.group(1))
-        else:
-            product_name = re.sub(r"\b(remover|tirar|excluir|deletar)\b", "", incoming_msg, flags=re.IGNORECASE).strip()
-            if product_name:
-                params["product_name"] = product_name
-        intent = {"tool_name": "update_cart_item", "parameters": params}
-    elif incoming_msg.lower() in ["mais", "proximo", "próximo", "mais produtos"]:
-        intent = {"tool_name": "show_more_products", "parameters": {}}
-    elif intent_type in ["GENERAL", "SEARCH_PRODUCT"] or last_bot_action == "AWAITING_CHECKOUT_CONFIRMATION":
-        print(">>> CONSOLE: Consultando a IA (Ollama) com memória conversacional...")
-        if last_bot_action == "AWAITING_CHECKOUT_CONFIRMATION":
-            print(">>> CONSOLE: Usuário em tela de checkout, mas IA vai processar intenção da mensagem")
-        intent = llm_interface.get_intent(
-            user_message=incoming_msg,
-            session_data=session,
-            customer_context=state.get("customer_context"),
-            cart_items_count=len(shopping_cart),
-        )
-        print(f">>> CONSOLE: IA retornou a intenção: {intent}")
-        
-        # 🆕 VALIDAÇÃO FINAL: Se a IA não detectou limpeza mas deveria ter detectado
-        if intent.get("tool_name") != "clear_cart":
-            message_lower = incoming_msg.lower().strip()
-            clear_phrases = [
-                'esvaziar carrinho', 'limpar carrinho', 'zerar carrinho',
-                'esvaziar tudo', 'limpar tudo', 'zerar tudo',
-                'apagar carrinho', 'deletar carrinho'
-            ]
-            if any(phrase in message_lower for phrase in clear_phrases):
-                print(f">>> CONSOLE: CORREÇÃO - IA não detectou comando de limpeza, forçando clear_cart")
-                intent = {"tool_name": "clear_cart", "parameters": {}}
-
-    elif intent_type == "GREETING":
-        response_text = generate_personalized_response("greeting", session)
-        add_message_to_history(session, "assistant", response_text, "GREETING")
-    else:
-        # Para casos não cobertos, sempre consulta a IA para entender a intenção
-        print(f">>> CONSOLE: Caso não coberto (intent_type: {intent_type}), consultando IA...")
-        intent = llm_interface.get_intent(
-            user_message=incoming_msg,
-            session_data=session,
-            customer_context=state.get("customer_context"),
-            cart_items_count=len(shopping_cart),
-        )
-        print(f">>> CONSOLE: IA retornou a intenção: {intent}")
-        if not intent:
-            response_text = generate_personalized_response("clarification", session)
-            add_message_to_history(
-            session, "assistant", response_text, "REQUEST_CLARIFICATION"
-        )
+    print(f">>> CONSOLE: Intenção extraída do JSON: {intent}")
 
     return intent, response_text
+
 
 
 def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> str:
@@ -1350,10 +1275,21 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         last_bot_action = "AWAITING_MENU_SELECTION"
 
     elif tool_name == "handle_chitchat":
-        # Preserva o estado se estiver aguardando seleção de produtos
-        if last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
-            # Resposta mais contextualizada durante seleção de produtos
-            response_text = f"{parameters.get('response_text', 'Não entendi!')}"
+        # 🆕 DETECTA SE DEVE GERAR SAUDAÇÃO DINÂMICA
+        response_param = parameters.get('response_text', 'Entendi!')
+        
+        if response_param == "GENERATE_GREETING":
+            # Gera saudação personalizada usando IA
+            response_text = generate_personalized_response("greeting", session)
+            if not response_text or response_text.strip() == "":
+                # Fallback para saudação padrão se IA falhar
+                response_text = "Olá! Sou o G.A.V., Gentil Assistente de Vendas do Comercial Esperança. É um prazer atender você! Como posso ajudar?"
+                
+            # Sempre adiciona quick actions nas saudações
+            response_text += f"\n\n{format_quick_actions(has_cart=bool(shopping_cart))}"
+        elif last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
+            # Preserva o estado se estiver aguardando seleção de produtos
+            response_text = f"{response_param}"
             if last_shown_products:
                 response_text += f"\n\n📦 *Escolha um produto da lista:*\n"
                 for i, prod in enumerate(last_shown_products, 1):
@@ -1362,7 +1298,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             # Mantém o estado atual - não reseta
         else:
             response_text = (
-                f"{parameters.get('response_text', 'Entendi!')}\n\n"
+                f"{response_param}\n\n"
                 f"{format_quick_actions(has_cart=bool(shopping_cart))}"
             )
             last_shown_products = []
@@ -1378,6 +1314,106 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         add_message_to_history(session, "assistant", response_text, "GENERIC_RESPONSE")
         last_shown_products = []
         last_bot_action = "AWAITING_MENU_SELECTION"
+
+    elif tool_name == "smart_cart_update":
+        # 🆕 NOVA FERRAMENTA: Atualização inteligente do carrinho
+        product_name = parameters.get("product_name", "").strip()
+        action = parameters.get("action", "add")  # "add", "set", "remove"
+        quantity = parameters.get("quantity", 1)
+        
+        try:
+            quantity = float(quantity)
+        except (ValueError, TypeError):
+            quantity = 1
+            
+        if not product_name:
+            response_text = generate_personalized_response("error", session)
+            add_message_to_history(session, "assistant", response_text, "ERROR")
+        else:
+            # Busca produtos no carrinho que correspondem ao nome
+            matching_items = []
+            for i, item in enumerate(shopping_cart):
+                item_name = get_product_name(item).lower()
+                if product_name.lower() in item_name or any(word in item_name for word in product_name.lower().split()):
+                    matching_items.append((i, item))
+            
+            if not matching_items:
+                # Não há produtos no carrinho, tentar adicionar novo produto
+                if action in ["add", "set"]:
+                    # Busca o produto no banco para adicionar
+                    search_result = search_products_with_suggestions(product_name, limit=5)
+                    if search_result["products"]:
+                        best_match = search_result["products"][0]  # Pega o melhor resultado
+                        # Adiciona ao carrinho
+                        best_match["qt"] = quantity
+                        shopping_cart.append(best_match)
+                        product_display_name = get_product_name(best_match)
+                        response_text = generate_personalized_response(
+                            "operation_success", 
+                            session, 
+                            success_details=f"{quantity} {product_display_name} adicionado ao seu carrinho"
+                        )
+                    else:
+                        response_text = f"Não encontrei '{product_name}' nos nossos produtos. Quer ver produtos similares?"
+                else:
+                    response_text = f"Não encontrei '{product_name}' no seu carrinho para {action}."
+            
+            elif len(matching_items) == 1:
+                # Um produto correspondente - atualiza diretamente
+                idx, item = matching_items[0]
+                old_qty = item.get("qt", 1)
+                
+                if action == "add":
+                    new_qty = old_qty + quantity
+                elif action == "set":
+                    new_qty = quantity
+                elif action == "remove":
+                    new_qty = max(0, old_qty - quantity)
+                else:
+                    new_qty = old_qty
+                
+                if new_qty <= 0:
+                    # Remove do carrinho
+                    removed_item = shopping_cart.pop(idx)
+                    product_display_name = get_product_name(removed_item)
+                    response_text = generate_personalized_response(
+                        "operation_success", 
+                        session, 
+                        success_details=f"{product_display_name} removido do carrinho"
+                    )
+                else:
+                    # Atualiza quantidade
+                    shopping_cart[idx]["qt"] = new_qty
+                    product_display_name = get_product_name(item)
+                    response_text = generate_personalized_response(
+                        "operation_success", 
+                        session, 
+                        success_details=f"{product_display_name} atualizado para {new_qty} unidades"
+                    )
+            
+            else:
+                # Múltiplos produtos correspondentes - solicita escolha
+                response_text = f"Encontrei {len(matching_items)} produtos com '{product_name}' no seu carrinho:\n\n"
+                for i, (cart_idx, item) in enumerate(matching_items, 1):
+                    product_display_name = get_product_name(item)
+                    current_qty = item.get("qt", 1)
+                    response_text += f"*{i}.* {product_display_name} (quantidade atual: {current_qty})\n"
+                
+                response_text += f"\nDigite o número do produto que você quer {action}."
+                
+                # Salva contexto para próxima interação
+                update_session_context(session, {
+                    "pending_smart_update": {
+                        "action": action,
+                        "quantity": quantity,
+                        "matching_items": matching_items,
+                        "product_name": product_name
+                    },
+                    "pending_action": "AWAITING_SMART_UPDATE_SELECTION"
+                })
+                pending_action = "AWAITING_SMART_UPDATE_SELECTION"
+            
+            add_message_to_history(session, "assistant", response_text, "SMART_CART_UPDATE")
 
     else:
         logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")

@@ -391,6 +391,9 @@ def detect_user_intent_type(message: str, session_data: Dict) -> str:
         logging.info(f"[INTENT] Comando de limpeza detectado: '{message}'")
         return "CLEAR_CART"
     
+    # 🧠 Deixa a IA detectar comandos complexos naturalmente
+    # Removido regex complexo - a IA é mais inteligente para detectar intenções
+    
     # Comandos numéricos diretos (aceita qualquer número positivo para seleção de produtos)
     if re.match(r'^\s*\d+\s*$', message_lower):
         return "NUMERIC_SELECTION"
