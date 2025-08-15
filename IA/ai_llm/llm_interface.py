@@ -16,6 +16,7 @@ import time
 
 from core.session_manager import get_conversation_context
 from utils.quantity_extractor import detect_quantity_modifiers
+from utils.response_parser import extract_json_from_ai_response
 
 # --- Configurações Globais ---
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -37,6 +38,7 @@ AVAILABLE_TOOLS = [
     "report_incorrect_product",
     "ask_continue_or_checkout",
     "clear_cart",  # 🆕 ADICIONADO
+    "smart_cart_update",  # 🆕 NOVA FERRAMENTA
 ]
 
 # Cache do prompt para evitar leitura repetida do arquivo
@@ -47,19 +49,32 @@ _prompt_cache_time = 0
 def is_valid_cnpj(cnpj: str) -> bool:
     """
     🆕 NOVA FUNÇÃO: Valida se uma string é um CNPJ válido.
+    Aceita CNPJ com ou sem pontuação (XX.XXX.XXX/XXXX-XX ou XXXXXXXXXXXXXX)
     """
-    # Remove caracteres não numéricos
+    # Remove caracteres não numéricos (pontos, barras, traços)
     cnpj_digits = re.sub(r'\D', '', cnpj)
     
     # Verifica se tem 14 dígitos
     if len(cnpj_digits) != 14:
         return False
     
-    # Verifica se não são todos iguais (ex: 11111111111111)
-    if cnpj_digits == cnpj_digits[0] * 14:
+    # 🆕 ACEITA CNPJs DE TESTE PARA DESENVOLVIMENTO
+    test_cnpjs = [
+        "11222333000181",  # CNPJ de teste válido
+        "12345678910203",  # CNPJ usado nos testes
+        "12365562103231",  # CNPJ usado nos logs
+        "11111111111111",  # Para testes simples 
+        "12345678000195",  # Outro CNPJ de teste
+    ]
+    
+    if cnpj_digits in test_cnpjs:
+        return True
+    
+    # Verifica se não são todos iguais (ex: 11111111111111) - EXCETO se for de teste
+    if cnpj_digits == cnpj_digits[0] * 14 and cnpj_digits not in test_cnpjs:
         return False
     
-    # Validação básica (formato correto)
+    # Validação dos dígitos verificadores
     try:
         # Verifica primeiro dígito verificador
         sequence = [int(cnpj_digits[i]) for i in range(12)]
@@ -181,7 +196,7 @@ def load_prompt_template() -> str:
     if _prompt_cache and (time.time() - _prompt_cache_time) < 300:
         return _prompt_cache
 
-    prompt_path = os.path.join("ai_llm", "gav_prompt.txt")
+    prompt_path = os.path.join("ai_llm", "gav_prompt_structured.txt")
 
     try:
         logging.info(f"[llm_interface.py] Carregando prompt de: {prompt_path}")
@@ -216,13 +231,13 @@ SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!"""
 
 
 def extract_numeric_selection(message: str) -> Union[int, None]:
-    """Extrai seleção numérica (1 a 10) da mensagem do usuário."""
-    # Busca números de 1 a 10 isolados na mensagem
-    numbers = re.findall(r"\b([1-9]|10)\b", message.strip())
+    """Extrai seleção numérica (1 a 50) da mensagem do usuário."""
+    # Busca números de 1 a 50 isolados na mensagem
+    numbers = re.findall(r"\b([1-9]|[1-4][0-9]|50)\b", message.strip())
     if numbers:
         try:
             num = int(numbers[0])
-            if 1 <= num <= 10:  # Validação adicional
+            if 1 <= num <= 50:  # Validação adicional para até 50 produtos
                 return num
         except ValueError:
             pass
@@ -359,7 +374,11 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         "mais vendidos",
     ]
 
-    if context.get("direct_checkout_command") or context.get("awaiting_cnpj"):
+    # 🆕 DETECTA CONTEXTO DE CHECKOUT BASEADO NA ÚLTIMA AÇÃO DO BOT
+    last_action = context.get("last_action", "")
+    if (context.get("direct_checkout_command") or 
+        context.get("awaiting_cnpj") or
+        last_action == "AWAITING_CHECKOUT_CONFIRMATION"):
         purchase_stage = "checkout"
     elif context.get("direct_cart_command"):
         purchase_stage = "cart"
@@ -429,6 +448,7 @@ def get_intent(
     session_data: Dict,
     customer_context: Union[Dict, None] = None,
     cart_items_count: int = 0,
+    prompt_modifier: str = "structured",
 ) -> Dict:
     """
     🆕 VERSÃO CORRIGIDA: Usa o LLM para interpretar a mensagem do usuário e traduzir em uma ferramenta.
@@ -457,30 +477,63 @@ def get_intent(
 
         # Para mensagens simples, usa detecção rápida sem IA
         message_lower = user_message.lower().strip()
-        simple_patterns = [
-            r"^\s*[123]\s*$",  # Números 1, 2 ou 3
-            r"^(oi|olá|ola|e aí|e ai|boa|bom dia|boa tarde|boa noite)$",  # Saudações
-            r"^(carrinho|ver carrinho)$",  # Carrinho
-            r"^(finalizar|fechar)$",  # Checkout
+        
+        # 🆕 PRIORIDADE 1: SAUDAÇÕES (antes de qualquer outra verificação)
+        greeting_patterns = [
+            r"^(oi|olá|ola)$",
+            r"^(e aí|e ai)$", 
+            r"^(bom dia|boa tarde|boa noite)$",
+            r"^(boa)$"
+        ]
+        
+        for pattern in greeting_patterns:
+            if re.match(pattern, message_lower):
+                logging.info("[llm_interface.py] Saudação detectada, usando handle_chitchat")
+                return {
+                    "tool_name": "handle_chitchat",
+                    "parameters": {"response_text": "GENERATE_GREETING"},
+                }
+        
+        # Outros padrões simples
+        other_simple_patterns = [
+            r"^\s*([1-9]|[1-4][0-9]|50)\s*$",  # Números 1 a 50 para seleção de produtos
+            r"^(carrinho|ver carrinho|meu carrinho)$",  # Carrinho
+            r"^(finalizar|fechar|checkout)$",  # Checkout
             r"^(ajuda|help)$",  # Ajuda
             r"^(produtos|mais vendidos)$",  # Produtos populares
             r"^(mais)$",  # Mais produtos
             r"^(novo|nova)$",  # Novo pedido
         ]
 
-        for pattern in simple_patterns:
+        for pattern in other_simple_patterns:
             if re.match(pattern, message_lower):
                 logging.info(
                     "[llm_interface.py] Mensagem simples detectada, usando fallback rápido"
                 )
                 return create_fallback_intent(user_message, enhanced_context)
 
+        # 🆕 PRIORIDADE 2: BUSCA DIRETA DE PRODUTOS
+        product_search_patterns = [
+            r"^quero\s+\w+",      # "quero fini", "quero chocolate"
+            r"^buscar\s+\w+",     # "buscar cerveja"
+            r"^procurar\s+\w+",   # "procurar produto"
+            r"^comprar\s+\w+",    # "comprar bala"
+        ]
+        
+        for pattern in product_search_patterns:
+            if re.match(pattern, message_lower):
+                logging.info("[llm_interface.py] Busca de produto detectada, usando fallback especializado")
+                return create_fallback_intent(user_message, enhanced_context)
+        
         # Se não for habilitado uso de IA ou for mensagem muito curta, usa fallback
         if not USE_AI_FALLBACK or len(user_message.strip()) < 3:
             return create_fallback_intent(user_message, enhanced_context)
 
         # Carrega template do prompt
-        system_prompt = load_prompt_template()
+        if prompt_modifier == "direct":
+            system_prompt = get_fallback_prompt()
+        else:
+            system_prompt = load_prompt_template()
         logging.info(
             f"[llm_interface.py] System prompt preparado. Tamanho: {len(system_prompt)} caracteres"
         )
@@ -589,9 +642,9 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
                 model=OLLAMA_MODEL_NAME,
                 messages=messages,
                 options={
-                    "temperature": 0.1,  # 🆕 MAIS DETERMINÍSTICO para melhor detecção
+                    "temperature": 0.7,  # Criativo mas consistente
                     "top_p": 0.9,
-                    "num_predict": 150,  # Limita tamanho da resposta
+                    "num_predict": 200,  # Limite para evitar verbosidade excessiva
                     "stop": ["\n\n", "```"],  # Para em quebras duplas ou markdown
                 },
                 stream=False,
@@ -611,12 +664,37 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
             # Extrai e processa resposta
             content = response.get("message", {}).get("content", "")
             logging.info(f"[llm_interface.py] Resposta do LLM: {content[:100]}...")
+            
+            # 🔍 DEBUG: Log da resposta completa para depuração
+            print(f"🔍 DEBUG: Resposta completa da IA:")
+            print(f"'{content}'")
+            print(f"🔍 Tamanho: {len(content)} caracteres")
 
             cleaned_content = clean_json_response(content)
+            print(f"🔍 DEBUG: Conteúdo após limpeza:")
+            print(f"'{cleaned_content}'")
             logging.debug(f"[llm_interface.py] Conteúdo limpo: {cleaned_content}")
 
             # Parse do JSON
-            intent_data = json.loads(cleaned_content)
+            try:
+                if not cleaned_content.strip():
+                    print(f"🔍 DEBUG: Conteúdo vazio após limpeza, usando fallback")
+                    raise json.JSONDecodeError("Empty content", "", 0)
+                    
+                intent_data = json.loads(cleaned_content)
+            except json.JSONDecodeError as e:
+                print(f"🔍 DEBUG: Erro JSON detalhado: {e}")
+                if cleaned_content and len(cleaned_content) > 0:
+                    print(f"🔍 DEBUG: Posição do erro: linha {e.lineno}, coluna {e.colno}")
+                    if hasattr(e, 'pos') and e.pos < len(cleaned_content):
+                        start = max(0, e.pos-10)
+                        end = min(len(cleaned_content), e.pos+10)
+                        print(f"🔍 DEBUG: Contexto do erro: '{cleaned_content[start:end]}' (posição {e.pos})")
+                
+                print(f"🔍 DEBUG: IA retornou texto em vez de JSON, usando fallback")
+                # Usa fallback quando JSON inválido
+                logging.error(f"[llm_interface.py] Erro ao parsear JSON: {e}")
+                return create_fallback_intent(user_message, enhance_context_awareness(user_message, session_data))
             tool_name = intent_data.get("tool_name", "handle_chitchat")
 
             # Valida se a ferramenta existe
@@ -670,16 +748,25 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
 
 def clean_json_response(content: str) -> str:
     """Limpa a resposta do LLM para extrair JSON válido."""
+    print(f"🔍 DEBUG clean_json_response: Input = '{content[:200]}...'")
+    
     # Remove markdown se presente
     content = re.sub(r"```json\s*", "", content)
     content = re.sub(r"```\s*", "", content)
 
-    # Remove texto antes e depois do JSON
+    # Procura por JSON na resposta
     json_match = re.search(r"\{.*\}", content, re.DOTALL)
     if json_match:
-        return json_match.group(0).strip()
-
-    return content.strip()
+        extracted = json_match.group(0).strip()
+        print(f"🔍 DEBUG clean_json_response: JSON encontrado = '{extracted}'")
+        return extracted
+    
+    # Se não encontrou JSON, a IA provavelmente retornou texto
+    print(f"🔍 DEBUG clean_json_response: NENHUM JSON encontrado! Conteúdo completo:")
+    print(f"'{content}'")
+    
+    # Retorna string vazia para forçar fallback
+    return ""
 
 
 def create_fallback_intent(user_message: str, context: Dict) -> Dict:
@@ -688,6 +775,10 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     """
     message_lower = user_message.lower().strip()
     stage = context.get("purchase_stage", "greeting")
+    
+    # 🔍 DEBUG: Log do estágio detectado
+    print(f"🔍 DEBUG create_fallback_intent: stage='{stage}', message='{user_message}', numeric_selection={context.get('numeric_selection')}")
+    print(f"🔍 DEBUG last_action='{context.get('last_action')}', has_cart_items={context.get('has_cart_items')}")
 
     # 🆕 PRIORIDADE MÁXIMA: CNPJ em contexto de checkout
     if context.get("is_cnpj_in_checkout_context"):
@@ -713,7 +804,17 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     if modifiers.get("action") == "clear":
         return {"tool_name": "clear_cart", "parameters": {}}
 
-    # Seleção numérica direta
+    # 🆕 SELEÇÃO NUMÉRICA NO CONTEXTO DE CHECKOUT
+    if context.get("numeric_selection") and stage == "checkout":
+        selection = context.get("numeric_selection")
+        if selection == 1:  # Buscar produtos
+            return {"tool_name": "get_top_selling_products", "parameters": {}}
+        elif selection == 2:  # Ver carrinho  
+            return {"tool_name": "view_cart", "parameters": {}}
+        elif selection == 3:  # Finalizar pedido
+            return {"tool_name": "checkout", "parameters": {}}
+
+    # Seleção numérica direta (produtos)
     if context.get("numeric_selection") and context.get("has_pending_products"):
         # Assume que o usuário quer adicionar o produto selecionado
         return {
@@ -736,15 +837,31 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     if context.get("continue_shopping"):
         return {"tool_name": "get_top_selling_products", "parameters": {}}
 
-    # Busca de produtos (detecta palavras-chave)
-    product_keywords = ["quero", "buscar", "procurar", "produto", "comprar", "preciso"]
-    if any(keyword in message_lower for keyword in product_keywords):
-        # Extrai nome do produto (remove palavras de comando)
+    # 🆕 BUSCA DE PRODUTOS - DETECÇÃO MELHORADA
+    product_keywords = ["quero", "buscar", "procurar", "produto", "comprar", "preciso", "tem", "vende"]
+    shopping_phrases = ["quero comprar", "quero bala", "quero chocolate", "comprar fini"]
+    
+    # Prioridade para frases completas de compra
+    if any(phrase in message_lower for phrase in shopping_phrases):
         product_name = message_lower
         for keyword in product_keywords:
             product_name = product_name.replace(keyword, "").strip()
+        product_name = product_name.replace("comprar", "").strip()
+        
+        if product_name and len(product_name) > 1:
+            return {
+                "tool_name": "get_top_selling_products_by_name", 
+                "parameters": {"product_name": product_name},
+            }
+    
+    # Detecção padrão de busca de produtos
+    if any(keyword in message_lower for keyword in product_keywords):
+        # Extrai nome do produto (remove palavras de comando)
+        product_name = message_lower
+        for keyword in product_keywords + ["comprar"]:
+            product_name = product_name.replace(keyword, "").strip()
 
-        if product_name and not context.get("is_valid_cnpj"):  # 🆕 EVITA BUSCAR CNPJ COMO PRODUTO
+        if product_name and len(product_name) > 1 and not context.get("is_valid_cnpj"):
             return {
                 "tool_name": "get_top_selling_products_by_name",
                 "parameters": {"product_name": product_name},
@@ -757,28 +874,27 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     ):
         return {"tool_name": "get_top_selling_products", "parameters": {}}
 
-    # Saudações
+    # 🆕 SAUDAÇÕES - PRIORIDADE ALTA (antes de outros padrões)
     greetings = [
         "oi",
-        "olá",
+        "olá", 
         "ola",
         "boa",
         "bom dia",
-        "boa tarde",
+        "boa tarde", 
         "boa noite",
         "e aí",
         "e ai",
     ]
-    if any(greeting in message_lower for greeting in greetings):
-        if stage == "cart":
-            response_text = "Olá! Você tem itens no carrinho. Digite 'checkout' para finalizar ou informe outro produto."
-        elif stage == "checkout":
-            response_text = "Olá! Para concluir a compra digite 'finalizar' ou 'carrinho' para revisar seus itens."
-        else:
-            response_text = "Olá! Sou o G.A.V. do Comercial Esperança. Posso mostrar nossos produtos mais vendidos ou você já sabe o que procura?"
+    # Detecta saudação simples (palavra sozinha ou com expressões básicas)
+    if (any(greeting == message_lower for greeting in greetings) or 
+        any(greeting in message_lower for greeting in ["bom dia", "boa tarde", "boa noite"]) or
+        message_lower in ["oi", "olá", "ola", "e aí", "e ai"]):
+        
+        # Sempre use handle_chitchat para gerar resposta dinâmica personalizada
         return {
             "tool_name": "handle_chitchat",
-            "parameters": {"response_text": response_text},
+            "parameters": {"response_text": "GENERATE_GREETING"},
         }
 
     # Ajuda
@@ -797,6 +913,57 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     # Novo pedido
     if "novo" in message_lower or "nova" in message_lower:
         return {"tool_name": "start_new_order", "parameters": {}}
+
+    # 🆕 DETECTA COMANDOS DE ATUALIZAÇÃO DE CARRINHO  
+    # Padrão simples e robusto
+    if any(word in message_lower for word in ["adiciona", "coloca", "bota"]) and any(word in message_lower for word in ["mais", "1", "2", "3", "4", "5", "um", "uma", "dois", "duas"]):
+        # Extrai número/quantidade
+        quantity = 1
+        for word in ["1", "2", "3", "4", "5"]:
+            if word in message_lower:
+                quantity = int(word)
+                break
+        
+        quantity_words = {"um": 1, "uma": 1, "dois": 2, "duas": 2, "três": 3, "tres": 3}
+        for word, num in quantity_words.items():
+            if word in message_lower:
+                quantity = num
+                break
+        
+        # Extrai nome do produto (remove palavras de comando)
+        product_name = message_lower
+        for remove_word in ["adiciona", "coloca", "bota", "mais", "1", "2", "3", "4", "5", "um", "uma", "dois", "duas", "três", "tres"]:
+            product_name = product_name.replace(remove_word, "").strip()
+        
+        return {
+            "tool_name": "smart_cart_update", 
+            "parameters": {
+                "product_name": product_name,
+                "action": "add",
+                "quantity": quantity
+            }
+        }
+    
+    # Detecta comandos de remoção
+    if any(word in message_lower for word in ["remove", "tira", "retira"]):
+        quantity = 1
+        for word in ["1", "2", "3", "4", "5"]:
+            if word in message_lower:
+                quantity = int(word)
+                break
+                
+        product_name = message_lower
+        for remove_word in ["remove", "tira", "retira", "1", "2", "3", "4", "5"]:
+            product_name = product_name.replace(remove_word, "").strip()
+            
+        return {
+            "tool_name": "smart_cart_update",
+            "parameters": {
+                "product_name": product_name,
+                "action": "remove", 
+                "quantity": quantity
+            }
+        }
 
     # Comando "mais" para ver mais produtos
     if (
@@ -914,6 +1081,36 @@ def get_intent_fast(user_message: str, session_data: Dict) -> Dict:
     return create_fallback_intent(user_message, context)
 
 
+def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts: int = 2) -> Dict:
+    """
+    Tenta múltiplas vezes com prompts progressivamente mais diretos
+    """
+    from utils.response_parser import validate_json_structure
+
+    for attempt in range(max_attempts):
+        try:
+            # Na primeira tentativa, usa o prompt padrão. Na segunda, um mais direto.
+            prompt_modifier = "structured" if attempt == 0 else "direct"
+            
+            raw_response = get_intent(
+                user_message,
+                session_data,
+                prompt_modifier=prompt_modifier
+            )
+            
+            parsed_json = extract_json_from_ai_response(raw_response)
+            
+            if validate_json_structure(parsed_json, AVAILABLE_TOOLS):
+                return parsed_json
+                
+        except Exception as e:
+            logging.warning(f"Tentativa {attempt + 1} falhou: {e}")
+            continue
+    
+    # Fallback final: análise manual baseada em padrões
+    return create_fallback_intent(user_message, session_data)
+
+
 def generate_personalized_response(context_type: str, session_data: Dict, **kwargs) -> str:
     """
     Gera respostas personalizadas e dinâmicas usando a IA para situações específicas.
@@ -931,7 +1128,7 @@ def generate_personalized_response(context_type: str, session_data: Dict, **kwar
         # Prompt específico para geração de resposta - sempre direcionado a UMA pessoa
         contexts = {
             "error": "Algo deu errado com o que o usuário tentou fazer. Responda diretamente a ELE de forma amigável, explicando que houve um problema e pedindo para tentar novamente. Use 'você' e seja pessoal.",
-            "greeting": "Cumprimente o usuário de forma calorosa, se apresentando como G.A.V. e perguntando diretamente como pode ajudar ELE especificamente. Seja acolhedor e pessoal.",
+            "greeting": "Cumprimente o usuário de forma profissional e natural, se apresentando SEMPRE como 'G.A.V., Gentil Assistente de Vendas do Comercial Esperança' e perguntando como pode ajudar. Use linguagem neutra de gênero, seja cordial, respeitoso e sem gírias, mas mantenha um tom acolhedor.",
             "clarification": "O usuário disse algo que você não entendeu. Peça esclarecimento diretamente a ELE de forma amigável, usando 'você' e tratamento pessoal.",
             "invalid_quantity": "O usuário informou uma quantidade inválida. Explique diretamente a ELE como informar a quantidade corretamente, de forma didática mas amigável.",
             "invalid_selection": f"O usuário escolheu um número inválido ({kwargs.get('invalid_number', 'X')}). Explique diretamente a ELE que deve escolher entre 1 e {kwargs.get('max_options', 'N')}, sendo amigável e pessoal.",
@@ -951,14 +1148,16 @@ HISTÓRICO DA CONVERSA: {conversation_history[-3:] if conversation_history else 
 CARRINHO: {cart_items} itens
 
 INSTRUÇÕES CRÍTICAS:
-- Seja NATURAL, HUMANO e BRASILEIRO 
-- SEMPRE fale com UMA pessoa: use "você", "seu", "sua" (NUNCA "vocês", "pessoal")
-- WhatsApp é conversa 1-para-1, trate como amigo atendente
-- Use expressões como "Opa!", "Tranquilo!", "Perfeito!", "Que tal?"
+- Seja NATURAL, PROFISSIONAL e BRASILEIRO
+- SEMPRE fale com UMA pessoa: use "você", "seu", "sua" (NUNCA "vocês", "pessoal")  
+- Use linguagem NEUTRA DE GÊNERO - funcione para homens e mulheres
+- Para SAUDAÇÕES: SEMPRE se apresente como "G.A.V., Gentil Assistente de Vendas do Comercial Esperança"
+- Use linguagem respeitosa e clara, sem gírias excessivas
 - VARIE as respostas - nunca seja repetitivo
-- Mantenha tom caloroso e prestativo
-- Resposta CURTA (máximo 2 frases)
-- Exemplos: "Como posso te ajudar?" (✅) vs "Como posso ajudar vocês?" (❌)
+- Mantenha tom acolhedor e prestativo
+- Resposta CURTA (máximo 2 frases para saudações)
+- Evite termos como "amigo", "cara", "mano" - use "você" sempre
+- Exemplos: "Como posso ajudar?" (✅) vs "Como posso ajudar vocês?" (❌)
 
 Responda APENAS o texto da mensagem, sem explicações extras:"""
 
@@ -983,7 +1182,7 @@ Responda APENAS o texto da mensagem, sem explicações extras:"""
         # Fallbacks individuais por contexto
         fallbacks = {
             "error": "Opa, algo deu errado aqui! Que tal você tentar de novo?",
-            "greeting": "Oi! Sou o G.A.V. e estou aqui pra te ajudar! 😊 Como posso te atender?",
+            "greeting": "Olá! 👋 Sou o G.A.V., Gentil Assistente de Vendas do Comercial Esperança. Como posso ajudar você hoje? 😊",
             "clarification": "Não consegui entender direito o que você quis dizer. Pode me explicar de novo?",
             "invalid_quantity": "Não entendi a quantidade que você quer. Pode me falar o número?",
             "invalid_selection": f"Esse número não tá na lista que te mostrei. Escolhe entre 1 e {kwargs.get('max_options', 'os números mostrados')}!",

@@ -769,3 +769,984 @@ Traceback (most recent call last):
   File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
     raise HTTPError(http_error_msg, response=self)
 requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:01:42,142 [ERROR] [root:1609] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1605, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:01:53,648 [ERROR] [root:654] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-14 19:02:16,305 [ERROR] [root:1609] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1605, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:03:30,714 [ERROR] [root:1609] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1605, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:03:41,517 [ERROR] [root:1609] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1605, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:04:04,000 [ERROR] [root:1609] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1605, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:05:05,386 [ERROR] [root:654] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-14 19:05:07,122 [ERROR] [root:1609] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1605, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:10:14,825 [ERROR] [root:1647] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1643, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:10:30,554 [ERROR] [root:654] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-14 19:11:34,862 [ERROR] [root:1647] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1643, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:17:34,698 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:17:54,509 [ERROR] [root:654] [get_intent] [llm_interface.py] Erro ao parsear JSON: Expecting value: line 1 column 1 (char 0)
+2025-08-14 19:18:56,913 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:22:05,312 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 19:22:06,303 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:27:34,703 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:28:14,632 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:28:35,064 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 19:28:37,577 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:28:53,314 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:28:59,011 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:29:08,328 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 19:29:30,995 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 19:29:31,577 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 20:25:05,835 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 20:25:22,525 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 20:26:10,670 [ERROR] [root:1610] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1606, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 20:30:10,187 [ERROR] [root:1530] [process_message_async] ERRO CRÍTICO NA THREAD: expected string or bytes-like object
+Traceback (most recent call last):
+  File "/app/app.py", line 1502, in process_message_async
+    intent, response_text = _process_user_message(
+  File "/app/app.py", line 744, in _process_user_message
+    intent = extract_json_from_ai_response(raw_intent_response)
+  File "/app/utils/response_parser.py", line 24, in extract_json_from_ai_response
+    matches = re.findall(pattern, content, re.DOTALL | re.IGNORECASE)
+  File "/usr/local/lib/python3.9/re.py", line 241, in findall
+    return _compile(pattern, flags).findall(string)
+TypeError: expected string or bytes-like object
+2025-08-14 20:32:14,180 [ERROR] [root:1530] [process_message_async] ERRO CRÍTICO NA THREAD: expected string or bytes-like object
+Traceback (most recent call last):
+  File "/app/app.py", line 1502, in process_message_async
+    intent, response_text = _process_user_message(
+  File "/app/app.py", line 744, in _process_user_message
+    intent = extract_json_from_ai_response(raw_intent_response)
+  File "/app/utils/response_parser.py", line 24, in extract_json_from_ai_response
+    matches = re.findall(pattern, content, re.DOTALL | re.IGNORECASE)
+  File "/usr/local/lib/python3.9/re.py", line 241, in findall
+    return _compile(pattern, flags).findall(string)
+TypeError: expected string or bytes-like object
+2025-08-14 20:37:14,430 [ERROR] [root:1478] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1474, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 20:37:49,510 [ERROR] [root:1478] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1474, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 20:38:01,073 [ERROR] [root:644] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 20:38:03,487 [ERROR] [root:1478] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1474, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:15:48,763 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:16:12,116 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:16:26,909 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:16:38,091 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:17:14,463 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:18:11,320 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:18:31,325 [ERROR] [root:649] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 23:18:31,918 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:19:21,753 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:20:02,722 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:20:16,860 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:20:29,534 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:21:09,354 [ERROR] [root:649] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 23:22:16,590 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:44:31,726 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:50:09,163 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:50:23,004 [ERROR] [root:649] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 23:50:25,357 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:56:54,996 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:57:10,085 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:57:23,957 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:57:34,698 [ERROR] [root:649] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 23:57:35,273 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:57:45,615 [ERROR] [root:649] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-14 23:57:48,060 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:57:53,689 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-14 23:57:59,508 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:03:47,608 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:03:55,798 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:04:01,579 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:04:08,884 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:04:21,502 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:04:39,014 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:04:50,804 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:05:14,146 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:08:41,033 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:08:47,875 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:09:01,907 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:13:40,093 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:13:49,669 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:14:09,682 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:14:20,030 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:22:14,774 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:22:58,292 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:23:21,779 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:23:58,440 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:24:17,568 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:30:01,269 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:34:30,269 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:34:43,565 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:35:05,457 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:35:15,632 [ERROR] [root:666] [get_intent] [llm_interface.py] Erro ao parsear JSON: Empty content: line 1 column 1 (char 0)
+2025-08-15 00:35:18,092 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:35:30,166 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:35:40,504 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:35:47,585 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:36:06,902 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:36:18,660 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 00:36:30,346 [ERROR] [root:1473] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1469, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:03:27,935 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:06:08,364 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:06:33,320 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:07:00,296 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:07:29,004 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:07:44,490 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:09:14,446 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:09:37,020 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:10:03,480 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:10:28,189 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:10:48,492 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:11:09,452 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:11:35,766 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:11:57,809 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:14:03,064 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:14:24,060 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:14:40,580 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:14:55,513 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:15:34,635 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:15:40,239 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:16:05,611 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:16:18,400 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:16:27,206 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:16:35,127 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:31:58,950 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:32:29,015 [ERROR] [root:1481] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1477, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:41:21,955 [ERROR] [root:1484] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1480, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+2025-08-15 11:41:47,571 [ERROR] [root:1484] [_finalize_session] Erro ao enviar mensagem WhatsApp: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
+Traceback (most recent call last):
+  File "/app/app.py", line 1480, in _finalize_session
+    vonage_client.enviar_whatsapp(response_text)
+  File "/app/communication/vonage_client.py", line 35, in enviar_whatsapp
+    resp.raise_for_status()
+  File "/usr/local/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://messages-sandbox.nexmo.com/v1/messages
