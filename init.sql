@@ -84,7 +84,8 @@ CREATE TABLE produtos (
     codprod INTEGER PRIMARY KEY,
     descricao TEXT NOT NULL,
     descricao_completa TEXT,
-    categoria VARCHAR(100),
+    departamento VARCHAR(100), -- Departamento do produto (Ex: bebidas, limpeza, marcearia, bazar)
+    categoria VARCHAR(100), -- Categoria do produto (Ex: cerveja, descartaveis, suco, pipoca)
     subcategoria VARCHAR(100),
     marca VARCHAR(100),
     codigo_barras VARCHAR(50),
@@ -406,31 +407,31 @@ GROUP BY c.cnpj;
 -- Dados Iniciais
 -- ========================
 
--- Inserir loja padrão
-INSERT INTO lojas (nome, endereco, telefone, email) VALUES 
-('Comercial Esperança - Filial Principal', 'Endereço da Filial Principal', '(11) 1234-5678', 'contato@comercial-esperanca.com');
+-- -- Inserir loja padrão
+-- INSERT INTO lojas (nome, endereco, telefone, email) VALUES 
+-- ('Comercial Esperança - Filial Principal', 'Endereço da Filial Principal', '(11) 1234-5678', 'contato@comercial-esperanca.com');
 
--- Inserir configurações padrão
-INSERT INTO configuracoes (chave, valor, tipo, descricao, categoria) VALUES
-('sistema.versao', '1.0.0', 'string', 'Versão atual do sistema', 'sistema'),
-('whatsapp.rate_limit', '10', 'number', 'Limite de mensagens por minuto', 'whatsapp'),
-('ia.timeout', '30', 'number', 'Timeout para requisições IA em segundos', 'ia'),
-('carrinho.timeout', '3600', 'number', 'Timeout do carrinho em segundos', 'vendas'),
-('sistema.manutencao', 'false', 'boolean', 'Sistema em manutenção', 'sistema'),
-('vendas.desconto_maximo', '20', 'number', 'Desconto máximo permitido (%)', 'vendas');
+-- -- Inserir configurações padrão
+-- INSERT INTO configuracoes (chave, valor, tipo, descricao, categoria) VALUES
+-- ('sistema.versao', '1.0.0', 'string', 'Versão atual do sistema', 'sistema'),
+-- ('whatsapp.rate_limit', '10', 'number', 'Limite de mensagens por minuto', 'whatsapp'),
+-- ('ia.timeout', '30', 'number', 'Timeout para requisições IA em segundos', 'ia'),
+-- ('carrinho.timeout', '3600', 'number', 'Timeout do carrinho em segundos', 'vendas'),
+-- ('sistema.manutencao', 'false', 'boolean', 'Sistema em manutenção', 'sistema'),
+-- ('vendas.desconto_maximo', '20', 'number', 'Desconto máximo permitido (%)', 'vendas');
 
--- Inserir produtos de exemplo
-INSERT INTO produtos (codprod, descricao, categoria, marca, unidade_venda, preco_varejo, preco_atacado, quantidade_atacado, status, tags) VALUES 
-(13700, 'REFRIG.COCA-COLA PET 2L', 'Bebidas', 'Coca-Cola', 'UN', 8.50, 7.99, 6, 'ativo', ARRAY['refrigerante', 'coca', 'cola', '2l', 'pet']),
-(8130, 'REFRIG.COCA-COLA LT 350ML', 'Bebidas', 'Coca-Cola', 'UN', 4.20, 3.90, 12, 'ativo', ARRAY['refrigerante', 'coca', 'cola', 'lata', '350ml']),
-(52638, 'DT.PO OMO LAVAGEM PERFEITA 1.6KG', 'Limpeza', 'Omo', 'CX', 25.90, 24.50, 3, 'ativo', ARRAY['detergente', 'sabao', 'po', 'omo', '1.6kg']);
+-- -- Inserir produtos de exemplo
+-- INSERT INTO produtos (codprod, descricao, categoria, marca, unidade_venda, preco_varejo, preco_atacado, quantidade_atacado, status, tags) VALUES 
+-- (13700, 'REFRIG.COCA-COLA PET 2L', 'Bebidas', 'Coca-Cola', 'UN', 8.50, 7.99, 6, 'ativo', ARRAY['refrigerante', 'coca', 'cola', '2l', 'pet']),
+-- (8130, 'REFRIG.COCA-COLA LT 350ML', 'Bebidas', 'Coca-Cola', 'UN', 4.20, 3.90, 12, 'ativo', ARRAY['refrigerante', 'coca', 'cola', 'lata', '350ml']),
+-- (52638, 'DT.PO OMO LAVAGEM PERFEITA 1.6KG', 'Limpeza', 'Omo', 'CX', 25.90, 24.50, 3, 'ativo', ARRAY['detergente', 'sabao', 'po', 'omo', '1.6kg']);
 
--- Templates de mensagem padrão
-INSERT INTO templates_mensagem (nome, categoria, template, descricao) VALUES
-('saudacao_inicial', 'sistema', 'Olá! Sou o G.A.V., seu assistente virtual do Comercial Esperança. Como posso ajudar você hoje?', 'Mensagem de saudação inicial'),
-('produto_adicionado', 'vendas', 'Produto {{nome_produto}} adicionado ao carrinho! Quantidade: {{quantidade}}', 'Confirmação de produto adicionado'),
-('carrinho_vazio', 'vendas', 'Seu carrinho está vazio. Que tal ver nossos produtos em destaque?', 'Mensagem para carrinho vazio'),
-('pedido_finalizado', 'vendas', 'Pedido finalizado com sucesso! Total: R$ {{total}}. Em breve entraremos em contato.', 'Confirmação de pedido finalizado');
+-- -- Templates de mensagem padrão
+-- INSERT INTO templates_mensagem (nome, categoria, template, descricao) VALUES
+-- ('saudacao_inicial', 'sistema', 'Olá! Sou o G.A.V., seu assistente virtual do Comercial Esperança. Como posso ajudar você hoje?', 'Mensagem de saudação inicial'),
+-- ('produto_adicionado', 'vendas', 'Produto {{nome_produto}} adicionado ao carrinho! Quantidade: {{quantidade}}', 'Confirmação de produto adicionado'),
+-- ('carrinho_vazio', 'vendas', 'Seu carrinho está vazio. Que tal ver nossos produtos em destaque?', 'Mensagem para carrinho vazio'),
+-- ('pedido_finalizado', 'vendas', 'Pedido finalizado com sucesso! Total: R$ {{total}}. Em breve entraremos em contato.', 'Confirmação de pedido finalizado');
 
 -- ========================
 -- Funções de Análise

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(winpty docker exec -it bot_postgres_db_funcional psql -U root -d db_bot -c \"SELECT descricao, marca, total_vendido FROM produtos WHERE LOWER(descricao) LIKE ''%skol%'' OR LOWER(marca) LIKE ''%skol%'' ORDER BY total_vendido DESC LIMIT 10;\")",
+      "Bash(docker exec:*)",
+      "Bash(winpty docker exec:*)",
+      "Bash(docker-compose logs:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

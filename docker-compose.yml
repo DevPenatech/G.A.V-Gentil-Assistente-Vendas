@@ -44,19 +44,20 @@ services:
     env_file:
       - .env
 
+  chatweb:
+    container_name: bot_react_chatweb
+    restart: always
+    build:
+      context: ./chatweb  
+    ports:
+      - "3000:3000"
     environment:
-      DB_USERNAME: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_NAME: ${POSTGRES_DB}
-      DB_HOST: db
-      DB_PORT: 5432
-      OLLAMA_HOST: ${OLLAMA_HOST}
-      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
-      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
-      REDIS_HOST: ${REDIS_HOST}               
-      REDIS_PORT: ${REDIS_PORT}               
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
-      
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./chatweb/src:/app/src
+      - /app/node_modules
+    depends_on:
+      - app
 
 volumes:
   postgres_data:

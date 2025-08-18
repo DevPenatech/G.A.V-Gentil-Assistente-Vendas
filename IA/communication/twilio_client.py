@@ -8,27 +8,27 @@ from typing import Dict, List, Tuple, Union
 from db import database
 from ai_llm import llm_interface
 from knowledge import knowledge
-from utils import logger_config
-from core.session_manager import (
-    load_session,
-    save_session,
-    clear_session,
-    format_product_list_for_display,
-    format_cart_for_display,
-    add_message_to_history,
-    get_conversation_context,
-    format_quick_actions,
-    update_session_context,
-    detect_user_intent_type,
+from utils import configuracao_logs
+from core.gerenciador_sessao import (
+    carregar_sessao,
+    salvar_sessao,
+    limpar_sessao,
+    formatar_lista_produtos_para_exibicao,
+    formatar_carrinho_para_exibicao,
+    adicionar_mensagem_historico,
+    obter_contexto_conversa,
+    formatar_acoes_rapidas,
+    atualizar_contexto_sessao,
+    detectar_tipo_intencao_usuario,
 )
-from utils.quantity_extractor import extract_quantity, is_valid_quantity
+from utils.extrator_quantidade import extrair_quantidade, e_quantidade_valida
 from communication import twilio_client
 
-from db.database import search_products_with_suggestions, get_product_details_fuzzy
-from knowledge.knowledge import find_product_in_kb_with_analysis
+from db.database import pesquisar_produtos_com_sugestoes, obter_detalhes_produto_fuzzy
+from knowledge.knowledge import encontrar_produto_na_kb_com_analise
 
 app = Flask(__name__)
-logger_config.setup_logger()
+configuracao_logs.configurar_logs()
 
 
 def get_product_name(product: Dict) -> str:
@@ -116,12 +116,12 @@ def remove_item_from_cart(cart: List[Dict], index: int) -> Tuple[bool, str, List
     product_name = get_product_name(removed_item)
 
     if cart:
-        cart_display = format_cart_for_display(cart)
+        cart_display = formatar_carrinho_para_exibicao(cart)
         message = f"🗑️ {product_name} removido do carrinho.\n\n{cart_display}"
     else:
         message = f"🗑️ {product_name} removido do carrinho.\n\n🤖 Seu carrinho de compras está vazio."
 
-    quick_actions = format_quick_actions(has_cart=bool(cart))
+    quick_actions = formatar_acoes_rapidas(tem_carrinho=bool(cart))
     message = f"{message}\n\n{quick_actions}"
 
     return True, message, cart
@@ -142,7 +142,7 @@ def add_quantity_to_cart_item(
     if not (1 <= index <= len(cart)):
         return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
 
-    if not is_valid_quantity(additional_qty):
+    if not e_quantidade_valida(additional_qty):
         return False, f"🤖 Quantidade inválida: {additional_qty}", cart
 
     cart[index - 1]["qt"] += additional_qty
@@ -160,10 +160,10 @@ def add_quantity_to_cart_item(
     else:
         total_display = str(new_total)
 
-    cart_display = format_cart_for_display(cart)
+    cart_display = formatar_carrinho_para_exibicao(cart)
     message = f"✅ Adicionei +{qty_display} {product_name}. Total agora: {total_display}\n\n{cart_display}"
 
-    quick_actions = format_quick_actions(has_cart=bool(cart))
+    quick_actions = formatar_acoes_rapidas(tem_carrinho=bool(cart))
     message = f"{message}\n\n{quick_actions}"
 
     return True, message, cart
@@ -184,7 +184,7 @@ def update_cart_item_quantity(
     if not (1 <= index <= len(cart)):
         return False, f"🤖 Número inválido. Escolha entre 1 e {len(cart)}.", cart
 
-    if not is_valid_quantity(new_qty):
+    if not e_quantidade_valida(new_qty):
         return False, f"🤖 Quantidade inválida: {new_qty}", cart
 
     cart[index - 1]["qt"] = new_qty
@@ -196,10 +196,10 @@ def update_cart_item_quantity(
     else:
         qty_display = str(new_qty)
 
-    cart_display = format_cart_for_display(cart)
+    cart_display = formatar_carrinho_para_exibicao(cart)
     message = f"✅ Quantidade de {product_name} atualizada para {qty_display}\n\n{cart_display}"
 
-    quick_actions = format_quick_actions(has_cart=bool(cart))
+    quick_actions = formatar_acoes_rapidas(tem_carrinho=bool(cart))
     message = f"{message}\n\n{quick_actions}"
 
     return True, message, cart
@@ -219,14 +219,14 @@ def clear_cart_completely(cart: List[Dict]) -> Tuple[str, List[Dict]]:
         cart.clear()  # Limpa completamente
         
         message = f"🗑️ Carrinho esvaziado! {item_count} {'item' if item_count == 1 else 'itens'} removido{'s' if item_count > 1 else ''}."
-        message += f"\n\n{format_quick_actions(has_cart=False)}"
+        message += f"\n\n{formatar_acoes_rapidas(tem_carrinho=False)}"
     
     return message, []
 
 
 def generate_continue_or_checkout_message(cart: List[Dict]) -> str:
     """Gera uma mensagem amigável perguntando se o cliente deseja continuar ou finalizar."""
-    quick_actions = format_quick_actions(has_cart=bool(cart))
+    quick_actions = formatar_acoes_rapidas(tem_carrinho=bool(cart))
     return "🛍️ Deseja continuar comprando ou finalizar o pedido?\n\n" f"{quick_actions}"
 
 
@@ -285,7 +285,7 @@ def generate_checkout_summary(cart: List[Dict], customer_context: Dict = None) -
     summary += "📞 Em breve entraremos em contato para confirmação.\n\n"
     
     # Opções finais
-    summary += f"{format_quick_actions(has_cart=False)}"
+    summary += f"{formatar_acoes_rapidas(tem_carrinho=False)}"
     
     return summary
 
@@ -361,9 +361,9 @@ def _handle_pending_action(
         print(">>> CONSOLE: Tratando ação pendente AWAITING_QUANTITY")
 
         # 🆕 Extrai quantidade usando linguagem natural
-        qt = extract_quantity(incoming_msg)
+        qt = extrair_quantidade(incoming_msg)
 
-        if qt is not None and is_valid_quantity(qt):
+        if qt is not None and e_quantidade_valida(qt):
             product_to_add = session.get("pending_product_for_cart")
             if product_to_add:
                 term_to_learn = session.get("term_to_learn_after_quantity")
@@ -372,7 +372,7 @@ def _handle_pending_action(
                         f">>> CONSOLE: Aprendendo que '{term_to_learn}' se refere a '{get_product_name(product_to_add)}'..."
                     )
                     knowledge.update_kb(term_to_learn, product_to_add)
-                    update_session_context(
+                    atualizar_contexto_sessao(
                         session, {"term_to_learn_after_quantity": None}
                     )
 
@@ -410,7 +410,7 @@ def _handle_pending_action(
                         "Deseja *1* somar ou *2* substituir pela nova quantidade?"
                     )
 
-                    update_session_context(
+                    atualizar_contexto_sessao(
                         session,
                         {
                             "pending_product_for_cart": None,
@@ -420,7 +420,7 @@ def _handle_pending_action(
                         },
                     )
 
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session,
                         "assistant",
                         response_text,
@@ -440,16 +440,16 @@ def _handle_pending_action(
                     product_name = get_product_name(product_to_add)
                     response_text = (
                         f"✅ Perfeito! Adicionei {qt_display} {product_name} ao seu carrinho.\n\n"
-                        f"{format_cart_for_display(shopping_cart)}\n\n"
-                        f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                        f"{formatar_carrinho_para_exibicao(shopping_cart)}\n\n"
+                        f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
                     )
 
                     # 📝 REGISTRA A RESPOSTA DO BOT
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "ADD_TO_CART"
                     )
 
-                    update_session_context(
+                    atualizar_contexto_sessao(
                         session,
                         {
                             "pending_action": None,
@@ -460,8 +460,8 @@ def _handle_pending_action(
 
             else:
                 response_text = "🤖 Ocorreu um erro. Não sei qual produto adicionar."
-                add_message_to_history(session, "assistant", response_text, "ERROR")
-                update_session_context(
+                adicionar_mensagem_historico(session, "assistant", response_text, "ERROR")
+                atualizar_contexto_sessao(
                     session,
                     {
                         "pending_action": None,
@@ -483,7 +483,7 @@ Qual quantidade você quer?"""
             else:
                 response_text = f"🤖 A quantidade {qt} parece muito alta. Por favor, digite uma quantidade entre 1 e 1000."
 
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "REQUEST_QUANTITY"
             )
             pending_action = None
@@ -510,7 +510,7 @@ Qual quantidade você quer?"""
                         shopping_cart, selection
                     )
                     response_text = message
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "REMOVE_FROM_CART"
                     )
                 elif cart_action == "add":
@@ -519,7 +519,7 @@ Qual quantidade você quer?"""
                         shopping_cart, selection, quantity
                     )
                     response_text = message
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "ADD_QUANTITY_TO_CART"
                     )
                 elif cart_action == "update":
@@ -528,12 +528,12 @@ Qual quantidade você quer?"""
                         shopping_cart, selection, quantity
                     )
                     response_text = message
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "UPDATE_CART_ITEM"
                     )
                 else:
                     response_text = "🤖 Ação inválida."
-                    add_message_to_history(session, "assistant", response_text, "ERROR")
+                    adicionar_mensagem_historico(session, "assistant", response_text, "ERROR")
 
                 # Limpa estado pendente
                 pending_action = None
@@ -543,17 +543,17 @@ Qual quantidade você quer?"""
             else:
                 response_text = (
                     f"🤖 Número inválido. Escolha um dos números listados: {', '.join(map(str, valid_indices))}\n\n"
-                    f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
+                    f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart), tem_produtos=True)}"
                 )
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "REQUEST_CLARIFICATION"
                 )
         else:
             response_text = (
                 "🤖 Por favor, digite o número do item que você quer selecionar.\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart), tem_produtos=True)}"
             )
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "REQUEST_CLARIFICATION"
             )
 
@@ -571,11 +571,11 @@ Qual quantidade você quer?"""
                 shopping_cart, index, qty
             )
             response_text = message
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "ADD_QUANTITY_TO_CART"
             )
             pending_action = None
-            update_session_context(
+            atualizar_contexto_sessao(
                 session,
                 {
                     "duplicate_item_index": None,
@@ -588,11 +588,11 @@ Qual quantidade você quer?"""
                 shopping_cart, index, qty
             )
             response_text = message
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "UPDATE_CART_ITEM_QUANTITY"
             )
             pending_action = None
-            update_session_context(
+            atualizar_contexto_sessao(
                 session,
                 {
                     "duplicate_item_index": None,
@@ -615,7 +615,7 @@ Qual quantidade você quer?"""
                 )
             else:
                 response_text = "Por favor, responda com *1* para somar ou *2* substituir pela nova quantidade."
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "REQUEST_DUPLICATE_DECISION"
             )
 
@@ -636,14 +636,14 @@ Qual quantidade você quer?"""
         negative_responses = ["não", "n", "agora não", "deixa"]
         if incoming_msg.lower() in affirmative_responses:
             if pending_action == "show_top_selling":
-                intent = {"tool_name": "get_top_selling_products", "parameters": {}}
+                intent = {"tool_name": "obter_produtos_mais_vendidos", "parameters": {}}
             pending_action = None
         elif incoming_msg.lower() in negative_responses:
             response_text = (
                 "🤖 Tudo bem! O que você gostaria de fazer então?\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
             )
-            add_message_to_history(session, "assistant", response_text, "CHITCHAT")
+            adicionar_mensagem_historico(session, "assistant", response_text, "CHITCHAT")
             pending_action = None
             state["last_shown_products"] = []
             state["last_bot_action"] = "AWAITING_MENU_SELECTION"
@@ -669,23 +669,23 @@ def _process_user_message(
         if last_bot_action == "AWAITING_PRODUCT_SELECTION":
             response_text = (
                 "🤖 Não entendi. Quer selecionar um dos produtos da lista? Se sim, me diga o número.\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart), has_products=True)}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart), tem_produtos=True)}"
             )
             state["last_bot_action"] = "AWAITING_PRODUCT_SELECTION"
         else:
             response_text = (
                 "🤖 Por favor, me diga o que você precisa.\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
             )
             state["last_shown_products"] = []
             state["last_bot_action"] = "AWAITING_MENU_SELECTION"
-        add_message_to_history(
+        adicionar_mensagem_historico(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )
         return intent, response_text
 
     # 🆕 DETECÇÃO DIRETA DE COMANDOS CRÍTICOS - PRIORIDADE MÁXIMA
-    intent_type = detect_user_intent_type(incoming_msg, session)
+    intent_type = detectar_tipo_intencao_usuario(incoming_msg, session)
     
     # 🆕 COMANDO DE LIMPEZA DE CARRINHO - PRIORIDADE ABSOLUTA
     if intent_type == "CLEAR_CART":
@@ -730,7 +730,7 @@ def _process_user_message(
         and last_bot_action == "AWAITING_MENU_SELECTION"
     ):
         if incoming_msg == "1":
-            intent = {"tool_name": "get_top_selling_products", "parameters": {}}
+            intent = {"tool_name": "obter_produtos_mais_vendidos", "parameters": {}}
         elif incoming_msg == "2":
             intent = {"tool_name": "view_cart", "parameters": {}}
         elif incoming_msg == "3":
@@ -738,9 +738,9 @@ def _process_user_message(
         else:
             response_text = (
                 "🤖 Opção inválida. Escolha 1, 2 ou 3.\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
             )
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "REQUEST_CLARIFICATION"
             )
             state["last_shown_products"] = []
@@ -783,10 +783,10 @@ def _process_user_message(
 
     elif intent_type == "GREETING":
         response_text = "🤖 Oi! Sou o G.A.V. e estou aqui pra te ajudar! Como posso te atender hoje?"
-        add_message_to_history(session, "assistant", response_text, "GREETING")
+        adicionar_mensagem_historico(session, "assistant", response_text, "GREETING")
     else:
         response_text = "🤖 Desculpe, não entendi o que você quis dizer. Pode me explicar de outro jeito?"
-        add_message_to_history(
+        adicionar_mensagem_historico(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )
 
@@ -810,8 +810,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
     parameters = intent.get("parameters", {})
 
     db_intensive_tools = [
-        "get_top_selling_products",
-        "get_top_selling_products_by_name",
+        "obter_produtos_mais_vendidos",
+        "obter_produtos_mais_vendidos_por_nome",
         "show_more_products",
         "report_incorrect_product",
         "get_product_by_codprod",
@@ -826,7 +826,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         shopping_cart.clear()  # Garante que o carrinho está vazio
         
         response_text = message
-        add_message_to_history(session, "assistant", response_text, "CLEAR_CART")
+        adicionar_mensagem_historico(session, "assistant", response_text, "CLEAR_CART")
         
         # Atualiza estado
         last_shown_products = []
@@ -835,17 +835,17 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         
         print(f">>> CONSOLE: Carrinho limpo. Resposta: {response_text}")
 
-    elif tool_name in ["get_top_selling_products", "get_top_selling_products_by_name"]:
+    elif tool_name in ["obter_produtos_mais_vendidos", "obter_produtos_mais_vendidos_por_nome"]:
         last_kb_search_term, last_shown_products = None, []
 
-        if tool_name == "get_top_selling_products_by_name":
+        if tool_name == "obter_produtos_mais_vendidos_por_nome":
             product_name = parameters.get("product_name", "")
 
             # 🆕 BUSCA FUZZY INTELIGENTE
             print(f">>> CONSOLE: Buscando '{product_name}' com sistema fuzzy...")
 
             # Etapa 1: Tenta Knowledge Base com análise
-            kb_products, kb_analysis = find_product_in_kb_with_analysis(product_name)
+            kb_products, kb_analysis = encontrar_produto_na_kb_com_analise(product_name)
 
             if kb_products and kb_analysis.get("quality") in ["excellent", "good"]:
                 # Knowledge Base encontrou bons resultados
@@ -855,11 +855,11 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 quality_emoji = "⚡" if kb_analysis["quality"] == "excellent" else "🎯"
                 title = f"{quality_emoji} Encontrei isto para '{product_name}' (busca rápida):"
 
-                response_text = format_product_list_for_display(
+                response_text = formatar_lista_produtos_para_exibicao(
                     last_shown_products, title, False, 0
                 )
                 last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "SHOW_PRODUCTS_FROM_KB"
                 )
 
@@ -879,7 +879,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 }
 
                 # 🆕 USA BUSCA FUZZY COM SUGESTÕES
-                search_result = search_products_with_suggestions(
+                search_result = pesquisar_produtos_com_sugestoes(
                     product_name, limit=5, offset=current_offset
                 )
 
@@ -899,7 +899,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                         title_emoji = "📦"
 
                     title = f"{title_emoji} Encontrei estes produtos relacionados a '{product_name}':"
-                    response_text = format_product_list_for_display(
+                    response_text = formatar_lista_produtos_para_exibicao(
                         products, title, len(products) == 5, 0
                     )
 
@@ -908,7 +908,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                         response_text += f"\n💡 Dica: {suggestions[0]}"
 
                     last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "SHOW_PRODUCTS_FROM_DB"
                     )
 
@@ -928,7 +928,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                         response_text += "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
 
                     last_bot_action = None
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "NO_PRODUCTS_FOUND"
                     )
 
@@ -936,18 +936,18 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     f">>> CONSOLE: Banco encontrou {len(products)} produtos, {len(suggestions)} sugestões"
                 )
 
-        else:  # get_top_selling_products
+        else:  # obter_produtos_mais_vendidos
             current_offset, last_shown_products = 0, []
             last_search_type, last_search_params = "top_selling", parameters
-            products = database.get_top_selling_products(offset=current_offset)
+            products = database.obter_produtos_mais_vendidos(offset=current_offset)
             title = "⭐ Estes são nossos produtos mais populares:"
             current_offset += 5
             last_shown_products.extend(products)
-            response_text = format_product_list_for_display(
+            response_text = formatar_lista_produtos_para_exibicao(
                 products, title, len(products) == 5, 0
             )
             last_bot_action = "AWAITING_PRODUCT_SELECTION"
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "SHOW_TOP_PRODUCTS"
             )
 
@@ -967,11 +967,11 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             product_name = parameters["product_name"]
             print(f">>> CONSOLE: Buscando produto direto por nome: '{product_name}'")
 
-            product_to_add = get_product_details_fuzzy(product_name)
+            product_to_add = obter_detalhes_produto_fuzzy(product_name)
 
             if not product_to_add:
                 # Tenta busca mais ampla
-                search_result = search_products_with_suggestions(product_name, limit=1)
+                search_result = pesquisar_produtos_com_sugestoes(product_name, limit=1)
                 if search_result["products"]:
                     product_to_add = search_result["products"][0]
 
@@ -988,7 +988,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             elif is_new_learning:
                 term_to_learn = last_search_params.get("product_name")
 
-            update_session_context(
+            atualizar_contexto_sessao(
                 session,
                 {
                     "pending_product_for_cart": product_to_add,
@@ -999,16 +999,16 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             pending_action = "AWAITING_QUANTITY"
 
             response_text = f"Quantas unidades de {get_product_name(product_to_add)} você deseja adicionar?"
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "REQUEST_QUANTITY"
             )
 
         else:
             response_text = (
                 "🤖 Produto não encontrado. Você pode tentar buscar novamente?\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
             )
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "PRODUCT_NOT_FOUND"
             )
 
@@ -1028,7 +1028,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             if shopping_cart:
                 matches = list(enumerate(shopping_cart))
                 pending_action = "AWAITING_CART_ITEM_SELECTION"
-                update_session_context(
+                atualizar_contexto_sessao(
                     session,
                     {
                         "pending_cart_matches": matches,
@@ -1038,13 +1038,13 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     },
                 )
                 response_text = f"{format_cart_with_indices(shopping_cart)}\n\nDigite o número do item que deseja remover."
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "REQUEST_CART_ITEM_SELECTION"
                 )
             else:
                 pending_action = None
                 response_text = "🤖 Seu carrinho está vazio."
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "CART_EMPTY"
                 )
                 state.update(
@@ -1082,7 +1082,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     if action == "remove"
                     else ("add" if action == "add_quantity" else "update")
                 )
-                update_session_context(
+                atualizar_contexto_sessao(
                     session,
                     {
                         "pending_cart_matches": matches,
@@ -1098,7 +1098,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     ]
                 )
                 response_text = f"🤖 Encontrei vários itens com esse nome no carrinho:\n{options}\nDigite o número do item desejado."
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "REQUEST_CART_ITEM_SELECTION"
                 )
 
@@ -1107,34 +1107,34 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 success, response_text, shopping_cart = remove_item_from_cart(
                     shopping_cart, matched_index
                 )
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "REMOVE_FROM_CART"
                 )
             elif action == "add_quantity":
                 success, response_text, shopping_cart = add_quantity_to_cart_item(
                     shopping_cart, matched_index, quantity
                 )
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "ADD_QUANTITY_TO_CART"
                 )
             elif action == "update_quantity":
                 success, response_text, shopping_cart = update_cart_item_quantity(
                     shopping_cart, matched_index, quantity
                 )
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "UPDATE_CART_ITEM"
                 )
             else:
                 response_text = "🤖 Ação inválida."
-                add_message_to_history(session, "assistant", response_text, "ERROR")
+                adicionar_mensagem_historico(session, "assistant", response_text, "ERROR")
             last_bot_action = "AWAITING_MENU_SELECTION"
             pending_action = None
         elif pending_action != "AWAITING_CART_ITEM_SELECTION":
             response_text = (
-                f"🤖 Não encontrei esse item no carrinho.\n\n{format_cart_for_display(shopping_cart)}\n\n"
-                f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                f"🤖 Não encontrei esse item no carrinho.\n\n{formatar_carrinho_para_exibicao(shopping_cart)}\n\n"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
             )
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "CART_ITEM_NOT_FOUND"
             )
             last_bot_action = "AWAITING_MENU_SELECTION"
@@ -1145,7 +1145,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             response_text = (
                 "🤖 Para eu mostrar mais, primeiro você precisa fazer uma busca."
             )
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "NO_PREVIOUS_SEARCH"
             )
         else:
@@ -1153,11 +1153,11 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             products = []
             title = ""
             if last_search_type == "top_selling":
-                products = database.get_top_selling_products(offset=current_offset)
+                products = database.obter_produtos_mais_vendidos(offset=current_offset)
                 title = "Mostrando mais produtos populares:"
             elif last_search_type == "by_name":
                 product_name = last_search_params.get("product_name", "")
-                products = database.get_top_selling_products_by_name(
+                products = database.obter_produtos_mais_vendidos_by_name(
                     product_name, offset=current_offset
                 )
                 title = f"Mostrando mais produtos relacionados a '{product_name}':"
@@ -1165,28 +1165,28 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
             if not products:
                 response_text = (
                     "🤖 Não encontrei mais produtos para essa busca.\n\n"
-                    f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                    f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
                 )
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "NO_MORE_PRODUCTS"
                 )
             else:
                 current_offset += 5
                 last_shown_products.extend(products)
-                response_text = format_product_list_for_display(
+                response_text = formatar_lista_produtos_para_exibicao(
                     products, title, len(products) == 5, offset=offset_before_call
                 )
                 last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "SHOW_MORE_PRODUCTS"
                 )
 
     elif tool_name == "view_cart":
         response_text = (
-            f"{format_cart_for_display(shopping_cart)}\n\n"
-            f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+            f"{formatar_carrinho_para_exibicao(shopping_cart)}\n\n"
+            f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
         )
-        add_message_to_history(session, "assistant", response_text, "SHOW_CART")
+        adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_CART")
         last_shown_products = []
         last_bot_action = "AWAITING_MENU_SELECTION"
 
@@ -1202,10 +1202,10 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         ) = (None, [], [], None, {}, 0, None)
         pending_action = None
         last_bot_action = None
-        clear_session(sender_phone)
+        limpar_sessao(sender_phone)
         session.clear()
 
-        update_session_context(
+        atualizar_contexto_sessao(
             session,
             {
                 "shopping_cart": shopping_cart,
@@ -1215,29 +1215,29 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         )
         response_text = (
             "🧹 Certo! Carrinho e dados limpos. Vamos começar de novo!\n\n"
-            f"{format_quick_actions(has_cart=False)}"
+            f"{formatar_acoes_rapidas(tem_carrinho=False)}"
         )
 
-        add_message_to_history(session, "assistant", response_text, "NEW_ORDER")
+        adicionar_mensagem_historico(session, "assistant", response_text, "NEW_ORDER")
 
     elif tool_name == "checkout":
         if not shopping_cart:
             response_text = (
                 "🤖 Seu carrinho está vazio!\n\n"
-                f"{format_quick_actions(has_cart=False)}"
+                f"{formatar_acoes_rapidas(tem_carrinho=False)}"
             )
-            add_message_to_history(session, "assistant", response_text, "EMPTY_CART")
+            adicionar_mensagem_historico(session, "assistant", response_text, "EMPTY_CART")
             last_shown_products = []
             last_bot_action = "AWAITING_MENU_SELECTION"
         elif not customer_context:
             response_text = "⭐ Para finalizar a compra, preciso do seu CNPJ."
-            add_message_to_history(session, "assistant", response_text, "REQUEST_CNPJ")
+            adicionar_mensagem_historico(session, "assistant", response_text, "REQUEST_CNPJ")
             last_shown_products = []
             last_bot_action = None
         else:
             # 🆕 GERA RESUMO COMPLETO DO PEDIDO
             response_text = generate_checkout_summary(shopping_cart, customer_context)
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "CHECKOUT_COMPLETE"
             )
             
@@ -1250,14 +1250,14 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         cnpj = parameters.get("cnpj")
         if cnpj:
             print(f">>> CONSOLE: Buscando cliente por CNPJ: {cnpj}")
-            customer = database.find_customer_by_cnpj(cnpj)
+            customer = database.encontrar_cliente_por_cnpj(cnpj)
             if customer:
                 customer_context = customer
                 
                 # 🆕 FINALIZA AUTOMATICAMENTE SE TEMOS CARRINHO E CLIENTE
                 if shopping_cart:
                     response_text = generate_checkout_summary(shopping_cart, customer_context)
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "CHECKOUT_COMPLETE"
                     )
                     
@@ -1268,9 +1268,9 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 else:
                     response_text = (
                         f"🤖 Olá, {customer_context['nome']}! Bem-vindo(a) de volta.\n\n"
-                        f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+                        f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
                     )
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "CUSTOMER_IDENTIFIED"
                     )
                     last_shown_products = []
@@ -1281,7 +1281,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                 # 🆕 PERMITE FINALIZAR MESMO SEM CADASTRO
                 if shopping_cart:
                     response_text += f"\n\n{generate_checkout_summary(shopping_cart)}"
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "CHECKOUT_COMPLETE"
                     )
                     
@@ -1290,43 +1290,43 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
                     last_shown_products = []
                     last_bot_action = "AWAITING_MENU_SELECTION"
                 else:
-                    add_message_to_history(
+                    adicionar_mensagem_historico(
                         session, "assistant", response_text, "CUSTOMER_NOT_FOUND"
                     )
         else:
             response_text = "🤖 Por favor, informe seu CNPJ."
-            add_message_to_history(session, "assistant", response_text, "REQUEST_CNPJ")
+            adicionar_mensagem_historico(session, "assistant", response_text, "REQUEST_CNPJ")
 
     elif tool_name == "ask_continue_or_checkout":
         if shopping_cart:
             response_text = generate_continue_or_checkout_message(shopping_cart)
-            add_message_to_history(
+            adicionar_mensagem_historico(
                 session, "assistant", response_text, "ASK_CONTINUE_OR_CHECKOUT"
             )
         else:
             response_text = (
                 "🤖 Seu carrinho está vazio. Que tal começar adicionando um produto?\n\n"
-                f"{format_quick_actions(has_cart=False)}"
+                f"{formatar_acoes_rapidas(tem_carrinho=False)}"
             )
-            add_message_to_history(session, "assistant", response_text, "EMPTY_CART")
+            adicionar_mensagem_historico(session, "assistant", response_text, "EMPTY_CART")
         last_shown_products = []
         last_bot_action = "AWAITING_MENU_SELECTION"
 
     elif tool_name == "handle_chitchat":
         response_text = (
             f"{parameters.get('response_text', 'Entendi!')}\n\n"
-            f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+            f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
         )
-        add_message_to_history(session, "assistant", response_text, "CHITCHAT")
+        adicionar_mensagem_historico(session, "assistant", response_text, "CHITCHAT")
         last_shown_products = []
         last_bot_action = "AWAITING_MENU_SELECTION"
 
     elif not tool_name and "response_text" in intent:
         response_text = (
             f"{intent['response_text']}\n\n"
-            f"{format_quick_actions(has_cart=bool(shopping_cart))}"
+            f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
         )
-        add_message_to_history(session, "assistant", response_text, "GENERIC_RESPONSE")
+        adicionar_mensagem_historico(session, "assistant", response_text, "GENERIC_RESPONSE")
         last_shown_products = []
         last_bot_action = "AWAITING_MENU_SELECTION"
 
@@ -1334,7 +1334,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         logging.warning(f"Fallback Final: Ferramenta desconhecida '{tool_name}'")
         response_text = "🤖 Hum, não entendi muito bem. Que tal começarmos pelos produtos mais vendidos? Posso te mostrar?"
         pending_action = "show_top_selling"
-        add_message_to_history(session, "assistant", response_text, "FALLBACK")
+        adicionar_mensagem_historico(session, "assistant", response_text, "FALLBACK")
 
     state.update(
         {
@@ -1357,7 +1357,7 @@ def _finalize_session(
     sender_phone: str, session: Dict, state: Dict, response_text: str
 ) -> None:
     """Atualiza e persiste a sessão, além de enviar a resposta ao usuário."""
-    update_session_context(
+    atualizar_contexto_sessao(
         session,
         {
             "customer_context": state.get("customer_context"),
@@ -1371,7 +1371,7 @@ def _finalize_session(
             "last_kb_search_term": state.get("last_kb_search_term"),
         },
     )
-    save_session(sender_phone, session)
+    salvar_sessao(sender_phone, session)
 
     if response_text:
         print(
@@ -1388,10 +1388,10 @@ def process_message_async(sender_phone: str, incoming_msg: str):
     with app.app_context():
         try:
             print(f"\n--- INÍCIO DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---")
-            session = load_session(sender_phone)
+            session = carregar_sessao(sender_phone)
 
             # 📝 REGISTRA A MENSAGEM DO USUÁRIO NO HISTÓRICO
-            add_message_to_history(session, "user", incoming_msg)
+            adicionar_mensagem_historico(session, "user", incoming_msg)
 
             # Carrega estado atual da sessão
             state = _extract_state(session)
@@ -1413,9 +1413,9 @@ def process_message_async(sender_phone: str, incoming_msg: str):
             if not response_text and not state.get("pending_action"):
                 response_text = (
                     "Operação concluída. O que mais posso fazer por você?\n\n"
-                    f"{format_quick_actions(has_cart=bool(state.get('shopping_cart', [])))}"
+                    f"{formatar_acoes_rapidas(tem_carrinho=bool(state.get('shopping_cart', [])))}"
                 )
-                add_message_to_history(
+                adicionar_mensagem_historico(
                     session, "assistant", response_text, "OPERATION_COMPLETE"
                 )
 
@@ -1433,9 +1433,9 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 
             # Registra o erro no histórico também
             try:
-                session = load_session(sender_phone)
-                add_message_to_history(session, "assistant", error_response, "ERROR")
-                save_session(sender_phone, session)
+                session = carregar_sessao(sender_phone)
+                adicionar_mensagem_historico(session, "assistant", error_response, "ERROR")
+                salvar_sessao(sender_phone, session)
             except:
                 pass  # Se falhar aqui, apenas ignora para não causar loop de erro
 
@@ -1474,7 +1474,7 @@ def clear_cart_endpoint():
     if not user_id:
         return jsonify({"error": "user_id é obrigatório"}), 400
     
-    session = load_session(user_id)
+    session = carregar_sessao(user_id)
     shopping_cart = session.get("shopping_cart", [])
     
     message, empty_cart = clear_cart_completely(shopping_cart)
@@ -1485,8 +1485,8 @@ def clear_cart_endpoint():
     session["pending_action"] = None
     session["last_shown_products"] = []
     
-    add_message_to_history(session, "assistant", message, "CLEAR_CART_API")
-    save_session(user_id, session)
+    adicionar_mensagem_historico(session, "assistant", message, "CLEAR_CART_API")
+    salvar_sessao(user_id, session)
     
     return jsonify({
         "success": True,

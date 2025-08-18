@@ -1,13 +1,6 @@
 # file: IA/knowledge/knowledge.py
 """
 Base de Conhecimento Inteligente para o G.A.V.
-
-Sistema aprimorado com:
-- Busca tolerante a erros
-- Enriquecimento automático com dados do banco
-- Análise de qualidade das buscas
-- Correção automática de termos
-- Expansão com sinônimos
 """
 
 import json
@@ -26,251 +19,247 @@ utils_path = Path(__file__).resolve().parent.parent / "utils"
 if str(utils_path) not in sys.path:
     sys.path.insert(0, str(utils_path))
     
-from fuzzy_search import fuzzy_search_kb, fuzzy_engine, analyze_search_quality
+from busca_aproximada import busca_aproximada_kb, MotorBuscaAproximada, analisar_qualidade_busca
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from db import database
 
 # Configurações
-KB_PATH = Path(__file__).resolve().parent / "knowledge_base.json"
-_kb: Optional[Dict[str, List[Dict]]] = None
-OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
-OLLAMA_HOST = os.getenv("OLLAMA_HOST")
+CAMINHO_KB = Path(__file__).resolve().parent / "knowledge_base.json"
+_base_conhecimento: Optional[Dict[str, List[Dict]]] = None
+NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 
-def _load_kb() -> Dict[str, List[Dict]]:
-    """
-    Carrega a base de conhecimento do disco para memória.
-    
-    IMPORTANTE: Agora cada termo pode mapear para MÚLTIPLOS produtos.
-    Estrutura em memória otimizada para busca rápida.
-    """
-    global _kb
-    if _kb is not None:
-        return _kb
+# Instância global do motor de busca
+_motor_busca = MotorBuscaAproximada()
+HOST_OLLAMA = os.getenv("OLLAMA_HOST")
 
-    raw_kb: Dict[str, Dict] = {}
+def _carregar_kb() -> Dict[str, List[Dict]]:
+    """Carrega a base de conhecimento do disco para a memória.
+
+    Returns:
+        A base de conhecimento.
+    """
+    global _base_conhecimento
+    if _base_conhecimento is not None:
+        return _base_conhecimento
+
+    kb_bruto: Dict[str, Dict] = {}
     try:
-        if not KB_PATH.exists() or KB_PATH.stat().st_size == 0:
-            logging.info(f"Arquivo '{KB_PATH}' inexistente ou vazio.")
-            raw_kb = {}
+        if not CAMINHO_KB.exists() or CAMINHO_KB.stat().st_size == 0:
+            logging.info(f"Arquivo '{CAMINHO_KB}' inexistente ou vazio.")
+            kb_bruto = {}
         else:
-            with KB_PATH.open("r", encoding="utf-8") as f:
-                raw_kb = json.load(f)
-            if not raw_kb:
-                raw_kb = {}
+            with CAMINHO_KB.open("r", encoding="utf-8") as f:
+                kb_bruto = json.load(f)
+            if not kb_bruto:
+                kb_bruto = {}
     except (FileNotFoundError, json.JSONDecodeError, ValueError) as e:
-        logging.warning(f"Erro ao carregar '{KB_PATH}': {e}. Usando base vazia.")
-        raw_kb = {}
+        logging.warning(f"Erro ao carregar '{CAMINHO_KB}': {e}. Usando base vazia.")
+        kb_bruto = {}
 
-    # Converte estrutura para busca otimizada
-    # Em memória: {termo_busca: [lista_de_produtos]}
-    indexed_kb = {}
+    kb_indexado = {}
     
-    for canonical_name, product_data in raw_kb.items():
-        codprod = product_data.get("codprod")
+    for nome_canonico, dados_produto in kb_bruto.items():
+        codprod = dados_produto.get("codprod")
         if not codprod:
             continue
         
-        # Produto base
-        base_product = {
+        produto_base = {
             "codprod": codprod,
-            "canonical_name": canonical_name,
+            "canonical_name": nome_canonico,
             "source": "knowledge_base"
         }
         
-        # Indexa pelo nome canônico
-        canonical_normalized = fuzzy_engine.normalize_text(canonical_name)
-        if canonical_normalized not in indexed_kb:
-            indexed_kb[canonical_normalized] = []
-        indexed_kb[canonical_normalized].append(base_product)
+        canonico_normalizado = _motor_busca.normalizar_texto(nome_canonico)
+        if canonico_normalizado not in kb_indexado:
+            kb_indexado[canonico_normalizado] = []
+        kb_indexado[canonico_normalizado].append(produto_base)
         
-        # Indexa por todas as palavras relacionadas
-        related_words = product_data.get("related_words", [])
-        for word in related_words:
-            word_normalized = fuzzy_engine.normalize_text(word)
-            if word_normalized and word_normalized not in indexed_kb:
-                indexed_kb[word_normalized] = []
-            indexed_kb[word_normalized].append(base_product)
+        palavras_relacionadas = dados_produto.get("related_words", [])
+        for palavra in palavras_relacionadas:
+            palavra_normalizada = _motor_busca.normalizar_texto(palavra)
+            if palavra_normalizada and palavra_normalizada not in kb_indexado:
+                kb_indexado[palavra_normalizada] = []
+            kb_indexado[palavra_normalizada].append(produto_base)
 
-    _kb = indexed_kb
+    _base_conhecimento = kb_indexado
     
-    # Log estatísticas
-    total_terms = len(indexed_kb)
-    total_products = len(set(p["codprod"] for products in indexed_kb.values() for p in products))
+    total_termos = len(kb_indexado)
+    total_produtos = len(set(p["codprod"] for produtos in kb_indexado.values() for p in produtos))
     
-    logging.info(f"Base de conhecimento '{KB_PATH}' carregada com {total_products} produtos e {total_terms} termos.")
+    logging.info(f"Base de conhecimento '{CAMINHO_KB}' carregada com {total_produtos} produtos e {total_termos} termos.")
     
-    return _kb
+    return _base_conhecimento
 
-def _enrich_kb_products_with_db_data(kb_products: List[Dict]) -> List[Dict]:
+def _enriquecer_produtos_kb_com_dados_db(produtos_kb: List[Dict]) -> List[Dict]:
+    """Enriquece produtos da KB com dados atualizados do banco.
+
+    Args:
+        produtos_kb: A lista de produtos da base de conhecimento.
+
+    Returns:
+        A lista de produtos enriquecida.
     """
-    🆕 NOVA FUNÇÃO: Enriquece produtos da KB com dados atualizados do banco.
-    """
-    if not kb_products:
+    if not produtos_kb:
         return []
     
-    enriched_products = []
+    produtos_enriquecidos = []
     
-    for kb_product in kb_products:
-        codprod = kb_product.get("codprod")
+    for produto_kb in produtos_kb:
+        codprod = produto_kb.get("codprod")
         if not codprod:
             continue
         
-        # Busca dados atualizados no banco
-        db_product = database.get_product_by_codprod(codprod)
+        produto_db = database.obter_produto_por_codprod(codprod)
         
-        if db_product:
-            # Combina dados da KB com dados atualizados do banco
-            enriched_product = {
-                **db_product,  # Dados do banco (preços, status, etc.)
+        if produto_db:
+            produto_enriquecido = {
+                **produto_db,
                 "source": "knowledge_base_enriched",
-                "canonical_name": kb_product.get("canonical_name")
+                "canonical_name": produto_kb.get("canonical_name")
             }
-            enriched_products.append(enriched_product)
+            produtos_enriquecidos.append(produto_enriquecido)
         else:
-            # Se não encontrou no banco, mantém dados da KB
             logging.warning(f"Produto {codprod} da KB não encontrado no banco")
-            enriched_products.append(kb_product)
+            produtos_enriquecidos.append(produto_kb)
     
-    return enriched_products
+    return produtos_enriquecidos
 
-def find_product_in_kb(term: str) -> List[Dict]:
-    """
-    🆕 NOVA VERSÃO com busca tolerante a erros e enriquecimento de dados!
-    
+def encontrar_produto_na_kb(termo: str) -> List[Dict]:
+    """Encontra um produto na base de conhecimento com busca tolerante a erros.
+
     Args:
-        term: Termo de busca (pode ter erros de digitação)
-        
+        termo: O termo de busca.
+
     Returns:
-        Lista de produtos que correspondem ao termo, enriquecidos com dados do banco
+        Uma lista de produtos que correspondem ao termo.
     """
-    if not term:
+    if not termo:
         return []
         
-    kb = _load_kb()
-    term_lower = term.lower().strip()
+    kb = _carregar_kb()
+    termo_minusculo = termo.lower().strip()
     
-    # 🆕 ETAPA 1: Busca exata (mais rápida) - mantém compatibilidade
-    term_normalized = fuzzy_engine.normalize_text(term)
-    if term_normalized in kb:
-        logging.info(f"[KB] Busca exata encontrou: {term_normalized}")
-        kb_products = kb[term_normalized]
-        return _enrich_kb_products_with_db_data(kb_products)
+    termo_normalizado = _motor_busca.normalizar_texto(termo)
+    if termo_normalizado in kb:
+        logging.info(f"[KB] Busca exata encontrou: {termo_normalizado}")
+        produtos_kb = kb[termo_normalizado]
+        return _enriquecer_produtos_kb_com_dados_db(produtos_kb)
     
-    # 🆕 ETAPA 2: Busca fuzzy com alta similaridade (0.8+)
-    fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.8)
-    if fuzzy_results:
-        logging.info(f"[KB] Busca fuzzy (alta) encontrou {len(fuzzy_results)} produtos para: {term}")
-        return _enrich_kb_products_with_db_data(fuzzy_results)
+    resultados_fuzzy = busca_aproximada_kb(termo, kb, min_similaridade=0.8)
+    if resultados_fuzzy:
+        logging.info(f"[KB] Busca fuzzy (alta) encontrou {len(resultados_fuzzy)} produtos para: {termo}")
+        return _enriquecer_produtos_kb_com_dados_db(resultados_fuzzy)
     
-    # 🆕 ETAPA 3: Busca fuzzy com similaridade média (0.6+)
-    fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.6)
-    if fuzzy_results:
-        logging.info(f"[KB] Busca fuzzy (média) encontrou {len(fuzzy_results)} produtos para: {term}")
-        return _enrich_kb_products_with_db_data(fuzzy_results)
+    resultados_fuzzy = busca_aproximada_kb(termo, kb, min_similaridade=0.6)
+    if resultados_fuzzy:
+        logging.info(f"[KB] Busca fuzzy (média) encontrou {len(resultados_fuzzy)} produtos para: {termo}")
+        return _enriquecer_produtos_kb_com_dados_db(resultados_fuzzy)
     
-    # 🆕 ETAPA 4: Busca fuzzy relaxada (0.4+) - última chance
-    fuzzy_results = fuzzy_search_kb(term, kb, min_similarity=0.4)
-    if fuzzy_results:
-        logging.info(f"[KB] Busca fuzzy (baixa) encontrou {len(fuzzy_results)} produtos para: {term}")
-        return _enrich_kb_products_with_db_data(fuzzy_results)
+    resultados_fuzzy = busca_aproximada_kb(termo, kb, min_similaridade=0.4)
+    if resultados_fuzzy:
+        logging.info(f"[KB] Busca fuzzy (baixa) encontrou {len(resultados_fuzzy)} produtos para: {termo}")
+        return _enriquecer_produtos_kb_com_dados_db(resultados_fuzzy)
     
-    # 🆕 ETAPA 5: Busca por contenção simples (fallback original melhorado)
-    matching_products = []
-    seen_codprods = set()
+    produtos_correspondentes = []
+    codprods_vistos = set()
     
-    # Normaliza o termo de busca
-    normalized_term = fuzzy_engine.normalize_text(term)
-    corrected_term = fuzzy_engine.apply_corrections(normalized_term)
+    termo_normalizado = _motor_busca.normalizar_texto(termo)
+    termo_corrigido = _motor_busca.aplicar_correcoes(termo_normalizado)
     
-    for indexed_term, products in kb.items():
-        # Normaliza o termo indexado
-        normalized_indexed = fuzzy_engine.normalize_text(indexed_term)
+    for termo_indexado, produtos in kb.items():
+        indexado_normalizado = _motor_busca.normalizar_texto(termo_indexado)
         
-        # Verifica se há contenção em qualquer direção
-        if (corrected_term in normalized_indexed or 
-            normalized_indexed in corrected_term or
-            normalized_term in normalized_indexed):
+        if (termo_corrigido in indexado_normalizado or 
+            indexado_normalizado in termo_corrigido or
+            termo_normalizado in indexado_normalizado):
             
-            for product in products:
-                codprod = product.get("codprod")
-                if codprod and codprod not in seen_codprods:
-                    matching_products.append(product)
-                    seen_codprods.add(codprod)
+            for produto in produtos:
+                codprod = produto.get("codprod")
+                if codprod and codprod not in codprods_vistos:
+                    produtos_correspondentes.append(produto)
+                    codprods_vistos.add(codprod)
     
-    if matching_products:
-        logging.info(f"[KB] Busca por contenção encontrou {len(matching_products)} produtos para: {term}")
-        return _enrich_kb_products_with_db_data(matching_products)
+    if produtos_correspondentes:
+        logging.info(f"[KB] Busca por contenção encontrou {len(produtos_correspondentes)} produtos para: {termo}")
+        return _enriquecer_produtos_kb_com_dados_db(produtos_correspondentes)
     
-    logging.info(f"[KB] Nenhum produto encontrado para: {term}")
+    logging.info(f"[KB] Nenhum produto encontrado para: {termo}")
     return []
 
-def find_product_in_kb_with_analysis(term: str) -> Tuple[List[Dict], Dict]:
-    """🆕 NOVA FUNÇÃO: Busca produtos e retorna análise da qualidade da busca."""
-    products = find_product_in_kb(term)
-    analysis = analyze_search_quality(term, products)
-    return products, analysis
+def encontrar_produto_na_kb_com_analise(termo: str) -> Tuple[List[Dict], Dict]:
+    """Busca produtos e retorna uma análise da qualidade da busca.
 
-def update_kb(term: str, correct_product: Dict):
+    Args:
+        termo: O termo de busca.
+
+    Returns:
+        Uma tupla contendo a lista de produtos e a análise da busca.
     """
-    Atualiza persistentemente a base de conhecimento com nova associação.
-    🆕 MELHORADA: Agora com melhor estrutura e validações.
+    produtos = encontrar_produto_na_kb(termo)
+    analise = analisar_qualidade_busca(termo, produtos)
+    return produtos, analise
+
+def atualizar_kb(termo: str, produto_correto: Dict):
+    """Atualiza a base de conhecimento com uma nova associação.
+
+    Args:
+        termo: O termo de busca.
+        produto_correto: O produto correto associado ao termo.
     """
-    if not term or not correct_product or not correct_product.get("codprod"):
+    if not termo or not produto_correto or not produto_correto.get("codprod"):
         logging.warning("Tentativa de atualizar KB com dados inválidos.")
         return
 
-    term_normalized = fuzzy_engine.normalize_text(term)
+    termo_normalizado = _motor_busca.normalizar_texto(termo)
 
-    # Carrega o arquivo bruto (apenas nomes canônicos como chaves)
     try:
-        with KB_PATH.open("r", encoding="utf-8") as f:
-            raw_kb = json.load(f)
+        with CAMINHO_KB.open("r", encoding="utf-8") as f:
+            kb_bruto = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        raw_kb = {}
+        kb_bruto = {}
 
-    # 🆕 COMPATIBILIDADE: Usa descricao ou canonical_name
-    canonical_name = correct_product.get("descricao") or correct_product.get("canonical_name", f"Produto {correct_product['codprod']}")
+    nome_canonico = produto_correto.get("descricao") or produto_correto.get("canonical_name", f"Produto {produto_correto['codprod']}")
     
-    # Procura se já existe entrada para este produto
-    entry = None
-    entry_key = None
-    for name, existing_entry in raw_kb.items():
-        if existing_entry.get("codprod") == correct_product["codprod"]:
-            entry = existing_entry
-            entry_key = name
+    entrada = None
+    chave_entrada = None
+    for nome, entrada_existente in kb_bruto.items():
+        if entrada_existente.get("codprod") == produto_correto["codprod"]:
+            entrada = entrada_existente
+            chave_entrada = nome
             break
     
-    # Se não encontrou, cria nova entrada
-    if entry is None:
-        entry = {
-            "codprod": correct_product["codprod"],
-            "canonical_name": canonical_name,
+    if entrada is None:
+        entrada = {
+            "codprod": produto_correto["codprod"],
+            "canonical_name": nome_canonico,
             "related_words": [],
         }
-        entry_key = canonical_name
-        raw_kb[entry_key] = entry
+        chave_entrada = nome_canonico
+        kb_bruto[chave_entrada] = entrada
 
-    # Adiciona o novo termo se não existir
-    existing_words = [fuzzy_engine.normalize_text(w) for w in entry["related_words"]]
-    if term_normalized not in existing_words:
-        entry["related_words"].append(term)
-        logging.info(f"Adicionado termo '{term}' ao produto {canonical_name}")
+    palavras_existentes = [_motor_busca.normalizar_texto(w) for w in entrada["related_words"]]
+    if termo_normalizado not in palavras_existentes:
+        entrada["related_words"].append(termo)
+        logging.info(f"Adicionado termo '{termo}' ao produto {nome_canonico}")
 
     try:
-        with KB_PATH.open("w", encoding="utf-8") as f:
-            json.dump(raw_kb, f, indent=2, ensure_ascii=False)
-        logging.info(f"KB atualizado com novo termo relacionado '{term}'")
+        with CAMINHO_KB.open("w", encoding="utf-8") as f:
+            json.dump(kb_bruto, f, indent=2, ensure_ascii=False)
+        logging.info(f"KB atualizado com novo termo relacionado '{termo}'")
     except Exception as e:
         logging.error(f"Falha ao salvar a base de conhecimento: {e}")
 
-    # Limpa o cache em memória para refletir as mudanças
-    global _kb
-    _kb = None
+    global _base_conhecimento
+    _base_conhecimento = None
 
-def get_kb_statistics() -> Dict:
-    """🆕 NOVA FUNÇÃO: Retorna estatísticas da base de conhecimento."""
-    kb = _load_kb()
+def obter_estatisticas_kb() -> Dict:
+    """Retorna estatísticas da base de conhecimento.
+
+    Returns:
+        Um dicionário com as estatísticas.
+    """
+    kb = _carregar_kb()
     
     if not kb:
         return {
@@ -280,79 +269,74 @@ def get_kb_statistics() -> Dict:
             "avg_terms_per_product": 0.0
         }
     
-    total_terms = len(kb)
-    product_codprods = set()
-    term_counts = []
+    total_termos = len(kb)
+    codprods_produto = set()
+    contagens_termos = []
     
-    for term, products in kb.items():
-        for product in products:
-            codprod = product.get("codprod")
+    for termo, produtos in kb.items():
+        for produto in produtos:
+            codprod = produto.get("codprod")
             if codprod:
-                product_codprods.add(codprod)
-        term_counts.append(len(products))
+                codprods_produto.add(codprod)
+        contagens_termos.append(len(produtos))
     
-    total_products = len(product_codprods)
+    total_produtos = len(codprods_produto)
     
-    # Calcula cobertura em relação ao banco
-    db_product_count = database.get_products_count()
-    coverage = (total_products / db_product_count * 100) if db_product_count > 0 else 0.0
+    contagem_produtos_db = database.get_products_count()
+    cobertura = (total_produtos / contagem_produtos_db * 100) if contagem_produtos_db > 0 else 0.0
     
-    # Média de termos por produto
-    avg_terms = sum(term_counts) / len(term_counts) if term_counts else 0.0
+    media_termos = sum(contagens_termos) / len(contagens_termos) if contagens_termos else 0.0
     
     return {
-        "total_terms": total_terms,
-        "total_products": total_products,
-        "total_products_in_db": db_product_count,
-        "coverage_percentage": coverage,
-        "avg_terms_per_product": avg_terms,
-        "kb_file_size": KB_PATH.stat().st_size if KB_PATH.exists() else 0
+        "total_terms": total_termos,
+        "total_products": total_produtos,
+        "total_products_in_db": contagem_produtos_db,
+        "coverage_percentage": cobertura,
+        "avg_terms_per_product": media_termos,
+        "kb_file_size": CAMINHO_KB.stat().st_size if CAMINHO_KB.exists() else 0
     }
 
-def optimize_kb():
-    """🆕 NOVA FUNÇÃO: Otimiza a base de conhecimento removendo duplicatas e termos inválidos."""
+def otimizar_kb():
+    """Otimiza a base de conhecimento removendo duplicatas e termos inválidos."""
     try:
-        with KB_PATH.open("r", encoding="utf-8") as f:
-            raw_kb = json.load(f)
+        with CAMINHO_KB.open("r", encoding="utf-8") as f:
+            kb_bruto = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         logging.error("Não foi possível carregar KB para otimização")
         return False
     
-    optimized_count = 0
+    contagem_otimizados = 0
     
-    for canonical_name, product_data in raw_kb.items():
-        if "related_words" not in product_data:
+    for nome_canonico, dados_produto in kb_bruto.items():
+        if "related_words" not in dados_produto:
             continue
         
-        original_words = product_data["related_words"]
+        palavras_originais = dados_produto["related_words"]
         
-        # Remove duplicatas (considerando normalização)
-        unique_words = []
-        seen_normalized = set()
+        palavras_unicas = []
+        vistos_normalizados = set()
         
-        for word in original_words:
-            if not word or len(word.strip()) < 2:
+        for palavra in palavras_originais:
+            if not palavra or len(palavra.strip()) < 2:
                 continue
             
-            normalized = fuzzy_engine.normalize_text(word)
-            if normalized and normalized not in seen_normalized:
-                unique_words.append(word.strip())
-                seen_normalized.add(normalized)
+            normalizado = _motor_busca.normalizar_texto(palavra)
+            if normalizado and normalizado not in vistos_normalizados:
+                palavras_unicas.append(palavra.strip())
+                vistos_normalizados.add(normalizado)
         
-        if len(unique_words) != len(original_words):
-            product_data["related_words"] = unique_words
-            optimized_count += 1
+        if len(palavras_unicas) != len(palavras_originais):
+            dados_produto["related_words"] = palavras_unicas
+            contagem_otimizados += 1
     
-    # Salva KB otimizada
     try:
-        with KB_PATH.open("w", encoding="utf-8") as f:
-            json.dump(raw_kb, f, indent=2, ensure_ascii=False)
+        with CAMINHO_KB.open("w", encoding="utf-8") as f:
+            json.dump(kb_bruto, f, indent=2, ensure_ascii=False)
         
-        logging.info(f"KB otimizada: {optimized_count} produtos processados")
+        logging.info(f"KB otimizada: {contagem_otimizados} produtos processados")
         
-        # Limpa cache
-        global _kb
-        _kb = None
+        global _base_conhecimento
+        _base_conhecimento = None
         
         return True
         
@@ -360,270 +344,269 @@ def optimize_kb():
         logging.error(f"Erro ao salvar KB otimizada: {e}")
         return False
 
-def _normalize(text: str) -> str:
-    """Remove acentos e normaliza o texto para minúsculas."""
-    nfkd = unicodedata.normalize("NFD", text.lower())
+def _normalizar(texto: str) -> str:
+    """Remove acentos e normaliza o texto para minúsculas.
+
+    Args:
+        texto: O texto a ser normalizado.
+
+    Returns:
+        O texto normalizado.
+    """
+    nfkd = unicodedata.normalize("NFD", texto.lower())
     return "".join(c for c in nfkd if unicodedata.category(c) != "Mn")
 
-def _heuristic_related_words(description: str) -> List[str]:
-    """Fallback simples para gerar variações quando a IA não estiver disponível."""
-    normalized = _normalize(description)
-    tokens = [t for t in re.split(r"\W+", normalized) if t and len(t) > 1]
-    variations = set()
+def _palavras_relacionadas_heuristicas(descricao: str) -> List[str]:
+    """Gera variações de busca para uma descrição de produto.
 
-    # Variações básicas
-    variations.add(normalized)
-    variations.add(" ".join(tokens))
-    variations.add("".join(tokens))
+    Args:
+        descricao: A descrição do produto.
+
+    Returns:
+        Uma lista de variações de busca.
+    """
+    normalizado = _normalizar(descricao)
+    tokens = [t for t in re.split(r"\W+", normalizado) if t and len(t) > 1]
+    variacoes = set()
+
+    variacoes.add(normalizado)
+    variacoes.add(" ".join(tokens))
+    variacoes.add("".join(tokens))
     
-    # Remove pontuação
     for char in ["-", ".", "(", ")", "[", "]"]:
-        if char in normalized:
-            clean_version = normalized.replace(char, " ")
-            variations.add(" ".join(clean_version.split()))
+        if char in normalizado:
+            versao_limpa = normalizado.replace(char, " ")
+            variacoes.add(" ".join(versao_limpa.split()))
     
-    # Adiciona tokens individuais significativos
     for token in tokens:
         if len(token) >= 3:
-            variations.add(token)
+            variacoes.add(token)
     
-    # Combinações de tokens adjacentes
     for i in range(len(tokens) - 1):
         combo = f"{tokens[i]} {tokens[i+1]}"
-        variations.add(combo)
+        variacoes.add(combo)
     
-    # Remove strings muito curtas ou muito longas
-    filtered_variations = [v for v in variations if 2 <= len(v) <= 50]
+    variacoes_filtradas = [v for v in variacoes if 2 <= len(v) <= 50]
     
-    return list(set(filtered_variations))[:15]  # Máximo 15 variações
+    return list(set(variacoes_filtradas))[:15]
 
-def _generate_ai_variations(description: str) -> List[str]:
-    """Gera variações usando IA (Ollama) com prompt otimizado."""
-    if not OLLAMA_HOST:
+def _gerar_variacoes_ia(descricao: str) -> List[str]:
+    """Gera variações de busca usando IA.
+
+    Args:
+        descricao: A descrição do produto.
+
+    Returns:
+        Uma lista de variações de busca.
+    """
+    if not HOST_OLLAMA:
         logging.warning("OLLAMA_HOST não configurado, usando variações heurísticas")
-        return _heuristic_related_words(description)
+        return _palavras_relacionadas_heuristicas(descricao)
 
-    # Prompt otimizado para gerar variações
-    prompt = f"""Gere variações de busca para o produto: "{description}"
-
-Inclua:
-- Abreviações comuns (ex: refri para refrigerante)
-- Gírias e apelidos
-- Variações de escrita
-- Termos relacionados à marca/categoria
-- Diferentes formas de escrever quantidades/medidas
-
-Responda APENAS com uma lista JSON de strings, máximo 20 variações.
-Exemplo: ["variacao1", "variacao2", "variacao3"]
-
-Produto: {description}
-Variações:"""
+    prompt = f"""Gere variações de busca para o produto: "{descricao}"\n\nInclua:\n- Abreviações comuns (ex: refri para refrigerante)\n- Gírias e apelidos\n- Variações de escrita\n- Termos relacionados à marca/categoria\n- Diferentes formas de escrever quantidades/medidas\n\nResponda APENAS com uma lista JSON de strings, máximo 20 variações.\nExemplo: ["variacao1", "variacao2", "variacao3"]\n\nProduto: {descricao}\nVariações:"""
 
     try:
-        client = ollama.Client(host=OLLAMA_HOST)
-        response = client.chat(
-            model=OLLAMA_MODEL_NAME,
+        cliente = ollama.Client(host=HOST_OLLAMA)
+        resposta = cliente.chat(
+            model=NOME_MODELO_OLLAMA,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0.7, "max_tokens": 300}
         )
         
-        content = response["message"]["content"].strip()
+        conteudo = resposta["message"]["content"].strip()
         
-        # Extrai JSON da resposta
-        json_match = re.search(r'\[.*\]', content, re.DOTALL)
-        if json_match:
+        match_json = re.search(r'[[.*]]', conteudo, re.DOTALL)
+        if match_json:
             try:
-                variations = json.loads(json_match.group(0))
-                if isinstance(variations, list):
-                    # Filtra e normaliza variações
-                    valid_variations = []
-                    for var in variations:
+                variacoes = json.loads(match_json.group(0))
+                if isinstance(variacoes, list):
+                    variacoes_validas = []
+                    for var in variacoes:
                         if isinstance(var, str) and 2 <= len(var.strip()) <= 50:
-                            valid_variations.append(var.strip().lower())
+                            variacoes_validas.append(var.strip().lower())
                     
-                    return valid_variations[:20]  # Máximo 20
+                    return variacoes_validas[:20]
             except json.JSONDecodeError:
                 pass
     
     except Exception as e:
         logging.warning(f"Erro ao gerar variações com IA: {e}")
     
-    # Fallback para heurística
-    return _heuristic_related_words(description)
+    return _palavras_relacionadas_heuristicas(descricao)
 
-def rebuild_knowledge_base():
-    """
-    Reconstrói a base de conhecimento gravando incrementalmente no disco
-    e permitindo interrupção segura com CTRL+C.
+def reconstruir_base_conhecimento():
+    """Reconstrói a base de conhecimento.
+
+    Returns:
+        True se a reconstrução for bem-sucedida, False caso contrário.
     """
     logging.info("=== INICIANDO GERAÇÃO DA BASE DE CONHECIMENTO (stream) ===")
 
-    if KB_PATH.exists():
-        backup_path = KB_PATH.with_suffix(".json.backup")
+    if CAMINHO_KB.exists():
+        caminho_backup = CAMINHO_KB.with_suffix(".json.backup")
         try:
             import shutil
-            shutil.copy2(KB_PATH, backup_path)
-            logging.info(f"Backup criado: {backup_path}")
+            shutil.copy2(CAMINHO_KB, caminho_backup)
+            logging.info(f"Backup criado: {caminho_backup}")
         except Exception as e:
             logging.warning(f"Falha ao criar backup: {e}")
 
-    products = database.get_all_active_products()
-    if not products:
+    produtos = database.obter_todos_produtos_ativos()
+    if not produtos:
         logging.error("Nenhum produto encontrado no banco de dados")
         return False
 
-    temp_path = KB_PATH.with_suffix(".ndjson.tmp")
-    processed_count = 0
-    total_terms = 0
+    caminho_temporario = CAMINHO_KB.with_suffix(".ndjson.tmp")
+    contagem_processados = 0
+    total_termos = 0
 
     try:
-        with temp_path.open("w", encoding="utf-8") as f:
+        with caminho_temporario.open("w", encoding="utf-8") as f:
             try:
-                for i, product in enumerate(products, 1):
-                    codprod = product.get("codprod")
-                    description = product.get("descricao", "")
+                for i, produto in enumerate(produtos, 1):
+                    codprod = produto.get("codprod")
+                    descricao = produto.get("descricao", "")
 
-                    if not codprod or not description:
+                    if not codprod or not descricao:
                         continue
 
-                    logging.info(f"Processando produto {i}/{len(products)}: {description}")
+                    logging.info(f"Processando produto {i}/{len(produtos)}: {descricao}")
 
-                    variations = _generate_ai_variations(description)
-                    heuristic_vars = _heuristic_related_words(description)
-                    all_variations = list(set(variations + heuristic_vars))[:25]
+                    variacoes = _gerar_variacoes_ia(descricao)
+                    vars_heuristicas = _palavras_relacionadas_heuristicas(descricao)
+                    todas_variacoes = list(set(variacoes + vars_heuristicas))[:25]
 
-                    kb_entry = {
+                    entrada_kb = {
                         "codprod": codprod,
-                        "canonical_name": description,
-                        "related_words": all_variations
+                        "canonical_name": descricao,
+                        "related_words": todas_variacoes
                     }
 
-                    # Grava como NDJSON (1 produto por linha)
-                    f.write(json.dumps({description: kb_entry}, ensure_ascii=False) + "\n")
+                    f.write(json.dumps({descricao: entrada_kb}, ensure_ascii=False) + "\n")
                     f.flush()
 
-                    processed_count += 1
-                    total_terms += len(all_variations)
+                    contagem_processados += 1
+                    total_termos += len(todas_variacoes)
 
             except KeyboardInterrupt:
                 logging.warning("⚠ Interrupção detectada (CTRL+C). Finalizando com dados parciais...")
-                # Continua para gerar o arquivo final com o que já foi processado
 
-        # Converte NDJSON para JSON final
         from collections import ChainMap
-        with temp_path.open("r", encoding="utf-8") as f:
-            final_data = dict(ChainMap(*[json.loads(line) for line in f]))
+        with caminho_temporario.open("r", encoding="utf-8") as f:
+            dados_finais = dict(ChainMap(*[json.loads(line) for line in f]))
 
-        with KB_PATH.open("w", encoding="utf-8") as f:
-            json.dump(final_data, f, indent=2, ensure_ascii=False)
+        with CAMINHO_KB.open("w", encoding="utf-8") as f:
+            json.dump(dados_finais, f, indent=2, ensure_ascii=False)
 
         logging.info("=== BASE DE CONHECIMENTO GERADA COM SUCESSO ===")
-        logging.info(f"Produtos processados: {processed_count}")
-        logging.info(f"Total de termos relacionados: {total_terms}")
+        logging.info(f"Produtos processados: {contagem_processados}")
+        logging.info(f"Total de termos relacionados: {total_termos}")
 
-        global _kb
-        _kb = None
+        global _base_conhecimento
+        _base_conhecimento = None
         return True
 
     except Exception as e:
         logging.error(f"Erro ao gerar KB: {e}")
         return False
     finally:
-        if temp_path.exists():
-            temp_path.unlink()
+        if caminho_temporario.exists():
+            caminho_temporario.unlink()
 
 
+def validar_integridade_kb() -> Dict:
+    """Valida a integridade da base de conhecimento.
 
-def validate_kb_integrity() -> Dict:
-    """🆕 NOVA FUNÇÃO: Valida integridade da base de conhecimento."""
+    Returns:
+        Um dicionário com o resultado da validação.
+    """
     try:
-        with KB_PATH.open("r", encoding="utf-8") as f:
-            raw_kb = json.load(f)
+        with CAMINHO_KB.open("r", encoding="utf-8") as f:
+            kb_bruto = json.load(f)
     except Exception as e:
         return {"valid": False, "error": f"Erro ao carregar KB: {e}"}
     
-    issues = []
-    valid_entries = 0
-    total_entries = len(raw_kb)
+    problemas = []
+    entradas_validas = 0
+    total_entradas = len(kb_bruto)
     
-    for canonical_name, product_data in raw_kb.items():
-        entry_issues = []
+    for nome_canonico, dados_produto in kb_bruto.items():
+        problemas_entrada = []
         
-        # Verifica estrutura básica
-        if not isinstance(product_data, dict):
-            entry_issues.append("Entrada não é um dicionário")
+        if not isinstance(dados_produto, dict):
+            problemas_entrada.append("Entrada não é um dicionário")
             continue
         
-        # Verifica campos obrigatórios
-        if "codprod" not in product_data:
-            entry_issues.append("Campo 'codprod' ausente")
-        elif not isinstance(product_data["codprod"], int):
-            entry_issues.append("Campo 'codprod' não é inteiro")
+        if "codprod" not in dados_produto:
+            problemas_entrada.append("Campo 'codprod' ausente")
+        elif not isinstance(dados_produto["codprod"], int):
+            problemas_entrada.append("Campo 'codprod' não é inteiro")
         
-        if "related_words" not in product_data:
-            entry_issues.append("Campo 'related_words' ausente")
-        elif not isinstance(product_data["related_words"], list):
-            entry_issues.append("Campo 'related_words' não é lista")
+        if "related_words" not in dados_produto:
+            problemas_entrada.append("Campo 'related_words' ausente")
+        elif not isinstance(dados_produto["related_words"], list):
+            problemas_entrada.append("Campo 'related_words' não é lista")
         
-        # Verifica se produto existe no banco
-        if "codprod" in product_data:
-            db_product = database.get_product_by_codprod(product_data["codprod"])
-            if not db_product:
-                entry_issues.append(f"Produto {product_data['codprod']} não encontrado no banco")
+        if "codprod" in dados_produto:
+            produto_db = database.get_product_by_codprod(dados_produto["codprod"])
+            if not produto_db:
+                problemas_entrada.append(f"Produto {dados_produto['codprod']} não encontrado no banco")
         
-        if entry_issues:
-            issues.append({
-                "canonical_name": canonical_name,
-                "issues": entry_issues
+        if problemas_entrada:
+            problemas.append({
+                "canonical_name": nome_canonico,
+                "issues": problemas_entrada
             })
         else:
-            valid_entries += 1
+            entradas_validas += 1
     
     return {
-        "valid": len(issues) == 0,
-        "total_entries": total_entries,
-        "valid_entries": valid_entries,
-        "invalid_entries": len(issues),
-        "issues": issues[:10],  # Limita a 10 para não poluir log
-        "integrity_score": (valid_entries / total_entries * 100) if total_entries > 0 else 0
+        "valid": len(problemas) == 0,
+        "total_entries": total_entradas,
+        "valid_entries": entradas_validas,
+        "invalid_entries": len(problemas),
+        "issues": problemas[:10],
+        "integrity_score": (entradas_validas / total_entradas * 100) if total_entradas > 0 else 0
     }
 
-def search_kb_with_suggestions(term: str) -> Dict:
-    """🆕 NOVA FUNÇÃO: Busca na KB com sugestões automáticas."""
-    products = find_product_in_kb(term)
+def buscar_kb_com_sugestoes(termo: str) -> Dict:
+    """Busca na base de conhecimento com sugestões automáticas.
+
+    Args:
+        termo: O termo de busca.
+
+    Returns:
+        Um dicionário com os resultados da busca.
+    """
+    produtos = encontrar_produto_na_kb(termo)
     
-    result = {
-        "products": products,
+    resultado = {
+        "products": produtos,
         "suggestions": [],
         "search_quality": "unknown"
     }
     
-    if products:
-        # Analisa qualidade da busca
-        analysis = analyze_search_quality(term, products)
-        result["search_quality"] = analysis.get("quality", "unknown")
+    if produtos:
+        analise = analisar_qualidade_busca(termo, produtos)
+        resultado["search_quality"] = analise.get("quality", "unknown")
         
-        # Se qualidade baixa, adiciona sugestões
-        if analysis.get("quality") in ["fair", "poor"]:
-            result["suggestions"] = analysis.get("suggestions", [])
+        if analise.get("quality") in ["fair", "poor"]:
+            resultado["suggestions"] = analise.get("suggestions", [])
     else:
-        # Nenhum produto encontrado - gera sugestões
-        corrected = fuzzy_engine.apply_corrections(term)
-        if corrected != fuzzy_engine.normalize_text(term):
-            result["suggestions"].append(corrected)
+        corrigido = _motor_busca.aplicar_correcoes(termo)
+        if corrigido != _motor_busca.normalizar_texto(termo):
+            resultado["suggestions"].append(corrigido)
         
-        synonyms = fuzzy_engine.expand_with_synonyms(term)
-        result["suggestions"].extend(synonyms[:2])
+        sinonimos = _motor_busca.expandir_com_sinonimos(termo)
+        resultado["suggestions"].extend(sinonimos[:2])
         
-        result["search_quality"] = "no_results"
+        resultado["search_quality"] = "no_results"
     
-    return result
+    return resultado
 
-# Script principal para geração
 if __name__ == "__main__":
     import sys
     
-    # Configura logging para script
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s [%(levelname)s] %(message)s',
@@ -633,20 +616,17 @@ if __name__ == "__main__":
         ]
     )
     
-    # Executa geração da base de conhecimento
-    success = rebuild_knowledge_base()
+    sucesso = reconstruir_base_conhecimento()
     
-    if success:
-        # Valida integridade
-        validation = validate_kb_integrity()
-        if validation["valid"]:
+    if sucesso:
+        validacao = validar_integridade_kb()
+        if validacao["valid"]:
             logging.info("✅ Base de conhecimento gerada e validada com sucesso!")
         else:
-            logging.warning(f"⚠️ Base gerada com {validation['invalid_entries']} problemas")
+            logging.warning(f"⚠️ Base gerada com {validacao['invalid_entries']} problemas")
             
-        # Mostra estatísticas
-        stats = get_kb_statistics()
-        logging.info(f"📊 Estatísticas: {stats['total_products']} produtos, {stats['total_terms']} termos, {stats['coverage_percentage']:.1f}% cobertura")
+        estatisticas = obter_estatisticas_kb()
+        logging.info(f"📊 Estatísticas: {estatisticas['total_products']} produtos, {estatisticas['total_terms']} termos, {estatisticas['coverage_percentage']:.1f}% cobertura")
     else:
         logging.error("❌ Falha na geração da base de conhecimento")
         sys.exit(1)

@@ -14,9 +14,25 @@ from typing import Union, Dict, List
 import time
 
 
-from core.session_manager import get_conversation_context
-from utils.quantity_extractor import detect_quantity_modifiers
-from utils.response_parser import extract_json_from_ai_response
+from core.gerenciador_sessao import obter_contexto_conversa
+from utils.extrator_quantidade import detectar_modificadores_quantidade
+from utils.analisador_resposta import extrair_json_da_resposta_ia
+from utils.classificador_intencao import detectar_intencao_usuario_com_ia
+
+def check_ollama_connection() -> bool:
+    """Verifica se o Ollama está disponível e funcionando"""
+    try:
+        client = ollama.Client(host=OLLAMA_HOST)
+        # Tenta fazer uma chamada simples para verificar conectividade
+        response = client.chat(
+            model=OLLAMA_MODEL_NAME,
+            messages=[{"role": "user", "content": "test"}],
+            options={"num_predict": 1}
+        )
+        return True
+    except Exception as e:
+        logging.warning(f"Ollama não disponível: {e}")
+        return False
 
 # --- Configurações Globais ---
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -39,6 +55,7 @@ AVAILABLE_TOOLS = [
     "ask_continue_or_checkout",
     "clear_cart",  # 🆕 ADICIONADO
     "smart_cart_update",  # 🆕 NOVA FERRAMENTA
+    "smart_search_with_promotions", # ETAPA 4
 ]
 
 # Cache do prompt para evitar leitura repetida do arquivo
@@ -196,7 +213,7 @@ def load_prompt_template() -> str:
     if _prompt_cache and (time.time() - _prompt_cache_time) < 300:
         return _prompt_cache
 
-    prompt_path = os.path.join("ai_llm", "gav_prompt_structured.txt")
+    prompt_path = os.path.join("ai_llm", "gav_prompt_structured_v2.txt")
 
     try:
         logging.info(f"[llm_interface.py] Carregando prompt de: {prompt_path}")
@@ -539,7 +556,7 @@ def get_intent(
         )
 
         # Obtém contexto EXPANDIDO da conversa (14 mensagens para melhor contexto)
-        conversation_context = get_conversation_context(session_data, max_messages=14)
+        conversation_context = obter_contexto_conversa(session_data, max_messages=14)
         print(f">>> CONSOLE: Contexto da conversa com {len(session_data.get('conversation_history', []))} mensagens totais")
 
         # Informações do carrinho
@@ -791,7 +808,7 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     if context.get("clear_cart_command"):
         return {"tool_name": "clear_cart", "parameters": {}}
 
-    modifiers = detect_quantity_modifiers(message_lower)
+    modifiers = detectar_modificadores_quantidade(message_lower)
     if modifiers.get("action") == "remove":
         if context.get("has_cart_items"):
             return {"tool_name": "update_cart_item", "parameters": {"action": "remove"}}
@@ -800,19 +817,27 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
             "parameters": {"response_text": "Seu carrinho está vazio."},
         }
 
-    modifiers = detect_quantity_modifiers(message_lower)
+    modifiers = detectar_modificadores_quantidade(message_lower)
     if modifiers.get("action") == "clear":
         return {"tool_name": "clear_cart", "parameters": {}}
 
-    # 🆕 SELEÇÃO NUMÉRICA NO CONTEXTO DE CHECKOUT
-    if context.get("numeric_selection") and stage == "checkout":
+    # 🆕 SELEÇÃO NUMÉRICA NO CONTEXTO DE MENU PRINCIPAL
+    if context.get("numeric_selection"):
         selection = context.get("numeric_selection")
+        has_cart = context.get("has_cart_items", False)
+        
+        print(f">>> FALLBACK: Seleção numérica {selection}, tem_carrinho={has_cart}")
+        
         if selection == 1:  # Buscar produtos
-            return {"tool_name": "get_top_selling_products", "parameters": {}}
-        elif selection == 2:  # Ver carrinho  
+            return {"tool_name": "smart_search_with_promotions", "parameters": {"search_term": "produtos"}}
+        elif selection == 2 and has_cart:  # Ver carrinho (só se tiver carrinho)
             return {"tool_name": "view_cart", "parameters": {}}
-        elif selection == 3:  # Finalizar pedido
+        elif selection == 3 and has_cart:  # Finalizar pedido (só se tiver carrinho)
             return {"tool_name": "checkout", "parameters": {}}
+        elif selection == 2 and not has_cart:  # Sem carrinho, busca produtos
+            return {"tool_name": "get_top_selling_products", "parameters": {}}
+        elif selection == 3 and not has_cart:  # Sem carrinho, busca produtos  
+            return {"tool_name": "get_top_selling_products", "parameters": {}}
 
     # Seleção numérica direta (produtos)
     if context.get("numeric_selection") and context.get("has_pending_products"):
@@ -1072,13 +1097,34 @@ def get_enhanced_intent(
     return {"tool_name": tool_name, "parameters": validated_parameters}
 
 
-def get_intent_fast(user_message: str, session_data: Dict) -> Dict:
-    """Versão rápida de detecção de intenção sem usar IA."""
-    # Melhora consciência contextual
-    context = enhance_context_awareness(user_message, session_data)
+def obter_intencao_rapida(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
+    """
+    Obtém a intenção do usuário de forma rápida.
 
-    # Retorna intenção baseada em padrões
-    return create_fallback_intent(user_message, context)
+    Args:
+        mensagem_usuario: A mensagem do usuário.
+        dados_sessao: Os dados da sessão.
+
+    Returns:
+        A intenção do usuário.
+    """
+    try:
+        contexto_conversa = obter_contexto_conversa(dados_sessao)
+        
+        # 🚀 USA O NOVO CLASSIFICADOR INTELIGENTE
+        resultado_intencao = detectar_intencao_usuario_com_ia(mensagem_usuario, contexto_conversa)
+        
+        if resultado_intencao and "nome_ferramenta" in resultado_intencao:
+            logging.info(f"[INTENT] Detectado via IA: {resultado_intencao['nome_ferramenta']}")
+            return resultado_intencao
+            
+    except Exception as e:
+        logging.warning(f"[INTENT] Erro no classificador IA: {e}")
+    
+    # Fallback para sistema antigo se a IA falhar
+    logging.info(f"[INTENT] Usando fallback para: {mensagem_usuario}")
+    contexto = melhorar_consciencia_contexto(mensagem_usuario, dados_sessao)
+    return _criar_intencao_fallback(mensagem_usuario, contexto)
 
 
 def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts: int = 2) -> Dict:
@@ -1098,7 +1144,7 @@ def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts
                 prompt_modifier=prompt_modifier
             )
             
-            parsed_json = extract_json_from_ai_response(raw_response)
+            parsed_json = extrair_json_da_resposta_ia(raw_response)
             
             if validate_json_structure(parsed_json, AVAILABLE_TOOLS):
                 return parsed_json
@@ -1125,41 +1171,38 @@ def generate_personalized_response(context_type: str, session_data: Dict, **kwar
         conversation_history = session_data.get("conversation_history", [])
         cart_items = len(session_data.get("shopping_cart", []))
         
-        # Prompt específico para geração de resposta - sempre direcionado a UMA pessoa
+        # 🆕 PROMPTS PROFISSIONAIS: Mensagens curtas, naturais mas sem inventar dados
         contexts = {
-            "error": "Algo deu errado com o que o usuário tentou fazer. Responda diretamente a ELE de forma amigável, explicando que houve um problema e pedindo para tentar novamente. Use 'você' e seja pessoal.",
-            "greeting": "Cumprimente o usuário de forma profissional e natural, se apresentando SEMPRE como 'G.A.V., Gentil Assistente de Vendas do Comercial Esperança' e perguntando como pode ajudar. Use linguagem neutra de gênero, seja cordial, respeitoso e sem gírias, mas mantenha um tom acolhedor.",
-            "clarification": "O usuário disse algo que você não entendeu. Peça esclarecimento diretamente a ELE de forma amigável, usando 'você' e tratamento pessoal.",
-            "invalid_quantity": "O usuário informou uma quantidade inválida. Explique diretamente a ELE como informar a quantidade corretamente, de forma didática mas amigável.",
-            "invalid_selection": f"O usuário escolheu um número inválido ({kwargs.get('invalid_number', 'X')}). Explique diretamente a ELE que deve escolher entre 1 e {kwargs.get('max_options', 'N')}, sendo amigável e pessoal.",
-            "empty_cart": "O carrinho do usuário está vazio. Sugira diretamente a ELE ver produtos, sendo animado e natural. Use 'seu carrinho' e fale diretamente com ele.",
-            "cnpj_request": "Peça diretamente ao usuário o CNPJ dele para finalizar a compra. Seja profissional mas amigável, explicando que precisa dessa informação.",
-            "operation_success": f"A operação que o usuário fez deu certo! Comemore diretamente com ELE de forma natural: {kwargs.get('success_details', '')}. Seja caloroso e pessoal.",
+            "error": "Algo deu errado! Seja breve e amigável. Diga que houve um probleminha e peça para tentar de novo. MAX 15 palavras.",
+            "greeting": "Seja O PRÓPRIO G.A.V. falando! Cumprimente de forma natural e pergunte como pode ajudar. Seja caloroso mas direto. MAX 20 palavras.",
+            "clarification": "Não entendeu algo? Peça esclarecimento de forma natural e direta. Seja amigável mas conciso. MAX 15 palavras.",
+            "invalid_quantity": "Quantidade inválida? Explique de forma simples e rápida como informar corretamente. MAX 20 palavras.",
+            "invalid_selection": f"Número {kwargs.get('invalid_number', 'X')} não existe! Seja direto: escolha entre 1 e {kwargs.get('max_options', 'N')}. MAX 15 palavras.",
+            "empty_cart": "Carrinho vazio! Anime o usuário a ver produtos de forma natural e entusiasmada. MAX 15 palavras.",
+            "cnpj_request": "Para finalizar, preciso do seu CNPJ. Seja direto e amigável, sem muita explicação. MAX 15 palavras.",
+            "operation_success": f"Confirme apenas que deu certo: '{kwargs.get('success_details', '')}' ✅. Seja profissional, direto, SEM INVENTAR informações sobre entrega, prazos ou detalhes não fornecidos. MAX 15 palavras.",
         }
         
         context_prompt = contexts.get(context_type, "Responda de forma natural e amigável.")
         
-        prompt = f"""Você é G.A.V., assistente de vendas carismático e natural falando com UMA pessoa via WhatsApp.
+        prompt = f"""Você é G.A.V. falando no WhatsApp com um cliente.
 
-CONTEXTO: {context_prompt}
+{context_prompt}
 
-HISTÓRICO DA CONVERSA: {conversation_history[-3:] if conversation_history else 'Primeira interação'}
-
+HISTÓRICO: {conversation_history[-2:] if conversation_history else 'Primeira conversa'}
 CARRINHO: {cart_items} itens
 
-INSTRUÇÕES CRÍTICAS:
-- Seja NATURAL, PROFISSIONAL e BRASILEIRO
-- SEMPRE fale com UMA pessoa: use "você", "seu", "sua" (NUNCA "vocês", "pessoal")  
-- Use linguagem NEUTRA DE GÊNERO - funcione para homens e mulheres
-- Para SAUDAÇÕES: SEMPRE se apresente como "G.A.V., Gentil Assistente de Vendas do Comercial Esperança"
-- Use linguagem respeitosa e clara, sem gírias excessivas
-- VARIE as respostas - nunca seja repetitivo
-- Mantenha tom acolhedor e prestativo
-- Resposta CURTA (máximo 2 frases para saudações)
-- Evite termos como "amigo", "cara", "mano" - use "você" sempre
-- Exemplos: "Como posso ajudar?" (✅) vs "Como posso ajudar vocês?" (❌)
+REGRAS CRÍTICAS:
+- Seja VOCÊ MESMO (G.A.V.), natural e direto
+- Fale como pessoa real, não como robô
+- Use "você" (nunca "vocês")
+- Seja CONCISO - máximo 2 linhas
+- VARIE as palavras - não seja repetitivo
+- NUNCA INVENTE informações sobre prazos, entregas, condições que não foram fornecidas
+- Seja profissional mas humano
+- NÃO faça promessas sobre entregas ou detalhes técnicos
 
-Responda APENAS o texto da mensagem, sem explicações extras:"""
+Responda APENAS a mensagem (sem aspas):"""
 
         # Faz a chamada para a IA
         response = ollama.chat(
@@ -1191,3 +1234,27 @@ Responda APENAS o texto da mensagem, sem explicações extras:"""
             "operation_success": "Pronto! Deu tudo certo pra você!",
         }
         return fallbacks.get(context_type, "Ops, tive um probleminha. Pode tentar de novo?")
+
+
+# ===== FUNÇÕES DE COMPATIBILIDADE =====
+
+def get_intent_fast(user_message: str, session_data: Dict) -> Dict:
+    """
+    Função de compatibilidade para get_intent_fast (usa obter_intencao_rapida).
+    CORRIGIDA: Agora passa o contexto completo da conversa para a IA.
+    """
+    return obter_intencao_rapida(user_message, session_data)
+
+
+def melhorar_consciencia_contexto(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
+    """
+    Função de compatibilidade para enhance_context_awareness.
+    """
+    return enhance_context_awareness(mensagem_usuario, dados_sessao)
+
+
+def _criar_intencao_fallback(mensagem_usuario: str, contexto: Dict) -> Dict:
+    """
+    Função de compatibilidade para create_fallback_intent.
+    """
+    return create_fallback_intent(mensagem_usuario, contexto)
