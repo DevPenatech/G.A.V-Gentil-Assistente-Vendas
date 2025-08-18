@@ -2183,10 +2183,16 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
 
 
 def _finalize_session(
-    sender_phone: str, session: Dict, state: Dict, response_text: str
+    sender_phone: str, session_id: str, session: Dict, state: Dict, response_text: str
 ) -> None:
     """Atualiza e persiste a sessão, além de enviar a resposta ao usuário.
-    ATUALIZADO: Sempre salva resposta no histórico e exibe no console
+    ATUALIZADO: Sempre salva resposta no histórico e exibe no console. SUPORTA CNPJ.
+    Args:
+        sender_phone: Número de telefone original (para envio de mensagens)
+        session_id: ID da sessão (pode incluir CNPJ)
+        session: Dados da sessão
+        state: Estado atual
+        response_text: Texto da resposta
     """
     atualizar_contexto_sessao(
         session,
@@ -2211,7 +2217,7 @@ def _finalize_session(
         if not (last_msg.get("role") == "assistant" and last_msg.get("message") == response_text):
             adicionar_mensagem_historico(session, "assistant", response_text, "BOT_RESPONSE")
     
-    salvar_sessao(sender_phone, session)
+    salvar_sessao(session_id, session)
 
     if response_text:
         # 📺 CONSOLE: Exibe a resposta completa
@@ -2228,15 +2234,149 @@ def _finalize_session(
             logging.error(f"Erro ao enviar mensagem WhatsApp: {e}", exc_info=True)
 
 
+def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, str, str]:
+    """
+    Valida se o CNPJ foi fornecido no início da conversa.
+    
+    Returns:
+        Tuple[bool, str, str]: (cnpj_validated, session_id, response_text)
+            - cnpj_validated: True se CNPJ já foi validado ou fornecido agora
+            - session_id: ID da sessão (com CNPJ se validado)  
+            - response_text: Mensagem para enviar (se ainda precisar do CNPJ)
+    """
+    from ai_llm.llm_interface import is_valid_cnpj
+    import glob
+    import os
+    
+    # 🔍 Primeiro, procura por qualquer sessão existente com CNPJ para este telefone
+    safe_phone_id = sender_phone.replace(":", "_").replace("/", "_")
+    pattern = f"data/sessao_{safe_phone_id}_*.json"
+    existing_sessions = glob.glob(pattern)
+    
+    print(f">>> CONSOLE: 🔍 Procurando sessões com padrão: {pattern}")
+    print(f">>> CONSOLE: 🔍 Sessões encontradas: {existing_sessions}")
+    
+    if existing_sessions:
+        # Encontrou sessão com CNPJ, usa a mais recente (ordenar por data de modificação)
+        session_file = max(existing_sessions, key=os.path.getmtime)
+        # Normaliza o nome do arquivo para obter o session_id
+        session_filename = os.path.basename(session_file)
+        session_id = session_filename.replace("sessao_", "").replace(".json", "")
+        print(f">>> CONSOLE: ✅ Sessão com CNPJ encontrada: {session_id} (arquivo: {session_filename})")
+        return True, session_id, ""
+    
+    # Se não encontrou sessão com CNPJ, verifica sessão temporária
+    temp_session = carregar_sessao(sender_phone)
+    existing_cnpj = temp_session.get("validated_cnpj")
+    
+    if existing_cnpj:
+        # Já tem CNPJ validado na sessão atual, usa session_id com CNPJ
+        session_id = f"{sender_phone}_{existing_cnpj}"
+        print(f">>> CONSOLE: ✅ CNPJ encontrado na sessão atual: {existing_cnpj}")
+        return True, session_id, ""
+    
+    # Verifica se a mensagem atual é um CNPJ
+    if is_valid_cnpj(incoming_msg.strip()):
+        # É um CNPJ válido!
+        cnpj_clean = incoming_msg.strip().replace(".", "").replace("/", "").replace("-", "")
+        
+        # Migra dados da sessão temporária para a sessão com CNPJ
+        session_id_with_cnpj = f"{sender_phone}_{cnpj_clean}"
+        
+        # Carrega sessão temporária e adiciona CNPJ validado
+        temp_session["validated_cnpj"] = cnpj_clean
+        temp_session["customer_context"] = temp_session.get("customer_context", {})
+        temp_session["customer_context"]["cnpj"] = cnpj_clean
+        
+        # Salva na nova sessão com CNPJ
+        salvar_sessao(session_id_with_cnpj, temp_session)
+        
+        # Limpa sessão temporária se for diferente
+        if session_id_with_cnpj != sender_phone:
+            from core.gerenciador_sessao import limpar_sessao
+            limpar_sessao(sender_phone)
+        
+        print(f">>> CONSOLE: ✅ CNPJ {cnpj_clean} validado e sessão migrada!")
+        
+        # Verifica se já é primeira mensagem após validação
+        if len(temp_session.get("historico_conversa", [])) <= 2:
+            # Primeira vez validando CNPJ, adiciona mensagem de boas-vindas
+            welcome_message = (
+                f"✅ *CNPJ validado com sucesso!*\n\n"
+                f"🎉 Bem-vindo à *Comercial Esperança*!\n"
+                f"Agora posso te ajudar com seus pedidos de forma personalizada.\n\n"
+                f"🔍 Digite o nome do produto que deseja\n"
+                f"📦 Digite *produtos* para ver os mais vendidos\n"
+                f"❓ Digite *ajuda* para mais opções"
+            )
+            adicionar_mensagem_historico(temp_session, "assistant", welcome_message, "CNPJ_VALIDATED")
+            salvar_sessao(session_id_with_cnpj, temp_session)
+        
+        return True, session_id_with_cnpj, ""
+    
+    # Ainda não tem CNPJ, verifica se já pediu antes
+    conversation_history = temp_session.get("historico_conversa", [])
+    already_asked_cnpj = any("cnpj" in msg.get("message", "").lower() 
+                            and msg.get("role") == "assistant" 
+                            for msg in conversation_history[-3:])  # Últimas 3 mensagens
+    
+    # Verifica se o usuário tentou enviar algo que parece ser um CNPJ mas é inválido
+    user_attempted_cnpj = (
+        already_asked_cnpj and 
+        len(incoming_msg.strip()) >= 11 and  # Pelo menos 11 caracteres (pode ser CNPJ)
+        any(char.isdigit() for char in incoming_msg.strip()) and  # Contém números
+        not is_valid_cnpj(incoming_msg.strip())  # Mas não é válido
+    )
+    
+    if user_attempted_cnpj:
+        # Usuário tentou enviar CNPJ mas é inválido
+        response_text = (
+            "❌ CNPJ inválido. Por favor, digite um CNPJ válido no formato:\n"
+            "XX.XXX.XXX/XXXX-XX ou apenas os 14 dígitos.\n\n"
+            "Exemplo: 12.345.678/0001-95"
+        )
+    else:
+        # Primeira vez pedindo CNPJ ou usuário não tentou enviar CNPJ ainda
+        response_text = (
+            "🎉 *Olá! Seja bem-vindo à Comercial Esperança!*\n\n"
+            "Eu sou o *G.A.V.* (Gentil Assistente de Vendas) e estou aqui para "
+            "te ajudar com seus pedidos de forma rápida e personalizada! 😊\n\n"
+            "Para começarmos, preciso apenas do CNPJ da sua empresa:\n"
+            "📄 Digite seu CNPJ (pode ser com ou sem pontuação)"
+        )
+    
+    # Adiciona a mensagem ao histórico da sessão temporária
+    adicionar_mensagem_historico(temp_session, "user", incoming_msg)
+    adicionar_mensagem_historico(temp_session, "assistant", response_text, "REQUEST_CNPJ")
+    salvar_sessao(sender_phone, temp_session)
+    
+    return False, sender_phone, response_text
+
+
 def process_message_async(sender_phone: str, incoming_msg: str):
     """
     Esta função faz todo o trabalho pesado em segundo plano (thread) para não causar timeout.
-    ATUALIZADA COM MEMÓRIA CONVERSACIONAL COMPLETA
+    ATUALIZADA COM MEMÓRIA CONVERSACIONAL COMPLETA E VALIDAÇÃO OBRIGATÓRIA DE CNPJ
     """
     with aplicativo.app_context():
         try:
             print(f"\n--- INÍCIO DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---")
-            session = carregar_sessao(sender_phone)
+            
+            # 🆕 VALIDAÇÃO OBRIGATÓRIA DE CNPJ NO INÍCIO DA CONVERSA
+            cnpj_validated, session_id, response_text = _validate_cnpj_first(sender_phone, incoming_msg)
+            
+            # Se ainda não temos CNPJ válido, envia mensagem solicitando CNPJ e para por aqui
+            if not cnpj_validated:
+                if response_text:
+                    try:
+                        twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
+                        print(f">>> CONSOLE: ✅ Mensagem solicitando CNPJ enviada!")
+                    except Exception as send_error:
+                        print(f">>> CONSOLE: ❌ ERRO ao enviar mensagem: {send_error}")
+                return
+            
+            # Usa o session_id que inclui o CNPJ
+            session = carregar_sessao(session_id)
 
             # 📝 REGISTRA A MENSAGEM DO USUÁRIO NO HISTÓRICO
             adicionar_mensagem_historico(session, "user", incoming_msg)
@@ -2278,7 +2418,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
                 )
 
             # 5. Atualiza e persiste a sessão, enviando a resposta
-            _finalize_session(sender_phone, session, state, response_text)
+            _finalize_session(sender_phone, session_id, session, state, response_text)
 
             logging.info(f"THREAD: Processamento finalizado para '{incoming_msg}'")
             print(f"--- FIM DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---\n")
@@ -2309,12 +2449,20 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
     """
     Processa uma mensagem e retorna o texto da resposta para o webchat.
-    Não envia a mensagem por APIs externas.
+    Não envia a mensagem por APIs externas. INCLUI VALIDAÇÃO OBRIGATÓRIA DE CNPJ.
     """
     # O 'with app.app_context()' é crucial para que a thread acesse a aplicação Flask
     with aplicativo.app_context():
         try:
-            session = carregar_sessao(sender_id)
+            # 🆕 VALIDAÇÃO OBRIGATÓRIA DE CNPJ NO INÍCIO DA CONVERSA
+            cnpj_validated, session_id, response_text = _validate_cnpj_first(sender_id, incoming_msg)
+            
+            # Se ainda não temos CNPJ válido, retorna mensagem solicitando CNPJ
+            if not cnpj_validated:
+                return response_text if response_text else "Por favor, informe seu CNPJ para continuar."
+            
+            # Usa o session_id que inclui o CNPJ
+            session = carregar_sessao(session_id)
             adicionar_mensagem_historico(session, "user", incoming_msg)
             state = _extract_state(session)
 
@@ -2324,14 +2472,16 @@ def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
                 intent, response_text = _process_user_message(session, state, incoming_msg)
             
             if intent and not response_text:
-                response_text = _route_tool(session, state, intent, sender_id)
+                # Para web, extraímos o sender_id original da session_id se necessário
+                original_sender_id = sender_id.split('_')[0] if '_' in session_id else sender_id
+                response_text = _route_tool(session, state, intent, original_sender_id)
             
             if not response_text and not state.get("pending_action"):
                 response_text = "Operação concluída. O que mais posso fazer por você?"
                 adicionar_mensagem_historico(session, "assistant", response_text, "OPERATION_COMPLETE")
 
             # A grande diferença: não chamamos _finalize_session, apenas salvamos o estado e retornamos o texto.
-            _finalize_session_for_web(sender_id, session, state, response_text)
+            _finalize_session_for_web(session_id, session, state, response_text)
             
             return response_text
 
