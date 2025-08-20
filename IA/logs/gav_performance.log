@@ -1,0 +1,59 @@
+{"timestamp": "2025-08-20T15:15:59.327434", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 0.003557443618774414}
+{"timestamp": "2025-08-20T15:18:03.738481", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 7.745074033737183}
+{"timestamp": "2025-08-20T15:21:29.912762", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 5.083171129226685}
+{"timestamp": "2025-08-20T15:21:59.304435", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 5.1707751750946045}
+{"timestamp": "2025-08-20T15:23:14.815386", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 5.150047779083252}
+{"timestamp": "2025-08-20T16:27:50.266735", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 6.766468524932861}
+{"timestamp": "2025-08-20T16:33:02.139342", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 6.610591411590576}
+{"timestamp": "2025-08-20T16:37:40.240740", "nivel": "INFO", "logger": "gav.__main__", "modulo": "gav_logger", "funcao": "wrapper", "linha": 93, "mensagem": "[DEDUPLICADO] Mensagem anterior repetida 3x nos últimos 5min. Suprimindo repetições adicionais.", "user_id": "N/A", "session_id": "N/A", "tempo_execucao": 4.313463449478149}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

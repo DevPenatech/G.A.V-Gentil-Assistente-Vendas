@@ -4,174 +4,138 @@
   "historico_conversa": [
     {
       "role": "assistant",
-      "message": "Adicionei 5 FINI BANANA ao carrinho. Total R$ 15,00.\n\n🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 6,89 cada = R$ 34,45\n\n💰 *Total Geral: R$ 34,45*",
-      "timestamp": "2025-08-20T12:46:29.639285",
+      "message": "✅ Quantidade de BALA FINI BANANA atualizada para 5\n\n🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 25,00\n\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n💰 *Total Geral: R$ 45,00*",
+      "timestamp": "2025-08-20T17:42:49.258216",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "ver carrinho",
-      "timestamp": "2025-08-20T12:51:08.058117",
+      "message": "adiciona 5 fini",
+      "timestamp": "2025-08-20T17:43:10.633778",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n💰 *Total Geral: R$ 20,00*",
-      "timestamp": "2025-08-20T12:51:14.172631",
-      "action_type": "SHOW_CART"
+      "message": "✅ Adicionei *5.0* BALA FINI BANANA! Agora você tem *10.0* no total.\n\n🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 25,00\n\n10x BALA FINI BANANA\n   R$ 4,00 cada = R$ 40,00\n\n💰 *Total Geral: R$ 65,00*",
+      "timestamp": "2025-08-20T17:43:21.290880",
+      "action_type": "SMART_CART_UPDATE"
     },
     {
       "role": "assistant",
-      "message": "🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n💰 *Total Geral: R$ 20,00*",
-      "timestamp": "2025-08-20T12:51:14.172653",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "quero promoção",
-      "timestamp": "2025-08-20T12:51:25.111337",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
-      "timestamp": "2025-08-20T12:51:34.615363",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
-      "timestamp": "2025-08-20T12:51:34.615404",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "produtos em promoção",
-      "timestamp": "2025-08-20T12:51:54.524493",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
-      "timestamp": "2025-08-20T12:52:04.486394",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
-      "timestamp": "2025-08-20T12:52:04.486438",
+      "message": "✅ Adicionei *5.0* BALA FINI BANANA! Agora você tem *10.0* no total.\n\n🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 25,00\n\n10x BALA FINI BANANA\n   R$ 4,00 cada = R$ 40,00\n\n💰 *Total Geral: R$ 65,00*",
+      "timestamp": "2025-08-20T17:43:21.294055",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
       "message": "quero cerveja heineken",
-      "timestamp": "2025-08-20T12:52:11.576663",
+      "timestamp": "2025-08-20T17:43:38.249723",
       "action_type": ""
     },
     {
       "role": "assistant",
       "message": "*🎯 Produtos Heineken encontrados:*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN SHOT L.NECK\n    💰 R$ 4,98",
-      "timestamp": "2025-08-20T12:52:19.147075",
+      "timestamp": "2025-08-20T17:43:48.958983",
       "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
       "message": "*🎯 Produtos Heineken encontrados:*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN SHOT L.NECK\n    💰 R$ 4,98",
-      "timestamp": "2025-08-20T12:52:19.147144",
+      "timestamp": "2025-08-20T17:43:48.962031",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "11",
-      "timestamp": "2025-08-20T12:52:26.166009",
+      "message": "10",
+      "timestamp": "2025-08-20T17:43:55.040138",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "Quantas unidades de CERVEJA PATAGONIA IPA LT você deseja adicionar?",
-      "timestamp": "2025-08-20T12:52:28.097090",
+      "message": "Quantas unidades de CERVEJA HEINEKEN SHOT L.NECK você deseja adicionar?",
+      "timestamp": "2025-08-20T17:43:57.426168",
       "action_type": "REQUEST_QUANTITY"
     },
     {
       "role": "assistant",
-      "message": "Quantas unidades de CERVEJA PATAGONIA IPA LT você deseja adicionar?",
-      "timestamp": "2025-08-20T12:52:28.097102",
+      "message": "Quantas unidades de CERVEJA HEINEKEN SHOT L.NECK você deseja adicionar?",
+      "timestamp": "2025-08-20T17:43:57.428578",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
       "message": "3",
-      "timestamp": "2025-08-20T12:52:33.897381",
+      "timestamp": "2025-08-20T17:43:58.971437",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "Adicionei 3 PATAGONIA IPA LT ao carrinho.\n\n🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n3x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 15,00\n\n💰 *Total Geral: R$ 35,00*",
-      "timestamp": "2025-08-20T12:52:35.642795",
+      "message": "Adicionei 3 HEINEKEN SHOT L.NECK ao seu carrinho! Estamos aqui para ajudar.\n\n🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 25,00\n\n10x BALA FINI BANANA\n   R$ 4,00 cada = R$ 40,00\n\n3x CERVEJA HEINEKEN SHOT L.NECK\n   R$ 4,98 cada = R$ 14,94\n\n💰 *Total Geral: R$ 79,94*",
+      "timestamp": "2025-08-20T17:44:01.143559",
       "action_type": "ADD_TO_CART"
     },
     {
       "role": "assistant",
-      "message": "Adicionei 3 PATAGONIA IPA LT ao carrinho.\n\n🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n3x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 15,00\n\n💰 *Total Geral: R$ 35,00*",
-      "timestamp": "2025-08-20T12:52:35.642816",
+      "message": "Adicionei 3 HEINEKEN SHOT L.NECK ao seu carrinho! Estamos aqui para ajudar.\n\n🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 25,00\n\n10x BALA FINI BANANA\n   R$ 4,00 cada = R$ 40,00\n\n3x CERVEJA HEINEKEN SHOT L.NECK\n   R$ 4,98 cada = R$ 14,94\n\n💰 *Total Geral: R$ 79,94*",
+      "timestamp": "2025-08-20T17:44:01.147746",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "adiciona mais 2 cerveja",
+      "timestamp": "2025-08-20T17:44:11.251790",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Encontrei 2 produtos com 'cerveja' no seu carrinho:\n\n*1.* CERVEJA PATAGONIA IPA LT (quantidade atual: 5)\n*2.* CERVEJA HEINEKEN SHOT L.NECK (quantidade atual: 3)\n\nDigite o número do produto que você quer add.",
+      "timestamp": "2025-08-20T17:44:22.118579",
+      "action_type": "SMART_CART_UPDATE"
+    },
+    {
+      "role": "assistant",
+      "message": "Encontrei 2 produtos com 'cerveja' no seu carrinho:\n\n*1.* CERVEJA PATAGONIA IPA LT (quantidade atual: 5)\n*2.* CERVEJA HEINEKEN SHOT L.NECK (quantidade atual: 3)\n\nDigite o número do produto que você quer add.",
+      "timestamp": "2025-08-20T17:44:22.120595",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "2",
+      "timestamp": "2025-08-20T17:44:29.436636",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Atualizado para 5.0 unidades, cerveja Heineken Shot L.Neck. Pronto para entrega.\n\n🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 25,00\n\n10x BALA FINI BANANA\n   R$ 4,00 cada = R$ 40,00\n\n5x CERVEJA HEINEKEN SHOT L.NECK\n   R$ 4,98 cada = R$ 24,90\n\n💰 *Total Geral: R$ 89,90*",
+      "timestamp": "2025-08-20T17:44:30.800806",
+      "action_type": "SMART_UPDATE_COMPLETED"
+    },
+    {
+      "role": "assistant",
+      "message": "Atualizado para 5.0 unidades, cerveja Heineken Shot L.Neck. Pronto para entrega.\n\n🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 25,00\n\n10x BALA FINI BANANA\n   R$ 4,00 cada = R$ 40,00\n\n5x CERVEJA HEINEKEN SHOT L.NECK\n   R$ 4,98 cada = R$ 24,90\n\n💰 *Total Geral: R$ 89,90*",
+      "timestamp": "2025-08-20T17:44:30.806709",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
       "message": "fechar pedido",
-      "timestamp": "2025-08-20T12:52:43.356759",
+      "timestamp": "2025-08-20T17:44:37.555257",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* BALA FINI BANANA\n    5× R$ 4,00 = *R$ 20,00*\n\n*2.* CERVEJA PATAGONIA IPA LT\n    3× R$ 5,00 = *R$ 15,00*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 35,00*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T12:52:49.993166",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* CERVEJA PATAGONIA IPA LT\n    5× R$ 5,00 = *R$ 25,00*\n\n*2.* BALA FINI BANANA\n    10× R$ 4,00 = *R$ 40,00*\n\n*3.* CERVEJA HEINEKEN SHOT L.NECK\n    5× R$ 4,98 = *R$ 24,90*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 89,90*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* pa",
+      "timestamp": "2025-08-20T17:44:48.909964",
       "action_type": "CHECKOUT_COMPLETE"
     },
     {
       "role": "assistant",
-      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* BALA FINI BANANA\n    5× R$ 4,00 = *R$ 20,00*\n\n*2.* CERVEJA PATAGONIA IPA LT\n    3× R$ 5,00 = *R$ 15,00*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 35,00*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T12:52:49.993189",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "quero bala fini",
-      "timestamp": "2025-08-20T12:53:02.929366",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
-      "timestamp": "2025-08-20T12:53:09.709723",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
-      "timestamp": "2025-08-20T12:53:09.709824",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "mais",
-      "timestamp": "2025-08-20T12:53:12.796280",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *Mais produtos Fini::*\n\n*28.* BALA FINI URSINHO\n    💰 R$ 6,89\n\n*29.* BISC.BAUDUCCO COOKIES FINI DENTADURAS\n    💰 R$ 4,49\n\n*30.* BISC.BAUDUCCO COOKIES FINI PINTA LINGUA\n    💰 R$ 4,49\n\n*31.* CAD.UNIV.CD.160FLS FINI\n    💰 R$ 59,90\n\n*32.* CAD.UNIV.CD.80FLS FINI\n    💰 R$ 32,90\n\n*33.* COND.SEDA CACHOS DEFINIDOS\n    💰 R$ 12,98\n\n*34.* CR.MASCARA TRAT.SEDA CACHOS DEFINIDOS\n    💰 R$ 14,90\n\n*35.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 12,99\n\n*36.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 20",
-      "timestamp": "2025-08-20T12:53:17.541830",
-      "action_type": "SHOW_MORE_PRODUCTS"
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *Mais produtos Fini::*\n\n*28.* BALA FINI URSINHO\n    💰 R$ 6,89\n\n*29.* BISC.BAUDUCCO COOKIES FINI DENTADURAS\n    💰 R$ 4,49\n\n*30.* BISC.BAUDUCCO COOKIES FINI PINTA LINGUA\n    💰 R$ 4,49\n\n*31.* CAD.UNIV.CD.160FLS FINI\n    💰 R$ 59,90\n\n*32.* CAD.UNIV.CD.80FLS FINI\n    💰 R$ 32,90\n\n*33.* COND.SEDA CACHOS DEFINIDOS\n    💰 R$ 12,98\n\n*34.* CR.MASCARA TRAT.SEDA CACHOS DEFINIDOS\n    💰 R$ 14,90\n\n*35.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 12,99\n\n*36.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 20",
-      "timestamp": "2025-08-20T12:53:17.541858",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* CERVEJA PATAGONIA IPA LT\n    5× R$ 5,00 = *R$ 25,00*\n\n*2.* BALA FINI BANANA\n    10× R$ 4,00 = *R$ 40,00*\n\n*3.* CERVEJA HEINEKEN SHOT L.NECK\n    5× R$ 4,98 = *R$ 24,90*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 89,90*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* pa",
+      "timestamp": "2025-08-20T17:44:48.914519",
       "action_type": "BOT_RESPONSE"
     }
   ],
-  "resumo_conversa": " 💰 R$ 6,89  *8.* BALA FINI GELATINA OCULOS DO HARRY     💰 R$ 6,89  *9.* BALA FINI GELATINA POLVO     💰 R$ 6,89  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *10.* BALA  | G.A.V.: *🎯 Produtos Fini encontrados:*  *1.* AMAC.BABY SOFT INFINITY CARE     💰 R$ 7,59  *2.* BALA FINI AMORA     💰 R$ 6,89  *3.* BALA FINI BANANAS     💰 R$ 12,98  *4.* BALA FINI BEIJOS MORANGO     💰 R$ 6,89  *5.* BALA FINI DENTADURA     💰 R$ 6,89  *6.* BALA FINI GELATINA CHAPEU SELETOR     💰 R$ 6,89  *7.* BALA FINI GELATINA EDWIGES     💰 R$ 6,89  *8.* BALA FINI GELATINA OCULOS DO HARRY     💰 R$ 6,89  *9.* BALA FINI GELATINA POLVO     💰 R$ 6,89  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *10.* BALA  | Cliente: 10 | G.A.V.: Quantas unidades de BALA FINI BANANA você deseja adicionar? | G.A.V.: Quantas unidades de BALA FINI BANANA você deseja adicionar? | Cliente: 5 | G.A.V.: Adicionei 5 FINI BANANA ao carrinho. Total R$ 15,00.  🛒 *Carrinho:* 5x BALA FINI BANANA    R$ 6,89 cada = R$ 34,45  💰 *Total Geral: R$ 34,45*",
+  "resumo_conversa": " BANANAS     💰 R$ 12,98  *4.* BALA FINI BEIJOS MORANGO     💰 R$ 6,89  *5.* BALA FINI DENTADURA     💰 R$ 6,89  *6.* BALA FINI GELATINA CHAPEU SELETOR     💰 R$ 6,89  *7.* BALA FINI GELATINA EDWIGES     💰 R$ 6,89  *8.* BALA FINI GELATINA OCULOS DO HARRY     💰 R$ 6,89  *9.* BALA FINI GELATINA POLVO     💰 R$ 6,89  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *10.* BALA  | Cliente: 10 | G.A.V.: Quantas unidades de BALA FINI BANANA você deseja adicionar? | G.A.V.: Quantas unidades de BALA FINI BANANA você deseja adicionar? | Cliente: 5 | G.A.V.: Você já possui **BALA FINI BANANA** com **7** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade? | G.A.V.: Você já possui **BALA FINI BANANA** com **7** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade? | Cliente: 2 | G.A.V.: ✅ Quantidade de BALA FINI BANANA atualizada para 5  🛒 *Carrinho:*5x CERVEJA PATAGONIA IPA LT    R$ 5,00 cada = R$ 25,00  5x BALA FINI BANANA    R$ 4,00 cada = R$ 20,00  💰 *Total Geral: R$ 45,00*",
   "ultimo_tipo_busca": null,
   "ultimos_parametros_busca": {},
   "offset_atual": 0,
@@ -185,7 +149,7 @@
   "ultima_analise_busca": {},
   "ultimas_sugestoes_busca": [],
   "criado_em": "2025-08-20T11:49:06.087265",
-  "ultima_atividade": "2025-08-20T12:53:17.541860",
+  "ultima_atividade": "2025-08-20T17:44:48.915453",
   "validated_cnpj": "11111111111111",
   "customer_context": {
     "cnpj": "11111111111111"
@@ -193,278 +157,27 @@
   "shopping_cart": [],
   "last_search_type": "smart_search",
   "last_search_params": {
-    "search_term": "bala fini",
-    "category": "DOCES",
-    "marca_priorizada": "fini"
+    "search_term": "cerveja heineken",
+    "category": "CERVEJA",
+    "marca_priorizada": "heineken"
   },
-  "current_offset": 37,
-  "last_shown_products": [
-    {
-      "codprod": 11546,
-      "descricao": "AMAC.BABY SOFT INFINITY CARE",
-      "categoria": "AMACIANTE",
-      "marca": "BABY SOFT",
-      "unidade_venda": "FR",
-      "preco_varejo": 7.59,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 7.59,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 7001,
-      "descricao": "BALA FINI AMORA",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 42597,
-      "descricao": "BALA FINI BANANAS",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "UN",
-      "preco_varejo": 12.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 12.98,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 6998,
-      "descricao": "BALA FINI BEIJOS MORANGO",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 6999,
-      "descricao": "BALA FINI DENTADURA",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 74829,
-      "descricao": "BALA FINI GELATINA CHAPEU SELETOR",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 74830,
-      "descricao": "BALA FINI GELATINA EDWIGES",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 74831,
-      "descricao": "BALA FINI GELATINA OCULOS DO HARRY",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 64798,
-      "descricao": "BALA FINI GELATINA POLVO",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 6997,
-      "descricao": "BALA FINI BANANA",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": 4.0,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0,
-      "_preco_antigo": 6.89,
-      "_preco_promo": 4.0,
-      "_desconto": 41.94484760522496
-    },
-    {
-      "codprod": 6993,
-      "descricao": "BALA FINI URSINHO",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 75890,
-      "descricao": "BISC.BAUDUCCO COOKIES FINI DENTADURAS",
-      "unidade_venda": "UN",
-      "preco_varejo": 4.49,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 77207,
-      "descricao": "BISC.BAUDUCCO COOKIES FINI PINTA LINGUA",
-      "unidade_venda": "PC",
-      "preco_varejo": 4.49,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 76712,
-      "descricao": "CAD.UNIV.CD.160FLS FINI",
-      "unidade_venda": "UN",
-      "preco_varejo": 59.9,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 76711,
-      "descricao": "CAD.UNIV.CD.80FLS FINI",
-      "unidade_venda": "UN",
-      "preco_varejo": 32.9,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 40600,
-      "descricao": "COND.SEDA CACHOS DEFINIDOS",
-      "unidade_venda": "UN",
-      "preco_varejo": 12.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 77879,
-      "descricao": "CR.MASCARA TRAT.SEDA CACHOS DEFINIDOS",
-      "unidade_venda": "PT",
-      "preco_varejo": 14.9,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 74595,
-      "descricao": "CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*",
-      "unidade_venda": "UN",
-      "preco_varejo": 12.99,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 74594,
-      "descricao": "CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*",
-      "unidade_venda": "UN",
-      "preco_varejo": 20.9,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 74596,
-      "descricao": "CR.PENT.SEDA BOOM DEFINICAO INTENSA*",
-      "unidade_venda": "UN",
-      "preco_varejo": 19.9,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    }
-  ],
-  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
+  "current_offset": 10,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_MENU_SELECTION",
   "pending_action": null,
   "last_kb_search_term": null,
   "estatisticas_sessao": {
     "itens_carrinho": 0,
     "tamanho_conversa": 0,
     "cliente_identificado": true,
-    "ultima_acao": "AWAITING_PRODUCT_SELECTION",
-    "tem_selecao_pendente": true,
+    "ultima_acao": "AWAITING_MENU_SELECTION",
+    "tem_selecao_pendente": false,
     "tem_quantidade_pendente": false,
     "valor_total_carrinho": 0.0
   },
   "pending_product_for_cart": null,
-  "term_to_learn_after_quantity": null
+  "term_to_learn_after_quantity": null,
+  "duplicate_item_index": null,
+  "duplicate_item_qty": null,
+  "pending_smart_update": null
 }

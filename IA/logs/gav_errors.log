@@ -284,3 +284,22 @@ AttributeError: module 'db.database' has no attribute 'get_top_selling_products_
 2025-08-20 12:52:03,024 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
 2025-08-20 12:52:17,720 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
 2025-08-20 12:53:08,245 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
+2025-08-20 13:02:14,284 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
+2025-08-20 12:14:56,516 [ERROR] [U:test_user] [S:N/A] [gav.gav_logger:196] [log_error] Este é um teste de erro
+2025-08-20 15:15:59,324 [CRITICAL] [U:webchat:user_mejwtg6q_oayn3l] [S:N/A] [gav.utils.gav_logger:204] [log_critical] WEBCHAT - ERRO CRÍTICO: "Attempt to overwrite 'user_id' in LogRecord"
+Traceback (most recent call last):
+  File "/app/app.py", line 2662, in process_message_for_web
+    log_info(f"[WEBCHAT] Iniciando validação CNPJ para sender_id: {sender_id}", user_id=sender_id)
+  File "/app/utils/gav_logger.py", line 180, in log_info
+    logger.info(message, extra=extra_dict)
+  File "/usr/local/lib/python3.9/logging/__init__.py", line 1446, in info
+    self._log(INFO, msg, args, **kwargs)
+  File "/usr/local/lib/python3.9/logging/__init__.py", line 1587, in _log
+    record = self.makeRecord(self.name, level, fn, lno, msg, args,
+  File "/usr/local/lib/python3.9/logging/__init__.py", line 1561, in makeRecord
+    raise KeyError("Attempt to overwrite %r in LogRecord" % key)
+KeyError: "Attempt to overwrite 'user_id' in LogRecord"
+
+
+
+

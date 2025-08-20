@@ -18,19 +18,166 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Set
 import json
+import hashlib
+import time
+from collections import defaultdict
+import threading
 
 # Configurações padrão
-NIVEL_LOG_PADRAO = os.getenv("LOG_LEVEL", "INFO").upper()
+NIVEL_LOG_PADRAO = os.getenv("LOG_LEVEL", "DEBUG").upper()
 DIRETORIO_LOGS = Path("logs")
-TAMANHO_MAX_LOG = 10 * 1024 * 1024  # 10MB
-QUANTIDADE_BACKUP = 5
+TAMANHO_MAX_LOG = 5 * 1024 * 1024  # 5MB (reduzido)
+QUANTIDADE_BACKUP = 3  # Reduzido para economizar espaço
 FORMATO_LOG = "%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
 FORMATO_DETALHADO = "%(asctime)s [%(levelname)s] [%(name)s:%(lineno)d] [%(funcName)s] %(message)s"
+FORMATO_SUPER_DETALHADO = "%(asctime)s [%(levelname)s] [%(name)s:%(lineno)d] [%(funcName)s] %(message)s"
 
-class FormatadorColorido(logging.Formatter):
-    """Formatter com cores para console."""
+# Configurações de deduplicação
+DEDUPLICACAO_HABILITADA = True
+JANELA_DEDUPLICACAO = 300  # 5 minutos
+MAX_MENSAGENS_IDENTICAS = 3
+INTERVALO_LIMPEZA_CACHE = 3600  # 1 hora
+
+class DeduplicadorLogs:
+    """Sistema de deduplicação de logs para evitar spam."""
+    
+    def __init__(self):
+        self._cache_mensagens = defaultdict(lambda: {'count': 0, 'first_time': 0, 'last_time': 0})
+        self._lock = threading.Lock()
+        self._ultima_limpeza = time.time()
+    
+    def deve_registrar(self, record: logging.LogRecord) -> tuple[bool, str]:
+        """Determina se uma mensagem deve ser registrada."""
+        if not DEDUPLICACAO_HABILITADA:
+            return True, record.getMessage()
+        
+        # Nunca deduplica logs críticos de resposta
+        mensagem = record.getMessage()
+        if any(palavra in mensagem for palavra in [
+            "RESPOSTA ENVIADA AO USUARIO", 
+            "MENSAGEM RECEBIDA DO USUARIO",
+            "INTENCAO DETECTADA", 
+            "FERRAMENTA EXECUTADA"
+        ]):
+            return True, mensagem
+        
+        # Cria hash da mensagem para identificar duplicatas
+        mensagem_base = f"{record.levelname}:{record.name}:{record.funcName}:{record.getMessage()}"
+        hash_mensagem = hashlib.md5(mensagem_base.encode()).hexdigest()[:12]
+        
+        agora = time.time()
+        
+        with self._lock:
+            # Limpeza periódica do cache
+            if agora - self._ultima_limpeza > INTERVALO_LIMPEZA_CACHE:
+                self._limpar_cache_antigo(agora)
+                self._ultima_limpeza = agora
+            
+            entrada = self._cache_mensagens[hash_mensagem]
+            
+            # Primeira ocorrência
+            if entrada['count'] == 0:
+                entrada['first_time'] = agora
+                entrada['last_time'] = agora
+                entrada['count'] = 1
+                return True, record.getMessage()
+            
+            # Verificar se ainda está dentro da janela de tempo
+            if agora - entrada['first_time'] > JANELA_DEDUPLICACAO:
+                # Nova janela - reset contador
+                entrada['first_time'] = agora
+                entrada['last_time'] = agora
+                entrada['count'] = 1
+                return True, record.getMessage()
+            
+            # Dentro da janela - incrementar contador
+            entrada['count'] += 1
+            entrada['last_time'] = agora
+            
+            # Permitir algumas repetições, depois suprimir
+            if entrada['count'] <= MAX_MENSAGENS_IDENTICAS:
+                return True, record.getMessage()
+            elif entrada['count'] == MAX_MENSAGENS_IDENTICAS + 1:
+                # Mensagem de supressão
+                tempo_janela = int(JANELA_DEDUPLICACAO / 60)
+                return True, f"[DEDUPLICADO] Mensagem anterior repetida {entrada['count']-1}x nos últimos {tempo_janela}min. Suprimindo repetições adicionais."
+            else:
+                # Suprimir mensagens adicionais
+                return False, ""
+    
+    def _limpar_cache_antigo(self, agora: float):
+        """Remove entradas antigas do cache."""
+        chaves_antigas = [
+            chave for chave, entrada in self._cache_mensagens.items()
+            if agora - entrada['last_time'] > JANELA_DEDUPLICACAO * 2
+        ]
+        for chave in chaves_antigas:
+            del self._cache_mensagens[chave]
+
+# Instância global do deduplicador
+_deduplicador_global = DeduplicadorLogs()
+
+class FormatadorContextual(logging.Formatter):
+    """Formatter que inclui contexto de usuário quando disponível."""
+    
+    def format(self, record):
+        # Enriquece o record com contexto padrão se não existir
+        if not hasattr(record, 'user_id'):
+            record.user_id = 'N/A'
+        if not hasattr(record, 'session_id'):
+            record.session_id = 'N/A'
+        
+        # Verifica deduplicação
+        deve_registrar, mensagem_processada = _deduplicador_global.deve_registrar(record)
+        if not deve_registrar:
+            return ""
+        
+        # Atualiza mensagem se foi processada pelo deduplicador
+        if mensagem_processada != record.getMessage():
+            record.msg = mensagem_processada
+            record.args = ()
+        
+        # Monta formato base
+        formatado = super().format(record)
+        
+        # Adiciona contexto se disponível e não for N/A
+        if hasattr(record, 'user_id') and record.user_id != 'N/A':
+            contexto = f"[U:{record.user_id}]"
+            if hasattr(record, 'session_id') and record.session_id != 'N/A':
+                contexto += f"[S:{record.session_id}]"
+            formatado = formatado.replace(f"[{record.levelname}]", f"[{record.levelname}] {contexto}")
+        
+        # Adiciona informações extras importantes nos logs críticos
+        mensagem = record.getMessage()
+        extras_visiveis = []
+        
+        if "RESPOSTA ENVIADA" in mensagem:
+            if hasattr(record, 'resposta_completa'):
+                extras_visiveis.append(f"RESPOSTA='{record.resposta_completa}'")
+            if hasattr(record, 'tamanho_resposta'):
+                extras_visiveis.append(f"TAMANHO={record.tamanho_resposta}")
+        
+        elif "MENSAGEM RECEBIDA" in mensagem:
+            if hasattr(record, 'mensagem_completa_recebida'):
+                extras_visiveis.append(f"MSG='{record.mensagem_completa_recebida}'")
+            if hasattr(record, 'tamanho_mensagem'):
+                extras_visiveis.append(f"TAMANHO={record.tamanho_mensagem}")
+        
+        elif "INTENCAO DETECTADA" in mensagem:
+            if hasattr(record, 'tool_name'):
+                extras_visiveis.append(f"TOOL={record.tool_name}")
+            if hasattr(record, 'parametros'):
+                extras_visiveis.append(f"PARAMS={record.parametros}")
+        
+        if extras_visiveis:
+            formatado += f" | {' | '.join(extras_visiveis)}"
+        
+        return formatado
+
+class FormatadorColorido(FormatadorContextual):
+    """Formatter com cores para console baseado no contextual."""
     
     # Códigos de cor ANSI
     CORES = {
@@ -43,12 +190,51 @@ class FormatadorColorido(logging.Formatter):
     }
     
     def format(self, record):
+        # Enriquece o record com contexto padrão se não existir
+        if not hasattr(record, 'user_id'):
+            record.user_id = 'N/A'
+        if not hasattr(record, 'session_id'):
+            record.session_id = 'N/A'
+        
+        # CONSOLE NUNCA USA DEDUPLICAÇÃO - queremos ver tudo!
+        # Monta formato base
+        formatado = logging.Formatter.format(self, record)
+        
+        # Adiciona contexto se disponível e não for N/A
+        if hasattr(record, 'user_id') and record.user_id != 'N/A':
+            contexto = f"[U:{record.user_id}]"
+            if hasattr(record, 'session_id') and record.session_id != 'N/A':
+                contexto += f"[S:{record.session_id}]"
+            formatado = formatado.replace(f"[{record.levelname}]", f"[{record.levelname}] {contexto}")
+        
+        # Adiciona informações extras importantes nos logs críticos
+        mensagem = record.getMessage()
+        extras_visiveis = []
+        
+        if "RESPOSTA ENVIADA" in mensagem:
+            if hasattr(record, 'resposta_completa'):
+                extras_visiveis.append(f"RESPOSTA='{record.resposta_completa}'")
+            if hasattr(record, 'tamanho_resposta'):
+                extras_visiveis.append(f"TAMANHO={record.tamanho_resposta}")
+        
+        elif "MENSAGEM RECEBIDA" in mensagem:
+            if hasattr(record, 'mensagem_completa_recebida'):
+                extras_visiveis.append(f"MSG='{record.mensagem_completa_recebida}'")
+            if hasattr(record, 'tamanho_mensagem'):
+                extras_visiveis.append(f"TAMANHO={record.tamanho_mensagem}")
+        
+        elif "INTENCAO DETECTADA" in mensagem:
+            if hasattr(record, 'tool_name'):
+                extras_visiveis.append(f"TOOL={record.tool_name}")
+            if hasattr(record, 'parametros'):
+                extras_visiveis.append(f"PARAMS={record.parametros}")
+        
+        if extras_visiveis:
+            formatado += f" | {' | '.join(extras_visiveis)}"
+        
         # Adiciona cor baseada no nível
         cor = self.CORES.get(record.levelname, self.CORES['RESET'])
         reset = self.CORES['RESET']
-        
-        # Formata mensagem original
-        formatado = super().format(record)
         
         # Adiciona cores apenas se for terminal
         if hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
@@ -60,6 +246,17 @@ class FormatadorJSON(logging.Formatter):
     """Formatter JSON para logs estruturados."""
     
     def format(self, record):
+        # Enriquece o record com contexto padrão
+        if not hasattr(record, 'user_id'):
+            record.user_id = 'N/A'
+        if not hasattr(record, 'session_id'):
+            record.session_id = 'N/A'
+        
+        # Verifica deduplicação
+        deve_registrar, mensagem_processada = _deduplicador_global.deve_registrar(record)
+        if not deve_registrar:
+            return ""
+        
         entrada_log = {
             'timestamp': datetime.fromtimestamp(record.created).isoformat(),
             'nivel': record.levelname,
@@ -67,8 +264,21 @@ class FormatadorJSON(logging.Formatter):
             'modulo': record.module,
             'funcao': record.funcName,
             'linha': record.lineno,
-            'mensagem': record.getMessage(),
+            'mensagem': mensagem_processada if mensagem_processada != record.getMessage() else record.getMessage(),
+            'user_id': getattr(record, 'user_id', 'N/A'),
+            'session_id': getattr(record, 'session_id', 'N/A')
         }
+        
+        # Adiciona todos os campos extras de forma organizada
+        extras_importantes = {
+            'mensagem_completa_recebida', 'resposta_completa', 'resposta_gerada',
+            'intencao_completa', 'tool_name', 'parametros', 'categoria',
+            'tamanho_mensagem', 'tamanho_resposta'
+        }
+        
+        for campo in extras_importantes:
+            if hasattr(record, campo):
+                entrada_log[campo] = getattr(record, campo)
         
         # Adiciona informações extras se disponíveis
         if hasattr(record, 'id_usuario'):
@@ -82,6 +292,9 @@ class FormatadorJSON(logging.Formatter):
         
         if hasattr(record, 'nome_ferramenta'):
             entrada_log['nome_ferramenta'] = record.nome_ferramenta
+        
+        if hasattr(record, 'contexto_adicional'):
+            entrada_log['contexto'] = record.contexto_adicional
         
         if record.exc_info:
             entrada_log['excecao'] = self.formatException(record.exc_info)
@@ -105,26 +318,12 @@ class FiltroModulo(logging.Filter):
     def filter(self, record):
         return any(modulo in record.name for modulo in self.modulos)
 
-class FiltroDadosSensiveis(logging.Filter):
-    """Filtro para remover dados sensíveis dos logs."""
-    
-    PADROES_SENSIVEIS = [
-        r'password["\s]*[:=]["\s]*([^"\s,}]+)',
-        r'token["\s]*[:=]["\s]*([^"\s,}]+)',
-        r'auth["\s]*[:=]["\s]*([^"\s,}]+)',
-        r'cnpj["\s]*[:=]["\s]*([^"\s,}]+)',
-        r'whatsapp:\+(\d+)',
-    ]
+class FiltroDeduplicacao(logging.Filter):
+    """Filtro que usa o deduplicador global."""
     
     def filter(self, record):
-        if hasattr(record, 'msg'):
-            mensagem = str(record.msg)
-            for padrao in self.PADROES_SENSIVEIS:
-                import re
-                mensagem = re.sub(padrao, r'\1***', mensagem, flags=re.IGNORECASE)
-            record.msg = mensagem
-        
-        return True
+        deve_registrar, _ = _deduplicador_global.deve_registrar(record)
+        return deve_registrar
 
 def configurar_logs(
     nome: str = None, 
@@ -132,11 +331,11 @@ def configurar_logs(
     salvar_arquivo: bool = True,
     mostrar_console: bool = True,
     usar_formato_json: bool = False,
-    habilitar_performance: bool = False
+    habilitar_performance: bool = False,
+    contexto_usuario: Dict = None
 ) -> logging.Logger:
     """
-    Configura logger personalizado para o sistema G.A.V.
-    
+    Configura logger personalizado para o sistema G.A.V.    
     Args:
         nome (str, optional): Nome do logger. Se None, usa __name__.
         nivel (str, optional): Nível de log (DEBUG, INFO, WARNING, ERROR, CRITICAL).
@@ -146,8 +345,7 @@ def configurar_logs(
         habilitar_performance (bool): Se deve habilitar logs de performance.
     
     Returns:
-        logging.Logger: Logger configurado e pronto para uso.
-        
+        logging.Logger: Logger configurado e pronto para uso.        
     Example:
         >>> logger = configurar_logs("meu_modulo", "DEBUG")
         >>> logger.info("Sistema iniciado")
@@ -168,26 +366,34 @@ def configurar_logs(
     # Remove handlers existentes para evitar duplicação
     logger.handlers.clear()
     
+    # Adiciona contexto padrão se fornecido
+    if contexto_usuario:
+        old_factory = logging.getLogRecordFactory()
+        def record_factory(*args, **kwargs):
+            record = old_factory(*args, **kwargs)
+            for key, value in contexto_usuario.items():
+                setattr(record, key, value)
+            return record
+        logging.setLogRecordFactory(record_factory)
+    
     # Cria diretório de logs se necessário
     if salvar_arquivo:
         DIRETORIO_LOGS.mkdir(exist_ok=True)
     
-    # Handler para console
+    # Handler para console - MOSTRA TUDO no terminal
     if mostrar_console:
         manipulador_console = logging.StreamHandler(sys.stdout)
-        manipulador_console.setLevel(logging.INFO)
+        manipulador_console.setLevel(logging.DEBUG)  # TUDO no terminal
         
         if usar_formato_json:
             manipulador_console.setFormatter(FormatadorJSON())
         else:
-            manipulador_console.setFormatter(FormatadorColorido(FORMATO_LOG))
+            manipulador_console.setFormatter(FormatadorColorido(FORMATO_SUPER_DETALHADO))
         
-        # Adiciona filtro de dados sensíveis
-        manipulador_console.addFilter(FiltroDadosSensiveis())
-        
+        # Nunca deduplica no console para ver todo o fluxo
         logger.addHandler(manipulador_console)
     
-    # Handler para arquivo principal
+    # Handler para arquivo principal com deduplicação
     if salvar_arquivo:
         manipulador_arquivo = logging.handlers.RotatingFileHandler(
             DIRETORIO_LOGS / "gav_app.log",
@@ -200,12 +406,15 @@ def configurar_logs(
         if usar_formato_json:
             manipulador_arquivo.setFormatter(FormatadorJSON())
         else:
-            manipulador_arquivo.setFormatter(logging.Formatter(FORMATO_DETALHADO))
+            manipulador_arquivo.setFormatter(FormatadorContextual(FORMATO_SUPER_DETALHADO))
         
-        manipulador_arquivo.addFilter(FiltroDadosSensiveis())
+        # Adiciona filtro de deduplicação para arquivos
+        if DEDUPLICACAO_HABILITADA:
+            manipulador_arquivo.addFilter(FiltroDeduplicacao())
+        
         logger.addHandler(manipulador_arquivo)
     
-    # Handler para erros (arquivo separado)
+    # Handler para erros (arquivo separado) com deduplicação mais agressiva
     if salvar_arquivo:
         manipulador_erro = logging.handlers.RotatingFileHandler(
             DIRETORIO_LOGS / "gav_errors.log",
@@ -214,8 +423,12 @@ def configurar_logs(
             encoding='utf-8'
         )
         manipulador_erro.setLevel(logging.ERROR)
-        manipulador_erro.setFormatter(logging.Formatter(FORMATO_DETALHADO))
-        manipulador_erro.addFilter(FiltroDadosSensiveis())
+        manipulador_erro.setFormatter(FormatadorContextual(FORMATO_SUPER_DETALHADO))
+        
+        # Deduplicação especialmente importante para erros
+        if DEDUPLICACAO_HABILITADA:
+            manipulador_erro.addFilter(FiltroDeduplicacao())
+        
         logger.addHandler(manipulador_erro)
     
     # Handler para performance (se habilitado)
@@ -276,8 +489,7 @@ class LoggerPerformance:
     def registrar_tempo_execucao(self, nome_funcao: str, tempo_execucao: float, 
                           contexto: Dict = None):
         """
-        Registra tempo de execução de função.
-        
+        Registra tempo de execução de função.        
         Args:
             nome_funcao (str): Nome da função executada.
             tempo_execucao (float): Tempo em segundos.
@@ -431,7 +643,7 @@ def limpar_logs_antigos(dias: int = 30):
     tempo_corte = datetime.now().timestamp() - (dias * 24 * 3600)
     contador_removidos = 0
     
-    for arquivo_log in DIRETORIO_LOGS.glob("*.log.*"):  # Arquivos rotacionados
+    for arquivo_log in DIRETORIO_LOGS.glob("*.log.*"):
         try:
             if arquivo_log.stat().st_mtime < tempo_corte:
                 arquivo_log.unlink()
@@ -532,6 +744,28 @@ def registrar_auditoria(acao: str):
         return wrapper
     return decorator
 
+def obter_estatisticas_deduplicacao() -> Dict:
+    """Retorna estatísticas do sistema de deduplicação."""
+    with _deduplicador_global._lock:
+        return {
+            'mensagens_em_cache': len(_deduplicador_global._cache_mensagens),
+            'total_suprimidas': sum(
+                max(0, entrada['count'] - MAX_MENSAGENS_IDENTICAS) 
+                for entrada in _deduplicador_global._cache_mensagens.values()
+            ),
+            'configuracao': {
+                'habilitada': DEDUPLICACAO_HABILITADA,
+                'janela_segundos': JANELA_DEDUPLICACAO,
+                'max_identicas': MAX_MENSAGENS_IDENTICAS
+            }
+        }
+
+def limpar_cache_deduplicacao():
+    """Força limpeza do cache de deduplicação."""
+    with _deduplicador_global._lock:
+        _deduplicador_global._cache_mensagens.clear()
+        _deduplicador_global._ultima_limpeza = time.time()
+
 # Configuração principal do sistema
 def configurar_logging_principal():
     """Configura logging principal do sistema G.A.V."""
@@ -547,18 +781,17 @@ def configurar_logging_principal():
     logger_raiz.handlers.clear()
     
     # Configura formatters
-    formatador_detalhado = logging.Formatter(FORMATO_DETALHADO)
+    formatador_contextual = FormatadorContextual(FORMATO_SUPER_DETALHADO)
     formatador_simples = logging.Formatter(FORMATO_LOG)
     formatador_json = FormatadorJSON()
     
-    # Handler para console (INFO+)
+    # Handler para console (DEBUG+) - MOSTRA TUDO no terminal
     manipulador_console = logging.StreamHandler(sys.stdout)
-    manipulador_console.setLevel(logging.INFO)
-    manipulador_console.setFormatter(FormatadorColorido(FORMATO_LOG))
-    manipulador_console.addFilter(FiltroDadosSensiveis())
+    manipulador_console.setLevel(logging.DEBUG)  # TUDO no console
+    manipulador_console.setFormatter(FormatadorColorido(FORMATO_SUPER_DETALHADO))  # Formato completo
     logger_raiz.addHandler(manipulador_console)
     
-    # Handler para arquivo principal (DEBUG+)
+    # Handler para arquivo principal (DEBUG+) com deduplicação
     manipulador_arquivo_principal = logging.handlers.RotatingFileHandler(
         DIRETORIO_LOGS / "gav_main.log",
         maxBytes=TAMANHO_MAX_LOG,
@@ -566,11 +799,12 @@ def configurar_logging_principal():
         encoding='utf-8'
     )
     manipulador_arquivo_principal.setLevel(logging.DEBUG)
-    manipulador_arquivo_principal.setFormatter(formatador_detalhado)
-    manipulador_arquivo_principal.addFilter(FiltroDadosSensiveis())
+    manipulador_arquivo_principal.setFormatter(formatador_contextual)
+    if DEDUPLICACAO_HABILITADA:
+        manipulador_arquivo_principal.addFilter(FiltroDeduplicacao())
     logger_raiz.addHandler(manipulador_arquivo_principal)
     
-    # Handler para erros (ERROR+)
+    # Handler para erros (ERROR+) com deduplicação agressiva
     manipulador_arquivo_erro = logging.handlers.RotatingFileHandler(
         DIRETORIO_LOGS / "gav_errors.log",
         maxBytes=TAMANHO_MAX_LOG,
@@ -578,7 +812,9 @@ def configurar_logging_principal():
         encoding='utf-8'
     )
     manipulador_arquivo_erro.setLevel(logging.ERROR)
-    manipulador_arquivo_erro.setFormatter(formatador_detalhado)
+    manipulador_arquivo_erro.setFormatter(formatador_contextual)
+    if DEDUPLICACAO_HABILITADA:
+        manipulador_arquivo_erro.addFilter(FiltroDeduplicacao())
     logger_raiz.addHandler(manipulador_arquivo_erro)
     
     # Handler para auditoria (JSON)
@@ -593,13 +829,26 @@ def configurar_logging_principal():
     manipulador_arquivo_audit.addFilter(FiltroModulo(['gav_audit']))
     logger_raiz.addHandler(manipulador_arquivo_audit)
     
+    # Handler separado para performance com JSON
+    manipulador_performance = logging.handlers.RotatingFileHandler(
+        DIRETORIO_LOGS / "gav_performance.log",
+        maxBytes=TAMANHO_MAX_LOG,
+        backupCount=QUANTIDADE_BACKUP,
+        encoding='utf-8'
+    )
+    manipulador_performance.setLevel(logging.INFO)
+    manipulador_performance.setFormatter(formatador_json)
+    manipulador_performance.addFilter(FiltroPerformance())
+    logger_raiz.addHandler(manipulador_performance)
+    
     # Suprime logs verbosos de bibliotecas externas
     logging.getLogger('twilio').setLevel(logging.WARNING)
     logging.getLogger('urllib3').setLevel(logging.WARNING)
     logging.getLogger('requests').setLevel(logging.WARNING)
+    logging.getLogger('werkzeug').setLevel(logging.WARNING)  # Flask
     
     # Log inicial
-    logging.info("Sistema de logging G.A.V. inicializado")
+    logging.info("Sistema de logging G.A.V. inicializado com deduplicação")
     
     return logger_raiz
 
@@ -610,3 +859,53 @@ logger_auditoria = LoggerAuditoria()
 # Inicialização automática
 if __name__ != "__main__":
     configurar_logging_principal()
+
+# Exemplo de uso
+if __name__ == "__main__":
+    
+    # Configura logging principal
+    configurar_logging_principal()
+    
+    # Obtém loggers específicos
+    loggers = configurar_loggers_modulos()
+    
+    # Exemplo de logs
+    loggers['app'].debug("Mensagem de debug da aplicação")
+    loggers['app'].info("Aplicação iniciada")
+    loggers['app'].warning("Atenção: configuração X não encontrada")
+    loggers['app'].error("Falha ao iniciar serviço Y")
+    
+    loggers['banco_dados'].info("Conectando ao banco de dados...")
+    
+    loggers['ia'].debug("Enviando prompt para LLM")
+    
+    # Exemplo de log de performance
+    @registrar_performance()
+    def funcao_demorada():
+        time.sleep(0.5)
+        return "Resultado"
+
+    funcao_demorada()
+    
+    # Exemplo de log de auditoria
+    @registrar_auditoria("LOGIN_USUARIO")
+    def login(id_usuario, senha):
+        if senha == "123":
+            return True
+        raise ValueError("Senha inválida")
+    
+    login(id_usuario="user123", senha="123")
+    try:
+        login(id_usuario="user123", senha="errada")
+    except ValueError:
+        pass
+    
+    # Exemplo de estatísticas
+    print("\nEstatísticas de Logs:")
+    print(json.dumps(obter_estatisticas_logs(), indent=2))
+    
+    # Limpeza de logs antigos
+    limpar_logs_antigos(dias=0) # Limpa logs de exemplo
+    
+    print("\nLogs antigos removidos")
+    print(json.dumps(obter_estatisticas_logs(), indent=2))

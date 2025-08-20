@@ -10,7 +10,11 @@ from db import database
 from ai_llm import llm_interface
 from ai_llm.llm_interface import generate_personalized_response
 from knowledge import knowledge
-from utils import configuracao_logs
+from utils.gav_logger import (
+    obter_logger, log_com_contexto, log_performance, log_audit,
+    log_info, log_error, log_warning, log_debug, log_critical,
+    log_whatsapp_error, ContextoLog
+)
 from core.gerenciador_sessao import (
     carregar_sessao,
     salvar_sessao,
@@ -53,8 +57,9 @@ from knowledge.knowledge import encontrar_produto_na_kb_com_analise
 # AÇÃO: A INICIALIZAÇÃO DO APP FOI MOVIDA PARA CÁ (O LUGAR CERTO)
 # =============================================================
 aplicativo = Flask(__name__)
-configuracao_logs.configurar_logs()
-# =============================================================
+app_logger = obter_logger("app")
+log_info("Sistema G.A.V. iniciando...")
+# ============================================================="
 
 
 
@@ -981,7 +986,7 @@ def _processar_pedido_complexo(session: Dict, state: Dict, pedidos_complexos: Li
     
     return resposta
 
-def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> str:
+def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, incoming_msg: str = "") -> str:
     """Executa a ferramenta baseada na intenção identificada com IA-FIRST."""
     customer_context = state.get("customer_context")
     shopping_cart = state.get("shopping_cart", [])
@@ -2051,6 +2056,16 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         response_param = parameters.get('response_text', 'Entendi!')
         
         if response_param == "GENERATE_GREETING":
+            # 🆕 RESETA ESTADO ao detectar nova saudação
+            last_shown_products = []
+            last_bot_action = None
+            last_search_type = None
+            last_search_params = {}
+            current_offset = 0
+            last_kb_search_term = None
+            
+            log_info("RESETANDO ESTADO para nova conversa", user_id=sender_phone, categoria="STATE_RESET")
+            
             # Gera saudação personalizada usando IA
             response_text = generate_personalized_response("greeting", session)
             if not response_text or response_text.strip() == "":
@@ -2070,7 +2085,15 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             # Mantém o estado atual - não reseta
         else:
             # 🚀 IA-FIRST: DETECÇÃO INTELIGENTE DE "MAIS PRODUTOS"
-            incoming_msg_lower = incoming_msg.lower().strip()
+            # Obtém a última mensagem do usuário do histórico
+            history = session.get('conversation_history', [])
+            last_user_message = ""
+            for msg in reversed(history):
+                if msg.get('role') == 'user':
+                    last_user_message = msg.get('message', '')
+                    break
+            
+            incoming_msg_lower = last_user_message.lower().strip()
             should_show_more_products = (
                 last_search_type and  # Há busca anterior
                 any(word in incoming_msg_lower for word in ["mais", "mais produtos", "continuar", "próximo", "more", "next"]) and
@@ -2386,15 +2409,29 @@ def _finalize_session(
         # 📺 CONSOLE: Exibe a resposta completa
         print(f"\n=== RESPOSTA DO BOT ===\n{response_text}\n=====================")
         
+        # 📝 LOG DETALHADO: Resposta completa sendo enviada
+        log_info(
+            "RESPOSTA ENVIADA AO USUARIO",
+            user_id=sender_phone,
+            session_id=session_id,
+            resposta_completa=response_text,
+            tamanho_resposta=len(response_text),
+            categoria="RESPONSE_OUT"
+        )
+        
         # Tenta enviar por WhatsApp
         try:
             print(f">>> CONSOLE: Tentando enviar resposta para {sender_phone}...")
+            log_debug(f"Tentando enviar via WhatsApp", user_id=sender_phone, categoria="WHATSAPP_SEND")
+            
             twilio_client.send_whatsapp_message(to=sender_phone, body=response_text)
             #vonage_client.enviar_whatsapp(response_text)
+            
             print(f">>> CONSOLE: ✅ Mensagem enviada com sucesso!")
+            log_info("WhatsApp enviado com sucesso", user_id=sender_phone, categoria="WHATSAPP_SUCCESS")
         except Exception as e:
             print(f">>> CONSOLE: ❌ ERRO ao enviar mensagem: {e}")
-            logging.error(f"Erro ao enviar mensagem WhatsApp: {e}", exc_info=True)
+            log_error(f"Erro ao enviar mensagem WhatsApp: {str(e)}", user_id=sender_phone, exception=e, categoria="WHATSAPP_ERROR")
 
 
 def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, str, str]:
@@ -2549,6 +2586,7 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
     return False, sender_phone, response_text
 
 
+@log_performance
 def process_message_async(sender_phone: str, incoming_msg: str):
     """
     Esta função faz todo o trabalho pesado em segundo plano (thread) para não causar timeout.
@@ -2556,7 +2594,14 @@ def process_message_async(sender_phone: str, incoming_msg: str):
     """
     with aplicativo.app_context():
         try:
-            print(f"\n--- INÍCIO DO PROCESSAMENTO DA THREAD PARA: '{incoming_msg}' ---")
+            with ContextoLog(user_id=sender_phone, session_id=f"whatsapp_{sender_phone}"):
+                log_info(
+                    "MENSAGEM RECEBIDA DO USUARIO", 
+                    user_id=sender_phone,
+                    mensagem_completa_recebida=incoming_msg,
+                    tamanho_mensagem=len(incoming_msg),
+                    categoria="MESSAGE_IN"
+                )
             
             # 🆕 VALIDAÇÃO OBRIGATÓRIA DE CNPJ NO INÍCIO DA CONVERSA
             cnpj_validated, session_id, response_text = _validate_cnpj_first(sender_phone, incoming_msg)
@@ -2585,9 +2630,21 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 
             # 2. Se não houve resposta ou intenção, determina a intenção
             if not intent and not response_text:
+                log_debug("Processando mensagem para detectar intencao", user_id=sender_phone, categoria="INTENT_DETECTION")
                 intent, response_text = _process_user_message(
                     session, state, incoming_msg
                 )
+                
+                # Log da intenção detectada
+                if intent:
+                    log_info(
+                        "INTENCAO DETECTADA",
+                        user_id=sender_phone,
+                        intencao_completa=str(intent),
+                        tool_name=intent.get("tool_name"),
+                        parametros=str(intent.get("parameters", {})),
+                        categoria="INTENT_DETECTED"
+                    )
                 
             # 2.1. PRIORIDADE ESPECIAL: Se detectou checkout, limpa ações pendentes conflitantes
             if intent and intent.get("nome_ferramenta") == "checkout":
@@ -2597,7 +2654,19 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 
             # 3. Executa a intenção identificada
             if intent and not response_text:
-                response_text = _route_tool(session, state, intent, sender_phone)
+                log_debug("Executando ferramenta detectada", user_id=sender_phone, tool_name=intent.get("tool_name"), categoria="TOOL_EXECUTION")
+                response_text = _route_tool(session, state, intent, sender_phone, incoming_msg)
+                
+                # Log do resultado da ferramenta
+                if response_text:
+                    log_info(
+                        "FERRAMENTA EXECUTADA",
+                        user_id=sender_phone,
+                        tool_name=intent.get("tool_name"),
+                        resposta_gerada=response_text,
+                        tamanho_resposta=len(response_text),
+                        categoria="TOOL_RESULT"
+                    )
 
             # 4. Mensagem padrão caso nenhuma resposta seja definida
             if not response_text and not state.get("pending_action"):
@@ -2642,6 +2711,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
             except Exception as send_error:
                 print(f">>> CONSOLE: ❌ ERRO ao enviar mensagem de erro: {send_error}")
 
+@log_performance
 def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
     """
     Processa uma mensagem e retorna o texto da resposta para o webchat.
@@ -2650,9 +2720,14 @@ def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
     # O 'with app.app_context()' é crucial para que a thread acesse a aplicação Flask
     with aplicativo.app_context():
         try:
-            # 🆕 VALIDAÇÃO OBRIGATÓRIA DE CNPJ NO INÍCIO DA CONVERSA
-            print(f">>> CONSOLE: 🔍 [WEBCHAT] Iniciando validação CNPJ para sender_id: {sender_id}")
-            print(f">>> CONSOLE: 🔍 [WEBCHAT] Mensagem recebida: {incoming_msg}")
+            with ContextoLog(user_id=sender_id, session_id=f"webchat_{sender_id}"):
+                log_info(
+                    "[WEBCHAT] MENSAGEM RECEBIDA DO USUARIO",
+                    user_id=sender_id,
+                    mensagem_completa_recebida=incoming_msg,
+                    tamanho_mensagem=len(incoming_msg),
+                    categoria="WEBCHAT_MESSAGE_IN"
+                )
             
             cnpj_validated, session_id, response_text = _validate_cnpj_first(sender_id, incoming_msg)
             
@@ -2686,7 +2761,7 @@ def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
             if intent and not response_text:
                 # Para web, extraímos o sender_id original da session_id se necessário
                 original_sender_id = sender_id.split('_')[0] if '_' in session_id else sender_id
-                response_text = _route_tool(session, state, intent, original_sender_id)
+                response_text = _route_tool(session, state, intent, original_sender_id, incoming_msg)
             
             if not response_text and not state.get("pending_action"):
                 response_text = "Operação concluída. O que mais posso fazer por você?"
@@ -2695,10 +2770,19 @@ def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
             # A grande diferença: não chamamos _finalize_session, apenas salvamos o estado e retornamos o texto.
             _finalize_session_for_web(session_id, session, state, response_text)
             
+            # 📝 LOG DETALHADO: Resposta sendo retornada para webchat
+            log_info(
+                "[WEBCHAT] RESPOSTA ENVIADA AO USUARIO",
+                user_id=sender_id,
+                resposta_completa=response_text,
+                tamanho_resposta=len(response_text),
+                categoria="WEBCHAT_RESPONSE_OUT"
+            )
+            
             return response_text
 
         except Exception as e:
-            logging.error(f"WEBCHAT - ERRO CRÍTICO: {e}", exc_info=True)
+            log_critical(f"WEBCHAT - ERRO CRÍTICO: {str(e)}", user_id=sender_id, exception=e, categoria="WEBCHAT_ERROR")
             return "Opa, algo deu errado aqui! Tente novamente."
 
 def _finalize_session_for_web(sender_id: str, session: Dict, state: Dict, response_text: str):
@@ -2737,7 +2821,13 @@ def webhook():
     incoming_msg = request.values.get("Body", "").strip()
     sender_phone = request.values.get("From", "")
     
-    logging.info(f"TWILIO | Mensagem recebida de {sender_phone}: {incoming_msg}")
+    log_info(
+        "TWILIO WEBHOOK | Mensagem recebida",
+        user_id=sender_phone,
+        mensagem_completa_recebida=incoming_msg,
+        tamanho_mensagem=len(incoming_msg) if incoming_msg else 0,
+        categoria="TWILIO_WEBHOOK"
+    )
     
     # Valida se os dados essenciais foram recebidos
     if not incoming_msg or not sender_phone:

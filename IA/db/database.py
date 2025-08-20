@@ -15,6 +15,7 @@ if str(utils_path) not in sys.path:
     sys.path.insert(0, str(utils_path))
 
 from busca_aproximada import busca_aproximada_produtos, MotorBuscaAproximada
+from gav_logger import obter_logger, log_database_query, log_error, log_warning, log_info, log_debug
 
 load_dotenv(dotenv_path='.env') # Garante que o .env da pasta IA seja lido
 
@@ -32,16 +33,23 @@ def obter_conexao():
     Returns:
         A conexão com o banco de dados.
     """
+    log_debug("Tentando obter conexão com o banco de dados", categoria="DATABASE_CONNECTION")
     tentativas = 5
     atraso = 3
     for i in range(tentativas):
         try:
+            inicio = time.time()
             conexao = psycopg2.connect(URL_BANCO_DADOS)
+            tempo_conexao = time.time() - inicio
+            log_database_query("CONNECTION", tempo_conexao, categoria="DATABASE_CONNECTION")
+            log_debug("Conexão com o banco de dados estabelecida com sucesso", categoria="DATABASE_CONNECTION")
             return conexao
         except psycopg2.OperationalError as e:
-            logging.warning(f"Conexão falhou: {e}. Tentando novamente em {atraso}s...")
+            log_warning(f"Conexão falhou na tentativa {i+1}/{tentativas}: {str(e)}. Tentando novamente em {atraso}s...", 
+                       categoria="DATABASE_CONNECTION", tentativa=i+1)
             time.sleep(atraso)
-    logging.error("Não foi possível conectar ao banco de dados após várias tentativas.")
+    
+    log_error("Não foi possível conectar ao banco de dados após várias tentativas", categoria="DATABASE_CONNECTION")
     raise Exception("Não foi possível conectar ao banco de dados.")
 
 def _converter_linha_para_dicionario(linha: DictCursor) -> Dict:
@@ -70,6 +78,7 @@ def encontrar_cliente_por_cnpj(cnpj: str) -> Union[Dict, None]:
     Returns:
         Um dicionário com os dados do cliente ou None se não encontrado.
     """
+    logging.debug(f"Buscando cliente por CNPJ: {cnpj}")
     sql = "SELECT cnpj, nome FROM clientes WHERE cnpj = %(cnpj)s;"
     params = {'cnpj': cnpj}
     try:
@@ -77,6 +86,10 @@ def encontrar_cliente_por_cnpj(cnpj: str) -> Union[Dict, None]:
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
                 resultado = cursor.fetchone()
+                if resultado:
+                    logging.debug(f"Cliente encontrado para o CNPJ {cnpj}: {resultado}")
+                else:
+                    logging.debug(f"Nenhum cliente encontrado para o CNPJ {cnpj}")
                 return _converter_linha_para_dicionario(resultado) if resultado else None
     except Exception as e:
         logging.error(f"Erro ao buscar cliente por CNPJ {cnpj}: {e}")
@@ -93,6 +106,7 @@ def obter_produtos_mais_vendidos(limite: int = 10, offset: int = 0, filial: int 
     Returns:
         Uma lista de dicionários com os produtos mais vendidos.
     """
+    logging.debug(f"Buscando os {limite} produtos mais vendidos com offset {offset} para a filial {filial}.")
     sql = """
     SELECT 
         p.codprod,
@@ -116,6 +130,7 @@ def obter_produtos_mais_vendidos(limite: int = 10, offset: int = 0, filial: int 
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
                 resultados = cursor.fetchall()
+                logging.debug(f"Encontrados {len(resultados)} produtos mais vendidos.")
                 return [_converter_linha_para_dicionario(linha) for linha in resultados]
     except Exception as e:
         logging.error(f"Erro ao buscar produtos mais vendidos: {e}")
@@ -132,7 +147,9 @@ def obter_produtos_mais_vendidos_por_nome(nome_produto: str, limite: int = 10, o
     Returns:
         Uma lista de dicionários com os produtos encontrados.
     """
+    logging.debug(f"Buscando os {limite} produtos mais vendidos por nome '{nome_produto}' com offset {offset}.")
     if not nome_produto or len(nome_produto.strip()) < 2:
+        logging.debug("Nome do produto inválido para busca.")
         return []
     
     padrao_busca = f"%{nome_produto.strip().lower()}%"
@@ -162,6 +179,7 @@ def obter_produtos_mais_vendidos_por_nome(nome_produto: str, limite: int = 10, o
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
                 resultados = cursor.fetchall()
+                logging.debug(f"Encontrados {len(resultados)} produtos para o nome '{nome_produto}'.")
                 return [_converter_linha_para_dicionario(linha) for linha in resultados]
     except Exception as e:
         logging.error(f"Erro ao buscar produtos por nome '{nome_produto}': {e}")
@@ -178,12 +196,15 @@ def pesquisar_produtos_com_sugestoes(nome_produto: str, limite: int = 10, offset
     Returns:
         Um dicionário com os produtos, sugestões e qualidade da busca.
     """
+    logging.debug(f"Pesquisando produtos com sugestões para '{nome_produto}'.")
     if not nome_produto or len(nome_produto.strip()) < 2:
+        logging.debug("Nome do produto inválido para pesquisa com sugestões.")
         return {"products": [], "suggestions": [], "search_quality": "invalid"}
     
     produtos_exatos = obter_produtos_mais_vendidos_por_nome(nome_produto, limite, offset)
     
     if produtos_exatos:
+        logging.debug(f"Encontrados {len(produtos_exatos)} produtos exatos para '{nome_produto}'.")
         return {
             "products": produtos_exatos,
             "suggestions": [],
@@ -193,6 +214,7 @@ def pesquisar_produtos_com_sugestoes(nome_produto: str, limite: int = 10, offset
     produtos_fuzzy = busca_aproximada_produtos(nome_produto, limite)
     
     if produtos_fuzzy:
+        logging.debug(f"Encontrados {len(produtos_fuzzy)} produtos por busca aproximada para '{nome_produto}'.")
         return {
             "products": produtos_fuzzy,
             "suggestions": [],
@@ -213,6 +235,7 @@ def pesquisar_produtos_com_sugestoes(nome_produto: str, limite: int = 10, offset
         if sinonimo != nome_produto.lower():
             sugestoes.append(sinonimo)
     
+    logging.debug(f"Nenhum produto encontrado para '{nome_produto}'. Sugestões: {sugestoes}")
     return {
         "products": [],
         "suggestions": sugestoes[:3],
@@ -228,7 +251,9 @@ def obter_produto_por_codprod(codprod: int) -> Union[Dict, None]:
     Returns:
         Um dicionário com os dados do produto ou None se não encontrado.
     """
+    logging.debug(f"Buscando produto por codprod: {codprod}")
     if not codprod or codprod <= 0:
+        logging.debug("codprod inválido.")
         return None
     
     sql = """
@@ -250,6 +275,10 @@ def obter_produto_por_codprod(codprod: int) -> Union[Dict, None]:
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
                 resultado = cursor.fetchone()
+                if resultado:
+                    logging.debug(f"Produto encontrado para o codprod {codprod}: {resultado}")
+                else:
+                    logging.debug(f"Nenhum produto encontrado para o codprod {codprod}")
                 return _converter_linha_para_dicionario(resultado) if resultado else None
     except Exception as e:
         logging.error(f"Erro ao buscar produto por código {codprod}: {e}")
@@ -264,14 +293,19 @@ def obter_detalhes_produto_fuzzy(termo_busca: str) -> List[Dict]:
     Returns:
         Uma lista de dicionários com os produtos encontrados.
     """
+    logging.debug(f"Buscando detalhes do produto por busca aproximada para '{termo_busca}'.")
     if not termo_busca or len(termo_busca.strip()) < 2:
+        logging.debug("Termo de busca inválido.")
         return []
     
     resultados_exatos = obter_produtos_mais_vendidos_por_nome(termo_busca, 10)
     if resultados_exatos:
+        logging.debug(f"Encontrados {len(resultados_exatos)} produtos exatos para '{termo_busca}'.")
         return resultados_exatos
     
-    return busca_aproximada_produtos(termo_busca, 10)
+    resultados_fuzzy = busca_aproximada_produtos(termo_busca, 10)
+    logging.debug(f"Encontrados {len(resultados_fuzzy)} produtos por busca aproximada para '{termo_busca}'.")
+    return resultados_fuzzy
 
 def obter_todos_produtos_ativos() -> List[Dict]:
     """Retorna todos os produtos ativos para geração da base de conhecimento.
@@ -279,6 +313,7 @@ def obter_todos_produtos_ativos() -> List[Dict]:
     Returns:
         Uma lista de dicionários com todos os produtos ativos.
     """
+    logging.debug("Buscando todos os produtos ativos.")
     sql = """
     SELECT 
         codprod,
@@ -298,6 +333,7 @@ def obter_todos_produtos_ativos() -> List[Dict]:
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql)
                 resultados = cursor.fetchall()
+                logging.debug(f"Encontrados {len(resultados)} produtos ativos.")
                 return [_converter_linha_para_dicionario(linha) for linha in resultados]
     except Exception as e:
         logging.error(f"Erro ao buscar todos os produtos ativos: {e}")
@@ -312,7 +348,9 @@ def adicionar_estatistica_busca(termo_busca: str, fonte_resultado: str, codprod_
         codprod_sugerido: O código do produto sugerido.
         feedback: O feedback do usuário.
     """
+    logging.debug(f"Adicionando estatística de busca para '{termo_busca}'. Fonte: {fonte_resultado}, Produto sugerido: {codprod_sugerido}, Feedback: {feedback}")
     if not termo_busca:
+        logging.debug("Termo de busca inválido para adicionar estatística.")
         return
         
     sql = """
@@ -332,7 +370,7 @@ def adicionar_estatistica_busca(termo_busca: str, fonte_resultado: str, codprod_
             with conexao.cursor() as cursor:
                 cursor.execute(sql, params)
                 conexao.commit()
-                logging.debug(f"Estatística de busca adicionada: {termo_busca} -> {fonte_resultado}")
+                logging.debug(f"Estatística de busca adicionada com sucesso para '{termo_busca}'.")
     except Exception as e:
         logging.error(f"Erro ao adicionar estatística de busca: {e}")
 
@@ -343,7 +381,9 @@ def atualizar_feedback_busca(id_estatistica: int, feedback: str):
         id_estatistica: O ID da estatística de busca.
         feedback: O feedback do usuário.
     """
+    logging.debug(f"Atualizando feedback da busca {id_estatistica} para '{feedback}'.")
     if not id_estatistica: 
+        logging.debug("ID da estatística inválido.")
         return
         
     sql = "UPDATE estatisticas_busca SET feedback_usuario = %(feedback)s WHERE id_estatistica = %(id)s;"
@@ -353,6 +393,7 @@ def atualizar_feedback_busca(id_estatistica: int, feedback: str):
             with conexao.cursor() as cursor:
                 cursor.execute(sql, params)
                 conexao.commit()
+                logging.debug(f"Feedback da busca {id_estatistica} atualizado com sucesso.")
     except Exception as e:
         logging.error(f"Falha ao atualizar feedback de busca: {e}")
 
@@ -365,6 +406,7 @@ def obter_estatisticas_busca(dias: int = 7) -> List[Dict]:
     Returns:
         Uma lista de dicionários com as estatísticas de busca.
     """
+    logging.debug(f"Buscando estatísticas de busca dos últimos {dias} dias.")
     sql = """
     SELECT 
         termo_busca,
@@ -386,6 +428,7 @@ def obter_estatisticas_busca(dias: int = 7) -> List[Dict]:
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
                 resultados = cursor.fetchall()
+                logging.debug(f"Encontradas {len(resultados)} estatísticas de busca.")
                 return [_converter_linha_para_dicionario(linha) for linha in resultados]
     except Exception as e:
         logging.error(f"Erro ao buscar estatísticas: {e}")
@@ -401,6 +444,7 @@ def criar_orcamento(cnpj_cliente: str, id_loja: int = 1) -> Union[int, None]:
     Returns:
         O ID do orçamento criado ou None em caso de erro.
     """
+    logging.debug(f"Criando orçamento para o cliente CNPJ {cnpj_cliente} na loja {id_loja}.")
     sql = """
     INSERT INTO orcamentos (cnpj_cliente, id_loja, status, created_at) 
     VALUES (%(cnpj)s, %(loja)s, 'aberto', NOW())
@@ -414,7 +458,9 @@ def criar_orcamento(cnpj_cliente: str, id_loja: int = 1) -> Union[int, None]:
                 cursor.execute(sql, params)
                 resultado = cursor.fetchone()
                 conexao.commit()
-                return resultado[0] if resultado else None
+                id_orcamento = resultado[0] if resultado else None
+                logging.debug(f"Orçamento criado com ID: {id_orcamento}")
+                return id_orcamento
     except Exception as e:
         logging.error(f"Erro ao criar orçamento: {e}")
         return None
@@ -431,8 +477,10 @@ def adicionar_item_orcamento(id_orcamento: int, codprod: int, quantidade: float,
     Returns:
         True se o item foi adicionado com sucesso, False caso contrário.
     """
+    logging.debug(f"Adicionando item {codprod} (quantidade: {quantidade}, tipo_preco: {tipo_preco}) ao orçamento {id_orcamento}.")
     produto = obter_produto_por_codprod(codprod)
     if not produto:
+        logging.warning(f"Produto {codprod} não encontrado para adicionar ao orçamento.")
         return False
     
     preco_unitario = produto.get('preco_atacado' if tipo_preco == 'atacado' else 'preco_varejo', 0.0)
@@ -455,6 +503,7 @@ def adicionar_item_orcamento(id_orcamento: int, codprod: int, quantidade: float,
             with conexao.cursor() as cursor:
                 cursor.execute(sql, params)
                 conexao.commit()
+                logging.debug(f"Item {codprod} adicionado ao orçamento {id_orcamento} com sucesso.")
                 return True
     except Exception as e:
         logging.error(f"Erro ao adicionar item ao orçamento: {e}")
@@ -469,6 +518,7 @@ def finalizar_orcamento(id_orcamento: int) -> bool:
     Returns:
         True se o orçamento foi finalizado com sucesso, False caso contrário.
     """
+    logging.debug(f"Finalizando orçamento {id_orcamento}.")
     sql_total = """
     SELECT SUM(quantidade * preco_unitario_gravado) as total
     FROM orcamento_itens 
@@ -507,6 +557,7 @@ def obter_termos_busca_populares(limite: int = 10) -> List[Dict]:
     Returns:
         Uma lista de dicionários com os termos de busca populares.
     """
+    logging.debug(f"Buscando os {limite} termos de busca mais populares.")
     sql = """
     SELECT 
         termo_busca,
@@ -527,6 +578,7 @@ def obter_termos_busca_populares(limite: int = 10) -> List[Dict]:
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
                 resultados = cursor.fetchall()
+                logging.debug(f"Encontrados {len(resultados)} termos de busca populares.")
                 return [_converter_linha_para_dicionario(linha) for linha in resultados]
     except Exception as e:
         logging.error(f"Erro ao buscar termos populares: {e}")
@@ -541,6 +593,7 @@ def obter_estatisticas_performance_produto(dias: int = 30) -> List[Dict]:
     Returns:
         Uma lista de dicionários com as estatísticas de performance dos produtos.
     """
+    logging.debug(f"Buscando estatísticas de performance dos produtos dos últimos {dias} dias.")
     sql = """
     SELECT 
         p.codprod,
@@ -568,6 +621,7 @@ def obter_estatisticas_performance_produto(dias: int = 30) -> List[Dict]:
             with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(sql, params)
                 resultados = cursor.fetchall()
+                logging.debug(f"Encontradas {len(resultados)} estatísticas de performance de produtos.")
                 return [_converter_linha_para_dicionario(linha) for linha in resultados]
     except Exception as e:
         logging.error(f"Erro ao buscar estatísticas de performance: {e}")
@@ -579,6 +633,7 @@ def limpar_estatisticas_antigas(dias: int = 90):
     Args:
         dias: O número de dias a serem considerados.
     """
+    logging.debug(f"Limpando estatísticas de busca com mais de {dias} dias.")
     sql = "DELETE FROM estatisticas_busca WHERE timestamp < NOW() - INTERVAL %(days)s DAY;"
     params = {'days': dias}
     
@@ -596,6 +651,7 @@ def limpar_estatisticas_antigas(dias: int = 90):
 
 def otimizar_banco_dados():
     """Executa otimizações básicas no banco de dados."""
+    logging.debug("Otimizando o banco de dados.")
     queries_otimizacao = [
         "VACUUM ANALYZE produtos;",
         "VACUUM ANALYZE estatisticas_busca;",
@@ -607,6 +663,7 @@ def otimizar_banco_dados():
         with obter_conexao() as conexao:
             with conexao.cursor() as cursor:
                 for query in queries_otimizacao:
+                    logging.debug(f"Executando otimização: {query}")
                     cursor.execute(query)
                 conexao.commit()
                 logging.info("Otimização do banco de dados concluída")
@@ -627,7 +684,9 @@ def obter_produtos_por_categoria(categoria: str, limite: int = 10, offset: int =
     Returns:
         Uma lista de dicionários com os produtos encontrados.
     """
+    logging.debug(f"Buscando produtos por categoria '{categoria}' com limite {limite}, offset {offset} e marca priorizada '{marca_priorizada}'.")
     if not categoria or len(categoria.strip()) < 2:
+        logging.debug("Categoria inválida para busca.")
         return []
     
     # Se há marca priorizada, ordena colocando essa marca primeiro
@@ -716,7 +775,9 @@ def obter_produtos_promocionais_por_categoria(categoria: str, limite: int = 5, o
     Returns:
         Uma lista de dicionários com os produtos promocionais encontrados.
     """
+    logging.debug(f"Buscando produtos promocionais por categoria '{categoria}' com limite {limite} e offset {offset}.")
     if not categoria or len(categoria.strip()) < 2:
+        logging.debug("Categoria inválida para busca de promoções.")
         return []
     
     sql = """
@@ -775,6 +836,7 @@ def obter_todas_promocoes_ativas(limite: int = 20, offset: int = 0) -> List[Dict
     Returns:
         Uma lista de dicionários com todas as promoções ativas.
     """
+    logging.debug(f"Buscando todas as promoções ativas com limite {limite} e offset {offset}.")
     sql = """
     SELECT 
         p.codprod,
@@ -831,7 +893,9 @@ def obter_produtos_promocionais_por_termo(termo: str, limite: int = 10, offset: 
     Returns:
         Uma lista de dicionários com os produtos promocionais encontrados.
     """
+    logging.debug(f"Buscando produtos promocionais por termo '{termo}' com limite {limite} e offset {offset}.")
     if not termo or len(termo.strip()) < 2:
+        logging.debug("Termo de busca inválido para promoções.")
         return []
     
     termo_busca = f"%{termo.strip().lower()}%"
@@ -892,6 +956,7 @@ def obter_categorias_disponiveis() -> List[str]:
     Returns:
         Uma lista de strings com as categorias.
     """
+    logging.debug("Buscando todas as categorias disponíveis.")
     sql = """
     SELECT DISTINCT LOWER(categoria) as categoria
     FROM produtos 
@@ -917,6 +982,7 @@ def obter_categorias_disponiveis() -> List[str]:
 
 def validar_datas_promocionais():
     """Valida e corrige datas promocionais inconsistentes."""
+    logging.debug("Validando datas promocionais.")
     estatisticas_validacao = {
         "total_promocoes": 0,
         "datas_invalidas_corrigidas": 0,
@@ -976,6 +1042,7 @@ def testar_conexao():
     Returns:
         True se a conexão for bem-sucedida, False caso contrário.
     """
+    logging.debug("Testando conexão com o banco de dados.")
     try:
         with obter_conexao() as conexao:
             with conexao.cursor() as cursor:
@@ -993,12 +1060,14 @@ def obter_contagem_produtos() -> int:
     Returns:
         O número total de produtos ativos.
     """
+    logging.debug("Contando o número de produtos ativos.")
     sql = "SELECT COUNT(*) FROM produtos WHERE status = 'ativo';"
     try:
         with obter_conexao() as conexao:
             with conexao.cursor() as cursor:
                 cursor.execute(sql)
                 resultado = cursor.fetchone()
+                logging.debug(f"Total de produtos ativos: {resultado[0] if resultado else 0}")
                 return resultado[0] if resultado else 0
     except Exception as e:
         logging.error(f"Erro ao contar produtos: {e}")
@@ -1010,6 +1079,7 @@ def obter_saude_banco_dados() -> Dict:
     Returns:
         Um dicionário com as informações de saúde do banco de dados.
     """
+    logging.debug("Verificando a saúde do banco de dados.")
     info_saude = {
         "conexao_ok": False,
         "total_produtos": 0,
@@ -1047,6 +1117,7 @@ def obter_saude_banco_dados() -> Dict:
         logging.error(f"Erro ao verificar saúde do banco: {e}")
         info_saude["conexao_ok"] = False
     
+    logging.debug(f"Saúde do banco de dados: {info_saude}")
     return info_saude
 
 def executar_diagnosticos_banco_dados() -> Dict:
@@ -1055,6 +1126,7 @@ def executar_diagnosticos_banco_dados() -> Dict:
     Returns:
         Um dicionário com os resultados dos diagnósticos.
     """
+    logging.debug("Executando diagnósticos do banco de dados.")
     diagnosticos = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "saude": obter_saude_banco_dados(),
@@ -1079,6 +1151,7 @@ def executar_diagnosticos_banco_dados() -> Dict:
         logging.error(f"Erro na análise de qualidade de buscas: {e}")
         diagnosticos["qualidade_busca"] = {"error": str(e)}
     
+    logging.debug(f"Diagnósticos do banco de dados: {diagnosticos}")
     return diagnosticos
 
 def obter_promocoes_mais_baratas(limite: int = 10, offset: int = 0) -> List[Dict]:
@@ -1091,6 +1164,7 @@ def obter_promocoes_mais_baratas(limite: int = 10, offset: int = 0) -> List[Dict
     Returns:
         Uma lista de dicionários com as promoções mais baratas.
     """
+    logging.debug(f"Buscando as {limite} promoções mais baratas com offset {offset}.")
     sql = """
     SELECT 
         p.codprod,

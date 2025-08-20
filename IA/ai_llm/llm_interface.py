@@ -21,6 +21,7 @@ from utils.classificador_intencao import detectar_intencao_usuario_com_ia
 
 def check_ollama_connection() -> bool:
     """Verifica se o Ollama está disponível e funcionando"""
+    logging.debug("Verificando a conexão com o Ollama.")
     try:
         client = ollama.Client(host=OLLAMA_HOST)
         # Tenta fazer uma chamada simples para verificar conectividade
@@ -29,6 +30,7 @@ def check_ollama_connection() -> bool:
             messages=[{"role": "user", "content": "test"}],
             options={"num_predict": 1}
         )
+        logging.debug("Conexão com o Ollama bem-sucedida.")
         return True
     except Exception as e:
         logging.warning(f"Ollama não disponível: {e}")
@@ -68,6 +70,7 @@ def is_valid_cnpj(cnpj: str) -> bool:
     🆕 NOVA FUNÇÃO: Valida se uma string é um CNPJ válido.
     Aceita CNPJ com ou sem pontuação (XX.XXX.XXX/XXXX-XX ou XXXXXXXXXXXXXX)
     """
+    logging.debug(f"Validando CNPJ: '{cnpj}'")
     print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] Validando CNPJ: '{cnpj}'")
     
     # Remove caracteres não numéricos (pontos, barras, traços)
@@ -131,6 +134,7 @@ def detect_cart_clearing_intent(message: str) -> bool:
     """
     🆕 NOVA FUNÇÃO: Detecta intenção de limpar/esvaziar carrinho.
     """
+    logging.debug(f"Detectando intenção de limpar carrinho na mensagem: '{message}'")
     message_lower = message.lower().strip()
     
     # Comandos explícitos de limpeza de carrinho
@@ -154,6 +158,7 @@ def detect_cart_clearing_intent(message: str) -> bool:
     # Verifica comandos exatos
     for command in clear_commands:
         if command in message_lower:
+            logging.debug(f"Intenção de limpar carrinho detectada pelo comando: '{command}'")
             return True
     
     # Padrões mais flexíveis
@@ -167,8 +172,10 @@ def detect_cart_clearing_intent(message: str) -> bool:
     
     for pattern in clear_patterns:
         if re.search(pattern, message_lower):
+            logging.debug(f"Intenção de limpar carrinho detectada pelo padrão: '{pattern}'")
             return True
     
+    logging.debug("Nenhuma intenção de limpar carrinho detectada.")
     return False
 
 
@@ -176,6 +183,7 @@ def detect_checkout_context(session_data: Dict) -> Dict:
     """
     🆕 NOVA FUNÇÃO: Detecta se estamos em contexto de finalização/checkout.
     """
+    logging.debug("Detectando contexto de checkout.")
     context = {
         'awaiting_cnpj': False,
         'last_request_was_cnpj': False,
@@ -215,15 +223,18 @@ def detect_checkout_context(session_data: Dict) -> Dict:
             context['checkout_initiated'] = True
             break
     
+    logging.debug(f"Contexto de checkout detectado: {context}")
     return context
 
 
 def load_prompt_template() -> str:
     """Carrega o prompt do arquivo de texto 'gav_prompt.txt' com cache."""
+    logging.debug("Carregando template do prompt.")
     global _prompt_cache, _prompt_cache_time
 
     # Usa cache se foi carregado há menos de 5 minutos
     if _prompt_cache and (time.time() - _prompt_cache_time) < 300:
+        logging.debug("Usando prompt em cache.")
         return _prompt_cache
 
     prompt_path = os.path.join("ai_llm", "gav_prompt_structured_v2.txt")
@@ -247,6 +258,7 @@ def load_prompt_template() -> str:
 
 def get_fallback_prompt() -> str:
     """Prompt de emergência caso o arquivo não seja encontrado."""
+    logging.debug("Obtendo prompt de fallback.")
     return """Você é G.A.V., o Gentil Assistente de Vendas do Comercial Esperança. Seu tom é PROFISSIONAL, DIRETO e OBJETIVO. 
 
 ESTILO: Respostas curtas com próxima ação explícita. Liste até 3 opções por vez; peça escolha por número ("1, 2 ou 3").
@@ -262,20 +274,24 @@ SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!"""
 
 def extract_numeric_selection(message: str) -> Union[int, None]:
     """Extrai seleção numérica (1 a 50) da mensagem do usuário."""
+    logging.debug(f"Extraindo seleção numérica da mensagem: '{message}'")
     # Busca números de 1 a 50 isolados na mensagem
     numbers = re.findall(r"\b([1-9]|[1-4][0-9]|50)\b", message.strip())
     if numbers:
         try:
             num = int(numbers[0])
             if 1 <= num <= 50:  # Validação adicional para até 50 produtos
+                logging.debug(f"Seleção numérica extraída: {num}")
                 return num
         except ValueError:
             pass
+    logging.debug("Nenhuma seleção numérica encontrada.")
     return None
 
 
 def detect_quantity_keywords(message: str) -> Union[float, None]:
     """Detecta palavras-chave de quantidade na mensagem."""
+    logging.debug(f"Detectando palavras-chave de quantidade na mensagem: '{message}'")
     message_lower = message.lower().strip()
 
     # Mapeamento de palavras para quantidades
@@ -303,6 +319,7 @@ def detect_quantity_keywords(message: str) -> Union[float, None]:
 
     for word, quantity in quantity_map.items():
         if word in message_lower:
+            logging.debug(f"Palavra-chave de quantidade detectada: '{word}' -> {quantity}")
             return float(quantity)
 
     # Busca números decimais
@@ -310,10 +327,13 @@ def detect_quantity_keywords(message: str) -> Union[float, None]:
     if decimal_match:
         number_str = decimal_match.group(1).replace(",", ".")
         try:
-            return float(number_str)
+            quantity = float(number_str)
+            logging.debug(f"Quantidade numérica detectada: {quantity}")
+            return quantity
         except ValueError:
             pass
 
+    logging.debug("Nenhuma palavra-chave de quantidade encontrada.")
     return None
 
 
@@ -321,6 +341,7 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
     """
     🆕 VERSÃO MELHORADA: Melhora a consciência contextual analisando estado da sessão.
     """
+    logging.debug(f"Aprimorando a consciência de contexto para a mensagem: '{user_message}'")
     context = {
         "has_cart_items": len(session_data.get("shopping_cart", [])) > 0,
         "cart_count": len(session_data.get("shopping_cart", [])),
@@ -406,9 +427,11 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
 
     # 🆕 DETECTA CONTEXTO DE CHECKOUT BASEADO NA ÚLTIMA AÇÃO DO BOT
     last_action = context.get("last_action", "")
-    if (context.get("direct_checkout_command") or 
+    if (
+        context.get("direct_checkout_command") or 
         context.get("awaiting_cnpj") or
-        last_action == "AWAITING_CHECKOUT_CONFIRMATION"):
+        last_action == "AWAITING_CHECKOUT_CONFIRMATION"
+    ):
         purchase_stage = "checkout"
     elif context.get("direct_cart_command"):
         purchase_stage = "cart"
@@ -426,11 +449,13 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
     context["purchase_stage"] = purchase_stage
     session_data["purchase_stage"] = purchase_stage
 
+    logging.debug(f"Consciência de contexto aprimorada: {context}")
     return context
 
 
 def analyze_conversation_context(history: List[Dict], current_message: str) -> Dict:
     """Analisa o contexto da conversa para melhor interpretação."""
+    logging.debug(f"Analisando o contexto da conversa para a mensagem: '{current_message}'")
     context_analysis = {
         "last_bot_action_type": None,
         "waiting_for_selection": False,
@@ -470,6 +495,7 @@ def analyze_conversation_context(history: List[Dict], current_message: str) -> D
         ]):
             context_analysis["last_bot_action_type"] = "added_to_cart"
     
+    logging.debug(f"Análise de contexto da conversa: {context_analysis}")
     return context_analysis
 
 
@@ -613,6 +639,7 @@ def get_intent(
 
         # Constrói contexto completo
         full_context = f"""
+
 MENSAGEM DO USUÁRIO: "{user_message}"
 
 {special_context}
@@ -778,7 +805,8 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
 
 def clean_json_response(content: str) -> str:
     """Limpa a resposta do LLM para extrair JSON válido."""
-    print(f"🔍 DEBUG clean_json_response: Input = '{content[:200]}...'")
+    logging.debug(f"Limpando a resposta JSON: '{content[:200]}...'" )
+    print(f"🔍 DEBUG clean_json_response: Input = '{content[:200]}...'" )
     
     # Remove markdown se presente
     content = re.sub(r"```json\s*", "", content)
@@ -789,6 +817,7 @@ def clean_json_response(content: str) -> str:
     if json_match:
         extracted = json_match.group(0).strip()
         print(f"🔍 DEBUG clean_json_response: JSON encontrado = '{extracted}'")
+        logging.debug(f"JSON extraído: '{extracted}'")
         return extracted
     
     # Se não encontrou JSON, a IA provavelmente retornou texto
@@ -796,6 +825,7 @@ def clean_json_response(content: str) -> str:
     print(f"'{content}'")
     
     # Retorna string vazia para forçar fallback
+    logging.debug("Nenhum JSON encontrado na resposta.")
     return ""
 
 
@@ -803,6 +833,7 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     """
     🆕 VERSÃO CORRIGIDA: Cria intenção de fallback baseada em padrões simples quando LLM falha ou demora.
     """
+    logging.debug(f"Criando intenção de fallback para a mensagem: '{user_message}'")
     message_lower = user_message.lower().strip()
     stage = context.get("purchase_stage", "greeting")
     
@@ -925,7 +956,8 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
         "e ai",
     ]
     # Detecta saudação simples (palavra sozinha ou com expressões básicas)
-    if (any(greeting == message_lower for greeting in greetings) or 
+    if (
+        any(greeting == message_lower for greeting in greetings) or 
         any(greeting in message_lower for greeting in ["bom dia", "boa tarde", "boa noite"]) or
         message_lower in ["oi", "olá", "ola", "e aí", "e ai"]):
         
@@ -1041,6 +1073,7 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
 
 def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
     """Valida e corrige parâmetros da intenção conforme a ferramenta."""
+    logging.debug(f"Validando parâmetros da intenção para a ferramenta: '{tool_name}', Parâmetros: {parameters}")
 
     if tool_name == "add_item_to_cart":
         # Garante que codprod seja inteiro e qt seja número válido
@@ -1080,6 +1113,7 @@ def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
         clean_cnpj = re.sub(r'\D', '', cnpj)
         parameters["cnpj"] = clean_cnpj
 
+    logging.debug(f"Parâmetros da intenção validados: {parameters}")
     return parameters
 
 
@@ -1087,6 +1121,7 @@ def get_enhanced_intent(
     user_message: str, session_data: Dict, customer_context: Union[Dict, None] = None
 ) -> Dict:
     """Versão melhorada da função get_intent com validação adicional."""
+    logging.debug(f"Obtendo intenção aprimorada para a mensagem: '{user_message}'")
 
     # Obtém intenção básica
     intent = get_intent(
@@ -1107,7 +1142,9 @@ def get_enhanced_intent(
 
     validated_parameters = validate_intent_parameters(tool_name, parameters)
 
-    return {"tool_name": tool_name, "parameters": validated_parameters}
+    intent_final = {"tool_name": tool_name, "parameters": validated_parameters}
+    logging.debug(f"Intenção aprimorada obtida: {intent_final}")
+    return intent_final
 
 
 def obter_intencao_rapida(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
@@ -1121,6 +1158,7 @@ def obter_intencao_rapida(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
     Returns:
         A intenção do usuário.
     """
+    logging.debug(f"Obtendo intenção rápida para a mensagem: '{mensagem_usuario}'")
     try:
         contexto_conversa = obter_contexto_conversa(dados_sessao)
         
@@ -1144,6 +1182,7 @@ def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts
     """
     Tenta múltiplas vezes com prompts progressivamente mais diretos
     """
+    logging.debug(f"Obtendo intenção da IA com nova tentativa para a mensagem: '{user_message}'")
     from utils.response_parser import validate_json_structure
 
     for attempt in range(max_attempts):
@@ -1160,6 +1199,7 @@ def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts
             parsed_json = extrair_json_da_resposta_ia(raw_response)
             
             if validate_json_structure(parsed_json, AVAILABLE_TOOLS):
+                logging.debug(f"Intenção da IA obtida com sucesso na tentativa {attempt + 1}.")
                 return parsed_json
                 
         except Exception as e:
@@ -1167,6 +1207,7 @@ def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts
             continue
     
     # Fallback final: análise manual baseada em padrões
+    logging.debug("Não foi possível obter a intenção da IA. Usando fallback.")
     return create_fallback_intent(user_message, session_data)
 
 
@@ -1179,6 +1220,7 @@ def generate_personalized_response(context_type: str, session_data: Dict, **kwar
         session_data: Dados da sessão para contexto
         **kwargs: Parâmetros específicos do contexto
     """
+    logging.debug(f"Gerando resposta personalizada para o tipo de contexto: '{context_type}'")
     try:
         # Constrói o contexto baseado no tipo
         conversation_history = session_data.get("conversation_history", [])
@@ -1198,7 +1240,8 @@ def generate_personalized_response(context_type: str, session_data: Dict, **kwar
         
         context_prompt = contexts.get(context_type, "Responda de forma natural e amigável.")
         
-        prompt = f"""Você é G.A.V. falando no WhatsApp com um cliente.
+        prompt = f"""
+Você é G.A.V. falando no WhatsApp com um cliente.
 
 {context_prompt}
 

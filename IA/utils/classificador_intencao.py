@@ -34,6 +34,7 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
         >>> detectar_intencao_usuario_com_ia("quero cerveja")
         {"nome_ferramenta": "smart_search_with_promotions", "parametros": {"termo_busca": "quero cerveja"}}
     """
+    logging.debug(f"Detectando intenção do usuário com IA para a mensagem: '{user_message}'")
     
     # Cache apenas para mensagens sem contexto (primeira interação)
     # CORRIGIDO: Não usa cache quando há contexto, pois a mesma mensagem pode ter intenções diferentes
@@ -48,15 +49,17 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
 Você é um classificador de intenções para um assistente de vendas do WhatsApp.
 
 FERRAMENTAS DISPONÍVEIS:
-1. busca_inteligente_com_promocoes - Para busca por categoria ou promoções
-2. obter_produtos_mais_vendidos_por_nome - Para busca de produto específico  
-3. atualizacao_inteligente_carrinho - Para modificar carrinho (adicionar/remover)
-4. visualizar_carrinho - Para ver carrinho
-5. limpar_carrinho - Para limpar carrinho
-6. adicionar_item_ao_carrinho - Para selecionar item por número
-7. show_more_products - Para mostrar mais produtos da mesma busca (palavra: mais)
-8. checkout - Para finalizar pedido (palavras: finalizar, checkout, comprar)
-9. lidar_conversa - Para conversas gerais
+1. busca_inteligente_com_promocoes - Para busca por categoria ou promoções específicas
+2. mostrar_todas_promocoes - Para ver TODAS promoções organizadas por categoria 
+3. obter_produtos_mais_vendidos_por_nome - Para busca de produto específico  
+4. atualizacao_inteligente_carrinho - Para modificar carrinho (adicionar/remover)
+5. visualizar_carrinho - Para ver carrinho
+6. limpar_carrinho - Para limpar carrinho
+7. adicionar_item_ao_carrinho - Para selecionar item por número
+8. show_more_products - Para mostrar mais produtos da mesma busca (palavra: mais)
+9. checkout - Para finalizar pedido (palavras: finalizar, checkout, comprar)
+10. handle_chitchat - Para saudações e conversas que resetam estado  
+11. lidar_conversa - Para conversas gerais que mantêm contexto
 
 CONTEXTO DA CONVERSA (FUNDAMENTAL PARA ANÁLISE):
 {conversation_context if conversation_context else "Primeira interação"}
@@ -67,16 +70,27 @@ REGRAS DE CLASSIFICAÇÃO (ANALISE O CONTEXTO ANTES DE DECIDIR):
 1. PRIMEIRO, analise o CONTEXTO da conversa para entender a situação atual
 2. Se o bot mostrou uma lista de produtos e o usuário responde com número → adicionar_item_ao_carrinho
 3. 🚀 CRÍTICO: Se usuário diz apenas "mais" após uma busca de produtos → show_more_products
-4. Se o usuário quer buscar categoria (cerveja, limpeza, comida, etc.) → busca_inteligente_com_promocoes
+4. 🎯 NOVO: Se usuário quer ver "promoções", "produtos em promoção", "ofertas" (genérico, sem categoria específica) → mostrar_todas_promocoes  
+5. Se o usuário quer buscar categoria (cerveja, limpeza, comida, etc.) → busca_inteligente_com_promocoes
 5. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes  
 6. IMPORTANTE: Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes
 7. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
 8. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
 9. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
 10. Se quer limpar/esvaziar carrinho → limpar_carrinho
-11. Saudações, agradecimentos, perguntas gerais → lidar_conversa
+11. 🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): "oi", "olá", "bom dia", "boa tarde", "boa noite", "eai" → handle_chitchat
+12. Agradecimentos, perguntas gerais → lidar_conversa
 
 EXEMPLOS IMPORTANTES:
+🔥 SAUDAÇÕES (SEMPRE DETECTAR PRIMEIRO):
+- "oi" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
+- "olá" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)  
+- "bom dia" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
+- "boa tarde" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
+- "boa noite" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
+- "eai" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
+
+OUTROS EXEMPLOS:
 - "mais" → show_more_products (PRIORIDADE MÁXIMA após busca!)
 - "mais produtos" → show_more_products (continuar busca)
 - "continuar" → show_more_products (mostrar mais produtos)
@@ -107,6 +121,8 @@ PARÂMETROS ESPERADOS:
 - obter_produtos_mais_vendidos_por_nome: {{"nome_produto": "nome_produto"}}
 - adicionar_item_ao_carrinho: {{"indice": numero}}
 - atualizacao_inteligente_carrinho: {{"nome_produto": "produto", "acao": "add/remove/set", "quantidade": numero}}
+- handle_chitchat: {{"response_text": "GENERATE_GREETING"}} (SEMPRE para saudações)
+- lidar_conversa: {{"response_text": "resposta_natural"}}
 
 ATENÇÃO ESPECIAL PARA AÇÕES:
 - "adicionar", "colocar", "mais" → acao: "add"
@@ -115,8 +131,9 @@ ATENÇÃO ESPECIAL PARA AÇÕES:
 
 🚨 IMPORTANTE: RESPONDA APENAS EM JSON VÁLIDO, SEM EXPLICAÇÕES!
 
-EXEMPLO DE RESPOSTA CORRETA:
-{{"nome_ferramenta": "show_more_products", "parametros": {{}}}}
+EXEMPLOS DE RESPOSTA CORRETA:
+Para saudações: {{"nome_ferramenta": "handle_chitchat", "parametros": {{"response_text": "GENERATE_GREETING"}}}}
+Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}}}}
 
 🔥 NÃO ESCREVA TEXTO EXPLICATIVO! APENAS JSON!
 """
@@ -157,6 +174,7 @@ EXEMPLO DE RESPOSTA CORRETA:
                 "adicionar_item_ao_carrinho",
                 "show_more_products",
                 "checkout",
+                "handle_chitchat",
                 "lidar_conversa"
             ]
             
@@ -185,6 +203,7 @@ def _extrair_json_da_resposta(response: str) -> Optional[Dict]:
     Returns:
         Optional[Dict]: Dados JSON extraídos ou None se não encontrados.
     """
+    logging.debug(f"Extraindo JSON da resposta da IA: '{response}'")
     try:
         # Procura por JSON na resposta
         json_pattern = r'\{.*?\}'
@@ -213,6 +232,7 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
     Returns:
         Dict: Intenção de fallback com nome_ferramenta e parametros.
     """
+    logging.debug(f"Criando intenção de fallback para a mensagem: '{user_message}'")
     
     message_lower = user_message.lower().strip()
     
@@ -299,6 +319,7 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
     # 🆕 IA-FIRST: Detecta automaticamente se é uma marca conhecida usando IA
     def _detectar_marca_com_ia(mensagem: str) -> bool:
         """Usa IA para detectar se a mensagem contém uma marca conhecida."""
+        logging.debug(f"Detectando marca com IA para a mensagem: '{mensagem}'")
         try:
             import ollama
             prompt_marca = f"""Analise se esta mensagem contém uma MARCA ESPECÍFICA de produto comercial:
@@ -383,6 +404,7 @@ def obter_estatisticas_intencao() -> Dict:
         >>> obter_estatisticas_intencao()
         {"tamanho_cache": 5, "intencoes_cache": ["oi", "cerveja", "carrinho"]}
     """
+    logging.debug("Obtendo estatísticas do classificador de intenções.")
     return {
         "tamanho_cache": len(_cache_intencao),
         "intencoes_cache": list(_cache_intencao.keys())[:10]  # Mostra primeiras 10

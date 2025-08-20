@@ -45,12 +45,15 @@ def _obter_caminho_arquivo_sessao(id_sessao: str) -> str:
     Returns:
         O caminho do arquivo de sessão.
     """
+    logging.debug(f"Obtendo caminho do arquivo de sessão para o ID: {id_sessao}")
     diretorio_sessoes = "data"
     if not os.path.exists(diretorio_sessoes):
         os.makedirs(diretorio_sessoes)
     
     id_seguro = id_sessao.replace(":", "_").replace("/", "_")
-    return os.path.join(diretorio_sessoes, f"sessao_{id_seguro}.json")
+    caminho_arquivo = os.path.join(diretorio_sessoes, f"sessao_{id_seguro}.json")
+    logging.debug(f"Caminho do arquivo de sessão: {caminho_arquivo}")
+    return caminho_arquivo
 
 def carregar_sessao(id_sessao: str) -> Dict:
     """Carrega os dados da sessão do armazenamento.
@@ -61,6 +64,7 @@ def carregar_sessao(id_sessao: str) -> Dict:
     Returns:
         Um dicionário com os dados da sessão.
     """
+    logging.debug(f"Carregando sessão para o ID: {id_sessao}")
     sessao_padrao = {
         "contexto_cliente": None,
         "carrinho_compras": [],
@@ -118,6 +122,7 @@ def salvar_sessao(id_sessao: str, dados_sessao: Dict):
         id_sessao: O ID da sessão.
         dados_sessao: Os dados da sessão.
     """
+    logging.debug(f"Salvando sessão para o ID: {id_sessao}")
     dados_sessao["ultima_atividade"] = datetime.now().isoformat()
     _resumir_mensagens_antigas(dados_sessao)
     
@@ -148,6 +153,7 @@ def limpar_sessao(id_sessao: str):
     Args:
         id_sessao: O ID da sessão.
     """
+    logging.debug(f"Limpando sessão para o ID: {id_sessao}")
     if cliente_redis:
         try:
             cliente_redis.delete(f"sessao:{id_sessao}")
@@ -165,6 +171,7 @@ def limpar_sessao(id_sessao: str):
     
 def limpar_sessoes_antigas():
     """Remove sessões antigas (mais de 7 dias)."""
+    logging.debug("Limpando sessões antigas.")
     if cliente_redis:
         try:
             logging.info("Redis gerencia expiração automaticamente")
@@ -199,6 +206,7 @@ def formatar_lista_produtos_para_exibicao(produtos: List[Dict], titulo: str, tem
     Returns:
         A lista de produtos formatada.
     """
+    logging.debug(f"Formatando lista de produtos para exibição. Título: {titulo}, Quantidade: {len(produtos)}, Tem mais: {tem_mais}, Offset: {offset}")
     if not produtos:
         return f"❌ {titulo}\nNão achei esse item. Posso sugerir similares?"
     
@@ -234,6 +242,7 @@ def formatar_lista_produtos_para_exibicao(produtos: List[Dict], titulo: str, tem
     if tem_mais:
         resposta += "\n📝 Digite *mais* para ver outros produtos!"
     
+    logging.debug(f"Lista de produtos formatada: {resposta}")
     return resposta
 
 def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_promo: List[Dict], titulo: str) -> str:
@@ -247,6 +256,7 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
     Returns:
         A lista de produtos formatada.
     """
+    logging.debug(f"Formatando lista de produtos inteligente. Título: {titulo}, Produtos normais: {len(produtos_normais)}, Produtos em promoção: {len(produtos_promo)}")
     if not produtos_normais and not produtos_promo:
         return f"😕 {titulo}\nNão encontrei produtos para esta categoria."
 
@@ -331,6 +341,7 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
     # Opção de ver mais produtos (sempre disponível para dar mais opções ao usuário)
     resposta += f"\n📝 Digite *mais* para ver outros produtos desta categoria!"
 
+    logging.debug(f"Lista de produtos inteligente formatada: {resposta}")
     return resposta
 
 def formatar_carrinho_para_exibicao(carrinho: List[Dict]) -> str:
@@ -342,6 +353,7 @@ def formatar_carrinho_para_exibicao(carrinho: List[Dict]) -> str:
     Returns:
         O carrinho formatado com quantidade, descrição, preço unitário e total.
     """
+    logging.debug(f"Formatando carrinho para exibição. Itens no carrinho: {len(carrinho)}")
     if not carrinho:
         return "🛒 Carrinho vazio"
     
@@ -375,8 +387,9 @@ def formatar_carrinho_para_exibicao(carrinho: List[Dict]) -> str:
     total_str = f"R$ {total:.2f}".replace(".", ",")
     
     # Formato final
-    resposta = "🛒 *Carrinho:*\n" + "\n\n".join(itens) + f"\n\n💰 *Total Geral: {total_str}*"
+    resposta = "🛒 *Carrinho:*" + "\n\n".join(itens) + f"\n\n💰 *Total Geral: {total_str}*"
     
+    logging.debug(f"Carrinho formatado: {resposta}")
     return resposta
 
 def _resumir_mensagens_antigas(dados_sessao: Dict, max_historico: int = 40, manter_recentes: int = 20):
@@ -387,6 +400,7 @@ def _resumir_mensagens_antigas(dados_sessao: Dict, max_historico: int = 40, mant
         max_historico: O número máximo de mensagens no histórico.
         manter_recentes: O número de mensagens recentes a serem mantidas.
     """
+    logging.debug("Resumindo mensagens antigas do histórico.")
     historico = dados_sessao.get("historico_conversa", [])
     if len(historico) <= max_historico:
         return
@@ -406,6 +420,7 @@ def _resumir_mensagens_antigas(dados_sessao: Dict, max_historico: int = 40, mant
     dados_sessao["resumo_conversa"] = combinado[-1000:]
 
     dados_sessao["historico_conversa"] = historico[-manter_recentes:]
+    logging.debug("Mensagens antigas do histórico resumidas com sucesso.")
 
 def adicionar_mensagem_historico(dados_sessao: Dict, role: str, mensagem: str, tipo_acao: str = ""):
     """Adiciona uma mensagem ao histórico da conversa.
@@ -416,6 +431,7 @@ def adicionar_mensagem_historico(dados_sessao: Dict, role: str, mensagem: str, t
         mensagem: A mensagem a ser adicionada.
         tipo_acao: O tipo de ação associado à mensagem.
     """
+    logging.debug(f"Adicionando mensagem ao histórico. Role: {role}, Tipo de Ação: {tipo_acao}, Mensagem: {mensagem[:100]}...")
     if "historico_conversa" not in dados_sessao:
         dados_sessao["historico_conversa"] = []
     
@@ -438,6 +454,7 @@ def obter_contexto_conversa(dados_sessao: Dict, max_mensagens: int = 14) -> str:
     Returns:
         O contexto da conversa.
     """
+    logging.debug(f"Obtendo contexto da conversa com no máximo {max_mensagens} mensagens.")
     historico = dados_sessao.get("historico_conversa", [])
     resumo = dados_sessao.get("resumo_conversa")
 
@@ -459,7 +476,9 @@ def obter_contexto_conversa(dados_sessao: Dict, max_mensagens: int = 14) -> str:
             contexto += f"{i}. {role}{info_acao}: {mensagem_completa}\n"
         partes.append(contexto)
 
-    return "\n\n".join(partes)
+    contexto_final = "\n\n".join(partes)
+    logging.debug(f"Contexto da conversa obtido: {contexto_final[:200]}...")
+    return contexto_final
 
 def detectar_comandos_limpar_carrinho(mensagem: str) -> bool:
     """Detecta comandos de limpeza de carrinho.
@@ -470,6 +489,7 @@ def detectar_comandos_limpar_carrinho(mensagem: str) -> bool:
     Returns:
         True se um comando de limpeza for detectado, False caso contrário.
     """
+    logging.debug(f"Detectando comandos de limpar carrinho na mensagem: '{mensagem}'")
     mensagem_minuscula = mensagem.lower().strip()
     
     comandos_limpar = [
@@ -483,6 +503,7 @@ def detectar_comandos_limpar_carrinho(mensagem: str) -> bool:
     ]
     
     if mensagem_minuscula in comandos_limpar:
+        logging.debug("Comando de limpar carrinho detectado.")
         return True
     
     padroes_limpar = [
@@ -496,8 +517,10 @@ def detectar_comandos_limpar_carrinho(mensagem: str) -> bool:
     
     for padrao in padroes_limpar:
         if re.search(padrao, mensagem_minuscula):
+            logging.debug("Padrão de limpar carrinho detectado.")
             return True
     
+    logging.debug("Nenhum comando de limpar carrinho detectado.")
     return False
 
 def detectar_tipo_intencao_usuario(mensagem: str, dados_sessao: Dict) -> str:
@@ -510,6 +533,7 @@ def detectar_tipo_intencao_usuario(mensagem: str, dados_sessao: Dict) -> str:
     Returns:
         O tipo de intenção detectado.
     """
+    logging.debug(f"Detectando tipo de intenção do usuário para a mensagem: '{mensagem}'")
     mensagem_minuscula = mensagem.lower().strip()
     
     if detectar_comandos_limpar_carrinho(mensagem):
@@ -552,6 +576,7 @@ def obter_estatisticas_sessao(dados_sessao: Dict) -> Dict:
     Returns:
         Um dicionário com as estatísticas da sessão.
     """
+    logging.debug("Obtendo estatísticas da sessão.")
     estatisticas = {
         "itens_carrinho": len(dados_sessao.get("shopping_cart", [])),
         "tamanho_conversa": len(dados_sessao.get("conversation_history", [])),
@@ -571,6 +596,7 @@ def obter_estatisticas_sessao(dados_sessao: Dict) -> Dict:
     
     estatisticas["valor_total_carrinho"] = valor_total
     
+    logging.debug(f"Estatísticas da sessão: {estatisticas}")
     return estatisticas
 
 def formatar_acoes_rapidas(tem_carrinho: bool = False, tem_produtos: bool = False) -> str:
@@ -583,6 +609,7 @@ def formatar_acoes_rapidas(tem_carrinho: bool = False, tem_produtos: bool = Fals
     Returns:
         O menu de ações rápidas formatado.
     """
+    logging.debug(f"Formatando ações rápidas. Tem carrinho: {tem_carrinho}, Tem produtos: {tem_produtos}")
     acoes = []
     
     if tem_produtos:
@@ -601,7 +628,9 @@ def formatar_acoes_rapidas(tem_carrinho: bool = False, tem_produtos: bool = Fals
             "❓ Digite *ajuda* para mais opções"
         ]
     
-    return "\n".join(acoes)
+    resposta = "\n".join(acoes)
+    logging.debug(f"Ações rápidas formatadas: {resposta}")
+    return resposta
 
 def atualizar_contexto_sessao(dados_sessao: Dict, novo_contexto: Dict):
     """Atualiza os dados da sessão.
@@ -610,8 +639,10 @@ def atualizar_contexto_sessao(dados_sessao: Dict, novo_contexto: Dict):
         dados_sessao: Os dados da sessão.
         novo_contexto: O novo contexto a ser adicionado.
     """
+    logging.debug(f"Atualizando contexto da sessão com: {novo_contexto}")
     dados_sessao.update(novo_contexto)
 
     dados_sessao["ultima_atividade"] = datetime.now().isoformat()
 
     dados_sessao["estatisticas_sessao"] = obter_estatisticas_sessao(dados_sessao)
+    logging.debug("Contexto da sessão atualizado com sucesso.")
