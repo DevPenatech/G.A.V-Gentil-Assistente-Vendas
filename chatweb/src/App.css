@@ -66,14 +66,40 @@ body {
   font-size: 1.1rem;
 }
 
-.theme-toggle {
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.theme-toggle, .new-session-btn {
   background: none;
   border: 1px solid var(--input-border-color);
   color: var(--text-color);
   border-radius: 20px;
-  padding: 5px 10px;
+  padding: 6px 12px;
   cursor: pointer;
   font-size: 0.8rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.theme-toggle:hover, .new-session-btn:hover {
+  background-color: var(--bot-bubble-bg);
+  transform: translateY(-1px);
+}
+
+.new-session-btn {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  border-color: var(--button-bg-color);
+}
+
+.new-session-btn:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
 
 .chat-window {

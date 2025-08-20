@@ -1072,6 +1072,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str) -> 
         historico_conversa = obter_contexto_conversa(session)
         analise_marca = detectar_marca_e_produto_ia(search_term, historico_conversa)
         
+        print(f">>> DEBUG: [ANALISE_MARCA] Resultado completo: {analise_marca}")
+        
         if analise_marca and analise_marca.get("tipo_busca"):
             termo_otimizado = gerar_busca_otimizada(analise_marca)
             if termo_otimizado and termo_otimizado != search_term:
@@ -1284,33 +1286,55 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 normal_products = database.obter_produtos_por_categoria(category, limite=limite_busca, marca_priorizada=marca_priorizada)
                 promo_products = database.obter_produtos_promocionais_por_categoria(category, limite=10)
                 
+                print(f">>> DEBUG: [BUSCA_DB] Categoria '{category}' retornou {len(normal_products)} produtos normais")
+                print(f">>> DEBUG: [BUSCA_DB] Categoria '{category}' retornou {len(promo_products)} produtos promocionais")
+                
+                # Log completo dos produtos encontrados
+                for i, p in enumerate(normal_products):
+                    print(f">>> DEBUG: [NORMAL_{i+1}] {p.get('descricao')} | Marca: {p.get('marca')} | Preço: R$ {p.get('pvenda', p.get('preco_varejo'))}")
+                
+                for i, p in enumerate(promo_products):
+                    print(f">>> DEBUG: [PROMO_{i+1}] {p.get('descricao')} | Marca: {p.get('marca')} | Preço: R$ {p.get('preco_promocional', p.get('preco_atual'))}")
+                
                 
                 # 🆕 5. FILTRAR POR MARCA ESPECÍFICA SE DETECTADA
                 if analise_marca.get("tipo_busca") == "marca_especifica" and analise_marca.get("marca"):
                     marca_desejada = analise_marca.get("marca")
                     print(f">>> CONSOLE: [IA-MARCA] Filtrando produtos pela marca '{marca_desejada}'")
+                    print(f">>> DEBUG: [FILTRO] Antes do filtro - normais: {len(normal_products)}, promocionais: {len(promo_products)}")
                     
                     # Filtra produtos normais e promocionais pela marca
                     normal_products_filtrados = filtrar_produtos_por_marca(normal_products, marca_desejada)
                     promo_products_filtrados = filtrar_produtos_por_marca(promo_products, marca_desejada)
                     
-                    print(f">>> DEBUG: Marca '{marca_desejada}' nos normais: {len(normal_products_filtrados)}, nas promoções: {len(promo_products_filtrados)}")
+                    print(f">>> DEBUG: [FILTRO] Depois do filtro - normais: {len(normal_products_filtrados)}, promocionais: {len(promo_products_filtrados)}")
                     
-                    # Debug detalhado dos produtos encontrados
-                    for p in promo_products_filtrados:
-                        print(f">>> DEBUG: Promo {marca_desejada}: {p.get('descricao')} - R$ {p.get('preco_atual', p.get('preco_varejo'))}")
+                    # Debug detalhado dos produtos FILTRADOS
+                    print(f">>> DEBUG: [FILTRADOS_NORMAIS] Produtos normais da marca '{marca_desejada}':")
+                    for i, p in enumerate(normal_products_filtrados):
+                        print(f">>> DEBUG: [FILTRADO_NORMAL_{i+1}] {p.get('descricao')} | Marca: {p.get('marca')} | Preço: R$ {p.get('pvenda', p.get('preco_varejo'))}")
+                    
+                    print(f">>> DEBUG: [FILTRADOS_PROMO] Produtos promocionais da marca '{marca_desejada}':")
+                    for i, p in enumerate(promo_products_filtrados):
+                        print(f">>> DEBUG: [FILTRADO_PROMO_{i+1}] {p.get('descricao')} | Marca: {p.get('marca')} | Preço: R$ {p.get('preco_promocional', p.get('preco_atual'))}")
                     
                     # 🆕 MELHORIA: Se marca não foi encontrada nos normais, busca diretamente por nome
                     if not normal_products_filtrados and not promo_products_filtrados:
-                        print(f">>> CONSOLE: [IA-MARCA] Marca '{marca_desejada}' não encontrada, buscando por nome específico")
+                        print(f">>> CONSOLE: [IA-MARCA] Marca '{marca_desejada}' não encontrada na categoria, buscando por nome específico...")
                         # Busca direta por nome da marca
                         search_result = pesquisar_produtos_com_sugestoes(marca_desejada, limite=10)
                         marca_products = search_result["products"]
+                        
+                        print(f">>> DEBUG: [BUSCA_DIRETA] Busca por '{marca_desejada}' retornou {len(marca_products)} produtos")
+                        for i, p in enumerate(marca_products):
+                            print(f">>> DEBUG: [BUSCA_DIRETA_{i+1}] {p.get('descricao')} | Marca: {p.get('marca')} | Preço: R$ {p.get('pvenda', p.get('preco_varejo'))}")
                         
                         if marca_products:
                             # Busca produtos da marca em ambas as tabelas
                             marca_em_promo = database.obter_produtos_promocionais_por_termo(marca_desejada, limite=10)
                             marca_normais = [p for p in marca_products if p['codprod'] not in {pr['codprod'] for pr in marca_em_promo}]
+                            
+                            print(f">>> DEBUG: [SEPARACAO] {len(marca_normais)} produtos normais + {len(marca_em_promo)} promocionais após separação")
                             
                             normal_products = marca_normais
                             promo_products = marca_em_promo
@@ -2248,6 +2272,10 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
     import glob
     import os
     
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Função _validate_cnpj_first chamada")
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] sender_phone: {sender_phone}")
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] incoming_msg: {incoming_msg}")
+    
     # 🔍 Primeiro, procura por qualquer sessão existente com CNPJ para este telefone
     safe_phone_id = sender_phone.replace(":", "_").replace("/", "_")
     pattern = f"data/sessao_{safe_phone_id}_*.json"
@@ -2266,19 +2294,28 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
         return True, session_id, ""
     
     # Se não encontrou sessão com CNPJ, verifica sessão temporária
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Não encontrou sessão com CNPJ, verificando sessão temporária...")
     temp_session = carregar_sessao(sender_phone)
     existing_cnpj = temp_session.get("validated_cnpj")
+    
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] CNPJ na sessão temporária: {existing_cnpj}")
     
     if existing_cnpj:
         # Já tem CNPJ validado na sessão atual, usa session_id com CNPJ
         session_id = f"{sender_phone}_{existing_cnpj}"
-        print(f">>> CONSOLE: ✅ CNPJ encontrado na sessão atual: {existing_cnpj}")
+        print(f">>> CONSOLE: ✅ [VALIDATE_CNPJ] CNPJ encontrado na sessão atual: {existing_cnpj}")
+        print(f">>> CONSOLE: ✅ [VALIDATE_CNPJ] Retornando session_id: {session_id}")
         return True, session_id, ""
     
     # Verifica se a mensagem atual é um CNPJ
-    if is_valid_cnpj(incoming_msg.strip()):
+    print(f">>> CONSOLE: 🔍 Verificando se '{incoming_msg.strip()}' é um CNPJ válido...")
+    cnpj_validation_result = is_valid_cnpj(incoming_msg.strip())
+    print(f">>> CONSOLE: 🔍 Resultado da validação: {cnpj_validation_result}")
+    
+    if cnpj_validation_result:
         # É um CNPJ válido!
         cnpj_clean = incoming_msg.strip().replace(".", "").replace("/", "").replace("-", "")
+        print(f">>> CONSOLE: ✅ CNPJ válido detectado: {cnpj_clean}")
         
         # Migra dados da sessão temporária para a sessão com CNPJ
         session_id_with_cnpj = f"{sender_phone}_{cnpj_clean}"
@@ -2311,14 +2348,29 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
             )
             adicionar_mensagem_historico(temp_session, "assistant", welcome_message, "CNPJ_VALIDATED")
             salvar_sessao(session_id_with_cnpj, temp_session)
+            
+            # CORREÇÃO: Retorna a mensagem de boas-vindas para ser exibida no webchat
+            return True, session_id_with_cnpj, welcome_message
         
-        return True, session_id_with_cnpj, ""
+        # Se não é primeira vez, retorna mensagem simples
+        simple_welcome = (
+            f"✅ *CNPJ validado!*\n\n"
+            f"Como posso te ajudar hoje?\n\n"
+            f"🔍 Digite o nome do produto que deseja\n"
+            f"📦 Digite *produtos* para ver os mais vendidos"
+        )
+        return True, session_id_with_cnpj, simple_welcome
     
     # Ainda não tem CNPJ, verifica se já pediu antes
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] CNPJ não é válido, verificando histórico de conversa...")
     conversation_history = temp_session.get("historico_conversa", [])
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Histórico tem {len(conversation_history)} mensagens")
+    
     already_asked_cnpj = any("cnpj" in msg.get("message", "").lower() 
                             and msg.get("role") == "assistant" 
                             for msg in conversation_history[-3:])  # Últimas 3 mensagens
+    
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Já perguntou CNPJ antes: {already_asked_cnpj}")
     
     # Verifica se o usuário tentou enviar algo que parece ser um CNPJ mas é inválido
     user_attempted_cnpj = (
@@ -2328,6 +2380,8 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
         not is_valid_cnpj(incoming_msg.strip())  # Mas não é válido
     )
     
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Usuário tentou CNPJ inválido: {user_attempted_cnpj}")
+    
     if user_attempted_cnpj:
         # Usuário tentou enviar CNPJ mas é inválido
         response_text = (
@@ -2335,6 +2389,7 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
             "XX.XXX.XXX/XXXX-XX ou apenas os 14 dígitos.\n\n"
             "Exemplo: 12.345.678/0001-95"
         )
+        print(f">>> CONSOLE: ❌ [VALIDATE_CNPJ] Retornando erro de CNPJ inválido")
     else:
         # Primeira vez pedindo CNPJ ou usuário não tentou enviar CNPJ ainda
         response_text = (
@@ -2344,12 +2399,14 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
             "Para começarmos, preciso apenas do CNPJ da sua empresa:\n"
             "📄 Digite seu CNPJ (pode ser com ou sem pontuação)"
         )
+        print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Retornando solicitação inicial de CNPJ")
     
     # Adiciona a mensagem ao histórico da sessão temporária
     adicionar_mensagem_historico(temp_session, "user", incoming_msg)
     adicionar_mensagem_historico(temp_session, "assistant", response_text, "REQUEST_CNPJ")
     salvar_sessao(sender_phone, temp_session)
     
+    print(f">>> CONSOLE: ❌ [VALIDATE_CNPJ] Retornando: False, {sender_phone}, response_text")
     return False, sender_phone, response_text
 
 
@@ -2455,11 +2512,27 @@ def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
     with aplicativo.app_context():
         try:
             # 🆕 VALIDAÇÃO OBRIGATÓRIA DE CNPJ NO INÍCIO DA CONVERSA
+            print(f">>> CONSOLE: 🔍 [WEBCHAT] Iniciando validação CNPJ para sender_id: {sender_id}")
+            print(f">>> CONSOLE: 🔍 [WEBCHAT] Mensagem recebida: {incoming_msg}")
+            
             cnpj_validated, session_id, response_text = _validate_cnpj_first(sender_id, incoming_msg)
+            
+            print(f">>> CONSOLE: 🔍 [WEBCHAT] Resultado validação CNPJ:")
+            print(f">>> CONSOLE: 🔍 [WEBCHAT] - cnpj_validated: {cnpj_validated}")
+            print(f">>> CONSOLE: 🔍 [WEBCHAT] - session_id: {session_id}")
+            print(f">>> CONSOLE: 🔍 [WEBCHAT] - response_text: {response_text}")
             
             # Se ainda não temos CNPJ válido, retorna mensagem solicitando CNPJ
             if not cnpj_validated:
+                print(f">>> CONSOLE: ❌ [WEBCHAT] CNPJ não validado, retornando: {response_text}")
                 return response_text if response_text else "Por favor, informe seu CNPJ para continuar."
+            
+            # Se CNPJ foi validado agora e temos uma resposta, retorna ela imediatamente
+            if response_text and response_text.strip():
+                print(f">>> CONSOLE: ✅ [WEBCHAT] CNPJ validado COM resposta, retornando mensagem completa")
+                return response_text
+            
+            print(f">>> CONSOLE: ✅ [WEBCHAT] CNPJ validado SEM resposta, continuando fluxo normal")
             
             # Usa o session_id que inclui o CNPJ
             session = carregar_sessao(session_id)

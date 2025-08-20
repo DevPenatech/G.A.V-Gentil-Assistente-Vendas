@@ -3,6 +3,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
+// Função para gerar um ID único para cada usuário
+const generateUserId = () => {
+  const timestamp = Date.now().toString(36);
+  const randomStr = Math.random().toString(36).substring(2, 8);
+  return `user_${timestamp}_${randomStr}`;
+};
+
+// Função para obter ou criar um ID de usuário único
+const getUserId = () => {
+  let userId = localStorage.getItem('webchat-user-id');
+  if (!userId) {
+    userId = generateUserId();
+    localStorage.setItem('webchat-user-id', userId);
+  }
+  return userId;
+};
+
 // Função simples para renderizar markdown básico
 const renderMarkdown = (text) => {
   // Converte markdown básico em HTML
@@ -25,7 +42,7 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem('chat-theme') || 'light');
 
   const [messages, setMessages] = useState([
-    { from: 'bot', text: 'Olá! Sou seu assistente de testes. Digite sua mensagem.' }
+    { from: 'bot', text: '🎉 **Olá! Seja bem-vindo à Comercial Esperança!**\n\nEu sou o **G.A.V.** (Gentil Assistente de Vendas) e estou aqui para te ajudar com seus pedidos de forma rápida e personalizada! 😊\n\nPara começarmos, preciso apenas do CNPJ da sua empresa:\n📄 Digite seu CNPJ (pode ser com ou sem pontuação)' }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -60,7 +77,7 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: input,
-          sender_id: 'local-dev-user'
+          sender_id: getUserId()
         }),
       });
 
@@ -82,14 +99,31 @@ function App() {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
+  // 4. Função para iniciar nova sessão (novo usuário)
+  const startNewSession = () => {
+    // Remove o ID do usuário atual
+    localStorage.removeItem('webchat-user-id');
+    // Limpa as mensagens
+    setMessages([
+      { from: 'bot', text: '🔄 **Nova sessão iniciada**\n\n🎉 **Olá! Seja bem-vindo à Comercial Esperança!**\n\nEu sou o **G.A.V.** (Gentil Assistente de Vendas) e estou aqui para te ajudar com seus pedidos de forma rápida e personalizada! 😊\n\nPara começarmos, preciso apenas do CNPJ da sua empresa:\n📄 Digite seu CNPJ (pode ser com ou sem pontuação)' }
+    ]);
+    // Gera novo ID para próxima mensagem
+    getUserId(); // Isso criará um novo ID
+  };
+
   return (
     <div className="chat-container">
-      {/* 4. Cabeçalho com o botão de troca de tema */}
+      {/* 5. Cabeçalho com botões de controle */}
       <div className="chat-header">
-        <h3>Chat de Teste</h3>
-        <button onClick={toggleTheme} className="theme-toggle">
-          Mudar para tema {theme === 'light' ? 'Escuro' : 'Claro'}
-        </button>
+        <h3>G.A.V. - Assistente de Vendas</h3>
+        <div className="header-buttons">
+          <button onClick={startNewSession} className="new-session-btn" title="Iniciar nova sessão">
+            🔄 Nova Sessão
+          </button>
+          <button onClick={toggleTheme} className="theme-toggle" title="Alternar tema">
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+        </div>
       </div>
 
       <div className="chat-window">

@@ -68,11 +68,15 @@ def is_valid_cnpj(cnpj: str) -> bool:
     🆕 NOVA FUNÇÃO: Valida se uma string é um CNPJ válido.
     Aceita CNPJ com ou sem pontuação (XX.XXX.XXX/XXXX-XX ou XXXXXXXXXXXXXX)
     """
+    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] Validando CNPJ: '{cnpj}'")
+    
     # Remove caracteres não numéricos (pontos, barras, traços)
     cnpj_digits = re.sub(r'\D', '', cnpj)
+    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] CNPJ apenas dígitos: '{cnpj_digits}'")
     
     # Verifica se tem 14 dígitos
     if len(cnpj_digits) != 14:
+        print(f">>> CONSOLE: ❌ [IS_VALID_CNPJ] CNPJ não tem 14 dígitos (tem {len(cnpj_digits)})")
         return False
     
     # 🆕 ACEITA CNPJs DE TESTE PARA DESENVOLVIMENTO
@@ -84,12 +88,18 @@ def is_valid_cnpj(cnpj: str) -> bool:
         "12345678000195",  # Outro CNPJ de teste
     ]
     
+    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] Verificando se '{cnpj_digits}' está na lista de CNPJs de teste...")
+    
     if cnpj_digits in test_cnpjs:
+        print(f">>> CONSOLE: ✅ [IS_VALID_CNPJ] CNPJ de teste válido encontrado: {cnpj_digits}")
         return True
     
     # Verifica se não são todos iguais (ex: 11111111111111) - EXCETO se for de teste
     if cnpj_digits == cnpj_digits[0] * 14 and cnpj_digits not in test_cnpjs:
+        print(f">>> CONSOLE: ❌ [IS_VALID_CNPJ] CNPJ com todos dígitos iguais: {cnpj_digits}")
         return False
+    
+    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] Iniciando validação matemática dos dígitos verificadores...")
     
     # Validação dos dígitos verificadores
     try:
@@ -108,9 +118,12 @@ def is_valid_cnpj(cnpj: str) -> bool:
         sum2 = sum(sequence[i] * weights2[i] for i in range(13))
         digit2 = ((sum2 % 11) < 2) and 0 or (11 - (sum2 % 11))
         
-        return digit2 == int(cnpj_digits[13])
+        result = digit2 == int(cnpj_digits[13])
+        print(f">>> CONSOLE: {'✅' if result else '❌'} [IS_VALID_CNPJ] Validação matemática: {result}")
+        return result
         
-    except (ValueError, IndexError):
+    except (ValueError, IndexError) as e:
+        print(f">>> CONSOLE: ❌ [IS_VALID_CNPJ] Erro na validação matemática: {e}")
         return False
 
 

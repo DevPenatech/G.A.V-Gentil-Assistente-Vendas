@@ -1,0 +1,247 @@
+{
+  "contexto_cliente": null,
+  "carrinho_compras": [],
+  "historico_conversa": [
+    {
+      "role": "assistant",
+      "message": "✅ *CNPJ validado com sucesso!*\n\n🎉 Bem-vindo à *Comercial Esperança*!\nAgora posso te ajudar com seus pedidos de forma personalizada.\n\n🔍 Digite o nome do produto que deseja\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-20T00:05:08.421462",
+      "action_type": "CNPJ_VALIDATED"
+    },
+    {
+      "role": "user",
+      "message": "meu carrinho",
+      "timestamp": "2025-08-20T00:05:15.490474",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-20T00:05:24.323917",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-20T00:05:24.323948",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero cerveja heineken",
+      "timestamp": "2025-08-20T00:05:33.485910",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Cerveja encontrados:*\n\n*1.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*2.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*5.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*6.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n*7.* CERVEJA ANTARCTICA ORIGINAL\n    💰 R$ 10,49\n\n*8.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 3,29\n\n*9.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 4,59\n\n*10.* CERVEJA BADEN AMERICAN GF\n    💰 R$ 13,49\n\n*11.* CERVEJA ",
+      "timestamp": "2025-08-20T00:05:45.347715",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Cerveja encontrados:*\n\n*1.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*2.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*5.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*6.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n*7.* CERVEJA ANTARCTICA ORIGINAL\n    💰 R$ 10,49\n\n*8.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 3,29\n\n*9.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 4,59\n\n*10.* CERVEJA BADEN AMERICAN GF\n    💰 R$ 13,49\n\n*11.* CERVEJA ",
+      "timestamp": "2025-08-20T00:05:45.347762",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero cerveja heineken",
+      "timestamp": "2025-08-20T00:12:26.844215",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Cerveja encontrados:*\n\n*1.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*2.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*5.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*6.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n*7.* CERVEJA ANTARCTICA ORIGINAL\n    💰 R$ 10,49\n\n*8.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 3,29\n\n*9.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 4,59\n\n*10.* CERVEJA BADEN AMERICAN GF\n    💰 R$ 13,49\n\n*11.* CERVEJA ",
+      "timestamp": "2025-08-20T00:12:39.411046",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Cerveja encontrados:*\n\n*1.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*2.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*5.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*6.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n*7.* CERVEJA ANTARCTICA ORIGINAL\n    💰 R$ 10,49\n\n*8.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 3,29\n\n*9.* CERVEJA ANTARTICA ORIGINAL LT\n    💰 R$ 4,59\n\n*10.* CERVEJA BADEN AMERICAN GF\n    💰 R$ 13,49\n\n*11.* CERVEJA ",
+      "timestamp": "2025-08-20T00:12:39.411095",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero cerveja amstel",
+      "timestamp": "2025-08-20T00:19:30.152298",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Amstel encontrados:*\n\n*1.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*2.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*5.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*6.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*7.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*8.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o n",
+      "timestamp": "2025-08-20T00:19:43.430153",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Amstel encontrados:*\n\n*1.* CERVEJA AMSTEL GFA\n    💰 R$ 8,49\n\n*2.* CERVEJA AMSTEL LT\n    💰 R$ 2,98\n\n*3.* CERVEJA AMSTEL LT\n    💰 R$ 3,49\n\n*4.* CERVEJA AMSTEL P.MALTE GFA\n    💰 R$ 4,49\n\n*5.* CERVEJA AMSTEL ULTRA L.NECK\n    💰 R$ 4,19\n\n*6.* CERVEJA AMSTEL ULTRA LT\n    💰 R$ 3,79\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*7.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*8.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o n",
+      "timestamp": "2025-08-20T00:19:43.430188",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-20T00:20:19.174452",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Deu um problema aqui! Tente comprar novamente, por favor. Vou verificar o que deu errado.",
+      "timestamp": "2025-08-20T00:20:27.887537",
+      "action_type": "ERROR"
+    },
+    {
+      "role": "assistant",
+      "message": "Deu um problema aqui! Tente comprar novamente, por favor. Vou verificar o que deu errado.",
+      "timestamp": "2025-08-20T00:20:27.887564",
+      "action_type": "BOT_RESPONSE"
+    }
+  ],
+  "resumo_conversa": "",
+  "ultimo_tipo_busca": null,
+  "ultimos_parametros_busca": {},
+  "offset_atual": 0,
+  "ultimos_produtos_mostrados": [],
+  "ultima_acao_bot": null,
+  "acao_pendente": null,
+  "selecao_produto_pendente": null,
+  "quantidade_pendente": null,
+  "ultimo_termo_busca_kb": null,
+  "ultimos_resultados_busca": [],
+  "ultima_analise_busca": {},
+  "ultimas_sugestoes_busca": [],
+  "criado_em": "2025-08-20T00:05:08.408690",
+  "ultima_atividade": "2025-08-20T00:20:27.887566",
+  "validated_cnpj": "11111111111111",
+  "customer_context": {
+    "cnpj": "11111111111111"
+  },
+  "shopping_cart": [],
+  "last_search_type": null,
+  "last_search_params": {},
+  "current_offset": 0,
+  "last_shown_products": [
+    {
+      "codprod": 40572,
+      "descricao": "CERVEJA AMSTEL GFA",
+      "categoria": "CERVEJA",
+      "marca": "AMSTEL",
+      "unidade_venda": "PC",
+      "preco_varejo": 8.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "marca_match": 1
+    },
+    {
+      "codprod": 42968,
+      "descricao": "CERVEJA AMSTEL LT",
+      "categoria": "CERVEJA",
+      "marca": "AMSTEL",
+      "unidade_venda": "UN",
+      "preco_varejo": 2.98,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "marca_match": 1
+    },
+    {
+      "codprod": 40573,
+      "descricao": "CERVEJA AMSTEL LT",
+      "categoria": "CERVEJA",
+      "marca": "AMSTEL",
+      "unidade_venda": "LT",
+      "preco_varejo": 3.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "marca_match": 1
+    },
+    {
+      "codprod": 64796,
+      "descricao": "CERVEJA AMSTEL P.MALTE GFA",
+      "categoria": "CERVEJA",
+      "marca": "AMSTEL",
+      "unidade_venda": "GF",
+      "preco_varejo": 4.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "marca_match": 1
+    },
+    {
+      "codprod": 59715,
+      "descricao": "CERVEJA AMSTEL ULTRA L.NECK",
+      "categoria": "CERVEJA",
+      "marca": "AMSTEL",
+      "unidade_venda": "UN",
+      "preco_varejo": 4.19,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "marca_match": 1
+    },
+    {
+      "codprod": 59714,
+      "descricao": "CERVEJA AMSTEL ULTRA LT",
+      "categoria": "CERVEJA",
+      "marca": "AMSTEL",
+      "unidade_venda": "UN",
+      "preco_varejo": 3.79,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0,
+      "marca_match": 1
+    },
+    {
+      "codprod": 62351,
+      "descricao": "CERVEJA PATAGONIA IPA LT",
+      "categoria": "CERVEJA",
+      "marca": "STELLA ARTOIS",
+      "unidade_venda": "LT",
+      "preco_varejo": 6.79,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": 5.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0,
+      "desconto_percentual": 26.4,
+      "_preco_antigo": 6.79,
+      "_preco_promo": 5.0,
+      "_desconto": 26.4
+    },
+    {
+      "codprod": 58032,
+      "descricao": "CERVEJA PATAGONIA BOH PILS LT",
+      "categoria": "CERVEJA",
+      "marca": "STELLA ARTOIS",
+      "unidade_venda": "UN",
+      "preco_varejo": 6.79,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": 5.5,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0,
+      "desconto_percentual": 19.0,
+      "_preco_antigo": 6.79,
+      "_preco_promo": 5.5,
+      "_desconto": 19.0
+    }
+  ],
+  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
+  "pending_action": null,
+  "last_kb_search_term": null,
+  "estatisticas_sessao": {
+    "itens_carrinho": 0,
+    "tamanho_conversa": 0,
+    "cliente_identificado": true,
+    "ultima_acao": "AWAITING_PRODUCT_SELECTION",
+    "tem_selecao_pendente": true,
+    "tem_quantidade_pendente": false,
+    "valor_total_carrinho": 0.0
+  }
+}

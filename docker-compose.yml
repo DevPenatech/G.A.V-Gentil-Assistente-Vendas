@@ -1,7 +1,7 @@
 # docker-compose.yml
 services:
   db:
-    image: postgres:15
+    image: postgres:15-bookworm
     container_name: bot_postgres_db_funcional
     restart: always
     env_file:

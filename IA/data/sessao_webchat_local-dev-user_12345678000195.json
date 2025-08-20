@@ -133,6 +133,42 @@
       "message": "*💰 Promoções Mais Baratas:*\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*1.* BALA FINI BANANA\n    ~R$ 6,89~ → *R$ 4,00* (41% OFF)\n\n*2.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*3.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *3*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
       "timestamp": "2025-08-18T19:00:53.248143",
       "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "Oi",
+      "timestamp": "2025-08-19T20:21:27.913717",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Como posso te ajudar hoje?\n\n📦 *Escolha um produto da lista:*\n*1.* BALA FINI BANANA\n*2.* CERVEJA PATAGONIA IPA LT\n*3.* CERVEJA PATAGONIA BOH PILS LT\n\nDigite o número de *1* a *3*.",
+      "timestamp": "2025-08-19T20:21:36.977537",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Como posso te ajudar hoje?\n\n📦 *Escolha um produto da lista:*\n*1.* BALA FINI BANANA\n*2.* CERVEJA PATAGONIA IPA LT\n*3.* CERVEJA PATAGONIA BOH PILS LT\n\nDigite o número de *1* a *3*.",
+      "timestamp": "2025-08-19T20:21:36.977557",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "Oi",
+      "timestamp": "2025-08-19T20:37:00.875347",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Como posso te ajudar hoje?\n\n📦 *Escolha um produto da lista:*\n*1.* BALA FINI BANANA\n*2.* CERVEJA PATAGONIA IPA LT\n*3.* CERVEJA PATAGONIA BOH PILS LT\n\nDigite o número de *1* a *3*.",
+      "timestamp": "2025-08-19T20:37:08.410677",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Como posso te ajudar hoje?\n\n📦 *Escolha um produto da lista:*\n*1.* BALA FINI BANANA\n*2.* CERVEJA PATAGONIA IPA LT\n*3.* CERVEJA PATAGONIA BOH PILS LT\n\nDigite o número de *1* a *3*.",
+      "timestamp": "2025-08-19T20:37:08.410696",
+      "action_type": "BOT_RESPONSE"
     }
   ],
   "resumo_conversa": "",
@@ -149,7 +185,7 @@
   "ultima_analise_busca": {},
   "ultimas_sugestoes_busca": [],
   "criado_em": "2025-08-18T18:59:16.031883",
-  "ultima_atividade": "2025-08-18T19:00:53.248144",
+  "ultima_atividade": "2025-08-19T20:37:08.410697",
   "validated_cnpj": "12345678000195",
   "customer_context": {
     "cnpj": "12345678000195"

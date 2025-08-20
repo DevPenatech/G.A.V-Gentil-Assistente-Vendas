@@ -265,3 +265,7 @@ Traceback (most recent call last):
   File "/app/app.py", line 1415, in _route_tool
     especificacoes = extrair_especificacoes_produto_ia(
 TypeError: extrair_especificacoes_produto_ia() takes 1 positional argument but 3 were given
+2025-08-19 23:59:27,526 [ERROR] [root:44] [obter_conexao] Não foi possível conectar ao banco de dados após várias tentativas.
+2025-08-19 23:59:27,528 [ERROR] [root:705] [obter_produtos_por_categoria] Erro ao buscar produtos da categoria 'CERVEJA': Não foi possível conectar ao banco de dados.
+2025-08-19 23:59:42,569 [ERROR] [root:44] [obter_conexao] Não foi possível conectar ao banco de dados após várias tentativas.
+2025-08-19 23:59:42,571 [ERROR] [root:765] [obter_produtos_promocionais_por_categoria] Erro ao buscar promoções da categoria 'CERVEJA': Não foi possível conectar ao banco de dados.
