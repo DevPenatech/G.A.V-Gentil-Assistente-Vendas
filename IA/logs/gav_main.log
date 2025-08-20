@@ -12762,3 +12762,1252 @@ A razão pela qual classifiquei como "marca_especifica" é que o usuário mencio
 2025-08-20 11:33:48,007 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: neutro
 2025-08-20 11:33:48,029 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejvejsu_ogxlji_11111111111111.json
 2025-08-20 11:33:48,030 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:33:48] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:43:48,157 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/gerenciador_sessao.py', reloading
+2025-08-20 11:43:48,347 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-20 11:43:49,132 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 11:43:49,387 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-20 11:43:49,389 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 701-803-376
+2025-08-20 11:44:12,906 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/gerenciador_sessao.py', reloading
+2025-08-20 11:44:12,978 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-20 11:44:13,704 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 11:44:14,007 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-20 11:44:14,010 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 701-803-376
+2025-08-20 11:44:27,939 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/core/gerenciador_sessao.py', reloading
+2025-08-20 11:44:28,009 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-20 11:44:28,711 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 11:44:28,946 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-20 11:44:28,947 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 701-803-376
+2025-08-20 11:44:56,408 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-20 11:44:56,461 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-20 11:44:57,212 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 11:44:57,469 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-20 11:44:57,470 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 701-803-376
+2025-08-20 11:45:26,124 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/app.py', reloading
+2025-08-20 11:45:26,225 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-20 11:45:27,081 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 11:45:27,373 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-20 11:45:27,376 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 701-803-376
+2025-08-20 11:45:45,021 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo_123: quero cerveja skol
+2025-08-20 11:45:45,030 [INFO] [root:111] [carregar_sessao] [SESSAO] Nova sessão criada: webchat:test_promo_123
+2025-08-20 11:45:45,043 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo_123.json
+2025-08-20 11:45:45,045 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:45:45] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:45:50,983 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo_123: 12345678000195
+2025-08-20 11:45:50,991 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_test_promo_123.json
+2025-08-20 11:45:50,995 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo_123_12345678000195.json
+2025-08-20 11:45:51,000 [DEBUG] [root:162] [limpar_sessao] [SESSAO] Arquivo de sessão removido: data/sessao_webchat_test_promo_123.json
+2025-08-20 11:45:51,005 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo_123_12345678000195.json
+2025-08-20 11:45:51,010 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:45:51] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:45:57,092 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo_123: quero cerveja skol
+2025-08-20 11:45:57,099 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_test_promo_123_12345678000195.json
+2025-08-20 11:45:57,101 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero cerveja skol
+2025-08-20 11:45:57,108 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:45:57,114 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a11310>
+2025-08-20 11:45:57,116 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:45:57,117 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:45:57,118 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:45:57,119 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:45:57,120 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:01,183 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:01 GMT'), (b'Content-Length', b'426')])
+2025-08-20 11:46:01,186 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:01,187 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:01,188 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:01,189 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:01,190 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:01,190 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: obter_produtos_mais_vendidos_por_nome
+2025-08-20 11:46:01,193 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: obter_produtos_mais_vendidos_por_nome
+2025-08-20 11:46:01,199 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:01,203 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919ac280>
+2025-08-20 11:46:01,204 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:01,205 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:01,206 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:01,207 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:01,208 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:04,459 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:04 GMT'), (b'Content-Length', b'776')])
+2025-08-20 11:46:04,461 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:04,462 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:04,463 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:04,464 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:04,464 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:04,465 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: positivo
+2025-08-20 11:46:04,471 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:04,476 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791994340>
+2025-08-20 11:46:04,477 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:04,478 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:04,479 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:04,480 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:04,480 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:05,845 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:05 GMT'), (b'Content-Length', b'443')])
+2025-08-20 11:46:05,846 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:05,848 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:05,849 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:05,850 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:05,851 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:05,852 [INFO] [root:262] [extrair_especificacoes_produto_ia] [ESPECIFICACOES_IA] Extraídas: ['marca', 'quantidade_sugerida']
+2025-08-20 11:46:07,652 [INFO] [root:90] [_carregar_kb] Base de conhecimento '/app/knowledge/knowledge_base.json' carregada com 15970 produtos e 254972 termos.
+2025-08-20 11:46:07,658 [INFO] [root:145] [encontrar_produto_na_kb] [KB] Busca exata encontrou: skol
+2025-08-20 11:46:07,741 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo_123_12345678000195.json
+2025-08-20 11:46:07,742 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:46:07] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:46:14,946 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo_123: mais
+2025-08-20 11:46:14,951 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_test_promo_123_12345678000195.json
+2025-08-20 11:46:14,952 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: mais
+2025-08-20 11:46:14,957 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:14,963 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a198e0>
+2025-08-20 11:46:14,964 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:14,965 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:14,967 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:14,968 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:14,969 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:16,573 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:16 GMT'), (b'Content-Length', b'368')])
+2025-08-20 11:46:16,574 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:16,575 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:16,575 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:16,576 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:16,576 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:16,577 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: show_more_products
+2025-08-20 11:46:16,578 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: show_more_products
+2025-08-20 11:46:16,583 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:16,585 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791931670>
+2025-08-20 11:46:16,586 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:16,586 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:16,587 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:16,588 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:16,591 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:17,729 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:17 GMT'), (b'Content-Length', b'403')])
+2025-08-20 11:46:17,730 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:17,735 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:17,736 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:17,736 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:17,738 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:17,739 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: positivo
+2025-08-20 11:46:17,762 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo_123_12345678000195.json
+2025-08-20 11:46:17,763 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:46:17] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:46:33,174 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo2_123: quero cerveja
+2025-08-20 11:46:33,181 [INFO] [root:111] [carregar_sessao] [SESSAO] Nova sessão criada: webchat:test_promo2_123
+2025-08-20 11:46:33,193 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo2_123.json
+2025-08-20 11:46:33,195 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:46:33] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:46:38,800 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo2_123: 12345678000195
+2025-08-20 11:46:38,805 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_test_promo2_123.json
+2025-08-20 11:46:38,809 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo2_123_12345678000195.json
+2025-08-20 11:46:38,812 [DEBUG] [root:162] [limpar_sessao] [SESSAO] Arquivo de sessão removido: data/sessao_webchat_test_promo2_123.json
+2025-08-20 11:46:38,821 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo2_123_12345678000195.json
+2025-08-20 11:46:38,824 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:46:38] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:46:44,766 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo2_123: quero cerveja
+2025-08-20 11:46:44,772 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_test_promo2_123_12345678000195.json
+2025-08-20 11:46:44,773 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero cerveja
+2025-08-20 11:46:44,782 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:44,785 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a03c40>
+2025-08-20 11:46:44,785 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:44,786 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:44,787 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:44,787 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:44,788 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:46,858 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:46 GMT'), (b'Content-Length', b'420')])
+2025-08-20 11:46:46,859 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:46,860 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:46,860 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:46,861 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:46,861 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:46,862 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 11:46:46,863 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 11:46:46,868 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:46,871 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919312b0>
+2025-08-20 11:46:46,871 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:46,872 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:46,873 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:46,874 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:46,891 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:49,437 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:49 GMT'), (b'Content-Length', b'663')])
+2025-08-20 11:46:49,438 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:49,439 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:49,440 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:49,440 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:49,441 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:49,446 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:49,448 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a19760>
+2025-08-20 11:46:49,449 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:49,449 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:49,450 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:49,450 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:49,451 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:53,652 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:53 GMT'), (b'Content-Length', b'874')])
+2025-08-20 11:46:53,653 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:53,654 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:53,655 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:53,655 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:53,656 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:53,656 [DEBUG] [root:121] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Mensagem: 'cerveja' → IA: 'Aqui está a análise da mensagem do usuário:
+
+**Tipo de Busca:** categoria_geral
+
+**Componentes:**
+
+* **marca**: null (não há menção direta a uma marca específica)
+* **produto**: cerveja
+* **especificacoes**: []
+* **categoria**: bebidas (considerando que "cerveja" é um tipo de bebida)
+* **prioridade_marca**: false (pois não há menção direta a uma marca específica)
+
+**Razão:** A mensagem do usuário apenas menciona o produto "cerveja", sem especificar uma marca específica. Portanto, classificamos como categoria_geral.
+
+Resposta em JSON:'
+2025-08-20 11:46:53,657 [INFO] [root:397] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'categoria_geral', 'marca': None, 'produto': 'cerveja', 'especificacoes': [], 'categoria': 'bebidas', 'prioridade_marca': False}' → termo: 'cerveja'
+2025-08-20 11:46:53,663 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:53,666 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919941c0>
+2025-08-20 11:46:53,666 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:53,667 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:53,667 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:53,668 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:53,668 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:54,148 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:54 GMT'), (b'Content-Length', b'298')])
+2025-08-20 11:46:54,149 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:54,150 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:54,150 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:54,152 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:54,152 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:54,153 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'cerveja' → 'bebidas'
+2025-08-20 11:46:54,154 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'cerveja' → 'bebidas'
+2025-08-20 11:46:54,159 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:46:54,162 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a11100>
+2025-08-20 11:46:54,162 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:54,163 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:46:54,163 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:46:54,164 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:46:54,164 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:46:54,367 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:46:54 GMT'), (b'Content-Length', b'297')])
+2025-08-20 11:46:54,368 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:46:54,370 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:46:54,379 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:46:54,380 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:46:54,381 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:46:54,393 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 10 produtos na categoria 'CERVEJA'
+2025-08-20 11:46:54,401 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 2 promoções na categoria 'CERVEJA'
+2025-08-20 11:46:54,417 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo2_123_12345678000195.json
+2025-08-20 11:46:54,423 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:46:54] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:47:03,051 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:test_promo2_123: mais
+2025-08-20 11:47:03,059 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_test_promo2_123_12345678000195.json
+2025-08-20 11:47:03,062 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: mais
+2025-08-20 11:47:03,068 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:47:03,073 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919eafa0>
+2025-08-20 11:47:03,074 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:47:03,075 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:47:03,076 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:47:03,076 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:47:03,077 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:47:04,676 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:47:04 GMT'), (b'Content-Length', b'368')])
+2025-08-20 11:47:04,677 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:47:04,678 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:47:04,678 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:47:04,679 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:47:04,679 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:47:04,680 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: show_more_products
+2025-08-20 11:47:04,681 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: show_more_products
+2025-08-20 11:47:04,687 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:47:04,693 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc79198a2b0>
+2025-08-20 11:47:04,695 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:47:04,695 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:47:04,710 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:47:04,711 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:47:04,714 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:47:06,324 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:47:06 GMT'), (b'Content-Length', b'531')])
+2025-08-20 11:47:06,325 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:47:06,326 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:47:06,327 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:47:06,328 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:47:06,328 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:47:06,339 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 10 produtos na categoria 'CERVEJA'
+2025-08-20 11:47:06,345 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_test_promo2_123_12345678000195.json
+2025-08-20 11:47:06,346 [INFO] [werkzeug:97] [_log] 172.18.0.1 - - [20/Aug/2025 11:47:06] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:49:06,084 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: 11111111111111
+2025-08-20 11:49:06,088 [INFO] [root:111] [carregar_sessao] [SESSAO] Nova sessão criada: webchat:user_mejwtg6q_oayn3l
+2025-08-20 11:49:06,093 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:49:06,103 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:49:06,104 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:49:06] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:50:23,106 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: quero bala fini
+2025-08-20 11:50:23,113 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:50:23,114 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero bala fini
+2025-08-20 11:50:23,119 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:23,123 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919acd60>
+2025-08-20 11:50:23,125 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:23,125 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:23,126 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:23,127 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:23,128 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:25,133 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:25 GMT'), (b'Content-Length', b'429')])
+2025-08-20 11:50:25,134 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:25,135 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:25,136 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:25,137 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:25,138 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:25,139 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: obter_produtos_mais_vendidos_por_nome
+2025-08-20 11:50:25,139 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: obter_produtos_mais_vendidos_por_nome
+2025-08-20 11:50:25,145 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:25,149 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a198b0>
+2025-08-20 11:50:25,149 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:25,150 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:25,151 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:25,153 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:25,161 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:28,936 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:28 GMT'), (b'Content-Length', b'885')])
+2025-08-20 11:50:28,938 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:28,939 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:28,940 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:28,941 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:28,941 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:28,942 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: neutro
+2025-08-20 11:50:28,947 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:28,950 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791931f70>
+2025-08-20 11:50:28,950 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:28,951 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:28,951 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:28,952 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:28,952 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:30,182 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:30 GMT'), (b'Content-Length', b'439')])
+2025-08-20 11:50:30,183 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:30,184 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:30,185 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:30,185 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:30,185 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:30,186 [INFO] [root:262] [extrair_especificacoes_produto_ia] [ESPECIFICACOES_IA] Extraídas: ['quantidade_sugerida']
+2025-08-20 11:50:30,188 [INFO] [root:145] [encontrar_produto_na_kb] [KB] Busca exata encontrou: bala fini
+2025-08-20 11:50:30,313 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:50:30,314 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:50:30] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:50:43,989 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: quero fini
+2025-08-20 11:50:43,996 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:50:43,997 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero fini
+2025-08-20 11:50:44,012 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:44,016 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919d8490>
+2025-08-20 11:50:44,017 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:44,018 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:44,019 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:44,019 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:44,020 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:46,080 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:46 GMT'), (b'Content-Length', b'417')])
+2025-08-20 11:50:46,081 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:46,082 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:46,083 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:46,084 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:46,084 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:46,085 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 11:50:46,087 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 11:50:46,094 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:46,098 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919d8610>
+2025-08-20 11:50:46,099 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:46,100 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:46,100 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:46,101 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:46,102 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:48,160 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:48 GMT'), (b'Content-Length', b'608')])
+2025-08-20 11:50:48,162 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:48,164 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:48,165 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:48,165 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:48,166 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:48,171 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:48,175 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791931a00>
+2025-08-20 11:50:48,176 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:48,178 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:48,178 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:48,186 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:48,188 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:52,543 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:52 GMT'), (b'Content-Length', b'900')])
+2025-08-20 11:50:52,544 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:52,545 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:52,546 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:52,546 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:52,547 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:52,547 [DEBUG] [root:121] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Mensagem: 'fini' → IA: 'Aqui está a resposta em JSON:
+
+{
+  "tipo_busca": "marca_especifica",
+  "marca": "fini",
+  "produto": "bala",
+  "especificacoes": [],
+  "categoria": null,
+  "prioridade_marca": true
+}
+
+Explicação:
+- O usuário menciona explicitamente a marca "fini", então é uma busca por marca específica.
+- A marca é identificada como "fini".
+- O produto é identificado como "bala" (categoria).
+- Não há especificações adicionais.
+- A categoria não foi mencionada, então é null.
+- Prioridade da marca é verdadeira pois o usuário menciona explicitamente a marca'
+2025-08-20 11:50:52,548 [INFO] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Detectado: marca_especifica - fini
+2025-08-20 11:50:52,549 [INFO] [root:397] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'marca_especifica', 'marca': 'fini', 'produto': 'bala', 'especificacoes': [], 'categoria': None, 'prioridade_marca': True}' → termo: 'bala fini'
+2025-08-20 11:50:52,554 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:52,558 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a19a30>
+2025-08-20 11:50:52,559 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:52,560 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:52,561 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:52,563 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:52,564 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:53,112 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:53 GMT'), (b'Content-Length', b'296')])
+2025-08-20 11:50:53,113 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:53,114 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:53,115 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:53,116 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:53,116 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:53,117 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'bala fini' → 'doces'
+2025-08-20 11:50:53,118 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'bala fini' → 'doces'
+2025-08-20 11:50:53,123 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:53,126 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791994280>
+2025-08-20 11:50:53,127 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:53,128 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:53,128 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:53,129 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:53,130 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:53,335 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:50:53 GMT'), (b'Content-Length', b'295')])
+2025-08-20 11:50:53,337 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:50:53,338 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:50:53,339 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:50:53,340 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:50:53,341 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:50:53,342 [INFO] [root:668] [obter_produtos_por_categoria] [DB_BUSCA] Priorizando marca 'fini' na categoria 'DOCES'
+2025-08-20 11:50:53,353 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 25 produtos na categoria 'DOCES' (priorizando marca 'fini')
+2025-08-20 11:50:53,361 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 11:50:53,363 [INFO] [root:330] [filtrar_produtos_por_marca] [FILTRO_MARCA] Filtrados 0 de 25 produtos para marca 'fini'
+2025-08-20 11:50:53,402 [INFO] [root:882] [obter_produtos_promocionais_por_termo] Encontradas 10 promoções para termo 'fini'
+2025-08-20 11:50:53,409 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 11:50:53,414 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:50:53,415 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:50:53] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:50:58,659 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: mais
+2025-08-20 11:50:58,665 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:50:58,666 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: mais
+2025-08-20 11:50:58,671 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:50:58,675 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919f0220>
+2025-08-20 11:50:58,675 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:50:58,676 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:50:58,677 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:50:58,677 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:50:58,678 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:00,509 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:51:00 GMT'), (b'Content-Length', b'369')])
+2025-08-20 11:51:00,510 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:51:00,511 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:51:00,512 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:51:00,513 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:51:00,513 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:51:00,517 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: show_more_products
+2025-08-20 11:51:00,518 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: show_more_products
+2025-08-20 11:51:00,523 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:51:00,528 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a03040>
+2025-08-20 11:51:00,528 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:00,529 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:51:00,530 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:51:00,531 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:51:00,532 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:01,919 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:51:01 GMT'), (b'Content-Length', b'456')])
+2025-08-20 11:51:01,920 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:51:01,922 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:51:01,923 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:51:01,923 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:51:01,924 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:51:01,946 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:51:01,947 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:51:01] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:51:19,240 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: meu carrinho
+2025-08-20 11:51:19,248 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:51:19,249 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: meu carrinho
+2025-08-20 11:51:19,255 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:51:19,260 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a0eaf0>
+2025-08-20 11:51:19,261 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:19,262 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:51:19,263 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:51:19,263 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:51:19,264 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:21,213 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:51:21 GMT'), (b'Content-Length', b'370')])
+2025-08-20 11:51:21,214 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:51:21,215 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:51:21,216 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:51:21,216 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:51:21,217 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:51:21,217 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: visualizar_carrinho
+2025-08-20 11:51:21,218 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: visualizar_carrinho
+2025-08-20 11:51:21,228 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:51:21,232 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a0e790>
+2025-08-20 11:51:21,233 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:21,233 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:51:21,234 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:51:21,234 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:51:21,235 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:23,699 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:51:23 GMT'), (b'Content-Length', b'602')])
+2025-08-20 11:51:23,700 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:51:23,700 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:51:23,701 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:51:23,701 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:51:23,702 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:51:23,702 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: 
+2025-08-20 11:51:23,706 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:51:23,707 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:51:23] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:51:27,279 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: 20
+2025-08-20 11:51:27,285 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:51:27,286 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: 20
+2025-08-20 11:51:27,292 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:51:27,295 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919f0910>
+2025-08-20 11:51:27,296 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:27,297 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:51:27,297 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:51:27,298 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:51:27,299 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:29,330 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:51:29 GMT'), (b'Content-Length', b'366')])
+2025-08-20 11:51:29,331 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:51:29,332 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:51:29,332 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:51:29,333 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:51:29,333 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:51:29,334 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: limpar_carrinho
+2025-08-20 11:51:29,334 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: limpar_carrinho
+2025-08-20 11:51:29,340 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:51:29,343 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a112b0>
+2025-08-20 11:51:29,344 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:29,344 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:51:29,345 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:51:29,346 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:51:29,363 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:51:31,050 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:51:31 GMT'), (b'Content-Length', b'477')])
+2025-08-20 11:51:31,051 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:51:31,053 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:51:31,054 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:51:31,055 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:51:31,056 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:51:31,061 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:51:31,063 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:51:31] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 11:52:14,869 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: quero cerveja em promoção
+2025-08-20 11:52:14,877 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:52:14,879 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero cerveja em promoção
+2025-08-20 11:52:14,884 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:52:14,891 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a191c0>
+2025-08-20 11:52:14,892 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:14,893 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:52:14,894 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:52:14,894 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:52:14,895 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:17,296 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:52:17 GMT'), (b'Content-Length', b'435')])
+2025-08-20 11:52:17,297 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:52:17,299 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:52:17,300 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:52:17,301 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:52:17,301 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:52:17,302 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 11:52:17,303 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 11:52:17,310 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:52:17,315 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791931100>
+2025-08-20 11:52:17,316 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:17,318 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:52:17,318 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:52:17,319 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:52:17,320 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:20,009 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:52:20 GMT'), (b'Content-Length', b'630')])
+2025-08-20 11:52:20,009 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:52:20,011 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:52:20,011 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:52:20,012 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:52:20,012 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:52:20,013 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: 
+2025-08-20 11:52:20,018 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:52:20,023 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a03790>
+2025-08-20 11:52:20,024 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:20,027 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:52:20,028 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:52:20,029 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:52:20,044 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:24,667 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:52:24 GMT'), (b'Content-Length', b'880')])
+2025-08-20 11:52:24,668 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:52:24,669 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:52:24,669 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:52:24,671 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:52:24,672 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:52:24,673 [DEBUG] [root:121] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Mensagem: 'cerveja em promoção' → IA: 'Aqui está a análise da mensagem do usuário:
+
+**Análise**
+
+* A mensagem é "quero cerveja em promoção".
+* A palavra-chave é "cerveja", que é uma categoria de bebidas.
+* Não há menção explícita de marca específica, apenas a categoria "cerveja".
+
+**Componentes**
+
+* **marca**: null (não há menção explícita de marca)
+* **produto**: cerveja
+* **especificacoes**: []
+* **categoria**: bebidas
+
+**Tipo de Busca**
+
+* O usuário está procurando por uma categoria específica, sem mencionar uma marca específica. Portanto, o tipo de busca é:
+
+**'
+2025-08-20 11:52:24,674 [INFO] [root:397] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'marca_especifica', 'marca': 'omo', 'produto': 'detergente', 'especificacoes': [], 'categoria': 'outros', 'prioridade_marca': True}' → termo: 'detergente omo'
+2025-08-20 11:52:24,680 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:52:24,683 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919d8940>
+2025-08-20 11:52:24,684 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:24,685 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:52:24,687 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:52:24,689 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:52:24,692 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:25,503 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:52:25 GMT'), (b'Content-Length', b'298')])
+2025-08-20 11:52:25,505 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:52:25,509 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:52:25,510 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:52:25,511 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:52:25,511 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:52:25,512 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'detergente omo' → 'limpeza'
+2025-08-20 11:52:25,513 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'detergente omo' → 'limpeza'
+2025-08-20 11:52:25,518 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 11:52:25,531 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a0dcd0>
+2025-08-20 11:52:25,532 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:25,533 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 11:52:25,534 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 11:52:25,535 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 11:52:25,549 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 11:52:25,803 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 11:52:25 GMT'), (b'Content-Length', b'300')])
+2025-08-20 11:52:25,804 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 11:52:25,806 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 11:52:25,806 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 11:52:25,807 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 11:52:25,807 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 11:52:25,808 [INFO] [root:668] [obter_produtos_por_categoria] [DB_BUSCA] Priorizando marca 'omo' na categoria 'DETERGENTE'
+2025-08-20 11:52:25,819 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 25 produtos na categoria 'DETERGENTE' (priorizando marca 'omo')
+2025-08-20 11:52:25,825 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DETERGENTE'
+2025-08-20 11:52:25,829 [INFO] [root:330] [filtrar_produtos_por_marca] [FILTRO_MARCA] Filtrados 0 de 25 produtos para marca 'omo'
+2025-08-20 11:52:25,866 [INFO] [root:882] [obter_produtos_promocionais_por_termo] Encontradas 10 promoções para termo 'omo'
+2025-08-20 11:52:25,873 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DETERGENTE'
+2025-08-20 11:52:25,879 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 11:52:25,880 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 11:52:25] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:02:51,578 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: quero skol
+2025-08-20 12:02:51,585 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:02:51,587 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero skol
+2025-08-20 12:02:51,593 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:02:51,597 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791994ac0>
+2025-08-20 12:02:51,598 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:02:51,599 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:02:51,600 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:02:51,601 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:02:51,602 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:02:56,063 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:02:56 GMT'), (b'Content-Length', b'418')])
+2025-08-20 12:02:56,064 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:02:56,065 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:02:56,066 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:02:56,067 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:02:56,067 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:02:56,068 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 12:02:56,069 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 12:02:56,075 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:02:56,079 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a11370>
+2025-08-20 12:02:56,080 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:02:56,080 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:02:56,082 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:02:56,082 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:02:56,083 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:00,207 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:00 GMT'), (b'Content-Length', b'839')])
+2025-08-20 12:03:00,209 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:00,210 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:00,211 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:00,212 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:00,212 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:00,218 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:00,223 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919f0370>
+2025-08-20 12:03:00,224 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:00,227 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:00,233 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:00,234 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:00,237 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:04,874 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:04 GMT'), (b'Content-Length', b'886')])
+2025-08-20 12:03:04,875 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:04,877 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:04,877 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:04,878 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:04,879 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:04,879 [DEBUG] [root:121] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Mensagem: 'skol' → IA: 'Aqui está a resposta em JSON:
+
+{
+  "tipo_busca": "marca_especifica",
+  "marca": "skol",
+  "produto": "cerveja",
+  "especificacoes": [],
+  "categoria": null,
+  "prioridade_marca": true
+}
+
+Explicação:
+- A mensagem do usuário menciona explicitamente a marca "skol", então é uma busca por marca específica.
+- A categoria não está explícita, mas podemos inferir que se trata de bebidas (cerveja).
+- Não há especificações adicionais mencionadas na mensagem.
+- Prioridade_marca é verdadeira porque a palavra "skol" é um nome próprio comercial.'
+2025-08-20 12:03:04,880 [INFO] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Detectado: marca_especifica - skol
+2025-08-20 12:03:04,881 [INFO] [root:397] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'marca_especifica', 'marca': 'skol', 'produto': 'cerveja', 'especificacoes': [], 'categoria': None, 'prioridade_marca': True}' → termo: 'cerveja skol'
+2025-08-20 12:03:04,887 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:04,899 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919bcb80>
+2025-08-20 12:03:04,905 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:04,908 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:04,909 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:04,910 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:04,911 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:05,725 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:05 GMT'), (b'Content-Length', b'299')])
+2025-08-20 12:03:05,726 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:05,727 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:05,728 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:05,728 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:05,729 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:05,729 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'cerveja skol' → 'bebidas'
+2025-08-20 12:03:05,730 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'cerveja skol' → 'bebidas'
+2025-08-20 12:03:05,735 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:05,738 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a0e700>
+2025-08-20 12:03:05,739 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:05,740 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:05,740 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:05,741 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:05,741 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:05,978 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:05 GMT'), (b'Content-Length', b'297')])
+2025-08-20 12:03:05,979 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:05,980 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:05,982 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:05,982 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:05,983 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:05,984 [INFO] [root:668] [obter_produtos_por_categoria] [DB_BUSCA] Priorizando marca 'skol' na categoria 'CERVEJA'
+2025-08-20 12:03:05,998 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 25 produtos na categoria 'CERVEJA' (priorizando marca 'skol')
+2025-08-20 12:03:06,006 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 2 promoções na categoria 'CERVEJA'
+2025-08-20 12:03:06,015 [INFO] [root:330] [filtrar_produtos_por_marca] [FILTRO_MARCA] Filtrados 2 de 25 produtos para marca 'skol'
+2025-08-20 12:03:06,016 [INFO] [root:330] [filtrar_produtos_por_marca] [FILTRO_MARCA] Filtrados 0 de 2 produtos para marca 'skol'
+2025-08-20 12:03:06,023 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 2 promoções na categoria 'CERVEJA'
+2025-08-20 12:03:06,029 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:03:06,030 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:03:06] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:03:21,474 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: quero nescau barato
+2025-08-20 12:03:21,481 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:03:21,482 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero nescau barato
+2025-08-20 12:03:21,488 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:21,493 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919b84c0>
+2025-08-20 12:03:21,494 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:21,498 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:21,499 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:21,500 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:21,510 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:23,885 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:23 GMT'), (b'Content-Length', b'420')])
+2025-08-20 12:03:23,887 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:23,888 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:23,888 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:23,889 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:23,890 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:23,891 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 12:03:23,892 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 12:03:23,898 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:23,901 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc79198a5b0>
+2025-08-20 12:03:23,903 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:23,904 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:23,905 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:23,906 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:23,909 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:28,041 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:28 GMT'), (b'Content-Length', b'890')])
+2025-08-20 12:03:28,042 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:28,043 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:28,044 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:28,044 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:28,045 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:28,045 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: neutro
+2025-08-20 12:03:28,051 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:28,056 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919f05b0>
+2025-08-20 12:03:28,057 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:28,058 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:28,062 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:28,062 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:28,064 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:32,737 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:32 GMT'), (b'Content-Length', b'874')])
+2025-08-20 12:03:32,739 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:32,744 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:32,745 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:32,745 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:32,746 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:32,747 [DEBUG] [root:121] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Mensagem: 'nescau' → IA: 'Aqui está a resposta em JSON:
+
+{
+  "tipo_busca": "marca_especifica",
+  "marca": "nescau",
+  "produto": null,
+  "especificacoes": ["barato"],
+  "categoria": "refrigerante",
+  "prioridade_marca": true
+}
+
+Explicação:
+- A palavra "nescau" é uma marca específica de refrigerante.
+- O tipo de busca é "marca_especifica".
+- A categoria do produto é "refrigerante", pois a mensagem menciona "nescau barato", que é um tipo de refrigerante.
+- As especificações são ["barato"], pois a mensagem menciona "barato" como uma caracter'
+2025-08-20 12:03:32,748 [INFO] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Detectado: marca_especifica - nescau
+2025-08-20 12:03:32,749 [INFO] [root:397] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'marca_especifica', 'marca': 'nescau', 'produto': None, 'especificacoes': ['barato'], 'categoria': 'refrigerante', 'prioridade_marca': True}' → termo: 'nescau'
+2025-08-20 12:03:32,756 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:32,759 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919ead00>
+2025-08-20 12:03:32,760 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:32,761 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:32,762 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:32,763 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:32,764 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:33,546 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:33 GMT'), (b'Content-Length', b'297')])
+2025-08-20 12:03:33,547 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:33,548 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:33,548 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:33,549 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:33,549 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:33,550 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'nescau' → 'doces'
+2025-08-20 12:03:33,552 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'nescau' → 'doces'
+2025-08-20 12:03:33,558 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:33,568 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919acc10>
+2025-08-20 12:03:33,578 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:33,579 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:33,580 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:33,581 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:33,582 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:33,782 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:33 GMT'), (b'Content-Length', b'295')])
+2025-08-20 12:03:33,783 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:33,783 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:33,784 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:33,784 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:33,785 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:33,785 [INFO] [root:668] [obter_produtos_por_categoria] [DB_BUSCA] Priorizando marca 'nescau' na categoria 'DOCES'
+2025-08-20 12:03:33,798 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 25 produtos na categoria 'DOCES' (priorizando marca 'nescau')
+2025-08-20 12:03:33,812 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 12:03:33,814 [INFO] [root:330] [filtrar_produtos_por_marca] [FILTRO_MARCA] Filtrados 0 de 25 produtos para marca 'nescau'
+2025-08-20 12:03:33,853 [INFO] [root:882] [obter_produtos_promocionais_por_termo] Encontradas 10 promoções para termo 'nescau'
+2025-08-20 12:03:33,860 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 12:03:33,865 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:03:33,866 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:03:33] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:03:52,156 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: nescau barato
+2025-08-20 12:03:52,163 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:03:52,164 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: nescau barato
+2025-08-20 12:03:52,172 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:52,177 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791931190>
+2025-08-20 12:03:52,178 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:52,179 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:52,179 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:52,180 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:52,180 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:54,594 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:54 GMT'), (b'Content-Length', b'420')])
+2025-08-20 12:03:54,595 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:54,597 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:54,597 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:54,598 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:54,598 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:54,599 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 12:03:54,600 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 12:03:54,607 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:54,612 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a03160>
+2025-08-20 12:03:54,614 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:54,615 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:54,616 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:54,617 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:54,625 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:56,780 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:03:56 GMT'), (b'Content-Length', b'532')])
+2025-08-20 12:03:56,781 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:03:56,782 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:03:56,783 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:03:56,783 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:03:56,784 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:03:56,784 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: positivo
+2025-08-20 12:03:56,791 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:03:56,793 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919e2880>
+2025-08-20 12:03:56,794 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:03:56,794 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:03:56,795 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:03:56,795 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:03:56,796 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:01,520 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:04:01 GMT'), (b'Content-Length', b'873')])
+2025-08-20 12:04:01,521 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:04:01,522 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:04:01,523 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:04:01,523 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:04:01,524 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:04:01,524 [DEBUG] [root:121] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Mensagem: 'nescau' → IA: 'Aqui está a análise da mensagem do usuário:
+
+{
+  "tipo_busca": "marca_especifica",
+  "marca": "Nescau",
+  "produto": null,
+  "especificacoes": ["barato"],
+  "categoria": "bebidas",
+  "prioridade_marca": true
+}
+
+Explicação:
+
+* A mensagem do usuário é "nescau barato", o que indica que ele está procurando por um produto específico da marca Nescau.
+* A palavra "Nescau" é uma marca comercial explícita, portanto a busca é classificada como "marca_especifica".
+* O produto não é mencionado explicitamente, mas podemos infer'
+2025-08-20 12:04:01,525 [INFO] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Detectado: marca_especifica - Nescau
+2025-08-20 12:04:01,525 [INFO] [root:397] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'marca_especifica', 'marca': 'Nescau', 'produto': None, 'especificacoes': ['barato'], 'categoria': 'bebidas', 'prioridade_marca': True}' → termo: 'Nescau'
+2025-08-20 12:04:01,534 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:04:01,547 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919e2400>
+2025-08-20 12:04:01,548 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:01,549 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:04:01,550 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:04:01,551 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:04:01,558 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:02,404 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:04:02 GMT'), (b'Content-Length', b'297')])
+2025-08-20 12:04:02,405 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:04:02,406 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:04:02,406 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:04:02,407 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:04:02,407 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:04:02,408 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'Nescau' → 'doces'
+2025-08-20 12:04:02,408 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'Nescau' → 'doces'
+2025-08-20 12:04:02,413 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:04:02,416 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791a0d790>
+2025-08-20 12:04:02,416 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:02,417 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:04:02,418 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:04:02,418 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:04:02,419 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:02,617 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:04:02 GMT'), (b'Content-Length', b'295')])
+2025-08-20 12:04:02,618 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:04:02,619 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:04:02,620 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:04:02,621 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:04:02,622 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:04:02,622 [INFO] [root:668] [obter_produtos_por_categoria] [DB_BUSCA] Priorizando marca 'Nescau' na categoria 'DOCES'
+2025-08-20 12:04:02,634 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 25 produtos na categoria 'DOCES' (priorizando marca 'Nescau')
+2025-08-20 12:04:02,650 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 12:04:02,652 [INFO] [root:330] [filtrar_produtos_por_marca] [FILTRO_MARCA] Filtrados 0 de 25 produtos para marca 'Nescau'
+2025-08-20 12:04:02,690 [INFO] [root:882] [obter_produtos_promocionais_por_termo] Encontradas 10 promoções para termo 'Nescau'
+2025-08-20 12:04:02,696 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 12:04:02,701 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:04:02,702 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:04:02] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:04:12,090 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: mais
+2025-08-20 12:04:12,097 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:04:12,098 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: mais
+2025-08-20 12:04:12,103 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:04:12,107 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc7919948b0>
+2025-08-20 12:04:12,108 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:12,109 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:04:12,109 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:04:12,110 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:04:12,111 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:14,156 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:04:14 GMT'), (b'Content-Length', b'369')])
+2025-08-20 12:04:14,163 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:04:14,167 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:04:14,168 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:04:14,168 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:04:14,169 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:04:14,171 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: show_more_products
+2025-08-20 12:04:14,172 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: show_more_products
+2025-08-20 12:04:14,177 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:04:14,181 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fc791980280>
+2025-08-20 12:04:14,182 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:14,183 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:04:14,183 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:04:14,184 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:04:14,185 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:04:16,475 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:04:16 GMT'), (b'Content-Length', b'509')])
+2025-08-20 12:04:16,479 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:04:16,481 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:04:16,482 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:04:16,483 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:04:16,484 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:04:16,484 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: positivo
+2025-08-20 12:04:16,510 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:04:16,511 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:04:16] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:08:40,449 [INFO] [werkzeug:97] [_log]  * Detected change in '/app/utils/detector_marca_produto.py', reloading
+2025-08-20 12:08:40,605 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-20 12:08:41,358 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 12:11:05,527 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 12:14:19,796 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 12:14:20,061 [INFO] [werkzeug:97] [_log] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.4:8080
+2025-08-20 12:14:20,063 [INFO] [werkzeug:97] [_log] [33mPress CTRL+C to quit[0m
+2025-08-20 12:14:20,066 [INFO] [werkzeug:97] [_log]  * Restarting with stat
+2025-08-20 12:14:20,794 [INFO] [root:602] [configurar_logging_principal] Sistema de logging G.A.V. inicializado
+2025-08-20 12:14:21,055 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-20 12:14:21,056 [INFO] [werkzeug:97] [_log]  * Debugger PIN: 805-187-437
+2025-08-20 12:18:51,252 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: nescau barato
+2025-08-20 12:18:51,260 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:18:51,260 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: nescau barato
+2025-08-20 12:18:51,267 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:18:51,271 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac793100>
+2025-08-20 12:18:51,273 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:51,275 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:18:51,276 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:18:51,277 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:18:51,283 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:55,936 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:18:55 GMT'), (b'Content-Length', b'422')])
+2025-08-20 12:18:55,938 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:18:55,939 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:18:55,939 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:18:55,940 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:18:55,940 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:18:55,941 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 12:18:55,942 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 12:18:55,948 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:18:55,954 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac6b1370>
+2025-08-20 12:18:55,956 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:55,956 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:18:55,958 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:18:55,960 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:18:55,961 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:58,248 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:18:58 GMT'), (b'Content-Length', b'505')])
+2025-08-20 12:18:58,249 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:18:58,252 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:18:58,253 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:18:58,254 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:18:58,254 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:18:58,255 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: negativo
+2025-08-20 12:18:58,257 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
+2025-08-20 12:18:58,259 [INFO] [root:355] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'marca_especifica', 'marca': 'nescau', 'produto': 'produto', 'especificacoes': [], 'categoria': 'outros', 'prioridade_marca': True}' → termo: 'nescau'
+2025-08-20 12:18:58,264 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:18:58,269 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac79b550>
+2025-08-20 12:18:58,271 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:58,272 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:18:58,273 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:18:58,274 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:18:58,275 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:59,269 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:18:59 GMT'), (b'Content-Length', b'297')])
+2025-08-20 12:18:59,270 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:18:59,271 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:18:59,271 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:18:59,272 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:18:59,272 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:18:59,273 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'nescau' → 'doces'
+2025-08-20 12:18:59,273 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'nescau' → 'doces'
+2025-08-20 12:18:59,278 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:18:59,281 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac7149a0>
+2025-08-20 12:18:59,281 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:59,282 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:18:59,282 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:18:59,283 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:18:59,283 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:18:59,479 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:18:59 GMT'), (b'Content-Length', b'295')])
+2025-08-20 12:18:59,481 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:18:59,481 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:18:59,482 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:18:59,482 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:18:59,483 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:18:59,483 [INFO] [root:668] [obter_produtos_por_categoria] [DB_BUSCA] Priorizando marca 'nescau' na categoria 'DOCES'
+2025-08-20 12:18:59,497 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 25 produtos na categoria 'DOCES' (priorizando marca 'nescau')
+2025-08-20 12:18:59,504 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 12:18:59,507 [INFO] [root:288] [filtrar_produtos_por_marca] [FILTRO_MARCA] Filtrados 0 de 25 produtos para marca 'nescau'
+2025-08-20 12:18:59,544 [INFO] [root:882] [obter_produtos_promocionais_por_termo] Encontradas 10 promoções para termo 'nescau'
+2025-08-20 12:18:59,551 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 0 promoções na categoria 'DOCES'
+2025-08-20 12:18:59,556 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:18:59,557 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:18:59] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:19:27,976 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: quero cerveja barata
+2025-08-20 12:19:27,983 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:19:27,986 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero cerveja barata
+2025-08-20 12:19:27,992 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:19:27,996 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac783850>
+2025-08-20 12:19:27,997 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:27,997 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:19:27,998 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:19:27,998 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:19:27,999 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:30,623 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:19:30 GMT'), (b'Content-Length', b'421')])
+2025-08-20 12:19:30,624 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:19:30,625 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:19:30,626 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:19:30,626 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:19:30,627 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:19:30,627 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: busca_inteligente_com_promocoes
+2025-08-20 12:19:30,628 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+2025-08-20 12:19:30,634 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:19:30,643 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac759730>
+2025-08-20 12:19:30,644 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:30,644 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:19:30,645 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:19:30,647 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:19:30,655 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:32,977 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:19:32 GMT'), (b'Content-Length', b'509')])
+2025-08-20 12:19:32,979 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:19:32,980 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:19:32,981 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:19:32,981 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:19:32,982 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:19:32,982 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: negativo
+2025-08-20 12:19:32,983 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
+2025-08-20 12:19:32,987 [INFO] [root:355] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'categoria_geral', 'marca': None, 'produto': 'cerveja', 'especificacoes': [], 'categoria': 'bebidas', 'prioridade_marca': False}' → termo: 'cerveja'
+2025-08-20 12:19:32,993 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:19:33,004 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac78e520>
+2025-08-20 12:19:33,005 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:33,008 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:19:33,009 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:19:33,010 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:19:33,011 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:34,051 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:19:34 GMT'), (b'Content-Length', b'300')])
+2025-08-20 12:19:34,052 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:19:34,054 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:19:34,055 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:19:34,056 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:19:34,057 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:19:34,058 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'cerveja' → 'bebidas'
+2025-08-20 12:19:34,059 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'cerveja' → 'bebidas'
+2025-08-20 12:19:34,064 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:19:34,069 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac714790>
+2025-08-20 12:19:34,070 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:34,071 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:19:34,072 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:19:34,073 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:19:34,074 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:19:34,309 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:19:34 GMT'), (b'Content-Length', b'297')])
+2025-08-20 12:19:34,310 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:19:34,310 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:19:34,311 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:19:34,311 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:19:34,312 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:19:34,322 [INFO] [root:700] [obter_produtos_por_categoria] Encontrados 10 produtos na categoria 'CERVEJA'
+2025-08-20 12:19:34,329 [INFO] [root:761] [obter_produtos_promocionais_por_categoria] Encontradas 2 promoções na categoria 'CERVEJA'
+2025-08-20 12:19:34,338 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:19:34,340 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:19:34] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:27:57,338 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: 12
+2025-08-20 12:27:57,345 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:27:57,345 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: 12
+2025-08-20 12:27:57,351 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:27:57,354 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac759280>
+2025-08-20 12:27:57,355 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:27:57,356 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:27:57,357 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:27:57,357 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:27:57,358 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:01,835 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:28:01 GMT'), (b'Content-Length', b'403')])
+2025-08-20 12:28:01,835 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:28:01,836 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:28:01,837 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:28:01,837 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:28:01,838 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:28:01,838 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: adicionar_item_ao_carrinho
+2025-08-20 12:28:01,839 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: adicionar_item_ao_carrinho
+2025-08-20 12:28:01,844 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:28:01,847 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac76be80>
+2025-08-20 12:28:01,847 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:01,848 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:28:01,848 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:28:01,849 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:28:01,849 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:04,162 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:28:04 GMT'), (b'Content-Length', b'514')])
+2025-08-20 12:28:04,163 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:28:04,164 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:28:04,165 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:28:04,166 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:28:04,166 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:28:04,168 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: negativo
+2025-08-20 12:28:04,175 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:28:04,176 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:28:04] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:28:25,283 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: 5
+2025-08-20 12:28:25,290 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:28:25,297 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:28:25,300 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac790040>
+2025-08-20 12:28:25,301 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:25,302 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:28:25,303 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:28:25,304 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:28:25,305 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:26,454 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:28:26 GMT'), (b'Content-Length', b'293')])
+2025-08-20 12:28:26,456 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:28:26,457 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:28:26,458 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:28:26,459 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:28:26,460 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:28:26,460 [DEBUG] [root:400] [extrair_quantidade_com_ia] [QUANTIDADE_IA] Texto: '5' → IA: '5'
+2025-08-20 12:28:26,461 [INFO] [root:406] [extrair_quantidade_com_ia] [QUANTIDADE_IA] Sucesso: '5' → 5.0
+2025-08-20 12:28:26,462 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:28:26,466 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac790910>
+2025-08-20 12:28:26,468 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:26,469 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:28:26,470 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:28:26,471 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:28:26,475 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:27,166 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:28:27 GMT'), (b'Content-Length', b'360')])
+2025-08-20 12:28:27,170 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:28:27,171 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:28:27,172 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:28:27,173 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:28:27,173 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:28:27,175 [INFO] [root:1232] [generate_personalized_response] [llm_interface.py] Resposta dinâmica gerada para operation_success: Adicionei 5 PATAGONIA BOH PILS L'. Agora está pron...
+2025-08-20 12:28:27,179 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:28:27,180 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:28:27] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:28:33,343 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: fechar pedido
+2025-08-20 12:28:33,349 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:28:33,360 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:28:33,364 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac790160>
+2025-08-20 12:28:33,365 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:33,365 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:28:33,366 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:28:33,369 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:28:33,370 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:36,138 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:28:36 GMT'), (b'Content-Length', b'573')])
+2025-08-20 12:28:36,139 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:28:36,144 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:28:36,144 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:28:36,146 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:28:36,147 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:28:36,148 [DEBUG] [root:100] [detectar_intencao_carrinho_ia] [INTENCAO_CARRINHO_IA] Mensagem: 'fechar pedido' → IA: 'Aqui está a resposta em JSON:
+
+```
+{
+  "acao": "view_cart",
+  "parametros": {}
+}
+```
+
+A intenção do cliente é simplesmente verificar o conteúdo do carrinho antes de fechar o pedido. Não há necessidade de adicionar, remover ou alterar produtos no carrinho.'
+2025-08-20 12:28:36,148 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: fechar pedido
+2025-08-20 12:28:36,154 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:28:36,159 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac76b8e0>
+2025-08-20 12:28:36,160 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:36,162 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:28:36,163 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:28:36,164 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:28:36,168 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:38,282 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:28:38 GMT'), (b'Content-Length', b'359')])
+2025-08-20 12:28:38,283 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:28:38,284 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:28:38,285 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:28:38,285 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:28:38,286 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:28:38,286 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: checkout
+2025-08-20 12:28:38,287 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: checkout
+2025-08-20 12:28:38,292 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:28:38,294 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac6b1b20>
+2025-08-20 12:28:38,295 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:38,295 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:28:38,296 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:28:38,297 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:28:38,297 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:40,644 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:28:40 GMT'), (b'Content-Length', b'495')])
+2025-08-20 12:28:40,645 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:28:40,646 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:28:40,647 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:28:40,648 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:28:40,648 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:28:40,649 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: positivo
+2025-08-20 12:28:40,652 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:28:40,653 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:28:40] "POST /webchat HTTP/1.1" 200 -
+2025-08-20 12:28:58,705 [INFO] [root:2791] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mejwtg6q_oayn3l: meu carrinho
+2025-08-20 12:28:58,712 [DEBUG] [root:101] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:28:58,713 [DEBUG] [root:124] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: meu carrinho
+2025-08-20 12:28:58,718 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:28:58,722 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac78e700>
+2025-08-20 12:28:58,723 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:28:58,723 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:28:58,724 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:28:58,725 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:28:58,725 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:29:01,000 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:29:00 GMT'), (b'Content-Length', b'370')])
+2025-08-20 12:29:01,002 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:29:01,006 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:29:01,007 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:29:01,007 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:29:01,008 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:29:01,009 [INFO] [root:167] [detectar_intencao_usuario_com_ia] [INTENT] Intenção detectada: visualizar_carrinho
+2025-08-20 12:29:01,010 [INFO] [root:1131] [obter_intencao_rapida] [INTENT] Detectado via IA: visualizar_carrinho
+2025-08-20 12:29:01,015 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-20 12:29:01,022 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7fb5ac73e8e0>
+2025-08-20 12:29:01,023 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-20 12:29:01,023 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-20 12:29:01,024 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-20 12:29:01,025 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-20 12:29:01,040 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-20 12:29:02,730 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Wed, 20 Aug 2025 12:29:02 GMT'), (b'Content-Length', b'405')])
+2025-08-20 12:29:02,731 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-20 12:29:02,731 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-20 12:29:02,732 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-20 12:29:02,732 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-20 12:29:02,733 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-20 12:29:02,733 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: positivo
+2025-08-20 12:29:02,740 [DEBUG] [root:141] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mejwtg6q_oayn3l_11111111111111.json
+2025-08-20 12:29:02,741 [INFO] [werkzeug:97] [_log] 172.18.0.5 - - [20/Aug/2025 12:29:02] "POST /webchat HTTP/1.1" 200 -

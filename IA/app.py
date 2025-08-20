@@ -4,6 +4,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 import logging
 import threading
 import re
+from datetime import datetime
 from typing import Dict, List, Tuple, Union
 from db import database
 from ai_llm import llm_interface
@@ -2788,6 +2789,12 @@ def webchat():
     sender_id = f"webchat:{data['sender_id']}" 
     
     logging.info(f"WEBCHAT | Mensagem recebida de {sender_id}: {incoming_msg}")
+    print(f">>> 📥 [ENTRADA] ==========================================")
+    print(f">>> 📥 [ENTRADA] Nova mensagem recebida do webchat")  
+    print(f">>> 📥 [ENTRADA] Sender ID: {sender_id}")
+    print(f">>> 📥 [ENTRADA] Mensagem: '{incoming_msg}'")
+    print(f">>> 📥 [ENTRADA] Timestamp: {datetime.now().strftime('%H:%M:%S')}")
+    print(f">>> 📥 [ENTRADA] ==========================================")
 
     # Este é o ponto crucial: precisamos refatorar um pouco o process_message_async
     # para que ele RETORNE a resposta em vez de enviá-la.

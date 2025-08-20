@@ -276,3 +276,5 @@ Traceback (most recent call last):
   File "/app/app.py", line 1826, in _route_tool
     products = database.get_top_selling_products_by_name(
 AttributeError: module 'db.database' has no attribute 'get_top_selling_products_by_name'
+2025-08-20 12:18:58,257 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
+2025-08-20 12:19:32,983 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'

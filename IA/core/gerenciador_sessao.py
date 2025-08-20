@@ -254,6 +254,8 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
     produtos_com_desconto = []
     produtos_sem_desconto_extra = []
     
+    print(f">>> 🎯 [PROMO_DEBUG] Analisando {len(produtos_promo)} produtos promocionais")
+    
     for p in produtos_promo:
         preco_antigo = p.get('pvenda') or p.get('preco_varejo', 0.0) or 0.0
         preco_promo = p.get('preco_promocional') or p.get('preco_atual') or preco_antigo
@@ -276,10 +278,15 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
         p['_desconto'] = desconto
         
         # Se tem desconto real (>1%), é promoção; senão é produto normal
+        nome_produto = p.get('descricao', 'Produto sem nome')
+        print(f">>> 🎯 [PROMO_ANALISE] {nome_produto}: preço_antigo={preco_antigo}, preço_promo={preco_promo}, desconto={desconto:.1f}%")
+        
         if desconto > 1.0:
             produtos_com_desconto.append(p)
+            print(f">>> 🎯 [PROMO_VALIDA] ✅ {nome_produto} é uma promoção válida ({desconto:.1f}% OFF)")
         else:
             produtos_sem_desconto_extra.append(p)
+            print(f">>> 🎯 [PROMO_NORMAL] ❌ {nome_produto} não tem desconto suficiente ({desconto:.1f}%)")
     
     # Unir todos os produtos normais
     todos_produtos_normais = produtos_normais + produtos_sem_desconto_extra
@@ -298,7 +305,9 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
             contador += 1
 
     # Mostrar produtos com desconto real como promoções
+    print(f">>> 🎯 [PROMO_RESULTADO] Encontradas {len(produtos_com_desconto)} promoções válidas")
     if produtos_com_desconto:
+        print(f">>> 🎯 [PROMO_EXIBE] ✅ Exibindo seção de promoções")
         resposta += "🔥 *PROMOÇÕES ESPECIAIS* 🔥\n"
         resposta += "━━━━━━━━━━━━━━━━━━━━\n"
         

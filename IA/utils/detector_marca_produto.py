@@ -36,71 +36,24 @@ def detectar_marca_e_produto_ia(mensagem: str, contexto_conversa: str = "") -> D
         return _detectar_marca_fallback(mensagem)
     
     try:
-        prompt_ia = f"""Você é um especialista em identificar marcas e produtos específicos em buscas.
+        prompt_ia = """IMPORTANTE: Responda APENAS com JSON válido, sem texto adicional.
 
-MENSAGEM DO USUÁRIO: "{mensagem}"
+Analise: "{}"
 
-CONTEXTO DA CONVERSA:
-{contexto_conversa if contexto_conversa else "Primeira interação"}
+TASK: Identifique se há nome de marca comercial na mensagem.
 
-ANALISE E DETERMINE:
+REGRAS:
+- Se contém nome de MARCA/FABRICANTE: tipo_busca = "marca_especifica"  
+- Se contém apenas CATEGORIA de produto: tipo_busca = "categoria_geral"
+- Use seu conhecimento de marcas comerciais
+- Palavras como "promoção", "barato", "em oferta" NÃO são marcas
 
-1. TIPO DE BUSCA:
-   - "marca_especifica": SOMENTE quando o usuário menciona uma marca específica explicitamente
-   - "categoria_geral": Quando o usuário quer uma categoria sem mencionar marca específica
-   - "produto_especifico": Quando o usuário quer produto específico com detalhes
+EXEMPLOS:
+- "quero cerveja" → {"tipo_busca": "categoria_geral", "marca": null, "produto": "cerveja", "categoria": "bebidas", "prioridade_marca": false}
+- "cerveja em promoção" → {"tipo_busca": "categoria_geral", "marca": null, "produto": "cerveja", "categoria": "bebidas", "prioridade_marca": false}
+- "heineken" → {"tipo_busca": "marca_especifica", "marca": "heineken", "produto": "cerveja", "categoria": "bebidas", "prioridade_marca": true}
 
-2. COMPONENTES:
-   - marca: Nome da marca mencionada EXPLICITAMENTE (null se não houver menção direta)
-   - produto: Tipo de produto base (cerveja, refrigerante, etc)
-   - especificacoes: Detalhes como sabor, tamanho, embalagem
-   - categoria: Categoria geral do produto
-
-REGRAS IMPORTANTES (ABORDAGEM IA-FIRST):
-- Analise TODAS as palavras da mensagem para identificar nomes comerciais/marcas
-- "fini", "skol", "coca", "heineken" etc. são MARCAS ESPECÍFICAS mesmo quando acompanhadas de categoria
-- Se há QUALQUER palavra que pareça nome de marca comercial = marca_especifica
-- Se só menciona categoria sem marca específica = categoria_geral
-- NÃO invente marcas que não foram mencionadas na mensagem
-- Use seu conhecimento de marcas comerciais brasileiras para identificar nomes de empresas
-
-EXEMPLOS CORRETOS (IA-FIRST):
-- "quero cerveja" → categoria_geral: marca=null, produto=cerveja
-- "cerveja" → categoria_geral: marca=null, produto=cerveja  
-- "quero cerveja skol" → marca_especifica: marca=skol, produto=cerveja
-- "skol" → marca_especifica: marca=skol, produto=cerveja
-- "heineken lata" → marca_especifica: marca=heineken, produto=cerveja
-- "quero refrigerante" → categoria_geral: marca=null, produto=refrigerante
-- "bala fini" → marca_especifica: marca=fini, produto=bala  (FINI é a marca, bala é o produto!)
-- "quero bala fini" → marca_especifica: marca=fini, produto=bala  (FINI é a marca!)
-- "fini" → marca_especifica: marca=fini, produto=bala
-- "coca cola" → marca_especifica: marca=coca cola, produto=refrigerante
-- "quero omo" → marca_especifica: marca=omo, produto=detergente
-
-ATENÇÃO ESPECIAL - IDENTIFICAÇÃO CORRETA DE MARCA:
-- Em "bala fini": "fini" é a MARCA (fabricante), "bala" é o PRODUTO (categoria)
-- Em "cerveja skol": "skol" é a MARCA (fabricante), "cerveja" é o PRODUTO (categoria)
-- Em "quero cerveja skol": "skol" é a MARCA, "cerveja" é categoria
-- Sempre identifique o nome do FABRICANTE/EMPRESA como marca, não o tipo de produto
-- JAMAIS confunda categoria (cerveja, bala, refrigerante) com marca (skol, fini, coca-cola)
-- Priorize nomes próprios comerciais sobre palavras genéricas de categoria
-
-INSTRUÇÕES IA-FIRST:
-- Use seu amplo conhecimento de marcas comerciais brasileiras
-- Identifique qualquer palavra que seja nome de empresa/fabricante
-- Seja assertivo: se reconhece uma marca, classifique como marca_especifica
-
-RESPONDA EM JSON:
-{{
-  "tipo_busca": "categoria_geral",
-  "marca": null,
-  "produto": "cerveja",
-  "especificacoes": [],
-  "categoria": "bebidas",
-  "prioridade_marca": false
-}}
-
-JSON:"""
+Responda SOMENTE o JSON:""".format(mensagem)
 
         if HOST_OLLAMA:
             cliente_ollama = ollama.Client(host=HOST_OLLAMA)
@@ -111,9 +64,10 @@ JSON:"""
             model=NOME_MODELO_OLLAMA,
             messages=[{"role": "user", "content": prompt_ia}],
             options={
-                "temperature": 0.1,
-                "top_p": 0.3,
-                "num_predict": 150
+                "temperature": 0.0,  # Máxima determinismo para JSON consistente
+                "top_p": 0.1,        # Foco nas respostas mais prováveis
+                "num_predict": 100,  # Limite menor para JSON compacto
+                "stop": ["}"]        # Para quando terminar o JSON
             }
         )
         
@@ -125,8 +79,12 @@ JSON:"""
         print(f">>> DEBUG: [EXTRAÇÃO_JSON] Resposta completa da IA: {resposta_ia}")
         
         try:
+            # Se a resposta não começa com {, adiciona }
+            if not resposta_ia.strip().endswith('}') and '{' in resposta_ia:
+                resposta_ia = resposta_ia.strip() + '}'
+                
             # Tenta extrair JSON de várias formas
-            json_match = re.search(r'\{.*?\}', resposta_ia, re.DOTALL)
+            json_match = re.search(r'\{[^{}]*\}', resposta_ia, re.DOTALL)
             if json_match:
                 json_texto = json_match.group(0)
                 print(f">>> DEBUG: [EXTRAÇÃO_JSON] JSON extraído: {json_texto}")

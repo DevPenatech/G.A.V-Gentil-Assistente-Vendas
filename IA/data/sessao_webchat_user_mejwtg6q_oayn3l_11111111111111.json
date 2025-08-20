@@ -1,0 +1,216 @@
+{
+  "contexto_cliente": null,
+  "carrinho_compras": [],
+  "historico_conversa": [
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Skol encontrados:*\n\n*1.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*2.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
+      "timestamp": "2025-08-20T12:03:06.024908",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero nescau barato",
+      "timestamp": "2025-08-20T12:03:21.482103",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
+      "timestamp": "2025-08-20T12:03:33.861920",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
+      "timestamp": "2025-08-20T12:03:33.861955",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "nescau barato",
+      "timestamp": "2025-08-20T12:03:52.164768",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
+      "timestamp": "2025-08-20T12:04:02.697634",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
+      "timestamp": "2025-08-20T12:04:02.697678",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-20T12:04:12.098298",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mais produtos Nescau::*\n\n*21.* CER.NESTLE NESCAU + ECONOMIA\n    💰 R$ 18,98\n\n*22.* CER.NESTLE NESCAU EMB.ECON.\n    💰 R$ 22,98\n\n*23.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 11,98\n\n*24.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 5,89\n\n*25.* CER.NESTLE NESCAU LV.770G PG.620G\n    💰 R$ 21,79\n\n*26.* CHOC.NESTLE AO LEITE NESCAU\n    💰 R$ 8,98\n\n*27.* SKATE NESCAU PRETO EXTRA 2006\n    💰 R$ 1.958,17\n\nQual você quer? Digite o número de *21* a *27*.",
+      "timestamp": "2025-08-20T12:04:16.506323",
+      "action_type": "SHOW_MORE_PRODUCTS"
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mais produtos Nescau::*\n\n*21.* CER.NESTLE NESCAU + ECONOMIA\n    💰 R$ 18,98\n\n*22.* CER.NESTLE NESCAU EMB.ECON.\n    💰 R$ 22,98\n\n*23.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 11,98\n\n*24.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 5,89\n\n*25.* CER.NESTLE NESCAU LV.770G PG.620G\n    💰 R$ 21,79\n\n*26.* CHOC.NESTLE AO LEITE NESCAU\n    💰 R$ 8,98\n\n*27.* SKATE NESCAU PRETO EXTRA 2006\n    💰 R$ 1.958,17\n\nQual você quer? Digite o número de *21* a *27*.",
+      "timestamp": "2025-08-20T12:04:16.506351",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "nescau barato",
+      "timestamp": "2025-08-20T12:18:51.260744",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
+      "timestamp": "2025-08-20T12:18:59.552504",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
+      "timestamp": "2025-08-20T12:18:59.552561",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero cerveja barata",
+      "timestamp": "2025-08-20T12:19:27.986798",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-20T12:19:34.331727",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-20T12:19:34.331772",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "12",
+      "timestamp": "2025-08-20T12:27:57.345830",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CERVEJA PATAGONIA BOH PILS LT você deseja adicionar?",
+      "timestamp": "2025-08-20T12:28:04.170665",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CERVEJA PATAGONIA BOH PILS LT você deseja adicionar?",
+      "timestamp": "2025-08-20T12:28:04.170675",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "5",
+      "timestamp": "2025-08-20T12:28:25.292090",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei 5 PATAGONIA BOH PILS L'. Agora está pronto para o checkout!\n\n🛒 *Carrinho:*\n5x CERVEJA PATAGONIA BOH PILS LT\n   R$ 5,50 cada = R$ 27,50\n\n💰 *Total Geral: R$ 27,50*",
+      "timestamp": "2025-08-20T12:28:27.175982",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei 5 PATAGONIA BOH PILS L'. Agora está pronto para o checkout!\n\n🛒 *Carrinho:*\n5x CERVEJA PATAGONIA BOH PILS LT\n   R$ 5,50 cada = R$ 27,50\n\n💰 *Total Geral: R$ 27,50*",
+      "timestamp": "2025-08-20T12:28:27.176005",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "fechar pedido",
+      "timestamp": "2025-08-20T12:28:33.352859",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* CERVEJA PATAGONIA BOH PILS LT\n    5× R$ 6,79 = *R$ 33,95*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 33,95*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-20T12:28:40.649916",
+      "action_type": "CHECKOUT_COMPLETE"
+    },
+    {
+      "role": "assistant",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* CERVEJA PATAGONIA BOH PILS LT\n    5× R$ 6,79 = *R$ 33,95*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 33,95*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-20T12:28:40.649944",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "meu carrinho",
+      "timestamp": "2025-08-20T12:28:58.713447",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-20T12:29:02.736346",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-20T12:29:02.736368",
+      "action_type": "BOT_RESPONSE"
+    }
+  ],
+  "resumo_conversa": "0  *10.* DT.PO OMO BRANCO ABSOLUTO EXPERT     💰 R$ 8,39  *11.* | G.A.V.: *🎯 Produtos Omo encontrados:*  *1.* DT.PO OMO LAVAGEM PERF     💰 R$ 28,90  *2.* AJINOMOTO FRASCO     💰 R$ 10,90  *3.* AJINOMOTO REFIL     💰 R$ 13,99  *4.* AJINOMOTO REFIL     💰 R$ 6,55  *5.* BALA DORI GOMETS GOMOS SORTIDA     💰 R$ 12,99  *6.* BISC.MILKA CHOCOMOO     💰 R$ 20,90  *7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*     💰 R$ 20,98  *8.* CERA 3M AUTOMOTIVA EM PASTA      💰 R$ 27,90  *9.* DESINF.OMO USO GERAL LAVANDA*     💰 R$ 9,70  *10.* DT.PO OMO BRANCO ABSOLUTO EXPERT     💰 R$ 8,39  *11.* | Cliente: quero skol | G.A.V.: *🎯 Produtos Skol encontrados:*  *1.* CERVEJA SKOL LT     💰 R$ 2,39  *2.* CERVEJA SKOL LT.     💰 R$ 3,09  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *3.* CERVEJA PATAGONIA IPA LT     ~R$ 6,79~ → *R$ 5,00* (26% OFF)  *4.* CERVEJA PATAGONIA BOH PILS LT     ~R$ 6,79~ → *R$ 5,50* (19% OFF)  Qual você quer? Digite o número de *1* a *4*. 📝 Digite *mais* para ver outros produtos desta categoria!",
+  "ultimo_tipo_busca": null,
+  "ultimos_parametros_busca": {},
+  "offset_atual": 0,
+  "ultimos_produtos_mostrados": [],
+  "ultima_acao_bot": null,
+  "acao_pendente": null,
+  "selecao_produto_pendente": null,
+  "quantidade_pendente": null,
+  "ultimo_termo_busca_kb": null,
+  "ultimos_resultados_busca": [],
+  "ultima_analise_busca": {},
+  "ultimas_sugestoes_busca": [],
+  "criado_em": "2025-08-20T11:49:06.087265",
+  "ultima_atividade": "2025-08-20T12:29:02.736370",
+  "validated_cnpj": "11111111111111",
+  "customer_context": {
+    "cnpj": "11111111111111"
+  },
+  "shopping_cart": [],
+  "last_search_type": "smart_search",
+  "last_search_params": {
+    "search_term": "cerveja",
+    "category": "CERVEJA",
+    "marca_priorizada": null
+  },
+  "current_offset": 27,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+  "pending_action": null,
+  "last_kb_search_term": null,
+  "estatisticas_sessao": {
+    "itens_carrinho": 0,
+    "tamanho_conversa": 0,
+    "cliente_identificado": true,
+    "ultima_acao": "AWAITING_CHECKOUT_CONFIRMATION",
+    "tem_selecao_pendente": false,
+    "tem_quantidade_pendente": false,
+    "valor_total_carrinho": 0.0
+  },
+  "pending_product_for_cart": null,
+  "term_to_learn_after_quantity": null
+}
