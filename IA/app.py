@@ -1224,8 +1224,9 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     suggestions = search_result["suggestions"]
                     
                     if products:
-                        current_offset += 10
+                        current_offset += len(products)
                         last_shown_products.extend(products)
+                        print(f">>> DEBUG: [INICIAL_SEARCH] Incrementou offset com {len(products)} produtos, novo offset: {current_offset}")
                         
                         title = f"🔍 Encontrei produtos relacionados a '{product_name}':"
                         response_text = formatar_lista_produtos_para_exibicao(products, title, len(products) == 10, 0)
@@ -1518,8 +1519,9 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 suggestions = search_result["suggestions"]
 
                 if products:
-                    current_offset += 10
+                    current_offset += len(products)
                     last_shown_products.extend(products)
+                    print(f">>> DEBUG: [BY_NAME_SEARCH] Incrementou offset com {len(products)} produtos, novo offset: {current_offset}")
 
                     # Determina emoji baseado na qualidade
                     if len(products) >= 3:
@@ -1588,8 +1590,9 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             last_search_type, last_search_params = "top_selling", parameters
             products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
             title = "⭐ Estes são nossos produtos mais populares:"
-            current_offset += 10
+            current_offset += len(products)
             last_shown_products.extend(products)
+            print(f">>> DEBUG: [TOP_SELLING_SEARCH] Incrementou offset com {len(products)} produtos, novo offset: {current_offset}")
             response_text = formatar_lista_produtos_para_exibicao(
                 products, title, len(products) == 10, 0
             )
@@ -1864,8 +1867,10 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     session, "assistant", response_text, "NO_MORE_PRODUCTS"
                 )
             else:
-                current_offset += 10
+                # 🎯 CORRIGE: Incrementa offset com número real de produtos
+                current_offset += len(products)
                 last_shown_products.extend(products)
+                print(f">>> DEBUG: [MAIS_SMART] Incrementou offset com {len(products)} produtos, novo offset: {current_offset}")
                 response_text = formatar_lista_produtos_para_exibicao(
                     products, title, len(products) == 10, offset=offset_before_call
                 )
@@ -2100,8 +2105,9 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 
                 if products:
                     # 🎯 SUCESSO: Encontrou mais produtos
-                    current_offset += 10
+                    current_offset += len(products)
                     last_shown_products.extend(products)
+                    print(f">>> DEBUG: [IA_FIRST_SMART] Incrementou offset com {len(products)} produtos, novo offset: {current_offset}")
                     
                     # 🤖 IA GERA RESPOSTA PERSONALIZADA + PRODUTOS
                     ai_intro = generate_personalized_response("show_more_products", session)

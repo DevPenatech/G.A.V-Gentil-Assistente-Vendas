@@ -5,169 +5,79 @@
     {
       "role": "assistant",
       "message": "✅ *CNPJ validado com sucesso!*\n\n🎉 Bem-vindo à *Comercial Esperança*!\nAgora posso te ajudar com seus pedidos de forma personalizada.\n\n🔍 Digite o nome do produto que deseja\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T11:09:31.970094",
+      "timestamp": "2025-08-20T11:32:57.147472",
       "action_type": "CNPJ_VALIDATED"
     },
     {
       "role": "user",
-      "message": "Quero cerveja heineken",
-      "timestamp": "2025-08-20T11:09:42.214151",
+      "message": "quero cerveja petra",
+      "timestamp": "2025-08-20T11:33:02.003842",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'heineken'::*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN S",
-      "timestamp": "2025-08-20T11:09:51.697457",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
+      "message": "📦 *🎯 Encontrei isto para 'cerveja petra' (busca rápida)::*\n\n*1.* CERVEJA PETRA WEISS\n    💰 R$ 16,98\n\n*2.* CERVEJA PETRA P.MALTE LT\n    💰 R$ 3,19\n\n*3.* CERVEJA PETRA P.MALTE LT\n    💰 R$ 3,19\n\n*4.* CERVEJA PETRA P.MALTE GF\n    💰 R$ 4,59\n\n*5.* CERVEJA PETRA LT. PREMIUM \n    💰 R$ 4,59\n\nQual você quer? Digite 1, 2, 3, 4 ou *5*.",
+      "timestamp": "2025-08-20T11:33:09.182707",
+      "action_type": "SHOW_PRODUCTS_FROM_KB"
     },
     {
       "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'heineken'::*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN S",
-      "timestamp": "2025-08-20T11:09:51.697519",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "quero cerveja heineken",
-      "timestamp": "2025-08-20T11:12:49.856252",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Heineken encontrados:*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN SHOT L.NECK\n    💰 R$ 4,98",
-      "timestamp": "2025-08-20T11:13:00.671915",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Heineken encontrados:*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN SHOT L.NECK\n    💰 R$ 4,98",
-      "timestamp": "2025-08-20T11:13:00.671961",
+      "message": "📦 *🎯 Encontrei isto para 'cerveja petra' (busca rápida)::*\n\n*1.* CERVEJA PETRA WEISS\n    💰 R$ 16,98\n\n*2.* CERVEJA PETRA P.MALTE LT\n    💰 R$ 3,19\n\n*3.* CERVEJA PETRA P.MALTE LT\n    💰 R$ 3,19\n\n*4.* CERVEJA PETRA P.MALTE GF\n    💰 R$ 4,59\n\n*5.* CERVEJA PETRA LT. PREMIUM \n    💰 R$ 4,59\n\nQual você quer? Digite 1, 2, 3, 4 ou *5*.",
+      "timestamp": "2025-08-20T11:33:09.182750",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
       "message": "mais",
-      "timestamp": "2025-08-20T11:13:07.852499",
+      "timestamp": "2025-08-20T11:33:17.806600",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "📦 *Mais produtos Heineken::*\n\n*11.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*12.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*13.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*14.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*15.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*16.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\nQual você quer? Digite o número de *11* a *16*.",
-      "timestamp": "2025-08-20T11:13:14.601201",
-      "action_type": "SHOW_MORE_PRODUCTS"
+      "message": "Pra eu mostrar mais produtos, você precisa fazer uma busca antes! O que você tá procurando?",
+      "timestamp": "2025-08-20T11:33:20.933682",
+      "action_type": "NO_PREVIOUS_SEARCH"
     },
     {
       "role": "assistant",
-      "message": "📦 *Mais produtos Heineken::*\n\n*11.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*12.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*13.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*14.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*15.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*16.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\nQual você quer? Digite o número de *11* a *16*.",
-      "timestamp": "2025-08-20T11:13:14.601230",
+      "message": "Pra eu mostrar mais produtos, você precisa fazer uma busca antes! O que você tá procurando?",
+      "timestamp": "2025-08-20T11:33:20.933702",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "quero bala fini",
-      "timestamp": "2025-08-20T11:13:44.917945",
+      "message": "skol",
+      "timestamp": "2025-08-20T11:33:29.815873",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'bala fini'::*\n\n*1.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*2.* BALA FINI BANANA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n*10.* BALA FINI GELATINA RAIO\n    💰 R$ 6,",
-      "timestamp": "2025-08-20T11:13:53.055715",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,98\n\n*9",
+      "timestamp": "2025-08-20T11:33:34.707249",
       "action_type": "SHOW_PRODUCTS_FROM_DB"
     },
     {
       "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'bala fini'::*\n\n*1.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*2.* BALA FINI BANANA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n*10.* BALA FINI GELATINA RAIO\n    💰 R$ 6,",
-      "timestamp": "2025-08-20T11:13:53.055783",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'skol'::*\n\n*1.* BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK\n    💰 R$ 7,98\n\n*2.* BEB.MISTA SKOL BEATS CAIPIRINHA LT\n    💰 R$ 5,69\n\n*3.* BEB.MISTA SKOL BEATS GT L.NECK \n    💰 R$ 7,98\n\n*4.* BEB.MISTA SKOL BEATS GT LT\n    💰 R$ 5,69\n\n*5.* BEB.MISTA SKOL BEATS MOJITO LT\n    💰 R$ 5,98\n\n*6.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF\n    💰 R$ 7,98\n\n*7.* BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT\n    💰 R$ 5,69\n\n*8.* BEB.MISTA SKOL BEATS SENSES L.NECK \n    💰 R$ 7,98\n\n*9",
+      "timestamp": "2025-08-20T11:33:34.707289",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
       "message": "mais",
-      "timestamp": "2025-08-20T11:14:03.198082",
+      "timestamp": "2025-08-20T11:33:42.098737",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "📦 *Mostrando mais produtos relacionados a 'bala fini'::*\n\n*11.* BALA FINI GELATINA SAPO\n    💰 R$ 6,89\n\n*12.* BALA FINI MARSH.ALVORADA \n    💰 R$ 12,98\n\n*13.* BALA FINI MARSH.FLOR\n    💰 R$ 12,98\n\n*14.* BALA FINI MARSH.P/ASSAR\n    💰 R$ 12,98\n\n*15.* BALA FINI MARSH.TORCAO\n    💰 R$ 6,89\n\n*16.* BALA FINI MARSH.TORCAO \n    💰 R$ 12,98\n\n*17.* BALA FINI MARSH.TORCAO AZUL/BRANCO\n    💰 R$ 12,98\n\n*18.* BALA FINI MARSH.TORCAO ROSA/BRANCO\n    💰 R$ 12,98\n\n*19.* BALA FINI MINHOCA BRILHO\n    💰 R$ 6,89\n\n*20.* BALA",
-      "timestamp": "2025-08-20T11:14:09.759668",
+      "message": "📦 *Mostrando mais produtos relacionados a 'skol'::*\n\n*11.* BEB.MISTA SKOL BEATS TROPICAL LT\n    💰 R$ 5,69\n\n*12.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*13.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\nQual você quer? Digite 11, 12 ou *13*.",
+      "timestamp": "2025-08-20T11:33:48.024756",
       "action_type": "SHOW_MORE_PRODUCTS"
     },
     {
       "role": "assistant",
-      "message": "📦 *Mostrando mais produtos relacionados a 'bala fini'::*\n\n*11.* BALA FINI GELATINA SAPO\n    💰 R$ 6,89\n\n*12.* BALA FINI MARSH.ALVORADA \n    💰 R$ 12,98\n\n*13.* BALA FINI MARSH.FLOR\n    💰 R$ 12,98\n\n*14.* BALA FINI MARSH.P/ASSAR\n    💰 R$ 12,98\n\n*15.* BALA FINI MARSH.TORCAO\n    💰 R$ 6,89\n\n*16.* BALA FINI MARSH.TORCAO \n    💰 R$ 12,98\n\n*17.* BALA FINI MARSH.TORCAO AZUL/BRANCO\n    💰 R$ 12,98\n\n*18.* BALA FINI MARSH.TORCAO ROSA/BRANCO\n    💰 R$ 12,98\n\n*19.* BALA FINI MINHOCA BRILHO\n    💰 R$ 6,89\n\n*20.* BALA",
-      "timestamp": "2025-08-20T11:14:09.759693",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "10",
-      "timestamp": "2025-08-20T11:14:26.586068",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de BALA FINI GELATINA RAIO você deseja adicionar?",
-      "timestamp": "2025-08-20T11:14:30.914294",
-      "action_type": "REQUEST_QUANTITY"
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de BALA FINI GELATINA RAIO você deseja adicionar?",
-      "timestamp": "2025-08-20T11:14:30.914304",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "5",
-      "timestamp": "2025-08-20T11:14:37.209944",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Adicionei 5 FINI GELATINA RAIO no seu carrinho.\n\n🛒 *Carrinho:*\n5x BALA FINI GELATINA RAIO\n   R$ 6,89 cada = R$ 34,45\n\n💰 *Total Geral: R$ 34,45*",
-      "timestamp": "2025-08-20T11:14:39.347372",
-      "action_type": "ADD_TO_CART"
-    },
-    {
-      "role": "assistant",
-      "message": "Adicionei 5 FINI GELATINA RAIO no seu carrinho.\n\n🛒 *Carrinho:*\n5x BALA FINI GELATINA RAIO\n   R$ 6,89 cada = R$ 34,45\n\n💰 *Total Geral: R$ 34,45*",
-      "timestamp": "2025-08-20T11:14:39.347398",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "meu carrinho",
-      "timestamp": "2025-08-20T11:14:49.927785",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🛒 *Carrinho:*\n5x BALA FINI GELATINA RAIO\n   R$ 6,89 cada = R$ 34,45\n\n💰 *Total Geral: R$ 34,45*",
-      "timestamp": "2025-08-20T11:14:56.061731",
-      "action_type": "SHOW_CART"
-    },
-    {
-      "role": "assistant",
-      "message": "🛒 *Carrinho:*\n5x BALA FINI GELATINA RAIO\n   R$ 6,89 cada = R$ 34,45\n\n💰 *Total Geral: R$ 34,45*",
-      "timestamp": "2025-08-20T11:14:56.061756",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "bala fini",
-      "timestamp": "2025-08-20T11:17:22.843478",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
-      "timestamp": "2025-08-20T11:17:34.740014",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
-      "timestamp": "2025-08-20T11:17:34.740055",
+      "message": "📦 *Mostrando mais produtos relacionados a 'skol'::*\n\n*11.* BEB.MISTA SKOL BEATS TROPICAL LT\n    💰 R$ 5,69\n\n*12.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*13.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\nQual você quer? Digite 11, 12 ou *13*.",
+      "timestamp": "2025-08-20T11:33:48.024782",
       "action_type": "BOT_RESPONSE"
     }
   ],
@@ -184,208 +94,147 @@
   "ultimos_resultados_busca": [],
   "ultima_analise_busca": {},
   "ultimas_sugestoes_busca": [],
-  "criado_em": "2025-08-20T11:09:31.962941",
-  "ultima_atividade": "2025-08-20T11:17:34.740057",
+  "criado_em": "2025-08-20T11:32:57.140848",
+  "ultima_atividade": "2025-08-20T11:33:48.024784",
   "validated_cnpj": "11111111111111",
   "customer_context": {
     "cnpj": "11111111111111"
   },
-  "shopping_cart": [
-    {
-      "codprod": 74828,
-      "descricao": "BALA FINI GELATINA RAIO",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0,
-      "qt": 5
-    }
-  ],
-  "last_search_type": "smart_search",
+  "shopping_cart": [],
+  "last_search_type": "by_name",
   "last_search_params": {
-    "search_term": "bala fini",
-    "category": "DOCES",
-    "marca_priorizada": "fini"
+    "product_name": "skol"
   },
-  "current_offset": 20,
+  "current_offset": 13,
   "last_shown_products": [
     {
-      "codprod": 11546,
-      "descricao": "AMAC.BABY SOFT INFINITY CARE",
-      "categoria": "AMACIANTE",
-      "marca": "BABY SOFT",
-      "unidade_venda": "FR",
-      "preco_varejo": 7.59,
+      "codprod": 64971,
+      "descricao": "BEB.MISTA SKOL BEATS CAIPIRINHA L.NECK",
+      "unidade_venda": "GF",
+      "preco_varejo": 7.98,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 7.59,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 7001,
-      "descricao": "BALA FINI AMORA",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 61824,
+      "descricao": "BEB.MISTA SKOL BEATS CAIPIRINHA LT",
+      "unidade_venda": "LT",
+      "preco_varejo": 5.69,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 42597,
-      "descricao": "BALA FINI BANANAS",
-      "categoria": "BALAS",
-      "marca": "FINI",
+      "codprod": 56529,
+      "descricao": "BEB.MISTA SKOL BEATS GT L.NECK ",
       "unidade_venda": "UN",
-      "preco_varejo": 12.98,
+      "preco_varejo": 7.98,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 12.98,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 6998,
-      "descricao": "BALA FINI BEIJOS MORANGO",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 54618,
+      "descricao": "BEB.MISTA SKOL BEATS GT LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 5.69,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 6999,
-      "descricao": "BALA FINI DENTADURA",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 58034,
+      "descricao": "BEB.MISTA SKOL BEATS MOJITO LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 5.98,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 74829,
-      "descricao": "BALA FINI GELATINA CHAPEU SELETOR",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 77051,
+      "descricao": "BEB.MISTA SKOL BEATS RED MIX FTS.VERM.GF",
+      "unidade_venda": "GF",
+      "preco_varejo": 7.98,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 74830,
-      "descricao": "BALA FINI GELATINA EDWIGES",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 77052,
+      "descricao": "BEB.MISTA SKOL BEATS RED MIX FTS.VERM.LT",
+      "unidade_venda": "GF",
+      "preco_varejo": 5.69,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 74831,
-      "descricao": "BALA FINI GELATINA OCULOS DO HARRY",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 41495,
+      "descricao": "BEB.MISTA SKOL BEATS SENSES L.NECK ",
+      "unidade_venda": "UN",
+      "preco_varejo": 7.98,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 64798,
-      "descricao": "BALA FINI GELATINA POLVO",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 41496,
+      "descricao": "BEB.MISTA SKOL BEATS SENSES  LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 5.69,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": null,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
       "total_vendido": 0.0
     },
     {
-      "codprod": 6997,
-      "descricao": "BALA FINI BANANA",
-      "categoria": "BALAS",
-      "marca": "FINI",
-      "unidade_venda": "PC",
-      "preco_varejo": 6.89,
+      "codprod": 64970,
+      "descricao": "BEB.MISTA SKOL BEATS TROPICAL L.NECK",
+      "unidade_venda": "GF",
+      "preco_varejo": 7.98,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "preco_promocional": 4.0,
-      "preco_atual": 6.89,
-      "percentual_desconto": 0.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0,
-      "_preco_antigo": 6.89,
-      "_preco_promo": 4.0,
-      "_desconto": 41.94484760522496
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 64969,
+      "descricao": "BEB.MISTA SKOL BEATS TROPICAL LT",
+      "unidade_venda": "LT",
+      "preco_varejo": 5.69,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 25424,
+      "descricao": "CERVEJA SKOL LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 2.39,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 7649,
+      "descricao": "CERVEJA SKOL LT.",
+      "unidade_venda": "UN",
+      "preco_varejo": 3.09,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
     }
   ],
   "last_bot_action": "AWAITING_PRODUCT_SELECTION",
   "pending_action": null,
   "last_kb_search_term": null,
   "estatisticas_sessao": {
-    "itens_carrinho": 1,
+    "itens_carrinho": 0,
     "tamanho_conversa": 0,
     "cliente_identificado": true,
     "ultima_acao": "AWAITING_PRODUCT_SELECTION",
     "tem_selecao_pendente": true,
     "tem_quantidade_pendente": false,
-    "valor_total_carrinho": 34.449999999999996
-  },
-  "pending_product_for_cart": null,
-  "term_to_learn_after_quantity": null
+    "valor_total_carrinho": 0.0
+  }
 }
