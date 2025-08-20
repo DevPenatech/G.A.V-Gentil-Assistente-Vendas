@@ -349,8 +349,8 @@ def formatar_carrinho_para_exibicao(carrinho: List[Dict]) -> str:
     itens = []
     
     for i, item in enumerate(carrinho, 1):
-        # Pega o preço (promocional tem prioridade)
-        preco_unitario = item.get('preco_promocional') or item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
+        # 🎯 PEGA O PREÇO (promocional tem prioridade)
+        preco_unitario = item.get('_preco_promo') or item.get('preco_promocional') or item.get('preco_atual') or item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
         qt = item.get('qt', 0)
         subtotal = preco_unitario * qt
         total += subtotal
@@ -564,7 +564,8 @@ def obter_estatisticas_sessao(dados_sessao: Dict) -> Dict:
     carrinho = dados_sessao.get("shopping_cart", [])
     valor_total = 0.0
     for item in carrinho:
-        preco = item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
+        # 🎯 PRIORIZA PREÇO PROMOCIONAL se disponível
+        preco = item.get('_preco_promo') or item.get('preco_promocional') or item.get('preco_atual') or item.get('pvenda', 0.0) or item.get('preco_varejo', 0.0)
         qt = item.get('qt', 0)
         valor_total += preco * qt
     

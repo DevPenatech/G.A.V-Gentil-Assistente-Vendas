@@ -79,7 +79,8 @@ def format_cart_with_indices(cart: List[Dict]) -> str:
     total = 0.0
 
     for i, item in enumerate(cart, 1):
-        price = item.get("pvenda") or 0.0
+        # 🎯 PRIORIZA PREÇO PROMOCIONAL se disponível
+        price = item.get("_preco_promo") or item.get("preco_promocional") or item.get("preco_atual") or item.get("pvenda") or item.get("preco_varejo", 0.0)
         qt = item.get("qt", 0)
         subtotal = price * qt
         total += subtotal
@@ -256,7 +257,8 @@ def generate_checkout_summary(cart: List[Dict], customer_context: Dict = None) -
     total_geral = 0.0
     
     for i, item in enumerate(cart, 1):
-        price = item.get("pvenda") or item.get("preco_varejo", 0.0)
+        # 🎯 PRIORIZA PREÇO PROMOCIONAL se disponível
+        price = item.get("_preco_promo") or item.get("preco_promocional") or item.get("preco_atual") or item.get("pvenda") or item.get("preco_varejo", 0.0)
         qt = item.get("qt", 0)
         subtotal = price * qt
         total_geral += subtotal

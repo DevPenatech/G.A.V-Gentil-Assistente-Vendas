@@ -124,7 +124,8 @@ def formatar_carrinho_com_indices(carrinho: List[Dict]) -> str:
     total = 0.0
 
     for i, item in enumerate(carrinho, 1):
-        preco = item.get("pvenda") or 0.0
+        # 🎯 PRIORIZA PREÇO PROMOCIONAL se disponível
+        preco = item.get("_preco_promo") or item.get("preco_promocional") or item.get("preco_atual") or item.get("pvenda") or item.get("preco_varejo", 0.0)
         qt = item.get("qt", 0)
         subtotal = preco * qt
         total += subtotal
@@ -318,7 +319,8 @@ def gerar_resumo_finalizacao(carrinho: List[Dict], contexto_cliente: Dict = None
     total_geral = 0.0
     
     for i, item in enumerate(carrinho, 1):
-        preco = item.get("pvenda") or item.get("preco_varejo", 0.0)
+        # 🎯 PRIORIZA PREÇO PROMOCIONAL se disponível
+        preco = item.get("_preco_promo") or item.get("preco_promocional") or item.get("preco_atual") or item.get("pvenda") or item.get("preco_varejo", 0.0)
         qt = item.get("qt", 0)
         subtotal = preco * qt
         total_geral += subtotal
@@ -877,6 +879,17 @@ def _process_user_message(
             elif numero == 3 and shopping_cart:
                 intent = {"nome_ferramenta": "checkout", "parametros": {}}
                 return intent, response_text
+        
+        # 🎯 NOVA CONDIÇÃO: Se é contexto de seleção de produto e tem produtos para selecionar
+        elif ultima_acao == "AWAITING_PRODUCT_SELECTION" and state.get("last_shown_products"):
+            produtos_mostrados = state.get("last_shown_products", [])
+            if 1 <= numero <= len(produtos_mostrados):
+                print(f">>> CONSOLE: Processando seleção de produto {numero}")
+                intent = {"nome_ferramenta": "add_item_to_cart", "parametros": {"index": numero}}
+                return intent, response_text
+            else:
+                print(f">>> CONSOLE: Número {numero} inválido para {len(produtos_mostrados)} produtos")
+                # Deixa a IA processar como fallback
 
     # 1. Análise avançada de intenções de carrinho (se há carrinho ativo)
     if shopping_cart:

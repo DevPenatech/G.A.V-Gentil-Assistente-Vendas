@@ -4,174 +4,174 @@
   "historico_conversa": [
     {
       "role": "assistant",
-      "message": "*🎯 Produtos Skol encontrados:*\n\n*1.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*2.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
-      "timestamp": "2025-08-20T12:03:06.024908",
+      "message": "Adicionei 5 FINI BANANA ao carrinho. Total R$ 15,00.\n\n🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 6,89 cada = R$ 34,45\n\n💰 *Total Geral: R$ 34,45*",
+      "timestamp": "2025-08-20T12:46:29.639285",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "quero nescau barato",
-      "timestamp": "2025-08-20T12:03:21.482103",
+      "message": "ver carrinho",
+      "timestamp": "2025-08-20T12:51:08.058117",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
-      "timestamp": "2025-08-20T12:03:33.861920",
+      "message": "🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n💰 *Total Geral: R$ 20,00*",
+      "timestamp": "2025-08-20T12:51:14.172631",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n💰 *Total Geral: R$ 20,00*",
+      "timestamp": "2025-08-20T12:51:14.172653",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero promoção",
+      "timestamp": "2025-08-20T12:51:25.111337",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
+      "timestamp": "2025-08-20T12:51:34.615363",
       "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
-      "timestamp": "2025-08-20T12:03:33.861955",
+      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
+      "timestamp": "2025-08-20T12:51:34.615404",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "nescau barato",
-      "timestamp": "2025-08-20T12:03:52.164768",
+      "message": "produtos em promoção",
+      "timestamp": "2025-08-20T12:51:54.524493",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
-      "timestamp": "2025-08-20T12:04:02.697634",
+      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
+      "timestamp": "2025-08-20T12:52:04.486394",
       "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
-      "timestamp": "2025-08-20T12:04:02.697678",
+      "message": "*🎯 Produtos Omo encontrados:*\n\n*1.* DT.PO OMO LAVAGEM PERF\n    💰 R$ 28,90\n\n*2.* AJINOMOTO FRASCO\n    💰 R$ 10,90\n\n*3.* AJINOMOTO REFIL\n    💰 R$ 13,99\n\n*4.* AJINOMOTO REFIL\n    💰 R$ 6,55\n\n*5.* BALA DORI GOMETS GOMOS SORTIDA\n    💰 R$ 12,99\n\n*6.* BISC.MILKA CHOCOMOO\n    💰 R$ 20,90\n\n*7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*\n    💰 R$ 20,98\n\n*8.* CERA 3M AUTOMOTIVA EM PASTA \n    💰 R$ 27,90\n\n*9.* DESINF.OMO USO GERAL LAVANDA*\n    💰 R$ 9,70\n\n*10.* DT.PO OMO BRANCO ABSOLUTO EXPERT\n    💰 R$ 8,39\n\n*11.*",
+      "timestamp": "2025-08-20T12:52:04.486438",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "mais",
-      "timestamp": "2025-08-20T12:04:12.098298",
+      "message": "quero cerveja heineken",
+      "timestamp": "2025-08-20T12:52:11.576663",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "📦 *Mais produtos Nescau::*\n\n*21.* CER.NESTLE NESCAU + ECONOMIA\n    💰 R$ 18,98\n\n*22.* CER.NESTLE NESCAU EMB.ECON.\n    💰 R$ 22,98\n\n*23.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 11,98\n\n*24.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 5,89\n\n*25.* CER.NESTLE NESCAU LV.770G PG.620G\n    💰 R$ 21,79\n\n*26.* CHOC.NESTLE AO LEITE NESCAU\n    💰 R$ 8,98\n\n*27.* SKATE NESCAU PRETO EXTRA 2006\n    💰 R$ 1.958,17\n\nQual você quer? Digite o número de *21* a *27*.",
-      "timestamp": "2025-08-20T12:04:16.506323",
-      "action_type": "SHOW_MORE_PRODUCTS"
-    },
-    {
-      "role": "assistant",
-      "message": "📦 *Mais produtos Nescau::*\n\n*21.* CER.NESTLE NESCAU + ECONOMIA\n    💰 R$ 18,98\n\n*22.* CER.NESTLE NESCAU EMB.ECON.\n    💰 R$ 22,98\n\n*23.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 11,98\n\n*24.* CER.NESTLE NESCAU KITKAT\n    💰 R$ 5,89\n\n*25.* CER.NESTLE NESCAU LV.770G PG.620G\n    💰 R$ 21,79\n\n*26.* CHOC.NESTLE AO LEITE NESCAU\n    💰 R$ 8,98\n\n*27.* SKATE NESCAU PRETO EXTRA 2006\n    💰 R$ 1.958,17\n\nQual você quer? Digite o número de *21* a *27*.",
-      "timestamp": "2025-08-20T12:04:16.506351",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "nescau barato",
-      "timestamp": "2025-08-20T12:18:51.260744",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
-      "timestamp": "2025-08-20T12:18:59.552504",
+      "message": "*🎯 Produtos Heineken encontrados:*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN SHOT L.NECK\n    💰 R$ 4,98",
+      "timestamp": "2025-08-20T12:52:19.147075",
       "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos Nescau encontrados:*\n\n*1.* ACHOC.BEB.LAC.NESCAU\n    💰 R$ 11,89\n\n*2.* ACHOC.BEB.LAC.NESCAU CHOC.LV180ML.PG160M\n    💰 R$ 2,12\n\n*3.* ACHOC.BEB.LAC.NESCAU CHOC. LV.27.PG.24\n    💰 R$ 500,00\n\n*4.* ACHOC.BEB.LAC.NESCAU CHOCOLATE\n    💰 R$ 2,45\n\n*5.* ACHOC.PO NESCAU EMB.ECONOMICA PC.\n    💰 R$ 20,79\n\n*6.* ACHOC.PO NESCAU GTS120G SACHET\n    💰 R$ 12,90\n\n*7.* ACHOC.PO NESCAU LT.\n    💰 R$ 9,65\n\n*8.* ACHOC.PO NESCAU LT.\n    💰 R$ 6,59\n\n*9.* ACHOC.PO NESCAU LT.*\n    💰 R$ 9,98\n\n*10.* ACHOC.PO NESCAU L",
-      "timestamp": "2025-08-20T12:18:59.552561",
+      "message": "*🎯 Produtos Heineken encontrados:*\n\n*1.* CERVEJA HEINEKEN CHOPP\n    💰 R$ 99,89\n\n*2.* CERVEJA HEINEKEN GF\n    💰 R$ 12,98\n\n*3.* CERVEJA HEINEKEN L.NECK\n    💰 R$ 6,49\n\n*4.* CERVEJA HEINEKEN L.NECK  0,0% S/ALCOOL\n    💰 R$ 6,59\n\n*5.* CERVEJA HEINEKEN LT\n    💰 R$ 5,69\n\n*6.* CERVEJA HEINEKEN LT\n    💰 R$ 4,39\n\n*7.* CERVEJA HEINEKEN LT\n    💰 R$ 3,79\n\n*8.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 4,39\n\n*9.* CERVEJA HEINEKEN LT.0,0% S/ALCOOL\n    💰 R$ 5,49\n\n*10.* CERVEJA HEINEKEN SHOT L.NECK\n    💰 R$ 4,98",
+      "timestamp": "2025-08-20T12:52:19.147144",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "quero cerveja barata",
-      "timestamp": "2025-08-20T12:19:27.986798",
+      "message": "11",
+      "timestamp": "2025-08-20T12:52:26.166009",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-20T12:19:34.331727",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-20T12:19:34.331772",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "12",
-      "timestamp": "2025-08-20T12:27:57.345830",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Quantas unidades de CERVEJA PATAGONIA BOH PILS LT você deseja adicionar?",
-      "timestamp": "2025-08-20T12:28:04.170665",
+      "message": "Quantas unidades de CERVEJA PATAGONIA IPA LT você deseja adicionar?",
+      "timestamp": "2025-08-20T12:52:28.097090",
       "action_type": "REQUEST_QUANTITY"
     },
     {
       "role": "assistant",
-      "message": "Quantas unidades de CERVEJA PATAGONIA BOH PILS LT você deseja adicionar?",
-      "timestamp": "2025-08-20T12:28:04.170675",
+      "message": "Quantas unidades de CERVEJA PATAGONIA IPA LT você deseja adicionar?",
+      "timestamp": "2025-08-20T12:52:28.097102",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "5",
-      "timestamp": "2025-08-20T12:28:25.292090",
+      "message": "3",
+      "timestamp": "2025-08-20T12:52:33.897381",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "Adicionei 5 PATAGONIA BOH PILS L'. Agora está pronto para o checkout!\n\n🛒 *Carrinho:*\n5x CERVEJA PATAGONIA BOH PILS LT\n   R$ 5,50 cada = R$ 27,50\n\n💰 *Total Geral: R$ 27,50*",
-      "timestamp": "2025-08-20T12:28:27.175982",
+      "message": "Adicionei 3 PATAGONIA IPA LT ao carrinho.\n\n🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n3x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 15,00\n\n💰 *Total Geral: R$ 35,00*",
+      "timestamp": "2025-08-20T12:52:35.642795",
       "action_type": "ADD_TO_CART"
     },
     {
       "role": "assistant",
-      "message": "Adicionei 5 PATAGONIA BOH PILS L'. Agora está pronto para o checkout!\n\n🛒 *Carrinho:*\n5x CERVEJA PATAGONIA BOH PILS LT\n   R$ 5,50 cada = R$ 27,50\n\n💰 *Total Geral: R$ 27,50*",
-      "timestamp": "2025-08-20T12:28:27.176005",
+      "message": "Adicionei 3 PATAGONIA IPA LT ao carrinho.\n\n🛒 *Carrinho:*\n5x BALA FINI BANANA\n   R$ 4,00 cada = R$ 20,00\n\n3x CERVEJA PATAGONIA IPA LT\n   R$ 5,00 cada = R$ 15,00\n\n💰 *Total Geral: R$ 35,00*",
+      "timestamp": "2025-08-20T12:52:35.642816",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
       "message": "fechar pedido",
-      "timestamp": "2025-08-20T12:28:33.352859",
+      "timestamp": "2025-08-20T12:52:43.356759",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* CERVEJA PATAGONIA BOH PILS LT\n    5× R$ 6,79 = *R$ 33,95*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 33,95*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T12:28:40.649916",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* BALA FINI BANANA\n    5× R$ 4,00 = *R$ 20,00*\n\n*2.* CERVEJA PATAGONIA IPA LT\n    3× R$ 5,00 = *R$ 15,00*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 35,00*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-20T12:52:49.993166",
       "action_type": "CHECKOUT_COMPLETE"
     },
     {
       "role": "assistant",
-      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* CERVEJA PATAGONIA BOH PILS LT\n    5× R$ 6,79 = *R$ 33,95*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 33,95*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T12:28:40.649944",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Não identificado\n📄 *CNPJ:* 11.111.111/1111-11\n\n📦 *ITENS DO PEDIDO:*\n*1.* BALA FINI BANANA\n    5× R$ 4,00 = *R$ 20,00*\n\n*2.* CERVEJA PATAGONIA IPA LT\n    3× R$ 5,00 = *R$ 15,00*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 35,00*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-20T12:52:49.993189",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "meu carrinho",
-      "timestamp": "2025-08-20T12:28:58.713447",
+      "message": "quero bala fini",
+      "timestamp": "2025-08-20T12:53:02.929366",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "🛒 Carrinho vazio",
-      "timestamp": "2025-08-20T12:29:02.736346",
-      "action_type": "SHOW_CART"
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-20T12:53:09.709723",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "🛒 Carrinho vazio",
-      "timestamp": "2025-08-20T12:29:02.736368",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-20T12:53:09.709824",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-20T12:53:12.796280",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mais produtos Fini::*\n\n*28.* BALA FINI URSINHO\n    💰 R$ 6,89\n\n*29.* BISC.BAUDUCCO COOKIES FINI DENTADURAS\n    💰 R$ 4,49\n\n*30.* BISC.BAUDUCCO COOKIES FINI PINTA LINGUA\n    💰 R$ 4,49\n\n*31.* CAD.UNIV.CD.160FLS FINI\n    💰 R$ 59,90\n\n*32.* CAD.UNIV.CD.80FLS FINI\n    💰 R$ 32,90\n\n*33.* COND.SEDA CACHOS DEFINIDOS\n    💰 R$ 12,98\n\n*34.* CR.MASCARA TRAT.SEDA CACHOS DEFINIDOS\n    💰 R$ 14,90\n\n*35.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 12,99\n\n*36.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 20",
+      "timestamp": "2025-08-20T12:53:17.541830",
+      "action_type": "SHOW_MORE_PRODUCTS"
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mais produtos Fini::*\n\n*28.* BALA FINI URSINHO\n    💰 R$ 6,89\n\n*29.* BISC.BAUDUCCO COOKIES FINI DENTADURAS\n    💰 R$ 4,49\n\n*30.* BISC.BAUDUCCO COOKIES FINI PINTA LINGUA\n    💰 R$ 4,49\n\n*31.* CAD.UNIV.CD.160FLS FINI\n    💰 R$ 59,90\n\n*32.* CAD.UNIV.CD.80FLS FINI\n    💰 R$ 32,90\n\n*33.* COND.SEDA CACHOS DEFINIDOS\n    💰 R$ 12,98\n\n*34.* CR.MASCARA TRAT.SEDA CACHOS DEFINIDOS\n    💰 R$ 14,90\n\n*35.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 12,99\n\n*36.* CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*\n    💰 R$ 20",
+      "timestamp": "2025-08-20T12:53:17.541858",
       "action_type": "BOT_RESPONSE"
     }
   ],
-  "resumo_conversa": "0  *10.* DT.PO OMO BRANCO ABSOLUTO EXPERT     💰 R$ 8,39  *11.* | G.A.V.: *🎯 Produtos Omo encontrados:*  *1.* DT.PO OMO LAVAGEM PERF     💰 R$ 28,90  *2.* AJINOMOTO FRASCO     💰 R$ 10,90  *3.* AJINOMOTO REFIL     💰 R$ 13,99  *4.* AJINOMOTO REFIL     💰 R$ 6,55  *5.* BALA DORI GOMETS GOMOS SORTIDA     💰 R$ 12,99  *6.* BISC.MILKA CHOCOMOO     💰 R$ 20,90  *7.* CD.COLGATE TOTAL12 CLEAN MINT C/3 PROMO*     💰 R$ 20,98  *8.* CERA 3M AUTOMOTIVA EM PASTA      💰 R$ 27,90  *9.* DESINF.OMO USO GERAL LAVANDA*     💰 R$ 9,70  *10.* DT.PO OMO BRANCO ABSOLUTO EXPERT     💰 R$ 8,39  *11.* | Cliente: quero skol | G.A.V.: *🎯 Produtos Skol encontrados:*  *1.* CERVEJA SKOL LT     💰 R$ 2,39  *2.* CERVEJA SKOL LT.     💰 R$ 3,09  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *3.* CERVEJA PATAGONIA IPA LT     ~R$ 6,79~ → *R$ 5,00* (26% OFF)  *4.* CERVEJA PATAGONIA BOH PILS LT     ~R$ 6,79~ → *R$ 5,50* (19% OFF)  Qual você quer? Digite o número de *1* a *4*. 📝 Digite *mais* para ver outros produtos desta categoria!",
+  "resumo_conversa": " 💰 R$ 6,89  *8.* BALA FINI GELATINA OCULOS DO HARRY     💰 R$ 6,89  *9.* BALA FINI GELATINA POLVO     💰 R$ 6,89  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *10.* BALA  | G.A.V.: *🎯 Produtos Fini encontrados:*  *1.* AMAC.BABY SOFT INFINITY CARE     💰 R$ 7,59  *2.* BALA FINI AMORA     💰 R$ 6,89  *3.* BALA FINI BANANAS     💰 R$ 12,98  *4.* BALA FINI BEIJOS MORANGO     💰 R$ 6,89  *5.* BALA FINI DENTADURA     💰 R$ 6,89  *6.* BALA FINI GELATINA CHAPEU SELETOR     💰 R$ 6,89  *7.* BALA FINI GELATINA EDWIGES     💰 R$ 6,89  *8.* BALA FINI GELATINA OCULOS DO HARRY     💰 R$ 6,89  *9.* BALA FINI GELATINA POLVO     💰 R$ 6,89  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *10.* BALA  | Cliente: 10 | G.A.V.: Quantas unidades de BALA FINI BANANA você deseja adicionar? | G.A.V.: Quantas unidades de BALA FINI BANANA você deseja adicionar? | Cliente: 5 | G.A.V.: Adicionei 5 FINI BANANA ao carrinho. Total R$ 15,00.  🛒 *Carrinho:* 5x BALA FINI BANANA    R$ 6,89 cada = R$ 34,45  💰 *Total Geral: R$ 34,45*",
   "ultimo_tipo_busca": null,
   "ultimos_parametros_busca": {},
   "offset_atual": 0,
@@ -185,7 +185,7 @@
   "ultima_analise_busca": {},
   "ultimas_sugestoes_busca": [],
   "criado_em": "2025-08-20T11:49:06.087265",
-  "ultima_atividade": "2025-08-20T12:29:02.736370",
+  "ultima_atividade": "2025-08-20T12:53:17.541860",
   "validated_cnpj": "11111111111111",
   "customer_context": {
     "cnpj": "11111111111111"
@@ -193,21 +193,275 @@
   "shopping_cart": [],
   "last_search_type": "smart_search",
   "last_search_params": {
-    "search_term": "cerveja",
-    "category": "CERVEJA",
-    "marca_priorizada": null
+    "search_term": "bala fini",
+    "category": "DOCES",
+    "marca_priorizada": "fini"
   },
-  "current_offset": 27,
-  "last_shown_products": [],
-  "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+  "current_offset": 37,
+  "last_shown_products": [
+    {
+      "codprod": 11546,
+      "descricao": "AMAC.BABY SOFT INFINITY CARE",
+      "categoria": "AMACIANTE",
+      "marca": "BABY SOFT",
+      "unidade_venda": "FR",
+      "preco_varejo": 7.59,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 7.59,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 7001,
+      "descricao": "BALA FINI AMORA",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 42597,
+      "descricao": "BALA FINI BANANAS",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "UN",
+      "preco_varejo": 12.98,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 12.98,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 6998,
+      "descricao": "BALA FINI BEIJOS MORANGO",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 6999,
+      "descricao": "BALA FINI DENTADURA",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 74829,
+      "descricao": "BALA FINI GELATINA CHAPEU SELETOR",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 74830,
+      "descricao": "BALA FINI GELATINA EDWIGES",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 74831,
+      "descricao": "BALA FINI GELATINA OCULOS DO HARRY",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 64798,
+      "descricao": "BALA FINI GELATINA POLVO",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 6997,
+      "descricao": "BALA FINI BANANA",
+      "categoria": "BALAS",
+      "marca": "FINI",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": 4.0,
+      "preco_atual": 6.89,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0,
+      "_preco_antigo": 6.89,
+      "_preco_promo": 4.0,
+      "_desconto": 41.94484760522496
+    },
+    {
+      "codprod": 6993,
+      "descricao": "BALA FINI URSINHO",
+      "unidade_venda": "PC",
+      "preco_varejo": 6.89,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 75890,
+      "descricao": "BISC.BAUDUCCO COOKIES FINI DENTADURAS",
+      "unidade_venda": "UN",
+      "preco_varejo": 4.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 77207,
+      "descricao": "BISC.BAUDUCCO COOKIES FINI PINTA LINGUA",
+      "unidade_venda": "PC",
+      "preco_varejo": 4.49,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 76712,
+      "descricao": "CAD.UNIV.CD.160FLS FINI",
+      "unidade_venda": "UN",
+      "preco_varejo": 59.9,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 76711,
+      "descricao": "CAD.UNIV.CD.80FLS FINI",
+      "unidade_venda": "UN",
+      "preco_varejo": 32.9,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 40600,
+      "descricao": "COND.SEDA CACHOS DEFINIDOS",
+      "unidade_venda": "UN",
+      "preco_varejo": 12.98,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 77879,
+      "descricao": "CR.MASCARA TRAT.SEDA CACHOS DEFINIDOS",
+      "unidade_venda": "PT",
+      "preco_varejo": 14.9,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 74595,
+      "descricao": "CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*",
+      "unidade_venda": "UN",
+      "preco_varejo": 12.99,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 74594,
+      "descricao": "CR.PENT.SEDA BOOM DEFINICAO FLEXIVEL*",
+      "unidade_venda": "UN",
+      "preco_varejo": 20.9,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 74596,
+      "descricao": "CR.PENT.SEDA BOOM DEFINICAO INTENSA*",
+      "unidade_venda": "UN",
+      "preco_varejo": 19.9,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    }
+  ],
+  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
   "pending_action": null,
   "last_kb_search_term": null,
   "estatisticas_sessao": {
     "itens_carrinho": 0,
     "tamanho_conversa": 0,
     "cliente_identificado": true,
-    "ultima_acao": "AWAITING_CHECKOUT_CONFIRMATION",
-    "tem_selecao_pendente": false,
+    "ultima_acao": "AWAITING_PRODUCT_SELECTION",
+    "tem_selecao_pendente": true,
     "tem_quantidade_pendente": false,
     "valor_total_carrinho": 0.0
   },
