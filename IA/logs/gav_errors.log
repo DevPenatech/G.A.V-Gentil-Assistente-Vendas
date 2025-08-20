@@ -269,3 +269,10 @@ TypeError: extrair_especificacoes_produto_ia() takes 1 positional argument but 3
 2025-08-19 23:59:27,528 [ERROR] [root:705] [obter_produtos_por_categoria] Erro ao buscar produtos da categoria 'CERVEJA': Não foi possível conectar ao banco de dados.
 2025-08-19 23:59:42,569 [ERROR] [root:44] [obter_conexao] Não foi possível conectar ao banco de dados após várias tentativas.
 2025-08-19 23:59:42,571 [ERROR] [root:765] [obter_produtos_promocionais_por_categoria] Erro ao buscar promoções da categoria 'CERVEJA': Não foi possível conectar ao banco de dados.
+2025-08-20 11:10:04,976 [ERROR] [root:2681] [process_message_for_web] WEBCHAT - ERRO CRÍTICO: module 'db.database' has no attribute 'get_top_selling_products_by_name'
+Traceback (most recent call last):
+  File "/app/app.py", line 2669, in process_message_for_web
+    response_text = _route_tool(session, state, intent, original_sender_id)
+  File "/app/app.py", line 1826, in _route_tool
+    products = database.get_top_selling_products_by_name(
+AttributeError: module 'db.database' has no attribute 'get_top_selling_products_by_name'

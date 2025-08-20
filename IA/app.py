@@ -1434,9 +1434,19 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                                 title
                             )
                     
-                    # 🆕 SALVA PRODUTOS NO ESTADO PARA PERMITIR SELEÇÃO NUMÉRICA
+                    # 🆕 SALVA PRODUTOS NO ESTADO PARA PERMITIR SELEÇÃO NUMÉRICA E "MAIS"
                     state["last_shown_products"] = last_shown_products
                     state["last_bot_action"] = last_bot_action
+                    
+                    # 🆕 SALVA PARÂMETROS PARA FUNCIONAR COM "MAIS"
+                    last_search_type = "smart_search"
+                    last_search_params = {
+                        "search_term": search_term,
+                        "category": category,
+                        "marca_priorizada": analise_marca.get("marca") if analise_marca.get("tipo_busca") == "marca_especifica" else None
+                    }
+                    
+                    print(f">>> DEBUG: [SALVAR_BUSCA] Salvando busca inteligente - tipo: {last_search_type}, params: {last_search_params}")
                     
                     # 🔧 ATUALIZA TAMBÉM AS VARIÁVEIS LOCAIS PARA SEREM SALVAS NO FINAL
                     last_shown_products = state["last_shown_products"]  # Atualiza variável local
@@ -1576,7 +1586,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         else:  # get_top_selling_products
             current_offset, last_shown_products = 0, []
             last_search_type, last_search_params = "top_selling", parameters
-            products = database.get_top_selling_products(offset=current_offset)
+            products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
             title = "⭐ Estes são nossos produtos mais populares:"
             current_offset += 10
             last_shown_products.extend(products)
@@ -1804,15 +1814,46 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             offset_before_call = current_offset
             products = []
             title = ""
+            print(f">>> DEBUG: [MAIS_PRODUTOS] last_search_type: {last_search_type}")
+            print(f">>> DEBUG: [MAIS_PRODUTOS] last_search_params: {last_search_params}")
+            print(f">>> DEBUG: [MAIS_PRODUTOS] current_offset: {current_offset}")
+            
             if last_search_type == "top_selling":
-                products = database.get_top_selling_products(offset=current_offset)
+                products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
                 title = "Mostrando mais produtos populares:"
             elif last_search_type == "by_name":
                 product_name = last_search_params.get("product_name", "")
-                products = database.get_top_selling_products_by_name(
-                    product_name, offset=current_offset
+                products = database.obter_produtos_mais_vendidos_por_nome(
+                    product_name, limite=10, offset=current_offset
                 )
                 title = f"Mostrando mais produtos relacionados a '{product_name}':"
+            elif last_search_type == "smart_search":
+                # 🆕 SUPORTE PARA BUSCA INTELIGENTE COM "MAIS"
+                search_term = last_search_params.get("search_term", "")
+                category = last_search_params.get("category", "")
+                marca_priorizada = last_search_params.get("marca_priorizada")
+                
+                print(f">>> DEBUG: [MAIS_SMART] Continuando busca inteligente - termo: '{search_term}', categoria: '{category}', marca: '{marca_priorizada}'")
+                
+                if marca_priorizada:
+                    # Se tem marca específica, busca mais produtos dessa marca
+                    print(f">>> DEBUG: [MAIS_SMART] Buscando mais produtos da marca '{marca_priorizada}'")
+                    search_result = pesquisar_produtos_com_sugestoes(marca_priorizada, limite=10, offset=current_offset)
+                    products = search_result["products"]
+                    title = f"Mais produtos {marca_priorizada.title()}:"
+                elif category and category != "outros":
+                    # Se tem categoria, busca mais produtos da categoria
+                    print(f">>> DEBUG: [MAIS_SMART] Buscando mais produtos da categoria '{category}'")
+                    products = database.obter_produtos_por_categoria(category, limite=10, offset=current_offset)
+                    title = f"Mais produtos da categoria {category.title()}:"
+                else:
+                    # Fallback: busca geral por termo
+                    print(f">>> DEBUG: [MAIS_SMART] Busca geral por '{search_term}'")
+                    search_result = pesquisar_produtos_com_sugestoes(search_term, limite=10, offset=current_offset)
+                    products = search_result["products"]
+                    title = f"Mais produtos relacionados a '{search_term}':"
+                
+                print(f">>> DEBUG: [MAIS_SMART] Encontrados {len(products)} produtos")
 
             if not products:
                 response_text = (
@@ -2009,12 +2050,90 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 response_text += f"\nDigite o número de *1* a *{len(last_shown_products)}*."
             # Mantém o estado atual - não reseta
         else:
-            response_text = (
-                f"{response_param}\n\n"
-                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+            # 🚀 IA-FIRST: DETECÇÃO INTELIGENTE DE "MAIS PRODUTOS"
+            incoming_msg_lower = incoming_msg.lower().strip()
+            should_show_more_products = (
+                last_search_type and  # Há busca anterior
+                any(word in incoming_msg_lower for word in ["mais", "mais produtos", "continuar", "próximo", "more", "next"]) and
+                len(incoming_msg_lower.split()) <= 3  # Mensagem curta (até 3 palavras)
             )
-            last_shown_products = []
-            last_bot_action = "AWAITING_MENU_SELECTION"
+            
+            if should_show_more_products:
+                print(f">>> CONSOLE: 🚀 [IA-FIRST] Chitchat detectou 'mais produtos' - executando automaticamente")
+                
+                # 🎯 EXECUTA AUTOMATICAMENTE A LÓGICA DE "MAIS PRODUTOS"
+                offset_before_call = current_offset
+                products = []
+                title = ""
+                
+                if last_search_type == "smart_search":
+                    # 🆕 SUPORTE PARA BUSCA INTELIGENTE COM "MAIS"
+                    search_term = last_search_params.get("search_term", "")
+                    category = last_search_params.get("category", "")
+                    marca_priorizada = last_search_params.get("marca_priorizada")
+                    
+                    print(f">>> DEBUG: [IA-FIRST-SMART] Continuando busca - termo: '{search_term}', categoria: '{category}', marca: '{marca_priorizada}'")
+                    
+                    if marca_priorizada:
+                        # Se tem marca específica, busca mais produtos dessa marca
+                        search_result = pesquisar_produtos_com_sugestoes(marca_priorizada, limite=10, offset=current_offset)
+                        products = search_result["products"]
+                        title = f"Mais produtos {marca_priorizada.title()}:"
+                    elif category and category != "outros":
+                        # Se tem categoria, busca mais produtos da categoria
+                        products = database.obter_produtos_por_categoria(category, limite=10, offset=current_offset)
+                        title = f"Mais produtos da categoria {category.title()}:"
+                    else:
+                        # Fallback: busca geral por termo
+                        search_result = pesquisar_produtos_com_sugestoes(search_term, limite=10, offset=current_offset)
+                        products = search_result["products"]
+                        title = f"Mais produtos relacionados a '{search_term}':"
+                
+                elif last_search_type == "by_name":
+                    product_name = last_search_params.get("product_name", "")
+                    products = database.obter_produtos_mais_vendidos_por_nome(product_name, limite=10, offset=current_offset)
+                    title = f"Mais produtos relacionados a '{product_name}':"
+                
+                elif last_search_type == "top_selling":
+                    products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
+                    title = "Mais produtos populares:"
+                
+                if products:
+                    # 🎯 SUCESSO: Encontrou mais produtos
+                    current_offset += 10
+                    last_shown_products.extend(products)
+                    
+                    # 🤖 IA GERA RESPOSTA PERSONALIZADA + PRODUTOS
+                    ai_intro = generate_personalized_response("show_more_products", session)
+                    if not ai_intro or ai_intro.strip() == "":
+                        ai_intro = "Perfeito! Aqui estão mais opções para você:"
+                    
+                    products_list = formatar_lista_produtos_para_exibicao(products, title, len(products) == 10, offset=offset_before_call)
+                    response_text = f"{ai_intro}\n\n{products_list}"
+                    
+                    last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                    adicionar_mensagem_historico(session, "assistant", response_text, "IA_FIRST_MORE_PRODUCTS")
+                    
+                    print(f">>> CONSOLE: 🚀 [IA-FIRST] Sucesso! Mostrou {len(products)} produtos adicionais")
+                    
+                else:
+                    # 🚫 NÃO HÁ MAIS PRODUTOS
+                    ai_response = generate_personalized_response("no_more_products", session)
+                    if not ai_response or ai_response.strip() == "":
+                        ai_response = "Opa, já mostrei todos os produtos relacionados! Quer procurar outra coisa?"
+                    
+                    response_text = f"{ai_response}\n\n{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                    last_shown_products = []
+                    last_bot_action = "AWAITING_MENU_SELECTION"
+                    adicionar_mensagem_historico(session, "assistant", response_text, "IA_FIRST_NO_MORE_PRODUCTS")
+            else:
+                # 🗣️ CHITCHAT NORMAL
+                response_text = (
+                    f"{response_param}\n\n"
+                    f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                )
+                last_shown_products = []
+                last_bot_action = "AWAITING_MENU_SELECTION"
         
         adicionar_mensagem_historico(session, "assistant", response_text, "CHITCHAT")
 

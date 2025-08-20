@@ -54,8 +54,9 @@ FERRAMENTAS DISPONÍVEIS:
 4. visualizar_carrinho - Para ver carrinho
 5. limpar_carrinho - Para limpar carrinho
 6. adicionar_item_ao_carrinho - Para selecionar item por número
-7. checkout - Para finalizar pedido (palavras: finalizar, checkout, comprar)
-8. lidar_conversa - Para conversas gerais
+7. show_more_products - Para mostrar mais produtos da mesma busca (palavra: mais)
+8. checkout - Para finalizar pedido (palavras: finalizar, checkout, comprar)
+9. lidar_conversa - Para conversas gerais
 
 CONTEXTO DA CONVERSA (FUNDAMENTAL PARA ANÁLISE):
 {conversation_context if conversation_context else "Primeira interação"}
@@ -65,16 +66,20 @@ MENSAGEM ATUAL DO USUÁRIO: "{user_message}"
 REGRAS DE CLASSIFICAÇÃO (ANALISE O CONTEXTO ANTES DE DECIDIR):
 1. PRIMEIRO, analise o CONTEXTO da conversa para entender a situação atual
 2. Se o bot mostrou uma lista de produtos e o usuário responde com número → adicionar_item_ao_carrinho
-3. Se o usuário quer buscar categoria (cerveja, limpeza, comida, etc.) → busca_inteligente_com_promocoes
-4. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes  
-5. IMPORTANTE: Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes
-6. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
-7. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
-8. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
-9. Se quer limpar/esvaziar carrinho → limpar_carrinho
-10. Saudações, agradecimentos, perguntas gerais → lidar_conversa
+3. 🚀 CRÍTICO: Se usuário diz apenas "mais" após uma busca de produtos → show_more_products
+4. Se o usuário quer buscar categoria (cerveja, limpeza, comida, etc.) → busca_inteligente_com_promocoes
+5. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes  
+6. IMPORTANTE: Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes
+7. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
+8. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
+9. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
+10. Se quer limpar/esvaziar carrinho → limpar_carrinho
+11. Saudações, agradecimentos, perguntas gerais → lidar_conversa
 
 EXEMPLOS IMPORTANTES:
+- "mais" → show_more_products (PRIORIDADE MÁXIMA após busca!)
+- "mais produtos" → show_more_products (continuar busca)
+- "continuar" → show_more_products (mostrar mais produtos)
 - "quero cerveja" → busca_inteligente_com_promocoes (categoria de produto)
 - "quero fini" → busca_inteligente_com_promocoes (marca específica!)
 - "quero nutella" → busca_inteligente_com_promocoes (marca específica!)
@@ -108,8 +113,12 @@ ATENÇÃO ESPECIAL PARA AÇÕES:
 - "remover", "tirar", "remove" → acao: "remove"
 - "trocar para", "mudar para" → acao: "set"
 
-RESPONDA APENAS EM JSON:
-{{"nome_ferramenta": "nome_da_ferramenta", "parametros": {{"param": "valor"}}}}
+🚨 IMPORTANTE: RESPONDA APENAS EM JSON VÁLIDO, SEM EXPLICAÇÕES!
+
+EXEMPLO DE RESPOSTA CORRETA:
+{{"nome_ferramenta": "show_more_products", "parametros": {{}}}}
+
+🔥 NÃO ESCREVA TEXTO EXPLICATIVO! APENAS JSON!
 """
 
         logging.debug(f"[INTENT] Classificando intenção para: {user_message}")
@@ -117,19 +126,25 @@ RESPONDA APENAS EM JSON:
         client = ollama.Client(host=HOST_OLLAMA)
         response = client.chat(
             model=NOME_MODELO_OLLAMA,
-            messages=[{"role": "user", "content": intent_prompt}],
+            messages=[
+                {"role": "system", "content": "Você DEVE responder APENAS em JSON válido. NÃO escreva explicações."},
+                {"role": "user", "content": intent_prompt}
+            ],
             options={
-                "temperature": 0.1,  # Baixa para ser mais determinístico
-                "top_p": 0.3,
-                "num_predict": 100
+                "temperature": 0.0,  # Zero para máximo determinismo
+                "top_p": 0.1,
+                "num_predict": 50,  # Menos tokens para forçar JSON conciso
+                "stop": ["\n\n", "**", "Análise"]  # Para parar se começar a explicar
             }
         )
         
         ai_response = response['message']['content'].strip()
-        logging.debug(f"[INTENT] IA respondeu: {ai_response}")
+        print(f">>> 🔍 [CLASSIFICADOR_IA] Mensagem: '{user_message}'")
+        print(f">>> 🔍 [CLASSIFICADOR_IA] IA respondeu: {ai_response}")
         
         # Extrai JSON da resposta
         intent_data = _extrair_json_da_resposta(ai_response)
+        print(f">>> 🔍 [CLASSIFICADOR_IA] JSON extraído: {intent_data}")
         
         if intent_data and "nome_ferramenta" in intent_data:
             # Valida se a ferramenta existe
@@ -140,6 +155,7 @@ RESPONDA APENAS EM JSON:
                 "visualizar_carrinho",
                 "limpar_carrinho", 
                 "adicionar_item_ao_carrinho",
+                "show_more_products",
                 "checkout",
                 "lidar_conversa"
             ]

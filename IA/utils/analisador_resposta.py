@@ -59,13 +59,11 @@ def extrair_json_da_resposta_ia(conteudo: Any) -> Dict:
             except:
                 continue
     
-    # 3. Se não encontrou JSON, assume que IA quer conversar
-    return {
-        "nome_ferramenta": "lidar_conversa",
-        "parametros": {
-            "texto_resposta": conteudo.strip()
-        }
-    }
+    # 3. 🧠 LEITOR DE MENTES DA IA - Entende intenção mesmo sem JSON
+    print(f">>> 🧠 [EXTRAIR_JSON] Chamando Mind Reader para: '{conteudo}'")
+    resultado = _analisar_intencao_do_texto_inteligente(conteudo)
+    print(f">>> 🧠 [EXTRAIR_JSON] Mind Reader retornou: {resultado}")
+    return resultado
 
 def _normalizar_chaves_json(dados_json: Dict) -> Dict:
     """
@@ -344,5 +342,151 @@ def obter_estatisticas_parsing() -> Dict:
             "clear_cart": "limpar_carrinho",
             "add_item_to_cart": "adicionar_item_ao_carrinho",
             "handle_chitchat": "lidar_conversa"
+        }
+    }
+
+def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
+    """
+    🧠 LEITOR DE MENTES DA IA - Analisa intenção mesmo quando IA não retorna JSON válido.
+    
+    Esta função é a solução criativa para quando a IA explica em texto livre 
+    em vez de retornar JSON. Ela 'lê a mente' da IA analisando palavras-chave.
+    
+    Args:
+        texto (str): Resposta em texto livre da IA
+        
+    Returns:
+        Dict: JSON válido com a ferramenta detectada
+    """
+    texto_lower = texto.lower().strip()
+    
+    print(f">>> 🧠 [LEITOR_DE_MENTES] Analisando texto completo: '{texto}'")
+    
+    # 🎯 DETECÇÕES DE ALTA PRIORIDADE (em ordem de prioridade)
+    
+    # 1. 🚀 COMANDO "MAIS PRODUTOS" - Detecção super específica
+    # 🔥 DETECÇÃO ESPECIAL: palavra "mais" sozinha
+    if texto_lower == "mais":
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: MAIS (palavra única)")
+        return {
+            "nome_ferramenta": "show_more_products",
+            "parametros": {}
+        }
+    
+    if any(phrase in texto_lower for phrase in [
+        "quer adicionar mais", "adicionar mais um", "mostrar mais",
+        "continuar", "próximo", "next", "more products",
+        "mais produtos", "show more", "ver mais"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: MAIS PRODUTOS")
+        return {
+            "nome_ferramenta": "show_more_products",
+            "parametros": {}
+        }
+    
+    # 2. 🛒 COMANDOS DE CARRINHO
+    if any(phrase in texto_lower for phrase in [
+        "limpar carrinho", "esvaziar carrinho", "zerar carrinho",
+        "clear cart", "empty cart"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: LIMPAR CARRINHO")
+        return {
+            "nome_ferramenta": "clear_cart", 
+            "parametros": {}
+        }
+    
+    if any(phrase in texto_lower for phrase in [
+        "ver carrinho", "mostrar carrinho", "visualizar carrinho",
+        "view cart", "show cart"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: VER CARRINHO")
+        return {
+            "nome_ferramenta": "view_cart",
+            "parametros": {}
+        }
+    
+    # 3. 🔍 BUSCA DE PRODUTOS
+    if any(phrase in texto_lower for phrase in [
+        "buscar produto", "procurar produto", "search product",
+        "busca inteligente", "smart search"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: BUSCA PRODUTOS")
+        return {
+            "nome_ferramenta": "smart_search_with_promotions",
+            "parametros": {"search_term": "produtos"}
+        }
+    
+    # 4. ➕ ADICIONAR AO CARRINHO - Detecta seleção numérica
+    numeros_texto = re.findall(r'\b([1-9]|10)\b', texto_lower)
+    if numeros_texto and any(word in texto_lower for word in [
+        "adicionar", "selecionar", "escolher", "add", "select"
+    ]):
+        numero = int(numeros_texto[0])
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ADICIONAR PRODUTO #{numero}")
+        return {
+            "nome_ferramenta": "add_item_to_cart",
+            "parametros": {"index": numero}
+        }
+    
+    # 5. 💰 CHECKOUT/FINALIZAR
+    if any(phrase in texto_lower for phrase in [
+        "finalizar", "checkout", "concluir compra", "fechar pedido"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: CHECKOUT")
+        return {
+            "nome_ferramenta": "checkout",
+            "parametros": {}
+        }
+    
+    # 6. 🏢 BUSCA POR CNPJ
+    cnpj_match = re.search(r'\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b|\b\d{14}\b', texto)
+    if cnpj_match:
+        cnpj = cnpj_match.group()
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: CNPJ {cnpj}")
+        return {
+            "nome_ferramenta": "find_customer_by_cnpj",
+            "parametros": {"cnpj": cnpj}
+        }
+    
+    # 7. 📦 PRODUTOS POPULARES
+    if any(phrase in texto_lower for phrase in [
+        "produtos populares", "mais vendidos", "top produtos",
+        "popular products", "best sellers"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: PRODUTOS POPULARES")
+        return {
+            "nome_ferramenta": "get_top_selling_products",
+            "parametros": {}
+        }
+    
+    # 8. 🔄 ATUALIZAÇÃO DE CARRINHO - Detecta modificações
+    if any(phrase in texto_lower for phrase in [
+        "adiciona mais", "coloca mais", "aumentar", "diminuir",
+        "alterar quantidade", "mudar quantidade"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ATUALIZAR CARRINHO")
+        return {
+            "nome_ferramenta": "smart_cart_update",
+            "parametros": {}
+        }
+    
+    # 9. 👋 SAUDAÇÕES
+    if any(phrase in texto_lower for phrase in [
+        "olá", "oi", "boa tarde", "bom dia", "hello", "hi"
+    ]):
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: SAUDAÇÃO")
+        return {
+            "nome_ferramenta": "handle_chitchat",
+            "parametros": {
+                "response_text": "GENERATE_GREETING"
+            }
+        }
+    
+    # 🗣️ FALLBACK: Conversa livre (quando nada específico foi detectado)
+    print(f">>> 🧠 [LEITOR_DE_MENTES] 💬 Fallback: CONVERSA LIVRE")
+    return {
+        "nome_ferramenta": "handle_chitchat",
+        "parametros": {
+            "response_text": texto.strip()
         }
     }
