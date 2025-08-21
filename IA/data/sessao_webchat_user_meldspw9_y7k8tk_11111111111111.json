@@ -100,7 +100,7 @@
   "customer_context": {
     "cnpj": "11111111111111"
   },
-  "shopping_cart": [],
+  "carrinho_compras": [],
   "last_search_type": "smart_search",
   "last_search_params": {
     "search_term": "produtos",
