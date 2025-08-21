@@ -345,10 +345,10 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
     context = {
         "has_cart_items": len(session_data.get("carrinho_compras", [])) > 0,
         "cart_count": len(session_data.get("carrinho_compras", [])),
-        "has_pending_products": len(session_data.get("last_shown_products", [])) > 0,
-        "last_action": session_data.get("last_bot_action", ""),
-        "customer_identified": bool(session_data.get("customer_context")),
-        "recent_search": session_data.get("last_kb_search_term"),
+        "has_pending_products": len(session_data.get("ultimos_produtos_mostrados", [])) > 0,
+        "last_action": session_data.get("ultima_acao_bot", ""),
+        "customer_identified": bool(session_data.get("contexto_cliente")),
+        "recent_search": session_data.get("ultimo_termo_busca_kb"),
         "numeric_selection": extract_numeric_selection(user_message),
         "inferred_quantity": detect_quantity_keywords(user_message),
         "historico_conversa": session_data.get("historico_conversa", [])
@@ -619,7 +619,7 @@ def get_intent(
 
         # Produtos disponíveis para seleção
         products_info = ""
-        last_shown = session_data.get("last_shown_products", [])
+        last_shown = session_data.get("ultimos_produtos_mostrados", [])
         if last_shown and enhanced_context.get("numeric_selection"):
             products_info = f"PRODUTOS MOSTRADOS RECENTEMENTE: {len(last_shown)} opções disponíveis para seleção numérica"
 
