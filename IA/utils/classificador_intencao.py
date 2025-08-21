@@ -29,7 +29,7 @@ _cache_semantico = {}  # Cache por similaridade semântica
 _palavras_chave_cache = {
     "carrinho": ["carrinho", "meu carrinho", "pedido", "itens", "cesta"],
     "cerveja": ["cerveja", "cerva", "skol", "heineken", "brahma", "antartica"],
-    "finalizar": ["finalizar", "checkout", "comprar", "fechar pedido", "concluir"],
+    "finalizar_pedido": ["finalizar", "comprar", "fechar pedido", "concluir"],
     "limpar": ["limpar", "esvaziar", "zerar", "apagar", "cancelar"],
     "mais": ["mais", "continuar", "próximos", "outros", "mostrar mais"],
     "numeros": [str(i) for i in range(1, 21)]  # Números de 1 a 20
@@ -78,8 +78,8 @@ def _salvar_cache_semantico(mensagem: str, resultado: Dict):
     elif ferramenta == "busca_inteligente_com_promocoes":
         if any(palavra in mensagem_lower for palavra in ["cerveja", "skol", "heineken"]):
             _cache_semantico["categoria_cerveja"] = resultado.copy()
-    elif ferramenta == "checkout":
-        _cache_semantico["categoria_finalizar"] = resultado.copy()
+    elif ferramenta == "finalizar_pedido":
+        _cache_semantico["categoria_finalizar_pedido"] = resultado.copy()
     elif ferramenta == "limpar_carrinho":
         _cache_semantico["categoria_limpar"] = resultado.copy()
     elif ferramenta == "show_more_products":
@@ -137,7 +137,7 @@ FERRAMENTAS DISPONÍVEIS:
 - visualizar_carrinho (para "carrinho", "itens")
 - busca_inteligente_com_promocoes (para buscar produtos)
 - adicionar_item_ao_carrinho (para números: 1,2,3...)
-- checkout (para "finalizar", "comprar")
+  - finalizar_pedido (para "finalizar", "comprar")
 - limpar_carrinho (para "limpar", "esvaziar")
 - show_more_products (para "mais")
 
@@ -220,10 +220,10 @@ def _tentar_patterns_ia(mensagem: str, contexto: str) -> Optional[Dict]:
             "parametros": {}
         }
     
-    elif any(palavra in mensagem_lower for palavra in ["finalizar", "checkout", "comprar"]):
+    elif any(palavra in mensagem_lower for palavra in ["finalizar", "comprar", "fechar pedido"]):
         return {
-            "nome_ferramenta": "checkout",
-            "parametros": {}
+            "nome_ferramenta": "finalizar_pedido",
+            "parametros": {},
         }
     
     elif any(palavra in mensagem_lower for palavra in ["limpar", "esvaziar", "zerar"]):
@@ -298,7 +298,7 @@ FERRAMENTAS DISPONÍVEIS:
 6. limpar_carrinho - Para limpar carrinho
 7. adicionar_item_ao_carrinho - Para selecionar item por número
 8. show_more_products - Para mostrar mais produtos da mesma busca (palavra: mais)
-9. checkout - Para finalizar pedido (palavras: finalizar, checkout, comprar)
+9. finalizar_pedido - Para finalizar pedido (palavras: finalizar, comprar)
 10. handle_chitchat - Para saudações e conversas que resetam estado  
 11. lidar_conversa - Para conversas gerais que mantêm contexto
 
@@ -348,10 +348,9 @@ OUTROS EXEMPLOS:
 - "adicionar 2 skol" → atualizacao_inteligente_carrinho (adicionar produto com quantidade)
 - "remover 1 skol" → atualizacao_inteligente_carrinho (remover produto com quantidade)
 - "tirar cerveja" → atualizacao_inteligente_carrinho (remover produto do carrinho)
-- "finalizar" → checkout (finalizar pedido)
-- "finalizar pedido" → checkout (finalizar pedido)
-- "checkout" → checkout (finalizar pedido)
-- "comprar" → checkout (finalizar pedido)
+    - "finalizar" → finalizar_pedido (finalizar pedido)
+    - "finalizar pedido" → finalizar_pedido (finalizar pedido)
+    - "comprar" → finalizar_pedido (finalizar pedido)
 
 ATENÇÃO: Qualquer nome que pareça ser uma marca comercial deve usar busca_inteligente_com_promocoes!
 
@@ -414,7 +413,7 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                 "limpar_carrinho", 
                 "adicionar_item_ao_carrinho",
                 "show_more_products",
-                "checkout",
+                "finalizar_pedido",
                 "handle_chitchat",
                 "lidar_conversa"
             ]
@@ -550,10 +549,9 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
         # SEGUNDO: Verifica se é resposta à opção de finalizar pedido
         elif ("Finalizar Pedido" in conversation_context and user_message.strip() == "1"):
             return _add_confidence_to_intent({
-                "nome_ferramenta": "checkout",
-                "parametros": {}
+                "nome_ferramenta": "finalizar_pedido",
+                "parametros": {},
             })
-        # TERCEIRO: Se não é finalizar pedido nem atualização, é seleção de produto da lista
         else:
             return _add_confidence_to_intent({
                 "nome_ferramenta": "adicionar_item_ao_carrinho", 
@@ -590,10 +588,10 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
         })
     
     # SEGUNDA PRIORIDADE: Comandos de finalização de pedido (PRIORIDADE ALTA - limpa estado pendente)
-    if any(word in message_lower for word in ['finalizar', 'checkout', 'concluir', 'fechar pedido', 'comprar']):
+    if any(word in message_lower for word in ['finalizar', 'concluir', 'fechar pedido', 'comprar', 'finalizar pedido']):
         return _add_confidence_to_intent({
-            "nome_ferramenta": "checkout",
-            "parametros": {"force_checkout": True}  # Força checkout independente do estado
+            "nome_ferramenta": "finalizar_pedido",
+            "parametros": {"force_finalizar_pedido": True}  # Força finalização independente do estado
         })
     
     # TERCEIRA PRIORIDADE: Comandos de limpeza de carrinho
@@ -753,7 +751,7 @@ class IntentConfidenceSystem:
             "limpar_carrinho": 0.95,
             "adicionar_item_ao_carrinho": 0.90,
             "show_more_products": 0.85,
-            "checkout": 0.70,
+            "finalizar_pedido": 0.70,
             "handle_chitchat": 0.90,
             "lidar_conversa": 0.85
         }
@@ -835,8 +833,8 @@ class IntentConfidenceSystem:
             if tool_name in ["visualizar_carrinho", "atualizacao_inteligente_carrinho", "limpar_carrinho"]:
                 return 0.9   # Alta confiança para ações de carrinho
         
-        if "finalizar" in context.lower() or "checkout" in context.lower():
-            if tool_name == "checkout":
+        if "finalizar" in context.lower() or "finalizar_pedido" in context.lower():
+            if tool_name == "finalizar_pedido":
                 return 0.95  # Alta confiança para finalização
         
         return 0.75  # Confiança média por padrão
@@ -913,7 +911,7 @@ class IntentConfidenceSystem:
         high_confidence_patterns = {
             "visualizar_carrinho": ["carrinho", "meu carrinho", "ver carrinho"],
             "limpar_carrinho": ["limpar", "esvaziar", "zerar", "apagar"],
-            "checkout": ["finalizar", "checkout", "comprar", "fechar pedido"],
+            "finalizar_pedido": ["finalizar", "comprar", "fechar pedido"],
             "adicionar_item_ao_carrinho": [r'^\d+$'],  # Números isolados
             "show_more_products": ["mais", "continuar", "próximos"],
             "handle_chitchat": ["oi", "olá", "bom dia", "boa tarde", "obrigado"]
@@ -1008,12 +1006,12 @@ class SmartParameterValidator:
                 "optional": {},
                 "validations": {}
             },
-            "checkout": {
+            "finalizar_pedido": {
                 "required": [],
-                "optional": ["cnpj", "force_checkout"],
+                "optional": ["cnpj", "force_finalizar_pedido"],
                 "validations": {
                     "cnpj": {"type": str, "pattern": r"^\d{14}$"},
-                    "force_checkout": {"type": bool}
+                    "force_finalizar_pedido": {"type": bool}
                 }
             },
             "handle_chitchat": {
@@ -1278,7 +1276,7 @@ class SmartParameterValidator:
             if not isinstance(indice, int) or indice < 1:
                 critical_errors.append("Índice inválido para seleção")
         
-        elif tool_name == "checkout":
+        elif tool_name == "finalizar_pedido":
             cnpj = parametros.get("cnpj")
             if cnpj and len(str(cnpj).replace("-", "").replace(".", "").replace("/", "")) != 14:
                 critical_errors.append("CNPJ inválido")
@@ -1594,7 +1592,7 @@ class IntelligentContextManager:
         
         # Palavras-chave por relevância contextual
         self._relevance_keywords = {
-            "high_priority": ["carrinho", "finalizar", "checkout", "pedido", "comprar"],
+            "high_priority": ["carrinho", "finalizar", "finalizar pedido", "pedido", "comprar"],
             "medium_priority": ["produto", "buscar", "mostrar", "adicionar", "remover"],
             "low_priority": ["olá", "obrigado", "tchau", "como", "vai"]
         }
@@ -1731,7 +1729,7 @@ class IntelligentContextManager:
             if "produto" in msg_text and any(word in current_lower for word in ["adicionar", "carrinho", "comprar"]):
                 relevance_score += 0.4
             
-            if "carrinho" in msg_text and any(word in current_lower for word in ["finalizar", "checkout", "ver"]):
+            if "carrinho" in msg_text and any(word in current_lower for word in ["finalizar", "finalizar pedido", "ver"]):
                 relevance_score += 0.4
             
             # 4. Relevância por números (seleções de produtos)
@@ -1785,7 +1783,7 @@ class IntelligentContextManager:
         if "carrinho" in normalized: key_patterns.append("cart")
         if "produto" in normalized: key_patterns.append("product")
         if "busca" in normalized: key_patterns.append("search")
-        if "finalizar" in normalized: key_patterns.append("checkout")
+        if "finalizar" in normalized: key_patterns.append("finalizar_pedido")
         if "N" in normalized: key_patterns.append("selection")
         
         return "_".join(sorted(key_patterns)) if key_patterns else normalized[:20]
@@ -2018,7 +2016,7 @@ class IntelligentContextManager:
                 "adicionar_item_ao_carrinho": "selecting_products",
                 "visualizar_carrinho": "reviewing_cart",
                 "atualizacao_inteligente_carrinho": "modifying_cart",
-                "checkout": "finalizing_purchase",
+                "finalizar_pedido": "finalizing_purchase",
                 "handle_chitchat": "greeting",
                 "lidar_conversa": "general_conversation"
             }
