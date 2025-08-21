@@ -79,6 +79,60 @@
       "message": "*🎯 Produtos Produtos encontrados:*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n    ",
       "timestamp": "2025-08-21T13:04:37.363272",
       "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "Oi",
+      "timestamp": "2025-08-21T17:22:08.513537",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Vamos focar no listagem_produtos. \n\n📦 *Escolha um produto da lista:*\n*1.* BEB.CHOPP BLACK SKULL MARULA\n*2.* BEB.CHOPP BLACK SKULL VINHO\n*3.* BEB.CHOPP DE VIN.DRAFT \n*4.* BEB.CHOPP DE VIN.DRAFT LT\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n*9.* BEB.CHOPP DE WHISK DRAFT \n*10.* BEB.CHOPP ICE DRAFT \n*11.* CERVEJA AMSTEL GFA\n*12.* CERVEJA AMSTEL LT\n*13.* CERVEJA AMSTEL LT\n*14.* CERVEJA AMSTEL P.MALTE GFA\n",
+      "timestamp": "2025-08-21T17:22:17.315051",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Vamos focar no listagem_produtos. \n\n📦 *Escolha um produto da lista:*\n*1.* BEB.CHOPP BLACK SKULL MARULA\n*2.* BEB.CHOPP BLACK SKULL VINHO\n*3.* BEB.CHOPP DE VIN.DRAFT \n*4.* BEB.CHOPP DE VIN.DRAFT LT\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n*9.* BEB.CHOPP DE WHISK DRAFT \n*10.* BEB.CHOPP ICE DRAFT \n*11.* CERVEJA AMSTEL GFA\n*12.* CERVEJA AMSTEL LT\n*13.* CERVEJA AMSTEL LT\n*14.* CERVEJA AMSTEL P.MALTE GFA\n",
+      "timestamp": "2025-08-21T17:22:17.318721",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "oio",
+      "timestamp": "2025-08-21T17:24:48.263171",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Vamos focar no listagem_produtos. \n\n📦 *Escolha um produto da lista:*\n*1.* BEB.CHOPP BLACK SKULL MARULA\n*2.* BEB.CHOPP BLACK SKULL VINHO\n*3.* BEB.CHOPP DE VIN.DRAFT \n*4.* BEB.CHOPP DE VIN.DRAFT LT\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n*9.* BEB.CHOPP DE WHISK DRAFT \n*10.* BEB.CHOPP ICE DRAFT \n*11.* CERVEJA AMSTEL GFA\n*12.* CERVEJA AMSTEL LT\n*13.* CERVEJA AMSTEL LT\n*14.* CERVEJA AMSTEL P.MALTE GFA\n",
+      "timestamp": "2025-08-21T17:24:50.501512",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Vamos focar no listagem_produtos. \n\n📦 *Escolha um produto da lista:*\n*1.* BEB.CHOPP BLACK SKULL MARULA\n*2.* BEB.CHOPP BLACK SKULL VINHO\n*3.* BEB.CHOPP DE VIN.DRAFT \n*4.* BEB.CHOPP DE VIN.DRAFT LT\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n*9.* BEB.CHOPP DE WHISK DRAFT \n*10.* BEB.CHOPP ICE DRAFT \n*11.* CERVEJA AMSTEL GFA\n*12.* CERVEJA AMSTEL LT\n*13.* CERVEJA AMSTEL LT\n*14.* CERVEJA AMSTEL P.MALTE GFA\n",
+      "timestamp": "2025-08-21T17:24:50.506035",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "fini",
+      "timestamp": "2025-08-21T17:24:55.989342",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "O que você gostaria de saber? Quer começar a procurar algo ou precisou de ajuda com o site?",
+      "timestamp": "2025-08-21T17:25:02.966079",
+      "action_type": "FALLBACK"
+    },
+    {
+      "role": "assistant",
+      "message": "O que você gostaria de saber? Quer começar a procurar algo ou precisou de ajuda com o site?",
+      "timestamp": "2025-08-21T17:25:02.970232",
+      "action_type": "BOT_RESPONSE"
     }
   ],
   "resumo_conversa": "",
@@ -95,7 +149,7 @@
   "ultima_analise_busca": {},
   "ultimas_sugestoes_busca": [],
   "criado_em": "2025-08-21T12:32:12.222750",
-  "ultima_atividade": "2025-08-21T13:04:37.363982",
+  "ultima_atividade": "2025-08-21T17:25:02.971199",
   "validated_cnpj": "11111111111111",
   "customer_context": {
     "cnpj": "11111111111111"
@@ -447,7 +501,7 @@
     }
   ],
   "last_bot_action": "AWAITING_PRODUCT_SELECTION",
-  "pending_action": null,
+  "pending_action": "show_top_selling",
   "last_kb_search_term": null,
   "estatisticas_sessao": {
     "itens_carrinho": 0,

@@ -1,5 +1,8 @@
-# file: IA/db/database.py
-import os, sys
+# arquivo: IA/db/database.py
+"""Módulo de acesso ao banco de dados com segurança aprimorada"""
+
+import os
+import sys
 from pathlib import Path
 import logging
 import psycopg2
@@ -10,22 +13,61 @@ import time
 import decimal
 
 # Adiciona utils ao path se não estiver
-utils_path = Path(__file__).resolve().parent.parent / "utils"
-if str(utils_path) not in sys.path:
-    sys.path.insert(0, str(utils_path))
+caminho_utils = Path(__file__).resolve().parent.parent / "utils"
+if str(caminho_utils) not in sys.path:
+    sys.path.insert(0, str(caminho_utils))
 
 from busca_aproximada import busca_aproximada_produtos, MotorBuscaAproximada
 from gav_logger import obter_logger, log_database_query, log_error, log_warning, log_info, log_debug
 
-load_dotenv(dotenv_path='.env') # Garante que o .env da pasta IA seja lido
+load_dotenv(dotenv_path='.env')  # Garante que o .env da pasta IA seja lido
 
+def validar_configuracao_banco():
+    """Valida configuração crítica do banco no startup"""
+    variaveis_obrigatorias = {
+        "DB_NAME": "Nome do banco de dados",
+        "DB_USERNAME": "Usuário do banco",
+        "DB_PASSWORD": "Senha do banco", 
+        "DB_HOST": "Host do banco",
+        "DB_PORT": "Porta do banco"
+    }
+    
+    variaveis_ausentes = []
+    for nome_var, descricao in variaveis_obrigatorias.items():
+        if not os.getenv(nome_var):
+            variaveis_ausentes.append(f"{nome_var} ({descricao})")
+    
+    if variaveis_ausentes:
+        raise ValueError(f"Variáveis de ambiente obrigatórias ausentes:\n" + 
+                        "\n".join(f"- {var}" for var in variaveis_ausentes))
+
+def obter_url_banco_segura():
+    """Constrói URL do banco sem expor credenciais"""
+    validar_configuracao_banco()
+    
+    variaveis_necessarias = {
+        'dbname': os.getenv("DB_NAME"),
+        'user': os.getenv("DB_USERNAME"),
+        'password': os.getenv("DB_PASSWORD"),
+        'host': os.getenv("DB_HOST"),
+        'port': os.getenv("DB_PORT")
+    }
+    
+    # Constrói URL sem logging das credenciais
+    return " ".join([f"{k}='{v}'" for k, v in variaveis_necessarias.items()])
+
+# Variáveis de configuração
 NOME_BANCO = os.getenv("DB_NAME")
 USUARIO_BANCO = os.getenv("DB_USERNAME")
 SENHA_BANCO = os.getenv("DB_PASSWORD")
 HOST_BANCO = os.getenv("DB_HOST")
 PORTA_BANCO = os.getenv("DB_PORT")
 
-URL_BANCO_DADOS = f"dbname='{NOME_BANCO}' user='{USUARIO_BANCO}' password='{SENHA_BANCO}' host='{HOST_BANCO}' port='{PORTA_BANCO}'"
+try:
+    URL_BANCO_DADOS = obter_url_banco_segura()
+except ValueError as e:
+    logging.error(f"Erro na configuração do banco: {e}")
+    raise
 
 def obter_conexao():
     """Estabelece uma conexão com o PostgreSQL, com uma lógica de retry.
@@ -1209,3 +1251,120 @@ def obter_promocoes_mais_baratas(limite: int = 10, offset: int = 0) -> List[Dict
     except Exception as e:
         logging.error(f"Erro ao buscar promoções mais baratas: {e}")
         return []
+
+# ===== FUNÇÕES DE MANUTENÇÃO AUTOMÁTICA =====
+
+def iniciar_manutencao_automatica():
+    """Inicia tarefas de manutenção automática do banco"""
+    try:
+        # Limpeza semanal de estatísticas antigas
+        schedule.every().sunday.at("02:00").do(limpar_estatisticas_antigas)
+        
+        # Otimização diária do banco
+        schedule.every().day.at("03:00").do(otimizar_banco_dados)
+        
+        # Validação de promoções diária
+        schedule.every().day.at("01:00").do(validar_datas_promocionais)
+        
+        # Diagnósticos semanais
+        schedule.every().monday.at("04:00").do(executar_diagnosticos_banco_dados)
+        
+        def executar_agendador():
+            """Executa o agendador em thread separada"""
+            while True:
+                try:
+                    schedule.run_pending()
+                    time.sleep(3600)  # Verifica a cada hora
+                except Exception as e:
+                    logging.error(f"Erro no agendador de manutenção: {e}")
+                    time.sleep(3600)  # Continua tentando após erro
+        
+        thread_agendador = threading.Thread(target=executar_agendador, daemon=True)
+        thread_agendador.start()
+        
+        logging.info("Sistema de manutenção automática do banco iniciado com sucesso")
+        return True
+        
+    except Exception as e:
+        logging.error(f"Erro ao iniciar manutenção automática: {e}")
+        return False
+
+def executar_manutencao_completa():
+    """Executa manutenção completa do banco de dados"""
+    logging.info("Iniciando manutenção completa do banco de dados")
+    
+    resultados = {
+        "limpeza_estatisticas": False,
+        "otimizacao_banco": False, 
+        "validacao_promocoes": False,
+        "diagnosticos": None
+    }
+    
+    try:
+        # 1. Limpeza de estatísticas antigas
+        estatisticas_removidas = limpar_estatisticas_antigas()
+        if estatisticas_removidas >= 0:
+            resultados["limpeza_estatisticas"] = True
+            logging.info(f"Limpeza concluída: {estatisticas_removidas} registros removidos")
+        
+        # 2. Otimização do banco
+        resultados["otimizacao_banco"] = otimizar_banco_dados()
+        if resultados["otimizacao_banco"]:
+            logging.info("Otimização do banco concluída")
+        
+        # 3. Validação de promoções
+        validacao_resultado = validar_datas_promocionais()
+        if not validacao_resultado.get("error"):
+            resultados["validacao_promocoes"] = True
+            logging.info("Validação de promoções concluída")
+        
+        # 4. Diagnósticos
+        resultados["diagnosticos"] = executar_diagnosticos_banco_dados()
+        
+        logging.info(f"Manutenção completa finalizada: {resultados}")
+        return resultados
+        
+    except Exception as e:
+        logging.error(f"Erro durante manutenção completa: {e}")
+        return resultados
+
+def verificar_saude_sistema():
+    """Verifica saúde geral do sistema de banco de dados"""
+    try:
+        saude = obter_saude_banco_dados()
+        
+        # Critérios de saúde
+        problemas = []
+        
+        if not saude.get("conexao_ok"):
+            problemas.append("Conexão com banco falhou")
+        
+        if saude.get("total_produtos", 0) < 10:
+            problemas.append("Poucos produtos no banco")
+        
+        if saude.get("buscas_recentes", 0) == 0:
+            problemas.append("Nenhuma busca recente registrada")
+        
+        status = "SAUDÁVEL" if not problemas else "COM PROBLEMAS"
+        
+        resultado = {
+            "status": status,
+            "problemas": problemas,
+            "metricas": saude,
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        if problemas:
+            logging.warning(f"Problemas de saúde detectados: {problemas}")
+        else:
+            logging.info("Sistema de banco de dados saudável")
+        
+        return resultado
+        
+    except Exception as e:
+        logging.error(f"Erro ao verificar saúde do sistema: {e}")
+        return {
+            "status": "ERRO",
+            "problemas": [f"Falha na verificação: {str(e)}"],
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        }

@@ -1,0 +1,84 @@
+{
+  "contexto_cliente": null,
+  "carrinho_compras": [],
+  "historico_conversa": [
+    {
+      "role": "assistant",
+      "message": "✅ *CNPJ validado com sucesso!*\n\n🎉 Bem-vindo à *Comercial Esperança*!\nAgora posso te ajudar com seus pedidos de forma personalizada.\n\n🔍 Digite o nome do produto que deseja\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T17:23:02.315464",
+      "action_type": "CNPJ_VALIDATED"
+    },
+    {
+      "role": "user",
+      "message": "?",
+      "timestamp": "2025-08-21T17:23:14.933400",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Não consegui entender direito o que você quis dizer. Pode me explicar de novo?",
+      "timestamp": "2025-08-21T17:23:19.276885",
+      "action_type": "FALLBACK"
+    },
+    {
+      "role": "assistant",
+      "message": "Não consegui entender direito o que você quis dizer. Pode me explicar de novo?",
+      "timestamp": "2025-08-21T17:23:19.280920",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "ajuda",
+      "timestamp": "2025-08-21T17:23:32.699989",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Não consegui entender direito o que você quis dizer. Pode me explicar de novo?",
+      "timestamp": "2025-08-21T17:23:36.882889",
+      "action_type": "FALLBACK"
+    },
+    {
+      "role": "assistant",
+      "message": "Não consegui entender direito o que você quis dizer. Pode me explicar de novo?",
+      "timestamp": "2025-08-21T17:23:36.885040",
+      "action_type": "BOT_RESPONSE"
+    }
+  ],
+  "resumo_conversa": "",
+  "ultimo_tipo_busca": null,
+  "ultimos_parametros_busca": {},
+  "offset_atual": 0,
+  "ultimos_produtos_mostrados": [],
+  "ultima_acao_bot": null,
+  "acao_pendente": null,
+  "selecao_produto_pendente": null,
+  "quantidade_pendente": null,
+  "ultimo_termo_busca_kb": null,
+  "ultimos_resultados_busca": [],
+  "ultima_analise_busca": {},
+  "ultimas_sugestoes_busca": [],
+  "criado_em": "2025-08-21T17:23:02.300367",
+  "ultima_atividade": "2025-08-21T17:23:36.885727",
+  "validated_cnpj": "12345678000195",
+  "customer_context": {
+    "cnpj": "12345678000195"
+  },
+  "shopping_cart": [],
+  "last_search_type": null,
+  "last_search_params": {},
+  "current_offset": 0,
+  "last_shown_products": [],
+  "last_bot_action": null,
+  "pending_action": "show_top_selling",
+  "last_kb_search_term": null,
+  "estatisticas_sessao": {
+    "itens_carrinho": 0,
+    "tamanho_conversa": 0,
+    "cliente_identificado": true,
+    "ultima_acao": null,
+    "tem_selecao_pendente": false,
+    "tem_quantidade_pendente": false,
+    "valor_total_carrinho": 0.0
+  }
+}

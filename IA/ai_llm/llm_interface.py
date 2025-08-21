@@ -1,8 +1,8 @@
-# file: IA/ai_llm/llm_interface.py
+# arquivo: IA/ai_llm/interface_llm.py
 """
 Interface LLM - Comunicação com Modelo de Linguagem
 Otimizado para respostas rápidas e fallback inteligente
-VERSÃO CORRIGIDA: Melhora detecção de CNPJ e comandos de carrinho
+VERSÃO CORRIGIDA: Traduzida para português e com correções de bugs
 """
 
 import os
@@ -13,20 +13,76 @@ import re
 from typing import Union, Dict, List
 import time
 
-
 from core.gerenciador_sessao import obter_contexto_conversa
 from utils.extrator_quantidade import detectar_modificadores_quantidade
 from utils.analisador_resposta import extrair_json_da_resposta_ia
 from utils.classificador_intencao import detectar_intencao_usuario_com_ia, detectar_intencao_com_sistemas_criticos
 
-def check_ollama_connection() -> bool:
+# --- Configurações Globais (MOVIDAS PARA ANTES DAS FUNÇÕES) ---
+NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
+HOST_OLLAMA = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+USAR_FALLBACK_IA = os.getenv("USE_AI_FALLBACK", "true").lower() == "true"
+TIMEOUT_IA = int(os.getenv("AI_TIMEOUT", "5"))  # Timeout em segundos
+AMBIENTE = os.getenv("ENVIRONMENT", "production")
+
+FERRAMENTAS_DISPONIVEIS = [
+    "encontrar_cliente_por_cnpj",
+    "obter_produtos_mais_vendidos", 
+    "obter_produtos_mais_vendidos_por_nome",
+    "adicionar_item_ao_carrinho",
+    "atualizar_item_carrinho",
+    "visualizar_carrinho",
+    "finalizar_pedido",
+    "lidar_com_conversa_casual",
+    "iniciar_novo_pedido",
+    "mostrar_mais_produtos",
+    "reportar_produto_incorreto",
+    "perguntar_continuar_ou_finalizar",
+    "limpar_carrinho",
+    "atualizar_carrinho_inteligente",
+    "busca_inteligente_com_promocoes"
+]
+
+# Cache do prompt para evitar leitura repetida do arquivo
+_cache_prompt = None
+_tempo_cache_prompt = 0
+
+def validar_configuracao():
+    """Valida configuração crítica no startup"""
+    variaveis_obrigatorias = {
+        "OLLAMA_HOST": "Host do Ollama",
+        "OLLAMA_MODEL_NAME": "Nome do modelo Ollama"
+    }
+    
+    variaveis_ausentes = []
+    for nome_var, descricao in variaveis_obrigatorias.items():
+        if not os.getenv(nome_var):
+            variaveis_ausentes.append(f"{nome_var} ({descricao})")
+    
+    if variaveis_ausentes:
+        raise ValueError(f"Variáveis de ambiente obrigatórias ausentes:\n" + 
+                        "\n".join(f"- {var}" for var in variaveis_ausentes))
+
+def obter_cnpjs_teste() -> List[str]:
+    """Obtém CNPJs de teste apenas em ambiente de desenvolvimento"""
+    if AMBIENTE == "development":
+        return [
+            "11222333000181",  # CNPJ de teste válido
+            "12345678910203",  # CNPJ usado nos testes
+            "12365562103231",  # CNPJ usado nos logs
+            "11111111111111",  # Para testes simples 
+            "12345678000195"   # Outro CNPJ de teste
+        ]
+    return []  # Produção: sem CNPJs de teste
+
+def verificar_conexao_ollama() -> bool:
     """Verifica se o Ollama está disponível e funcionando"""
     logging.debug("Verificando a conexão com o Ollama.")
     try:
-        client = ollama.Client(host=OLLAMA_HOST)
+        cliente = ollama.Client(host=HOST_OLLAMA)
         # Tenta fazer uma chamada simples para verificar conectividade
-        response = client.chat(
-            model=OLLAMA_MODEL_NAME,
+        resposta = cliente.chat(
+            model=NOME_MODELO_OLLAMA,
             messages=[{"role": "user", "content": "test"}],
             options={"num_predict": 1}
         )
@@ -35,34 +91,6 @@ def check_ollama_connection() -> bool:
     except Exception as e:
         logging.warning(f"Ollama não disponível: {e}")
         return False
-
-# --- Configurações Globais ---
-OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
-USE_AI_FALLBACK = os.getenv("USE_AI_FALLBACK", "true").lower() == "true"
-AI_TIMEOUT = int(os.getenv("AI_TIMEOUT", "5"))  # Timeout em segundos
-
-AVAILABLE_TOOLS = [
-    "find_customer_by_cnpj",
-    "get_top_selling_products",
-    "get_top_selling_products_by_name",
-    "add_item_to_cart",
-    "update_cart_item",
-    "view_cart",
-    "checkout",
-    "handle_chitchat",
-    "start_new_order",
-    "show_more_products",
-    "report_incorrect_product",
-    "ask_continue_or_checkout",
-    "clear_cart",  # 🆕 ADICIONADO
-    "smart_cart_update",  # 🆕 NOVA FERRAMENTA
-    "smart_search_with_promotions", # ETAPA 4
-]
-
-# Cache do prompt para evitar leitura repetida do arquivo
-_prompt_cache = None
-_prompt_cache_time = 0
 
 
 def is_valid_cnpj(cnpj: str) -> bool:
@@ -130,15 +158,15 @@ def is_valid_cnpj(cnpj: str) -> bool:
         return False
 
 
-def detect_cart_clearing_intent(message: str) -> bool:
+def detectar_intencao_limpar_carrinho(mensagem: str) -> bool:
     """
-    🆕 NOVA FUNÇÃO: Detecta intenção de limpar/esvaziar carrinho.
+    Detecta intenção de limpar/esvaziar carrinho.
     """
-    logging.debug(f"Detectando intenção de limpar carrinho na mensagem: '{message}'")
-    message_lower = message.lower().strip()
+    logging.debug(f"Detectando intenção de limpar carrinho na mensagem: '{mensagem}'")
+    mensagem_minuscula = mensagem.lower().strip()
     
     # Comandos explícitos de limpeza de carrinho
-    clear_commands = [
+    comandos_limpeza = [
         # Comandos diretos
         'esvaziar carrinho', 'limpar carrinho', 'zerar carrinho',
         'resetar carrinho', 'apagar carrinho', 'deletar carrinho',
@@ -156,13 +184,13 @@ def detect_cart_clearing_intent(message: str) -> bool:
     ]
     
     # Verifica comandos exatos
-    for command in clear_commands:
-        if command in message_lower:
-            logging.debug(f"Intenção de limpar carrinho detectada pelo comando: '{command}'")
+    for comando in comandos_limpeza:
+        if comando in mensagem_minuscula:
+            logging.debug(f"Intenção de limpar carrinho detectada pelo comando: '{comando}'")
             return True
     
     # Padrões mais flexíveis
-    clear_patterns = [
+    padroes_limpeza = [
         r'\b(limpar|esvaziar|zerar|apagar|deletar|remover)\s+(o\s+)?carrinho\b',
         r'\b(carrinho|tudo)\s+(limpo|vazio|zerado)\b',
         r'\bcomeca\w*\s+de\s+novo\b',
@@ -170,16 +198,16 @@ def detect_cart_clearing_intent(message: str) -> bool:
         r'\breinicia\w*\s+(carrinho|tudo|compra)\b'
     ]
     
-    for pattern in clear_patterns:
-        if re.search(pattern, message_lower):
-            logging.debug(f"Intenção de limpar carrinho detectada pelo padrão: '{pattern}'")
+    for padrao in padroes_limpeza:
+        if re.search(padrao, mensagem_minuscula):
+            logging.debug(f"Intenção de limpar carrinho detectada pelo padrão: '{padrao}'")
             return True
     
     logging.debug("Nenhuma intenção de limpar carrinho detectada.")
     return False
 
 
-def detect_checkout_context(session_data: Dict) -> Dict:
+def detectar_contexto_checkout(dados_sessao: Dict) -> Dict:
     """
     🆕 NOVA FUNÇÃO: Detecta se estamos em contexto de finalização/checkout.
     """
@@ -191,7 +219,7 @@ def detect_checkout_context(session_data: Dict) -> Dict:
     }
     
     # Verifica histórico recente
-    history = session_data.get('conversation_history', [])
+    history = dados_sessao.get('conversation_history', [])
     
     if not history:
         return context
@@ -337,39 +365,39 @@ def detect_quantity_keywords(message: str) -> Union[float, None]:
     return None
 
 
-def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
+def melhorar_consciencia_contexto(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
     """
     🆕 VERSÃO MELHORADA: Melhora a consciência contextual analisando estado da sessão.
     """
-    logging.debug(f"Aprimorando a consciência de contexto para a mensagem: '{user_message}'")
+    logging.debug(f"Aprimorando a consciência de contexto para a mensagem: '{mensagem_usuario}'")
     context = {
-        "has_cart_items": len(session_data.get("shopping_cart", [])) > 0,
-        "cart_count": len(session_data.get("shopping_cart", [])),
-        "has_pending_products": len(session_data.get("last_shown_products", [])) > 0,
-        "last_action": session_data.get("last_bot_action", ""),
-        "customer_identified": bool(session_data.get("customer_context")),
-        "recent_search": session_data.get("last_kb_search_term"),
-        "numeric_selection": extract_numeric_selection(user_message),
-        "inferred_quantity": detect_quantity_keywords(user_message),
-        "conversation_history": session_data.get("conversation_history", [])
+        "has_cart_items": len(dados_sessao.get("shopping_cart", [])) > 0,
+        "cart_count": len(dados_sessao.get("shopping_cart", [])),
+        "has_pending_products": len(dados_sessao.get("last_shown_products", [])) > 0,
+        "last_action": dados_sessao.get("last_bot_action", ""),
+        "customer_identified": bool(dados_sessao.get("customer_context")),
+        "recent_search": dados_sessao.get("last_kb_search_term"),
+        "numeric_selection": extract_numeric_selection(mensagem_usuario),
+        "inferred_quantity": detect_quantity_keywords(mensagem_usuario),
+        "conversation_history": dados_sessao.get("conversation_history", [])
     }
 
     # 🆕 DETECTA COMANDOS DE LIMPEZA DE CARRINHO
-    context["clear_cart_command"] = detect_cart_clearing_intent(user_message)
+    context["clear_cart_command"] = detect_cart_clearing_intent(mensagem_usuario)
     
     # 🆕 DETECTA CONTEXTO DE CHECKOUT/FINALIZAÇÃO
-    checkout_context = detect_checkout_context(session_data)
+    checkout_context = detect_checkout_context(dados_sessao)
     context.update(checkout_context)
     
     # 🆕 DETECTA SE É UM CNPJ VÁLIDO
-    context["is_valid_cnpj"] = is_valid_cnpj(user_message)
+    context["is_valid_cnpj"] = is_valid_cnpj(mensagem_usuario)
     context["is_cnpj_in_checkout_context"] = (
         context["is_valid_cnpj"] and 
         (context["awaiting_cnpj"] or context["checkout_initiated"])
     )
 
     # Detecta padrões específicos
-    message_lower = user_message.lower().strip()
+    message_lower = mensagem_usuario.lower().strip()
 
     # Comandos diretos de carrinho
     if any(cmd in message_lower for cmd in ["carrinho", "ver carrinho"]):
@@ -384,7 +412,7 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         context["continue_shopping"] = True
         
     context["conversation_context"] = analyze_conversation_context(
-        context["conversation_history"], user_message
+        context["conversation_history"], mensagem_usuario
     )
 
     # Detecta gírias de produtos
@@ -402,7 +430,7 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
             break
 
     # Determina estágio da compra
-    purchase_stage = session_data.get("purchase_stage", "greeting")
+    purchase_stage = dados_sessao.get("purchase_stage", "greeting")
 
     greeting_keywords = [
         "oi",
@@ -447,7 +475,7 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         purchase_stage = "cart"
 
     context["purchase_stage"] = purchase_stage
-    session_data["purchase_stage"] = purchase_stage
+    dados_sessao["purchase_stage"] = purchase_stage
 
     logging.debug(f"Consciência de contexto aprimorada: {context}")
     return context
@@ -500,8 +528,8 @@ def analyze_conversation_context(history: List[Dict], current_message: str) -> D
 
 
 def get_intent(
-    user_message: str,
-    session_data: Dict,
+    mensagem_usuario: str,
+    dados_sessao: Dict,
     customer_context: Union[Dict, None] = None,
     cart_items_count: int = 0,
     prompt_modifier: str = "structured",
@@ -512,18 +540,18 @@ def get_intent(
     """
     try:
         logging.info(
-            f"[llm_interface.py] Iniciando get_intent para mensagem: '{user_message}'"
+            f"[llm_interface.py] Iniciando get_intent para mensagem: '{mensagem_usuario}'"
         )
 
         # 🆕 MELHORA CONSCIÊNCIA CONTEXTUAL
-        enhanced_context = enhance_context_awareness(user_message, session_data)
+        enhanced_context = melhorar_consciencia_contexto(mensagem_usuario, dados_sessao)
         
         # 🆕 PRIORIDADE MÁXIMA: CNPJ em contexto de checkout
         if enhanced_context.get("is_cnpj_in_checkout_context"):
             logging.info("[llm_interface.py] CNPJ detectado em contexto de checkout")
             return {
                 "tool_name": "find_customer_by_cnpj",
-                "parameters": {"cnpj": user_message.strip()}
+                "parameters": {"cnpj": mensagem_usuario.strip()}
             }
         
         # 🆕 PRIORIDADE ALTA: Comandos de limpeza de carrinho
@@ -532,7 +560,7 @@ def get_intent(
             return {"tool_name": "clear_cart", "parameters": {}}
 
         # Para mensagens simples, usa detecção rápida sem IA
-        message_lower = user_message.lower().strip()
+        message_lower = mensagem_usuario.lower().strip()
         
         # 🆕 PRIORIDADE 1: SAUDAÇÕES (antes de qualquer outra verificação)
         greeting_patterns = [
@@ -566,7 +594,7 @@ def get_intent(
                 logging.info(
                     "[llm_interface.py] Mensagem simples detectada, usando fallback rápido"
                 )
-                return create_fallback_intent(user_message, enhanced_context)
+                return criar_intencao_fallback(mensagem_usuario, enhanced_context)
 
         # 🆕 PRIORIDADE 2: BUSCA DIRETA DE PRODUTOS
         product_search_patterns = [
@@ -579,11 +607,11 @@ def get_intent(
         for pattern in product_search_patterns:
             if re.match(pattern, message_lower):
                 logging.info("[llm_interface.py] Busca de produto detectada, usando fallback especializado")
-                return create_fallback_intent(user_message, enhanced_context)
+                return criar_intencao_fallback(mensagem_usuario, enhanced_context)
         
         # Se não for habilitado uso de IA ou for mensagem muito curta, usa fallback
-        if not USE_AI_FALLBACK or len(user_message.strip()) < 3:
-            return create_fallback_intent(user_message, enhanced_context)
+        if not USE_AI_FALLBACK or len(mensagem_usuario.strip()) < 3:
+            return criar_intencao_fallback(mensagem_usuario, enhanced_context)
 
         # Carrega template do prompt
         if prompt_modifier == "direct":
@@ -595,14 +623,14 @@ def get_intent(
         )
 
         # Obtém contexto EXPANDIDO da conversa (14 mensagens para melhor contexto)
-        conversation_context = obter_contexto_conversa(session_data, max_messages=14)
-        print(f">>> CONSOLE: Contexto da conversa com {len(session_data.get('conversation_history', []))} mensagens totais")
+        conversation_context = obter_contexto_conversa(dados_sessao, max_messages=14)
+        print(f">>> CONSOLE: Contexto da conversa com {len(dados_sessao.get('conversation_history', []))} mensagens totais")
 
         # Informações do carrinho
         cart_info = ""
         if cart_items_count > 0:
             cart_info = f"CARRINHO ATUAL: {cart_items_count} itens"
-            cart_items = session_data.get("shopping_cart", [])
+            cart_items = dados_sessao.get("shopping_cart", [])
             if cart_items:
                 cart_info += " ("
                 item_names = []
@@ -619,7 +647,7 @@ def get_intent(
 
         # Produtos disponíveis para seleção
         products_info = ""
-        last_shown = session_data.get("last_shown_products", [])
+        last_shown = dados_sessao.get("last_shown_products", [])
         if last_shown and enhanced_context.get("numeric_selection"):
             products_info = f"PRODUTOS MOSTRADOS RECENTEMENTE: {len(last_shown)} opções disponíveis para seleção numérica"
 
@@ -640,7 +668,7 @@ def get_intent(
         # Constrói contexto completo
         full_context = f"""
 
-MENSAGEM DO USUÁRIO: "{user_message}"
+MENSAGEM DO USUÁRIO: "{mensagem_usuario}"
 
 {special_context}
 
@@ -751,7 +779,7 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
                 print(f"🔍 DEBUG: IA retornou texto em vez de JSON, usando fallback")
                 # Usa fallback quando JSON inválido
                 logging.error(f"[llm_interface.py] Erro ao parsear JSON: {e}")
-                return create_fallback_intent(user_message, enhance_context_awareness(user_message, session_data))
+                return criar_intencao_fallback(mensagem_usuario, melhorar_consciencia_contexto(mensagem_usuario, dados_sessao))
             tool_name = intent_data.get("tool_name", "handle_chitchat")
 
             # Valida se a ferramenta existe
@@ -787,19 +815,19 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
         except (json.JSONDecodeError, ValueError) as e:
             logging.error(f"[llm_interface.py] Erro ao parsear JSON: {e}")
             # Fallback baseado em padrões simples
-            return create_fallback_intent(user_message, enhanced_context)
+            return criar_intencao_fallback(mensagem_usuario, enhanced_context)
 
         except TimeoutError:
             logging.warning(
                 f"[llm_interface.py] Timeout ao chamar LLM após {AI_TIMEOUT}s"
             )
-            return create_fallback_intent(user_message, enhanced_context)
+            return criar_intencao_fallback(mensagem_usuario, enhanced_context)
 
     except Exception as e:
         logging.error(f"[llm_interface.py] Erro geral: {e}", exc_info=True)
         # Usa fallback em caso de erro
-        return create_fallback_intent(
-            user_message, enhance_context_awareness(user_message, session_data)
+        return criar_intencao_fallback(
+            mensagem_usuario, melhorar_consciencia_contexto(mensagem_usuario, dados_sessao)
         )
 
 
@@ -829,245 +857,180 @@ def clean_json_response(content: str) -> str:
     return ""
 
 
-def create_fallback_intent(user_message: str, context: Dict) -> Dict:
+def criar_intencao_fallback(mensagem_usuario: str, contexto: Dict) -> Dict:
     """
-    🆕 VERSÃO CORRIGIDA: Cria intenção de fallback baseada em padrões simples quando LLM falha ou demora.
+    VERSÃO CORRIGIDA: Cria intenção de fallback com lógica hierárquica clara
     """
-    logging.debug(f"Criando intenção de fallback para a mensagem: '{user_message}'")
-    message_lower = user_message.lower().strip()
-    stage = context.get("purchase_stage", "greeting")
+    logging.debug(f"Criando intenção de fallback para a mensagem: '{mensagem_usuario}'")
+    mensagem_minuscula = mensagem_usuario.lower().strip()
+    estagio = contexto.get("estagio_compra", "saudacao")
     
-    # 🔍 DEBUG: Log do estágio detectado
-    print(f"🔍 DEBUG create_fallback_intent: stage='{stage}', message='{user_message}', numeric_selection={context.get('numeric_selection')}")
-    print(f"🔍 DEBUG last_action='{context.get('last_action')}', has_cart_items={context.get('has_cart_items')}")
-
-    # 🆕 PRIORIDADE MÁXIMA: CNPJ em contexto de checkout
-    if context.get("is_cnpj_in_checkout_context"):
+    # ===== PRIORIDADE MÁXIMA: Comandos especiais =====
+    
+    # 1. CNPJ em contexto de checkout
+    if contexto.get("cnpj_em_contexto_checkout"):
         return {
-            "tool_name": "find_customer_by_cnpj",
-            "parameters": {"cnpj": user_message.strip()}
+            "nome_ferramenta": "encontrar_cliente_por_cnpj",
+            "parametros": {"cnpj": mensagem_usuario.strip()}
         }
+    
+    # 2. Comandos de limpeza de carrinho
+    if contexto.get("comando_limpar_carrinho"):
+        return {"nome_ferramenta": "limpar_carrinho", "parametros": {}}
 
-    # 🆕 PRIORIDADE ALTA: Comandos de limpeza de carrinho
-    if context.get("clear_cart_command"):
-        return {"tool_name": "clear_cart", "parameters": {}}
-
-    modifiers = detectar_modificadores_quantidade(message_lower)
-    if modifiers.get("action") == "remove":
-        if context.get("has_cart_items"):
-            return {"tool_name": "update_cart_item", "parameters": {"action": "remove"}}
+    # 3. Detecta modificadores de quantidade UMA VEZ SÓ
+    modificadores = detectar_modificadores_quantidade(mensagem_minuscula)
+    if modificadores.get("action") == "remove":
+        if contexto.get("tem_itens_carrinho"):
+            return {"nome_ferramenta": "atualizar_item_carrinho", "parametros": {"acao": "remover"}}
         return {
-            "tool_name": "handle_chitchat",
-            "parameters": {"response_text": "Seu carrinho está vazio."},
+            "nome_ferramenta": "lidar_com_conversa_casual",
+            "parametros": {"texto_resposta": "Seu carrinho está vazio."},
         }
+    elif modificadores.get("action") == "clear":
+        return {"nome_ferramenta": "limpar_carrinho", "parametros": {}}
 
-    modifiers = detectar_modificadores_quantidade(message_lower)
-    if modifiers.get("action") == "clear":
-        return {"tool_name": "clear_cart", "parameters": {}}
-
-    # 🆕 SELEÇÃO NUMÉRICA NO CONTEXTO DE MENU PRINCIPAL
-    if context.get("numeric_selection"):
-        selection = context.get("numeric_selection")
-        has_cart = context.get("has_cart_items", False)
-        
-        print(f">>> FALLBACK: Seleção numérica {selection}, tem_carrinho={has_cart}")
-        
-        if selection == 1:  # Buscar produtos
-            return {"tool_name": "smart_search_with_promotions", "parameters": {"search_term": "produtos"}}
-        elif selection == 2 and has_cart:  # Ver carrinho (só se tiver carrinho)
-            return {"tool_name": "view_cart", "parameters": {}}
-        elif selection == 3 and has_cart:  # Finalizar pedido (só se tiver carrinho)
-            return {"tool_name": "checkout", "parameters": {}}
-        elif selection == 2 and not has_cart:  # Sem carrinho, busca produtos
-            return {"tool_name": "get_top_selling_products", "parameters": {}}
-        elif selection == 3 and not has_cart:  # Sem carrinho, busca produtos  
-            return {"tool_name": "get_top_selling_products", "parameters": {}}
-
-    # Seleção numérica direta (produtos)
-    if context.get("numeric_selection") and context.get("has_pending_products"):
-        # Assume que o usuário quer adicionar o produto selecionado
+    # ===== PRIORIDADE ALTA: Seleção numérica =====
+    
+    # 4. Seleção numérica para produtos mostrados (PRIORIDADE)
+    if contexto.get("selecao_numerica") and contexto.get("tem_produtos_pendentes"):
         return {
-            "tool_name": "add_item_to_cart",
-            "parameters": {
-                "index": context.get("numeric_selection"),  # 🆕 CORRIGIDO
-                "qt": context.get("inferred_quantity", 1),
+            "nome_ferramenta": "adicionar_item_ao_carrinho",
+            "parametros": {
+                "indice_produto": contexto.get("selecao_numerica"),
+                "quantidade": contexto.get("quantidade_inferida", 1),
             },
         }
+    
+    # 5. Seleção numérica para menu principal (LÓGICA UNIFICADA)
+    if contexto.get("selecao_numerica") and not contexto.get("tem_produtos_pendentes"):
+        selecao = contexto.get("selecao_numerica")
+        tem_carrinho = contexto.get("tem_itens_carrinho", False)
+        
+        if tem_carrinho:
+            # Menu com carrinho: 1=Mais produtos, 2=Ver carrinho, 3=Finalizar
+            if selecao == 1:
+                return {"nome_ferramenta": "obter_produtos_mais_vendidos", "parametros": {}}
+            elif selecao == 2:
+                return {"nome_ferramenta": "visualizar_carrinho", "parametros": {}}
+            elif selecao == 3:
+                return {"nome_ferramenta": "finalizar_pedido", "parametros": {}}
+        else:
+            # Menu sem carrinho: 1=Ver produtos, 2=Populares, 3=Buscar
+            if selecao == 1:
+                return {"nome_ferramenta": "obter_produtos_mais_vendidos", "parametros": {}}
+            elif selecao == 2:
+                return {"nome_ferramenta": "busca_inteligente_com_promocoes", "parametros": {"termo_busca": "populares"}}
+            elif selecao == 3:
+                return {"nome_ferramenta": "lidar_com_conversa_casual", "parametros": {"texto_resposta": "O que você gostaria de buscar?"}}
 
-    # Comandos de carrinho
-    if context.get("direct_cart_command"):
-        return {"tool_name": "view_cart", "parameters": {}}
+    # ===== PRIORIDADE MÉDIA: Comandos diretos =====
+    
+    # 6. Comandos de carrinho
+    if contexto.get("comando_carrinho_direto"):
+        return {"nome_ferramenta": "visualizar_carrinho", "parametros": {}}
+    
+    # 7. Comandos de checkout
+    if contexto.get("comando_checkout_direto"):
+        return {"nome_ferramenta": "finalizar_pedido", "parametros": {}}
+    
+    # 8. Continuar comprando
+    if contexto.get("continuar_compras"):
+        return {"nome_ferramenta": "obter_produtos_mais_vendidos", "parametros": {}}
 
-    # Comandos de checkout
-    if context.get("direct_checkout_command"):
-        return {"tool_name": "checkout", "parameters": {}}
-
-    # Continuar comprando
-    if context.get("continue_shopping"):
-        return {"tool_name": "get_top_selling_products", "parameters": {}}
-
-    # 🆕 BUSCA DE PRODUTOS - DETECÇÃO MELHORADA
-    product_keywords = ["quero", "buscar", "procurar", "produto", "comprar", "preciso", "tem", "vende"]
-    shopping_phrases = ["quero comprar", "quero bala", "quero chocolate", "comprar fini"]
+    # ===== PRIORIDADE NORMAL: Detecção de padrões =====
+    
+    # 9. Saudações (UNIFICADO)
+    saudacoes_exatas = ["oi", "olá", "ola", "e aí", "e ai"]
+    saudacoes_expressao = ["bom dia", "boa tarde", "boa noite"]
+    
+    if (mensagem_minuscula in saudacoes_exatas or 
+        any(saudacao in mensagem_minuscula for saudacao in saudacoes_expressao)):
+        return {
+            "nome_ferramenta": "lidar_com_conversa_casual",
+            "parametros": {"texto_resposta": "GERAR_SAUDACAO"},
+        }
+    
+    # 10. Busca de produtos (MELHORADA)
+    palavras_chave_produto = ["quero", "buscar", "procurar", "produto", "comprar", "preciso", "tem", "vende"]
+    frases_compra = ["quero comprar", "quero bala", "quero chocolate", "comprar fini"]
     
     # Prioridade para frases completas de compra
-    if any(phrase in message_lower for phrase in shopping_phrases):
-        product_name = message_lower
-        for keyword in product_keywords:
-            product_name = product_name.replace(keyword, "").strip()
-        product_name = product_name.replace("comprar", "").strip()
+    if any(frase in mensagem_minuscula for frase in frases_compra):
+        nome_produto = mensagem_minuscula
+        for palavra_chave in palavras_chave_produto:
+            nome_produto = nome_produto.replace(palavra_chave, "").strip()
+        nome_produto = nome_produto.replace("comprar", "").strip()
         
-        if product_name and len(product_name) > 1:
+        if nome_produto and len(nome_produto) > 1:
             return {
-                "tool_name": "get_top_selling_products_by_name", 
-                "parameters": {"product_name": product_name},
+                "nome_ferramenta": "obter_produtos_mais_vendidos_por_nome", 
+                "parametros": {"nome_produto": nome_produto},
             }
     
     # Detecção padrão de busca de produtos
-    if any(keyword in message_lower for keyword in product_keywords):
+    if any(palavra_chave in mensagem_minuscula for palavra_chave in palavras_chave_produto):
         # Extrai nome do produto (remove palavras de comando)
-        product_name = message_lower
-        for keyword in product_keywords + ["comprar"]:
-            product_name = product_name.replace(keyword, "").strip()
+        nome_produto = mensagem_minuscula
+        for palavra_chave in palavras_chave_produto + ["comprar"]:
+            nome_produto = nome_produto.replace(palavra_chave, "").strip()
 
-        if product_name and len(product_name) > 1 and not context.get("is_valid_cnpj"):
+        if nome_produto and len(nome_produto) > 1 and not contexto.get("eh_cnpj_valido"):
             return {
-                "tool_name": "get_top_selling_products_by_name",
-                "parameters": {"product_name": product_name},
+                "nome_ferramenta": "obter_produtos_mais_vendidos_por_nome",
+                "parametros": {"nome_produto": nome_produto},
             }
 
-    # Comandos de produtos populares
-    if any(
-        word in message_lower
-        for word in ["produtos", "mais vendidos", "populares", "top"]
-    ):
-        return {"tool_name": "get_top_selling_products", "parameters": {}}
+    # 11. Comandos de produtos populares
+    if any(palavra in mensagem_minuscula for palavra in ["produtos", "mais vendidos", "populares", "top"]):
+        return {"nome_ferramenta": "obter_produtos_mais_vendidos", "parametros": {}}
 
-    # 🆕 SAUDAÇÕES - PRIORIDADE ALTA (antes de outros padrões)
-    greetings = [
-        "oi",
-        "olá", 
-        "ola",
-        "boa",
-        "bom dia",
-        "boa tarde", 
-        "boa noite",
-        "e aí",
-        "e ai",
-    ]
-    # Detecta saudação simples (palavra sozinha ou com expressões básicas)
-    if (
-        any(greeting == message_lower for greeting in greetings) or 
-        any(greeting in message_lower for greeting in ["bom dia", "boa tarde", "boa noite"]) or
-        message_lower in ["oi", "olá", "ola", "e aí", "e ai"]):
-        
-        # Sempre use handle_chitchat para gerar resposta dinâmica personalizada
-        return {
-            "tool_name": "handle_chitchat",
-            "parameters": {"response_text": "GENERATE_GREETING"},
-        }
-
-    # Ajuda
-    if any(word in message_lower for word in ["ajuda", "help", "como", "funciona"]):
-        if stage == "cart":
-            response_text = "Você pode digitar 'checkout' para finalizar ou informar outro produto para continuar comprando."
-        elif stage == "checkout":
-            response_text = "Para concluir digite 'finalizar'. Se quiser revisar os itens, digite 'carrinho'."
+    # 12. Ajuda
+    if any(palavra in mensagem_minuscula for palavra in ["ajuda", "help", "como", "funciona"]):
+        if estagio == "carrinho":
+            texto_resposta = "Você pode digitar 'checkout' para finalizar ou informar outro produto para continuar comprando."
+        elif estagio == "checkout":
+            texto_resposta = "Para concluir digite 'finalizar'. Se quiser revisar os itens, digite 'carrinho'."
         else:
-            response_text = "Como posso te ajudar? Digite o nome de um produto que você quer buscar, 'carrinho' para ver suas compras, ou 'produtos' para ver os mais vendidos."
+            texto_resposta = "Como posso te ajudar? Digite o nome de um produto que você quer buscar, 'carrinho' para ver suas compras, ou 'produtos' para ver os mais vendidos."
         return {
-            "tool_name": "handle_chitchat",
-            "parameters": {"response_text": response_text},
+            "nome_ferramenta": "lidar_com_conversa_casual",
+            "parametros": {"texto_resposta": texto_resposta},
         }
 
-    # Novo pedido
-    if "novo" in message_lower or "nova" in message_lower:
-        return {"tool_name": "start_new_order", "parameters": {}}
+    # 13. Novo pedido
+    if "novo" in mensagem_minuscula or "nova" in mensagem_minuscula:
+        return {"nome_ferramenta": "iniciar_novo_pedido", "parametros": {}}
 
-    # 🆕 DETECTA COMANDOS DE ATUALIZAÇÃO DE CARRINHO  
-    # Padrão simples e robusto
-    if any(word in message_lower for word in ["adiciona", "coloca", "bota"]) and any(word in message_lower for word in ["mais", "1", "2", "3", "4", "5", "um", "uma", "dois", "duas"]):
-        # Extrai número/quantidade
-        quantity = 1
-        for word in ["1", "2", "3", "4", "5"]:
-            if word in message_lower:
-                quantity = int(word)
-                break
-        
-        quantity_words = {"um": 1, "uma": 1, "dois": 2, "duas": 2, "três": 3, "tres": 3}
-        for word, num in quantity_words.items():
-            if word in message_lower:
-                quantity = num
-                break
-        
-        # Extrai nome do produto (remove palavras de comando)
-        product_name = message_lower
-        for remove_word in ["adiciona", "coloca", "bota", "mais", "1", "2", "3", "4", "5", "um", "uma", "dois", "duas", "três", "tres"]:
-            product_name = product_name.replace(remove_word, "").strip()
-        
+    # ===== FALLBACK FINAL =====
+    
+    # 14. Fallback padrão - tenta buscar o termo completo (EXCETO se for CNPJ)
+    if len(mensagem_minuscula) > 2 and not contexto.get("eh_cnpj_valido"):
         return {
-            "tool_name": "smart_cart_update", 
-            "parameters": {
-                "product_name": product_name,
-                "action": "add",
-                "quantity": quantity
-            }
+            "nome_ferramenta": "obter_produtos_mais_vendidos_por_nome",
+            "parametros": {"nome_produto": mensagem_minuscula},
         }
     
-    # Detecta comandos de remoção
-    if any(word in message_lower for word in ["remove", "tira", "retira"]):
-        quantity = 1
-        for word in ["1", "2", "3", "4", "5"]:
-            if word in message_lower:
-                quantity = int(word)
-                break
-                
-        product_name = message_lower
-        for remove_word in ["remove", "tira", "retira", "1", "2", "3", "4", "5"]:
-            product_name = product_name.replace(remove_word, "").strip()
-            
+    # 15. SE FOR CNPJ MAS NÃO ESTAMOS EM CONTEXTO DE CHECKOUT
+    if contexto.get("eh_cnpj_valido") and not contexto.get("checkout_iniciado"):
         return {
-            "tool_name": "smart_cart_update",
-            "parameters": {
-                "product_name": product_name,
-                "action": "remove", 
-                "quantity": quantity
-            }
+            "nome_ferramenta": "lidar_com_conversa_casual",
+            "parametros": {"texto_resposta": "Identifico que você digitou um CNPJ. Para usá-lo, primeiro adicione itens ao carrinho e depois digite 'finalizar pedido'."},
         }
-
-    # Comando "mais" para ver mais produtos
-    if (
-        "mais" in message_lower
-        and context.get("last_action") == "AWAITING_PRODUCT_SELECTION"
-    ):
-        return {"tool_name": "show_more_products", "parameters": {}}
-
-    # Fallback padrão - tenta buscar o termo completo (EXCETO se for CNPJ)
-    if len(message_lower) > 2 and not context.get("is_valid_cnpj"):
-        return {
-            "tool_name": "get_top_selling_products_by_name",
-            "parameters": {"product_name": message_lower},
-        }
-
-    # 🆕 SE FOR CNPJ MAS NÃO ESTAMOS EM CONTEXTO DE CHECKOUT
-    if context.get("is_valid_cnpj") and not context.get("checkout_initiated"):
-        return {
-            "tool_name": "handle_chitchat",
-            "parameters": {"response_text": "Identifico que você digitou um CNPJ. Para usá-lo, primeiro adicione itens ao carrinho e depois digite 'finalizar pedido'."},
-        }
-
-    # Mensagens padrão baseadas no estágio
-    if stage == "cart":
-        default_text = "Não entendi. Você pode digitar o nome de um produto para adicionar mais itens ou 'checkout' para finalizar."
-    elif stage == "checkout":
-        default_text = "Não entendi. Digite 'finalizar' para concluir a compra ou 'carrinho' para revisar."
-    elif stage == "search":
-        default_text = "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens."
+    
+    # 16. Mensagens padrão baseadas no estágio
+    if estagio == "carrinho":
+        texto_padrao = "Não entendi. Você pode digitar o nome de um produto para adicionar mais itens ou 'checkout' para finalizar."
+    elif estagio == "checkout":
+        texto_padrao = "Não entendi. Digite 'finalizar' para concluir a compra ou 'carrinho' para revisar."
+    elif estagio == "busca":
+        texto_padrao = "Não entendi. Digite o nome de um produto para buscar ou 'carrinho' para ver seus itens."
     else:
-        default_text = "Não entendi. Posso mostrar os produtos mais vendidos ou buscar algo específico."
+        texto_padrao = "Não entendi. Posso mostrar os produtos mais vendidos ou buscar algo específico."
+    
     return {
-        "tool_name": "handle_chitchat",
-        "parameters": {"response_text": default_text},
+        "nome_ferramenta": "lidar_com_conversa_casual",
+        "parametros": {"texto_resposta": texto_padrao},
     }
 
 
@@ -1118,22 +1081,22 @@ def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
 
 
 def get_enhanced_intent(
-    user_message: str, session_data: Dict, customer_context: Union[Dict, None] = None
+    mensagem_usuario: str, dados_sessao: Dict, customer_context: Union[Dict, None] = None
 ) -> Dict:
     """Versão melhorada da função get_intent com validação adicional."""
-    logging.debug(f"Obtendo intenção aprimorada para a mensagem: '{user_message}'")
+    logging.debug(f"Obtendo intenção aprimorada para a mensagem: '{mensagem_usuario}'")
 
     # Obtém intenção básica
     intent = get_intent(
-        user_message,
-        session_data,
+        mensagem_usuario,
+        dados_sessao,
         customer_context,
-        len(session_data.get("shopping_cart", [])),
+        len(dados_sessao.get("shopping_cart", [])),
     )
 
     if not intent:
-        return create_fallback_intent(
-            user_message, enhance_context_awareness(user_message, session_data)
+        return criar_intencao_fallback(
+            mensagem_usuario, melhorar_consciencia_contexto(mensagem_usuario, dados_sessao)
         )
 
     # Valida e corrige parâmetros
@@ -1203,11 +1166,11 @@ def obter_intencao_rapida(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
     return _criar_intencao_fallback(mensagem_usuario, contexto)
 
 
-def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts: int = 2) -> Dict:
+def get_ai_intent_with_retry(mensagem_usuario: str, dados_sessao: Dict, max_attempts: int = 2) -> Dict:
     """
     Tenta múltiplas vezes com prompts progressivamente mais diretos
     """
-    logging.debug(f"Obtendo intenção da IA com nova tentativa para a mensagem: '{user_message}'")
+    logging.debug(f"Obtendo intenção da IA com nova tentativa para a mensagem: '{mensagem_usuario}'")
     from utils.response_parser import validate_json_structure
 
     for attempt in range(max_attempts):
@@ -1216,8 +1179,8 @@ def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts
             prompt_modifier = "structured" if attempt == 0 else "direct"
             
             raw_response = get_intent(
-                user_message,
-                session_data,
+                mensagem_usuario,
+                dados_sessao,
                 prompt_modifier=prompt_modifier
             )
             
@@ -1233,23 +1196,23 @@ def get_ai_intent_with_retry(user_message: str, session_data: Dict, max_attempts
     
     # Fallback final: análise manual baseada em padrões
     logging.debug("Não foi possível obter a intenção da IA. Usando fallback.")
-    return create_fallback_intent(user_message, session_data)
+    return criar_intencao_fallback(mensagem_usuario, dados_sessao)
 
 
-def generate_personalized_response(context_type: str, session_data: Dict, **kwargs) -> str:
+def generate_personalized_response(context_type: str, dados_sessao: Dict, **kwargs) -> str:
     """
     Gera respostas personalizadas e dinâmicas usando a IA para situações específicas.
     
     Args:
         context_type: Tipo de contexto (error, greeting, clarification, etc.)
-        session_data: Dados da sessão para contexto
+        dados_sessao: Dados da sessão para contexto
         **kwargs: Parâmetros específicos do contexto
     """
     logging.debug(f"Gerando resposta personalizada para o tipo de contexto: '{context_type}'")
     try:
         # Constrói o contexto baseado no tipo
-        conversation_history = session_data.get("conversation_history", [])
-        cart_items = len(session_data.get("shopping_cart", []))
+        conversation_history = dados_sessao.get("conversation_history", [])
+        cart_items = len(dados_sessao.get("shopping_cart", []))
         
         # 🆕 PROMPTS PROFISSIONAIS: Mensagens curtas, naturais mas sem inventar dados
         contexts = {
@@ -1288,7 +1251,7 @@ Responda APENAS a mensagem (sem aspas):"""
 
         # Faz a chamada para a IA
         response = ollama.chat(
-            model=OLLAMA_MODEL_NAME,
+            model=NOME_MODELO_OLLAMA,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0.8, "num_predict": 100}  # Mais criatividade, resposta curta
         )
@@ -1320,23 +1283,23 @@ Responda APENAS a mensagem (sem aspas):"""
 
 # ===== FUNÇÕES DE COMPATIBILIDADE =====
 
-def get_intent_fast(user_message: str, session_data: Dict) -> Dict:
+def get_intent_fast(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
     """
     Função de compatibilidade para get_intent_fast (usa obter_intencao_rapida).
     CORRIGIDA: Agora passa o contexto completo da conversa para a IA.
     """
-    return obter_intencao_rapida(user_message, session_data)
+    return obter_intencao_rapida(mensagem_usuario, dados_sessao)
 
 
 def melhorar_consciencia_contexto(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
     """
-    Função de compatibilidade para enhance_context_awareness.
+    Função de compatibilidade para melhorar_consciencia_contexto.
     """
-    return enhance_context_awareness(mensagem_usuario, dados_sessao)
+    return melhorar_consciencia_contexto(mensagem_usuario, dados_sessao)
 
 
 def _criar_intencao_fallback(mensagem_usuario: str, contexto: Dict) -> Dict:
     """
-    Função de compatibilidade para create_fallback_intent.
+    Função de compatibilidade para criar_intencao_fallback.
     """
-    return create_fallback_intent(mensagem_usuario, contexto)
+    return criar_intencao_fallback(mensagem_usuario, contexto)

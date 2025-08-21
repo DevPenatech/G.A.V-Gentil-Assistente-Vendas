@@ -549,7 +549,7 @@ def _handle_pending_action(
                         },
                     )
                     pending_action = None
-                    # Define o estado correto para aguardar confirmação de checkout
+                    # Define o estado correto para aguardar confirmação de finalizar_pedido
                     state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
 
             else:
@@ -806,7 +806,7 @@ def _handle_pending_action(
         negative_responses = ["não", "n", "agora não", "deixa"]
         if incoming_msg.lower() in affirmative_responses:
             if pending_action == "show_top_selling":
-                intent = {"tool_name": "get_top_selling_products", "parameters": {}}
+                intent = {"nome_ferramenta": "obter_produtos_mais_vendidos", "parametros": {}}
             pending_action = None
         elif incoming_msg.lower() in negative_responses:
             response_text = (
@@ -824,7 +824,7 @@ def _handle_pending_action(
 
     return None, response_text
 
-def _process_user_message(
+def _process_mensagem_usuario(
     session: Dict, state: Dict, incoming_msg: str
 ) -> Tuple[Union[Dict, None], str]:
     """
@@ -860,9 +860,9 @@ def _process_user_message(
     
     # 📋 DETECTA CNPJ NO CONTEXTO DE CHECKOUT
     if is_cnpj_format(incoming_msg.strip()):
-        print(f">>> CONSOLE: CNPJ detectado: '{incoming_msg.strip()}' - processando checkout")
-        # Força o processamento como checkout com CNPJ
-        intent = {"nome_ferramenta": "checkout", "parametros": {"cnpj": incoming_msg.strip()}}
+        print(f">>> CONSOLE: CNPJ detectado: '{incoming_msg.strip()}' - processando finalizar_pedido")
+        # Força o processamento como finalizar_pedido com CNPJ
+        intent = {"nome_ferramenta": "finalizar_pedido", "parametros": {"cnpj": incoming_msg.strip()}}
         return intent, response_text
     
     # 🚨 PRIORIDADE MÁXIMA: Detecta números de menu principal (mas não CNPJ)
@@ -879,10 +879,10 @@ def _process_user_message(
                 intent = {"nome_ferramenta": "smart_search_with_promotions", "parametros": {"search_term": "produtos"}}
                 return intent, response_text
             elif numero == 2 and shopping_cart:
-                intent = {"nome_ferramenta": "view_cart", "parametros": {}}
+                intent = {"nome_ferramenta": "visualizar_carrinho", "parametros": {}}
                 return intent, response_text
             elif numero == 3 and shopping_cart:
-                intent = {"nome_ferramenta": "checkout", "parametros": {}}
+                intent = {"nome_ferramenta": "finalizar_pedido", "parametros": {}}
                 return intent, response_text
         
         # 🎯 NOVA CONDIÇÃO: Se é contexto de seleção de produto e tem produtos para selecionar
@@ -890,7 +890,7 @@ def _process_user_message(
             produtos_mostrados = state.get("last_shown_products", [])
             if 1 <= numero <= len(produtos_mostrados):
                 print(f">>> CONSOLE: Processando seleção de produto {numero}")
-                intent = {"nome_ferramenta": "add_item_to_cart", "parametros": {"index": numero}}
+                intent = {"nome_ferramenta": "adicionar_item_ao_carrinho", "parametros": {"index": numero}}
                 return intent, response_text
             else:
                 print(f">>> CONSOLE: Número {numero} inválido para {len(produtos_mostrados)} produtos")
@@ -909,20 +909,20 @@ def _process_user_message(
         if intencao_carrinho.get("confidence", 0) > 0.7:
             print(f">>> CONSOLE: Intenção de carrinho detectada: {intencao_carrinho}")
             # Converte para formato compatível com o sistema
-            if intencao_carrinho.get("action") == "view_cart":
-                intent = {"nome_ferramenta": "view_cart", "parametros": {}}
+            if intencao_carrinho.get("action") == "visualizar_carrinho":
+                intent = {"nome_ferramenta": "visualizar_carrinho", "parametros": {}}
                 return intent, response_text
-            elif intencao_carrinho.get("action") == "clear_cart":
-                intent = {"nome_ferramenta": "clear_cart", "parametros": {}}
+            elif intencao_carrinho.get("action") == "limpar_carrinho":
+                intent = {"nome_ferramenta": "limpar_carrinho", "parametros": {}}
                 return intent, response_text
-            elif intencao_carrinho.get("action") == "checkout":
-                intent = {"nome_ferramenta": "checkout", "parametros": {}}
+            elif intencao_carrinho.get("action") == "finalizar_pedido":
+                intent = {"nome_ferramenta": "finalizar_pedido", "parametros": {}}
                 return intent, response_text
 
     # 2. Chama a IA para obter a intenção usando o novo classificador inteligente
     intent = llm_interface.get_intent_fast(
-        user_message=incoming_msg,
-        session_data=session
+        mensagem_usuario=incoming_msg,
+        dados_sessao=session
     )
 
     print(f">>> CONSOLE: Intenção extraída do JSON: {intent}")
@@ -999,10 +999,10 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
     last_kb_search_term = state.get("last_kb_search_term")
     
     # 🆕 IA-FIRST: Detecta pedidos complexos (múltiplos produtos)
-    user_message = intent.get("user_message", "")
-    if user_message and any(sep in user_message.lower() for sep in [" e ", ",", " mais ", " também "]):
+    mensagem_usuario = intent.get("mensagem_usuario", "")
+    if mensagem_usuario and any(sep in mensagem_usuario.lower() for sep in [" e ", ",", " mais ", " também "]):
         conversation_context = obter_contexto_conversa(session)
-        pedidos_complexos = processar_pedido_complexo_ia(user_message, conversation_context)
+        pedidos_complexos = processar_pedido_complexo_ia(mensagem_usuario, conversation_context)
         
         if len(pedidos_complexos) > 1:
             print(f">>> CONSOLE: [IA-FIRST] Detectado pedido complexo com {len(pedidos_complexos)} itens")
@@ -1010,7 +1010,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
     
     # 🆕 IA-FIRST: Análise contextual emocional
     conversation_context = obter_contexto_conversa(session)
-    analise_emocional = analisar_contexto_emocional_ia(user_message, conversation_context)
+    analise_emocional = analisar_contexto_emocional_ia(mensagem_usuario, conversation_context)
     
     if analise_emocional.get("urgencia") == "urgente":
         print(f">>> CONSOLE: [IA-FIRST] Cliente com urgência detectada")
@@ -1021,20 +1021,21 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
         # Pode ativar modo de assistência especial
 
     response_text = ""
-    tool_name = intent.get("nome_ferramenta", intent.get("tool_name"))  # Suporta ambos os formatos
-    parameters = intent.get("parametros", intent.get("parameters", {}))  # Suporta ambos os formatos
+    tool_name = intent.get("nome_ferramenta", intent.get("nome_ferramenta"))  # Suporta ambos os formatos
+    parameters = intent.get("parametros", intent.get("parametros", {}))  # Suporta ambos os formatos
     
     # Mapeamento de nomes em português para inglês (para compatibilidade)
     nome_para_ingles = {
         "busca_inteligente_com_promocoes": "smart_search_with_promotions",
-        "obter_produtos_mais_vendidos_por_nome": "get_top_selling_products_by_name",
+        "obter_produtos_mais_vendidos_por_nome": "obter_produtos_mais_vendidos_by_name",
         "atualizacao_inteligente_carrinho": "smart_cart_update",
-        "visualizar_carrinho": "view_cart",
-        "limpar_carrinho": "clear_cart",
-        "adicionar_item_ao_carrinho": "add_item_to_cart",
+        "visualizar_carrinho": "visualizar_carrinho",
+        "limpar_carrinho": "limpar_carrinho",
+        "adicionar_item_ao_carrinho": "adicionar_item_ao_carrinho",
         "selecionar_item_para_atualizacao": "selecionar_item_para_atualizacao",
-        "checkout": "checkout",
-        "lidar_conversa": "handle_chitchat"
+        "finalizar_pedido": "finalizar_pedido",
+        "lidar_conversa": "lidar_com_conversa_casual",
+        "handle_chitchat": "lidar_com_conversa_casual"
     }
     
     # Converte nome em português para inglês se necessário
@@ -1056,8 +1057,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
         parameters["response_text"] = parameters["texto_resposta"]
 
     db_intensive_tools = [
-        "get_top_selling_products",
-        "get_top_selling_products_by_name",
+        "obter_produtos_mais_vendidos",
+        "obter_produtos_mais_vendidos_by_name",
         "show_more_products",
         "report_incorrect_product",
         "get_product_by_codprod",
@@ -1065,8 +1066,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
     if tool_name in db_intensive_tools:
         print(f">>> CONSOLE: Acessando o Banco de Dados (ferramenta: {tool_name})...")
 
-    # 🆕 NOVA FERRAMENTA: clear_cart
-    if tool_name == "clear_cart":
+    # 🆕 NOVA FERRAMENTA: limpar_carrinho
+    if tool_name == "limpar_carrinho":
         print(">>> CONSOLE: Executando limpeza completa do carrinho...")
         message, empty_cart = limpar_carrinho_completamente(shopping_cart)
         shopping_cart.clear()  # Garante que o carrinho está vazio
@@ -1477,10 +1478,10 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     # 📝 LOG DA RESPOSTA DO BOT PARA ANÁLISE
                     print(f">>> BOT_RESPONSE: {response_text[:200]}..." if len(response_text) > 200 else f">>> BOT_RESPONSE: {response_text}")
 
-    elif tool_name in ["get_top_selling_products", "get_top_selling_products_by_name"]:
+    elif tool_name in ["obter_produtos_mais_vendidos", "obter_produtos_mais_vendidos_by_name"]:
         last_kb_search_term, last_shown_products = None, []
 
-        if tool_name == "get_top_selling_products_by_name":
+        if tool_name == "obter_produtos_mais_vendidos_by_name":
             product_name = parameters.get("product_name", "")
 
             # 🆕 EXTRAI ESPECIFICAÇÕES DO PRODUTO COM IA
@@ -1604,7 +1605,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     f">>> CONSOLE: Banco encontrou {len(products)} produtos, {len(suggestions)} sugestões"
                 )
 
-        else:  # get_top_selling_products
+        else:  # obter_produtos_mais_vendidos
             current_offset, last_shown_products = 0, []
             last_search_type, last_search_params = "top_selling", parameters
             products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
@@ -1620,7 +1621,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 session, "assistant", response_text, "SHOW_TOP_PRODUCTS"
             )
 
-    elif tool_name == "add_item_to_cart":
+    elif tool_name == "adicionar_item_ao_carrinho":
         product_to_add = None
 
         if "index" in parameters:
@@ -1898,14 +1899,14 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     session, "assistant", response_text, "SHOW_MORE_PRODUCTS"
                 )
 
-    elif tool_name == "view_cart":
+    elif tool_name == "visualizar_carrinho":
         from core.gerenciador_sessao import formatar_carrinho_para_exibicao
         response_text = formatar_carrinho_para_exibicao(shopping_cart)
         adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_CART")
         last_shown_products = []
         last_bot_action = "AWAITING_CHECKOUT_CONFIRMATION"
 
-    elif tool_name == "start_new_order":
+    elif tool_name == "iniciar_novo_pedido":
         (
             customer_context,
             shopping_cart,
@@ -1934,7 +1935,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
 
         adicionar_mensagem_historico(session, "assistant", response_text, "NEW_ORDER")
 
-    elif tool_name == "checkout":
+    elif tool_name == "finalizar_pedido":
         # 🔍 VERIFICA SE CNPJ FOI FORNECIDO
         cnpj_fornecido = parameters.get("cnpj")
         
@@ -1948,7 +1949,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             last_bot_action = "AWAITING_MENU_SELECTION"
         elif cnpj_fornecido:
             # 📋 PROCESSA CNPJ FORNECIDO
-            print(f">>> CONSOLE: Processando checkout com CNPJ: {cnpj_fornecido}")
+            print(f">>> CONSOLE: Processando finalizar_pedido com CNPJ: {cnpj_fornecido}")
             
             # Aqui você pode adicionar validação de CNPJ se necessário
             # Por enquanto, aceita qualquer CNPJ válido em formato
@@ -1984,11 +1985,11 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             last_shown_products = []
             last_bot_action = "AWAITING_MENU_SELECTION"
 
-    elif tool_name == "find_customer_by_cnpj":
+    elif tool_name == "encontrar_cliente_por_cnpj":
         cnpj = parameters.get("cnpj")
         if cnpj:
             print(f">>> CONSOLE: Buscando cliente por CNPJ: {cnpj}")
-            customer = database.find_customer_by_cnpj(cnpj)
+            customer = database.encontrar_cliente_por_cnpj(cnpj)
             if customer:
                 customer_context = customer
                 
@@ -2036,7 +2037,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             response_text = "Para finalizar seu pedido, preciso do seu CNPJ. Por favor, me informe o CNPJ da sua empresa."
             adicionar_mensagem_historico(session, "assistant", response_text, "REQUEST_CNPJ")
 
-    elif tool_name == "ask_continue_or_checkout":
+    elif tool_name == "ask_continue_or_finalizar_pedido":
         if shopping_cart:
             response_text = gerar_mensagem_continuar_ou_finalizar(shopping_cart)
             adicionar_mensagem_historico(
@@ -2051,7 +2052,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         last_shown_products = []
         last_bot_action = "AWAITING_MENU_SELECTION"
 
-    elif tool_name == "handle_chitchat":
+    elif tool_name == "lidar_com_conversa_casual":
         # 🆕 DETECTA SE DEVE GERAR SAUDAÇÃO DINÂMICA
         response_param = parameters.get('response_text', 'Entendi!')
         
@@ -2087,13 +2088,13 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             # 🚀 IA-FIRST: DETECÇÃO INTELIGENTE DE "MAIS PRODUTOS"
             # Obtém a última mensagem do usuário do histórico
             history = session.get('conversation_history', [])
-            last_user_message = ""
+            last_mensagem_usuario = ""
             for msg in reversed(history):
                 if msg.get('role') == 'user':
-                    last_user_message = msg.get('message', '')
+                    last_mensagem_usuario = msg.get('message', '')
                     break
             
-            incoming_msg_lower = last_user_message.lower().strip()
+            incoming_msg_lower = last_mensagem_usuario.lower().strip()
             should_show_more_products = (
                 last_search_type and  # Há busca anterior
                 any(word in incoming_msg_lower for word in ["mais", "mais produtos", "continuar", "próximo", "more", "next"]) and
@@ -2631,7 +2632,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
             # 2. Se não houve resposta ou intenção, determina a intenção
             if not intent and not response_text:
                 log_debug("Processando mensagem para detectar intencao", user_id=sender_phone, categoria="INTENT_DETECTION")
-                intent, response_text = _process_user_message(
+                intent, response_text = _process_mensagem_usuario(
                     session, state, incoming_msg
                 )
                 
@@ -2641,20 +2642,20 @@ def process_message_async(sender_phone: str, incoming_msg: str):
                         "INTENCAO DETECTADA",
                         user_id=sender_phone,
                         intencao_completa=str(intent),
-                        tool_name=intent.get("tool_name"),
-                        parametros=str(intent.get("parameters", {})),
+                        tool_name=intent.get("nome_ferramenta"),
+                        parametros=str(intent.get("parametros", {})),
                         categoria="INTENT_DETECTED"
                     )
                 
-            # 2.1. PRIORIDADE ESPECIAL: Se detectou checkout, limpa ações pendentes conflitantes
-            if intent and intent.get("nome_ferramenta") == "checkout":
-                if intent.get("parametros", {}).get("force_checkout"):
+            # 2.1. PRIORIDADE ESPECIAL: Se detectou finalizar_pedido, limpa ações pendentes conflitantes
+            if intent and intent.get("nome_ferramenta") == "finalizar_pedido":
+                if intent.get("parametros", {}).get("force_finalizar_pedido"):
                     state["pending_action"] = None  # Limpa qualquer ação pendente
                     print(">>> CONSOLE: Checkout forçado - limpando ações pendentes")
 
             # 3. Executa a intenção identificada
             if intent and not response_text:
-                log_debug("Executando ferramenta detectada", user_id=sender_phone, tool_name=intent.get("tool_name"), categoria="TOOL_EXECUTION")
+                log_debug("Executando ferramenta detectada", user_id=sender_phone, tool_name=intent.get("nome_ferramenta"), categoria="TOOL_EXECUTION")
                 response_text = _route_tool(session, state, intent, sender_phone, incoming_msg)
                 
                 # Log do resultado da ferramenta
@@ -2662,7 +2663,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
                     log_info(
                         "FERRAMENTA EXECUTADA",
                         user_id=sender_phone,
-                        tool_name=intent.get("tool_name"),
+                        tool_name=intent.get("nome_ferramenta"),
                         resposta_gerada=response_text,
                         tamanho_resposta=len(response_text),
                         categoria="TOOL_RESULT"
@@ -2670,7 +2671,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
 
             # 4. Mensagem padrão caso nenhuma resposta seja definida
             if not response_text and not state.get("pending_action"):
-                # Não adiciona quick_actions se estiver aguardando confirmação de checkout
+                # Não adiciona quick_actions se estiver aguardando confirmação de finalizar_pedido
                 if state.get("last_bot_action") == "AWAITING_CHECKOUT_CONFIRMATION":
                     response_text = "Operação concluída."
                 else:
@@ -2756,7 +2757,7 @@ def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
             intent, response_text = _handle_pending_action(session, state, incoming_msg)
 
             if not intent and not response_text:
-                intent, response_text = _process_user_message(session, state, incoming_msg)
+                intent, response_text = _process_mensagem_usuario(session, state, incoming_msg)
             
             if intent and not response_text:
                 # Para web, extraímos o sender_id original da session_id se necessário
@@ -2908,8 +2909,8 @@ def webchat():
 
     return jsonify({"reply": response_text})
 
-@aplicativo.route("/clear_cart", methods=["POST"])
-def clear_cart_endpoint():
+@aplicativo.route("/limpar_carrinho", methods=["POST"])
+def limpar_carrinho_endpoint():
     """ENDPOINT PARA LIMPEZA DE CARRINHO VIA API."""
     data = request.get_json() or {}
     user_id = data.get("user_id")
@@ -2934,7 +2935,7 @@ def clear_cart_endpoint():
     return jsonify({
         "success": True,
         "response_text": message,
-        "session_data": session
+        "dados_sessao": session
     })
 
 if __name__ == "__main__":
