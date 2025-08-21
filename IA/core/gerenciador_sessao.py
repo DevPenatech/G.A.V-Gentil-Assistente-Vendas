@@ -210,8 +210,20 @@ def formatar_lista_produtos_para_exibicao(produtos: List[Dict], titulo: str, tem
     if not produtos:
         return f"❌ {titulo}\nNão achei esse item. Posso sugerir similares?"
     
-    contagem_real = len(produtos)
-    produtos_limitados = produtos[:min(contagem_real, 10)]
+    # 🆕 REMOVE DUPLICATAS BASEADO NO CÓDIGO DO PRODUTO
+    produtos_unicos = []
+    codigos_vistos = set()
+    
+    for produto in produtos:
+        codigo = produto.get('codprod')
+        if codigo and codigo not in codigos_vistos:
+            produtos_unicos.append(produto)
+            codigos_vistos.add(codigo)
+        elif not codigo:  # Se não tem código, mantém (fallback)
+            produtos_unicos.append(produto)
+    
+    contagem_real = len(produtos_unicos)
+    produtos_limitados = produtos_unicos[:min(contagem_real, 10)]
     contagem_exibicao = len(produtos_limitados)
 
     resposta = f"📦 *{titulo}:*\n\n"
@@ -467,13 +479,36 @@ def obter_contexto_conversa(dados_sessao: Dict, max_mensagens: int = 14) -> str:
 
     if historico:
         historico_recente = historico[-max_mensagens:]
-        contexto = "HISTÓRICO RECENTE DA CONVERSA:\n"
+        
+        # 🆕 FORMATO OTIMIZADO PARA LLAMA3.1:7B - MAIS CLARO E ESTRUTURADO
+        contexto = "=== HISTÓRICO DA CONVERSA ===\n"
+        
         for i, msg in enumerate(historico_recente, 1):
-            role = "Cliente" if msg['role'] == 'user' else "G.A.V."
-            mensagem_completa = msg['message'] if len(msg['message']) <= 200 else msg['message'][:200] + "..."
+            papel = "CLIENTE" if msg['role'] == 'user' else "ASSISTENTE"
+            mensagem_completa = msg['message'] if len(msg['message']) <= 150 else msg['message'][:150] + "..."
             tipo_acao = msg.get('action_type', '')
-            info_acao = f" [{tipo_acao}]" if tipo_acao else ""
-            contexto += f"{i}. {role}{info_acao}: {mensagem_completa}\n"
+            
+            # Simplifica tipos de ação para serem mais claros
+            if tipo_acao:
+                acoes_simplificadas = {
+                    'SHOW_PRODUCTS_FROM_KB': 'Mostrou produtos',
+                    'SHOW_PRODUCTS_FROM_DB': 'Mostrou produtos', 
+                    'AWAITING_PRODUCT_SELECTION': 'Aguarda seleção',
+                    'CHITCHAT': 'Conversa casual',
+                    'CNPJ_VALIDATED': 'CNPJ validado',
+                    'FALLBACK': 'Não entendeu',
+                    'SHOW_SMART_SEARCH_RESULTS': 'Busca inteligente',
+                    'BOT_RESPONSE': 'Resposta'
+                }
+                acao_clara = acoes_simplificadas.get(tipo_acao, tipo_acao)
+                info_acao = f" ({acao_clara})"
+            else:
+                info_acao = ""
+            
+            # Formato mais limpo e direto
+            contexto += f"{papel}{info_acao}: {mensagem_completa}\n"
+            
+        contexto += "=== FIM DO HISTÓRICO ===\n"
         partes.append(contexto)
 
     contexto_final = "\n\n".join(partes)

@@ -309,19 +309,25 @@ CONTEXTO DA CONVERSA (FUNDAMENTAL PARA ANÁLISE):
 MENSAGEM ATUAL DO USUÁRIO: "{user_message}"
 
 REGRAS DE CLASSIFICAÇÃO (ANALISE O CONTEXTO ANTES DE DECIDIR):
+
+🚨 REGRA CRÍTICA PARA EVITAR CONFUSÃO:
+- SE A MENSAGEM CONTÉM "FINI" ou "FINÍ" → SEMPRE busca_inteligente_com_promocoes (marca de doces!)
+- SE A MENSAGEM CONTÉM APENAS "FINALIZAR" EXATA → finalizar_pedido
+- "deixa eu ver fini", "quero fini", "me mostra fini" → busca_inteligente_com_promocoes (NÃO finalizar!)
+
 1. PRIMEIRO, analise o CONTEXTO da conversa para entender a situação atual
 2. Se o bot mostrou uma lista de produtos e o usuário responde com número → adicionar_item_ao_carrinho
 3. 🚀 CRÍTICO: Se usuário diz apenas "mais" após uma busca de produtos → show_more_products
 4. 🎯 NOVO: Se usuário quer ver "promoções", "produtos em promoção", "ofertas" (genérico, sem categoria específica) → mostrar_todas_promocoes  
 5. Se o usuário quer buscar categoria (cerveja, limpeza, comida, etc.) → busca_inteligente_com_promocoes
-5. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes  
-6. IMPORTANTE: Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes
-7. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
-8. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
-9. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
-10. Se quer limpar/esvaziar carrinho → limpar_carrinho
-11. 🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): "oi", "olá", "bom dia", "boa tarde", "boa noite", "eai" → lidar_conversa
-12. Agradecimentos, perguntas gerais → lidar_conversa
+6. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes  
+7. IMPORTANTE: Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes
+8. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
+9. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
+10. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
+11. Se quer limpar/esvaziar carrinho → limpar_carrinho
+12. 🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): "oi", "olá", "bom dia", "boa tarde", "boa noite", "eai" → lidar_conversa
+13. Agradecimentos, perguntas gerais → lidar_conversa
 
 EXEMPLOS IMPORTANTES:
 🔥 SAUDAÇÕES (SEMPRE DETECTAR PRIMEIRO):
@@ -332,16 +338,23 @@ EXEMPLOS IMPORTANTES:
 - "boa noite" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
 - "eai" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
 
-OUTROS EXEMPLOS:
+OUTROS EXEMPLOS (ANALISE SEMPRE O CONTEXTO PRIMEIRO):
 - "mais" → show_more_products (PRIORIDADE MÁXIMA após busca!)
 - "mais produtos" → show_more_products (continuar busca)
 - "continuar" → show_more_products (mostrar mais produtos)
+
+🎯 BUSCA POR CATEGORIA/MARCA:
 - "quero cerveja" → busca_inteligente_com_promocoes (categoria de produto)
 - "quero fini" → busca_inteligente_com_promocoes (marca específica!)
+- "deixa eu ver fini" → busca_inteligente_com_promocoes (marca FINI, não finalizar!)
+- "vou querer fini" → busca_inteligente_com_promocoes (marca FINI!)
+- "me mostra fini" → busca_inteligente_com_promocoes (marca FINI!)
 - "quero nutella" → busca_inteligente_com_promocoes (marca específica!)
 - "quero omo" → busca_inteligente_com_promocoes (marca específica!)
 - "biscoito doce" → obter_produtos_mais_vendidos_por_nome (produto sem marca específica)
 - "promoções" → busca_inteligente_com_promocoes (busca por ofertas)
+
+🛒 CARRINHO:
 - "limpar carrinho" → limpar_carrinho (comando para esvaziar carrinho)
 - "esvaziar carrinho" → limpar_carrinho (comando para limpar carrinho)
 - "zerar carrinho" → limpar_carrinho (comando para resetar carrinho)
@@ -349,9 +362,18 @@ OUTROS EXEMPLOS:
 - "adicionar 2 skol" → atualizacao_inteligente_carrinho (adicionar produto com quantidade)
 - "remover 1 skol" → atualizacao_inteligente_carrinho (remover produto com quantidade)
 - "tirar cerveja" → atualizacao_inteligente_carrinho (remover produto do carrinho)
-    - "finalizar" → finalizar_pedido (finalizar pedido)
-    - "finalizar pedido" → finalizar_pedido (finalizar pedido)
-    - "comprar" → finalizar_pedido (finalizar pedido)
+
+🔥 FINALIZAÇÃO DE PEDIDO (APENAS ESTAS PALAVRAS EXATAS):
+- "finalizar" → finalizar_pedido (APENAS palavra exata "finalizar")
+- "finalizar pedido" → finalizar_pedido (APENAS frase exata)
+- "comprar" → finalizar_pedido (APENAS palavra exata "comprar")
+- "confirmar pedido" → finalizar_pedido (APENAS frase exata)
+
+🚨 CUIDADO COM MARCAS QUE SOAM COMO "FINALIZAR":
+- "deixa eu ver fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
+- "quero fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
+- "ver fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
+- "quero ver coca" → busca_inteligente_com_promocoes (marca COCA, NÃO finalizar!)
 
 ATENÇÃO: Qualquer nome que pareça ser uma marca comercial deve usar busca_inteligente_com_promocoes!
 

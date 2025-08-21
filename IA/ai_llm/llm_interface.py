@@ -13,7 +13,7 @@ import re
 from typing import Union, Dict, List
 import time
 
-from core.gerenciador_sessao import obter_contexto_conversa
+from core.gerenciador_sessao import obter_contexto_conversa, detectar_comandos_limpar_carrinho
 from utils.extrator_quantidade import detectar_modificadores_quantidade
 from utils.analisador_resposta import extrair_json_da_resposta_ia
 from utils.classificador_intencao import detectar_intencao_usuario_com_ia, detectar_intencao_com_sistemas_criticos
@@ -383,10 +383,10 @@ def melhorar_consciencia_contexto(mensagem_usuario: str, dados_sessao: Dict) -> 
     }
 
     # 🆕 DETECTA COMANDOS DE LIMPEZA DE CARRINHO
-    context["limpar_carrinho_command"] = detect_cart_clearing_intent(mensagem_usuario)
+    context["limpar_carrinho_command"] = detectar_comandos_limpar_carrinho(mensagem_usuario)
     
     # 🆕 DETECTA CONTEXTO DE CHECKOUT/FINALIZAÇÃO
-    checkout_context = detect_checkout_context(dados_sessao)
+    checkout_context = detectar_contexto_checkout(dados_sessao)
     context.update(checkout_context)
     
     # 🆕 DETECTA SE É UM CNPJ VÁLIDO
@@ -1311,3 +1311,136 @@ def _criar_intencao_fallback(mensagem_usuario: str, contexto: Dict) -> Dict:
     Função de compatibilidade para criar_intencao_fallback.
     """
     return criar_intencao_fallback(mensagem_usuario, contexto)
+
+
+def analisar_saudacao_com_contexto_ia(mensagem_usuario: str, produtos_ativos: List[Dict], parametros_busca: Dict) -> bool:
+    """
+    Usa IA para analisar semanticamente se a mensagem é uma saudação considerando o contexto.
+    
+    Args:
+        mensagem_usuario: Mensagem do usuário
+        produtos_ativos: Lista de produtos sendo exibidos
+        parametros_busca: Parâmetros da busca atual
+        
+    Returns:
+        bool: True se for uma saudação contextual
+    """
+    try:
+        import ollama
+        import os
+        
+        if not mensagem_usuario or not produtos_ativos:
+            return False
+            
+        # Contexto simplificado para o llama3.1:7b
+        categoria = parametros_busca.get('categoria', parametros_busca.get('category', ''))
+        termo_busca = parametros_busca.get('termo_busca', parametros_busca.get('search_term', ''))
+        total_produtos = len(produtos_ativos)
+        
+        prompt_analise = f"""ANÁLISE: A mensagem do usuário é uma saudação considerando que ele está vendo produtos?
+
+CONTEXTO ATUAL:
+- Mensagem do usuário: "{mensagem_usuario}"
+- Produtos sendo exibidos: {total_produtos} produtos
+- Categoria: {categoria or 'não especificada'}
+- Termo de busca: {termo_busca or 'não especificado'}
+
+EXEMPLOS DE SAUDAÇÃO EM CONTEXTO:
+- "oi" (quando há produtos) = SAUDAÇÃO
+- "olá" (quando há produtos) = SAUDAÇÃO
+- "bom dia" (quando há produtos) = SAUDAÇÃO
+- "e aí" (quando há produtos) = SAUDAÇÃO
+- "1" (seleção numérica) = NÃO É SAUDAÇÃO
+- "mais" (pedindo mais produtos) = NÃO É SAUDAÇÃO
+- "esse produto" (referência) = NÃO É SAUDAÇÃO
+
+RESPONDA APENAS: sim ou não"""
+
+        HOST_OLLAMA = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+        NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1:7b")
+        
+        client = ollama.Client(host=HOST_OLLAMA) if HOST_OLLAMA else ollama
+        
+        response = client.chat(
+            model=NOME_MODELO_OLLAMA,
+            messages=[{"role": "user", "content": prompt_analise}],
+            options={"temperature": 0.1, "top_p": 0.3, "num_predict": 10}
+        )
+        
+        resposta_ia = response['message']['content'].strip().lower()
+        eh_saudacao = "sim" in resposta_ia
+        
+        logging.debug(f"[SAUDACAO_IA] Mensagem: '{mensagem_usuario}' | Contexto: {total_produtos} produtos | Resultado: {eh_saudacao}")
+        return eh_saudacao
+        
+    except Exception as e:
+        logging.warning(f"[SAUDACAO_IA] Erro na análise: {e}")
+        # Fallback: detecção simples se IA falhar
+        mensagem_lower = mensagem_usuario.lower().strip()
+        return mensagem_lower in ['oi', 'olá', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
+
+
+def gerar_resposta_saudacao_contextual_ia(contexto_resposta: Dict) -> str:
+    """
+    Gera uma resposta contextual inteligente para saudações usando IA.
+    
+    Args:
+        contexto_resposta: Dicionário com contexto da resposta
+        
+    Returns:
+        str: Resposta contextual gerada pela IA
+    """
+    try:
+        import ollama
+        import os
+        
+        categoria = contexto_resposta.get('categoria', '')
+        termo_busca = contexto_resposta.get('termo_busca', '')
+        total_produtos = contexto_resposta.get('total_produtos', 0)
+        mensagem_usuario = contexto_resposta.get('mensagem_usuario', '')
+        
+        # Prompt otimizado para llama3.1:7b
+        prompt_resposta = f"""Gere uma resposta calorosa e contextual para uma saudação.
+
+SITUAÇÃO:
+- Cliente disse: "{mensagem_usuario}"
+- Está vendo: {total_produtos} produtos
+- Categoria: {categoria or 'produtos diversos'}
+- Busca: {termo_busca or 'geral'}
+
+RESPOSTA DEVE:
+1. Responder à saudação de forma amigável
+2. Reconhecer que ele está vendo produtos
+3. Orientar próxima ação (escolher número ou 'mais')
+4. Ser concisa (máximo 2 frases)
+5. Usar emoji apropriado
+
+EXEMPLOS:
+- "Oi! 👋 Vi que você está vendo cervejas. Escolha um número de 1 a 12 ou digite 'mais'."
+- "Olá! 😊 Está navegando pelos doces? Digite o número do que interessar ou 'mais' para ver outros."
+
+RESPOSTA:"""
+
+        HOST_OLLAMA = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+        NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1:7b")
+        
+        client = ollama.Client(host=HOST_OLLAMA) if HOST_OLLAMA else ollama
+        
+        response = client.chat(
+            model=NOME_MODELO_OLLAMA,
+            messages=[{"role": "user", "content": prompt_resposta}],
+            options={"temperature": 0.7, "top_p": 0.8, "num_predict": 80}
+        )
+        
+        resposta_ia = response['message']['content'].strip()
+        
+        # Limpa a resposta se começar com "RESPOSTA:" ou similar
+        if resposta_ia.startswith(("RESPOSTA:", "Resposta:", "resposta:")):
+            resposta_ia = resposta_ia.split(":", 1)[1].strip()
+        
+        logging.debug(f"[RESPOSTA_SAUDACAO_IA] Gerada: '{resposta_ia[:100]}...'")
+        return resposta_ia
+        
+    except Exception as e:
+        logging.warning(f"[RESPOSTA_SAUDACAO_IA] Erro na geração: {e}")
+        return ""  # Retorna vazio para usar fallback

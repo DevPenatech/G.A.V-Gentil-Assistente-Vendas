@@ -1,0 +1,236 @@
+{
+  "contexto_cliente": null,
+  "carrinho_compras": [],
+  "historico_conversa": [
+    {
+      "role": "assistant",
+      "message": "Oi, como posso ajudar?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T19:13:12.993173",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "Quero fini",
+      "timestamp": "2025-08-21T19:13:17.103221",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T19:13:23.285645",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T19:13:23.291381",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "deixa eu ver cerveja",
+      "timestamp": "2025-08-21T19:13:29.769762",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-21T19:13:40.439278",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-21T19:13:40.441916",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "tem da heineken?",
+      "timestamp": "2025-08-21T19:13:47.935354",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-21T19:13:52.462409",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-21T19:13:52.464120",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "produtos",
+      "timestamp": "2025-08-21T19:15:30.856715",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Não achei nada com 'produtos', mas vou te ajudar a encontrar!\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'.",
+      "timestamp": "2025-08-21T19:15:54.024791",
+      "action_type": "NO_PRODUCTS_FOUND"
+    },
+    {
+      "role": "assistant",
+      "message": "Operação concluída. O que mais posso fazer por você?",
+      "timestamp": "2025-08-21T19:15:54.027636",
+      "action_type": "OPERATION_COMPLETE"
+    },
+    {
+      "role": "assistant",
+      "message": "Operação concluída. O que mais posso fazer por você?",
+      "timestamp": "2025-08-21T19:15:54.030086",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "meu carrinho",
+      "timestamp": "2025-08-21T19:17:32.620783",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-21T19:17:41.286237",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-21T19:17:41.288971",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero sabonete",
+      "timestamp": "2025-08-21T19:17:45.945903",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'sabonete'::*\n\n*1.* KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-\n    💰 R$ 15,99\n\n*2.* SABONETEIRA PLASUTIL\n    💰 R$ 3,99\n\n*3.* SABONETEIRA PUMP UP GF.1LT\n    💰 R$ 1.000,00\n\n*4.* UD.SABONETEIRA MANIKRAFT C/RES.\n    💰 R$ 1.000,00\n\n*5.* UD.SABONETEIRA P/SABAO LIQUIDO\n    💰 R$ 10,45\n\nQual você quer? Digite 1, 2, 3, 4 ou *5*.",
+      "timestamp": "2025-08-21T19:17:52.861707",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "assistant",
+      "message": "Operação concluída. O que mais posso fazer por você?",
+      "timestamp": "2025-08-21T19:17:52.862641",
+      "action_type": "OPERATION_COMPLETE"
+    },
+    {
+      "role": "assistant",
+      "message": "Operação concluída. O que mais posso fazer por você?",
+      "timestamp": "2025-08-21T19:17:52.865163",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "?",
+      "timestamp": "2025-08-21T19:17:57.882479",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Oi, como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-\n*2.* SABONETEIRA PLASUTIL\n*3.* SABONETEIRA PUMP UP GF.1LT\n*4.* UD.SABONETEIRA MANIKRAFT C/RES.\n*5.* UD.SABONETEIRA P/SABAO LIQUIDO\n\nDigite o número de *1* a *5*.",
+      "timestamp": "2025-08-21T19:18:03.335328",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Oi, como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-\n*2.* SABONETEIRA PLASUTIL\n*3.* SABONETEIRA PUMP UP GF.1LT\n*4.* UD.SABONETEIRA MANIKRAFT C/RES.\n*5.* UD.SABONETEIRA P/SABAO LIQUIDO\n\nDigite o número de *1* a *5*.",
+      "timestamp": "2025-08-21T19:18:03.337124",
+      "action_type": "BOT_RESPONSE"
+    }
+  ],
+  "resumo_conversa": "ente:* Não identificado 📄 *CNPJ:* 11.111.111/1111-11  📦 *ITENS DO PEDIDO:* *1.* BEB.CHOPP DE VIN.DRAFT WHITE     3× R$ 9,98 = *R$ 29,94*  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 💰 *TOTAL GERAL: R$ 29,94*  ✅ *Pedido registrado com sucesso!* 📞 Em breve entraremos em contato para confirmação.  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | G.A.V.: ✅ *RESUMO DO PEDIDO* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  👤 *Cliente:* Não identificado 📄 *CNPJ:* 11.111.111/1111-11  📦 *ITENS DO PEDIDO:* *1.* BEB.CHOPP DE VIN.DRAFT WHITE     3× R$ 9,98 = *R$ 29,94*  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 💰 *TOTAL GERAL: R$ 29,94*  ✅ *Pedido registrado com sucesso!* 📞 Em breve entraremos em contato para confirmação.  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | Cliente: Oi | G.A.V.: Oi, como posso ajudar?  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções",
+  "ultimo_tipo_busca": null,
+  "ultimos_parametros_busca": {},
+  "offset_atual": 0,
+  "ultimos_produtos_mostrados": [],
+  "ultima_acao_bot": null,
+  "acao_pendente": null,
+  "selecao_produto_pendente": null,
+  "quantidade_pendente": null,
+  "ultimo_termo_busca_kb": null,
+  "ultimos_resultados_busca": [],
+  "ultima_analise_busca": {},
+  "ultimas_sugestoes_busca": [],
+  "criado_em": "2025-08-21T19:06:57.937329",
+  "ultima_atividade": "2025-08-21T19:18:03.337270",
+  "validated_cnpj": "11111111111111",
+  "customer_context": {
+    "cnpj": "11111111111111"
+  },
+  "shopping_cart": [],
+  "last_search_type": "busca_por_nome",
+  "last_search_params": {
+    "nome_produto": "sabonete"
+  },
+  "current_offset": 5,
+  "last_shown_products": [
+    {
+      "codprod": 42721,
+      "descricao": "KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-",
+      "unidade_venda": "PC",
+      "preco_varejo": 15.99,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 34482,
+      "descricao": "SABONETEIRA PLASUTIL",
+      "unidade_venda": "UN",
+      "preco_varejo": 3.99,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 41713,
+      "descricao": "SABONETEIRA PUMP UP GF.1LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 1000.0,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 45865,
+      "descricao": "UD.SABONETEIRA MANIKRAFT C/RES.",
+      "unidade_venda": "UN",
+      "preco_varejo": 1000.0,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    },
+    {
+      "codprod": 453,
+      "descricao": "UD.SABONETEIRA P/SABAO LIQUIDO",
+      "unidade_venda": "UN",
+      "preco_varejo": 10.45,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "total_vendido": 0.0
+    }
+  ],
+  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
+  "pending_action": null,
+  "last_kb_search_term": null,
+  "estatisticas_sessao": {
+    "itens_carrinho": 0,
+    "tamanho_conversa": 0,
+    "cliente_identificado": true,
+    "ultima_acao": "AWAITING_PRODUCT_SELECTION",
+    "tem_selecao_pendente": true,
+    "tem_quantidade_pendente": false,
+    "valor_total_carrinho": 0.0
+  },
+  "pending_product_for_cart": null,
+  "term_to_learn_after_quantity": null
+}

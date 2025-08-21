@@ -325,23 +325,32 @@ class RedirecionadorInteligente:
         return False
     
     def _detectar_falta_guidance(self, entrada: str, contexto: str) -> bool:
-        """Detecta quando usuário está perdido."""
+        """Detecta quando usuário está perdido, considerando contexto de produtos."""
         entrada_lower = entrada.lower().strip()
         
-        # Sinais de desorientação
+        # 🆕 NÃO DETECTA FALTA DE GUIDANCE SE É SAUDAÇÃO COM PRODUTOS ATIVOS
+        # Verifica se há produtos sendo exibidos no contexto
+        tem_produtos_ativos = "AWAITING_PRODUCT_SELECTION" in contexto or "produtos" in contexto.lower()
+        eh_saudacao_simples = entrada_lower in ['oi', 'olá', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
+        
+        # Se é saudação simples e tem produtos ativos, NÃO é falta de guidance
+        if eh_saudacao_simples and tem_produtos_ativos:
+            return False
+        
+        # Sinais claros de desorientação
         sinais_perdido = [
             "não entendi", "como", "o que", "ajuda", "não sei", "perdido",
             "não consegui", "confuso", "como faço", "me ajuda"
         ]
         
-        # Perguntas genéricas que indicam desorientação
+        # Perguntas genéricas que indicam desorientação (mas não saudações)
         perguntas_vagas = [
-            "e agora", "e aí", "o que mais", "que mais", "como continuo"
+            "e agora", "o que mais", "que mais", "como continuo"
         ]
         
+        # Detecta apenas sinais claros de confusão
         return (any(sinal in entrada_lower for sinal in sinais_perdido) or
-                any(pergunta in entrada_lower for pergunta in perguntas_vagas) or
-                (len(entrada.strip()) < 3 and entrada.strip() not in ['1', '2', '3', '4', '5']))
+                any(pergunta in entrada_lower for pergunta in perguntas_vagas))
     
     def _calcular_nivel_confusao(self, confusoes: List[Dict], historico: List[Dict]) -> float:
         """

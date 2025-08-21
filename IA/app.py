@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Dict, List, Tuple, Union
 from db import database
 from ai_llm import llm_interface
-from ai_llm.llm_interface import generate_personalized_response
+from ai_llm.llm_interface import generate_personalized_response, analisar_saudacao_com_contexto_ia, gerar_resposta_saudacao_contextual_ia
 from knowledge import knowledge
 from utils.gav_logger import (
     obter_logger, log_com_contexto, log_performance, log_audit,
@@ -277,6 +277,72 @@ def limpar_carrinho_completamente(carrinho: List[Dict]) -> Tuple[str, List[Dict]
         mensagem += f"\n\n{formatar_acoes_rapidas(tem_carrinho=False)}"
     
     return mensagem, []
+
+
+def _executar_acao_carrinho(carrinho_compras: List[Dict], indice_carrinho: int, item: Dict, acao: str, quantidade: float, nome_produto: str) -> str:
+    """Executa uma ação específica no carrinho de compras usando abordagem IA-first.
+    
+    Args:
+        carrinho_compras: Lista de itens no carrinho
+        indice_carrinho: Índice do item no carrinho
+        item: Dicionário do item
+        acao: Ação a executar ("add", "set", "remove")
+        quantidade: Quantidade a ser aplicada
+        nome_produto: Nome do produto para mensagens
+        
+    Returns:
+        String com a mensagem de resposta personalizada
+    """
+    from core.gerenciador_sessao import formatar_carrinho_para_exibicao
+    from ai_llm.llm_interface import generate_personalized_response, analisar_saudacao_com_contexto_ia, gerar_resposta_saudacao_contextual_ia
+    
+    quantidade_antiga = item.get("qt", 1)
+    nome_produto_exibicao = obter_nome_produto(item)
+    
+    # Calcula nova quantidade baseada na ação
+    if acao == "add":
+        quantidade_nova = quantidade_antiga + quantidade
+    elif acao == "set":
+        quantidade_nova = quantidade
+    elif acao == "remove":
+        quantidade_nova = max(0, quantidade_antiga - quantidade)
+    else:
+        quantidade_nova = quantidade_antiga
+    
+    if quantidade_nova <= 0:
+        # Remove item do carrinho
+        item_removido = carrinho_compras.pop(indice_carrinho)
+        
+        if carrinho_compras:
+            # Carrinho ainda tem itens
+            exibicao_carrinho = formatar_carrinho_para_exibicao(carrinho_compras)
+            texto_resposta = f"✅ *{nome_produto_exibicao}* removido do carrinho!\n\n{exibicao_carrinho}"
+        else:
+            # Carrinho ficou vazio - usar IA para gerar resposta contextual
+            try:
+                # Gera mensagem personalizada usando IA
+                dados_contexto = {"produto_removido": nome_produto_exibicao}
+                texto_resposta = generate_personalized_response("empty_cart", {"conversation_history": []}, **dados_contexto)
+                if not texto_resposta:
+                    texto_resposta = f"✅ *{nome_produto_exibicao}* removido!\n\n🛒 Seu carrinho está vazio agora."
+            except:
+                texto_resposta = f"✅ *{nome_produto_exibicao}* removido!\n\n🛒 Seu carrinho está vazio agora."
+    else:
+        # Atualiza quantidade do item
+        carrinho_compras[indice_carrinho]["qt"] = quantidade_nova
+        
+        # Gera mensagem baseada na ação usando abordagem IA-first para personalização
+        if acao == "add":
+            mensagem_acao = f"✅ Adicionei *{quantidade}* {nome_produto_exibicao}! Agora você tem *{quantidade_nova}* no total."
+        elif acao == "set":
+            mensagem_acao = f"✅ Quantidade alterada! Agora você tem *{quantidade_nova}* {nome_produto_exibicao}."
+        else:
+            mensagem_acao = f"✅ Quantidade atualizada para *{quantidade_nova}* {nome_produto_exibicao}!"
+        
+        exibicao_carrinho = formatar_carrinho_para_exibicao(carrinho_compras)
+        texto_resposta = f"{mensagem_acao}\n\n{exibicao_carrinho}"
+    
+    return texto_resposta
 
 
 def gerar_mensagem_continuar_ou_finalizar(carrinho: List[Dict]) -> str:
@@ -1115,22 +1181,33 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
                 response_text = "😕 No momento não temos promoções ativas. Mas temos muitos produtos com ótimos preços!"
                 adicionar_mensagem_historico(session, "assistant", response_text, "NO_PROMOTIONS_FOUND")
             else:
-                last_shown_products = cheapest_promos
-                title = "💰 Promoções Mais Baratas:"
+                produtos_exibidos_ultima_busca = cheapest_promos
+                titulo = "💰 Promoções Mais Baratas:"
                 
                 # Formata apenas as promoções (sem produtos normais)
-                response_text = formatar_lista_produtos_inteligente([], cheapest_promos, title)
-                last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                texto_resposta = formatar_lista_produtos_inteligente([], cheapest_promos, titulo)
+                ultima_acao_bot = "AWAITING_PRODUCT_SELECTION"
+                
+                # 🆕 INICIALIZA DESLOCAMENTO PARA FUNCIONAR COM "MAIS"
+                deslocamento_atual = len(produtos_exibidos_ultima_busca)
+                tipo_ultima_busca = "busca_inteligente"
+                parametros_ultima_busca = {
+                    "termo_busca": search_term,
+                    "categoria": "promocoes_gerais"
+                }
                 
                 # 🆕 SALVA PRODUTOS NO ESTADO PARA PERMITIR SELEÇÃO NUMÉRICA
-                state["last_shown_products"] = last_shown_products
-                state["last_bot_action"] = last_bot_action
+                state["last_shown_products"] = produtos_exibidos_ultima_busca
+                state["last_bot_action"] = ultima_acao_bot
                 
                 # 🔧 ATUALIZA TAMBÉM AS VARIÁVEIS LOCAIS PARA SEREM SALVAS NO FINAL
-                last_shown_products = state["last_shown_products"]  # Atualiza variável local
-                last_bot_action = state["last_bot_action"]  # Atualiza variável local
+                last_shown_products = produtos_exibidos_ultima_busca
+                last_bot_action = ultima_acao_bot
+                current_offset = deslocamento_atual
+                last_search_type = tipo_ultima_busca
+                last_search_params = parametros_ultima_busca
                 
-                adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_CHEAPEST_PROMOTIONS")
+                adicionar_mensagem_historico(session, "assistant", texto_resposta, "SHOW_CHEAPEST_PROMOTIONS")
         
         else:
             # 🆕 DETECTAR SE É BUSCA POR CATEGORIA + PROMOÇÃO (ex: "cerveja em promoção")
@@ -1280,13 +1357,29 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     response_text = f"😕 Não temos promoções ativas na categoria '{category}' no momento. Que tal ver nossos produtos normais desta categoria?"
                     adicionar_mensagem_historico(session, "assistant", response_text, "NO_CATEGORY_PROMOTIONS")
                 else:
-                    last_shown_products = promo_products
-                    title = f"🔥 Promoções na categoria '{category.title()}':"
+                    produtos_exibidos_ultima_busca = promo_products
+                    titulo = f"🔥 Promoções na categoria '{category.title()}':"
+                    
+                    # 🆕 INICIALIZA DESLOCAMENTO PARA FUNCIONAR COM "MAIS"
+                    deslocamento_atual = len(produtos_exibidos_ultima_busca)
+                    tipo_ultima_busca = "busca_inteligente"
+                    parametros_ultima_busca = {
+                        "termo_busca": search_term,
+                        "categoria": category
+                    }
                     
                     # Formata apenas as promoções
-                    response_text = formatar_lista_produtos_inteligente([], promo_products, title)
-                    last_bot_action = "AWAITING_PRODUCT_SELECTION"
-                    adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_CATEGORY_PROMOTIONS")
+                    texto_resposta = formatar_lista_produtos_inteligente([], promo_products, titulo)
+                    ultima_acao_bot = "AWAITING_PRODUCT_SELECTION"
+                    
+                    # Atualiza variáveis locais
+                    last_shown_products = produtos_exibidos_ultima_busca
+                    last_bot_action = ultima_acao_bot
+                    current_offset = deslocamento_atual
+                    last_search_type = tipo_ultima_busca
+                    last_search_params = parametros_ultima_busca
+                    
+                    adicionar_mensagem_historico(session, "assistant", texto_resposta, "SHOW_CATEGORY_PROMOTIONS")
                     
             else:
                 # 4. Buscar produtos normais + seção de promocionais da categoria
@@ -1458,13 +1551,19 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     state["last_shown_products"] = last_shown_products
                     state["last_bot_action"] = last_bot_action
                     
-                    # 🆕 SALVA PARÂMETROS PARA FUNCIONAR COM "MAIS"
-                    last_search_type = "smart_search"
-                    last_search_params = {
-                        "search_term": search_term,
-                        "category": category,
+                    # 🆕 SALVA PARÂMETROS PARA FUNCIONAR COM "MAIS" - INICIALIZA DESLOCAMENTO
+                    deslocamento_atual = len(last_shown_products)  # Define deslocamento baseado nos produtos já mostrados
+                    tipo_ultima_busca = "busca_inteligente"
+                    parametros_ultima_busca = {
+                        "termo_busca": search_term,
+                        "categoria": category,
                         "marca_priorizada": analise_marca.get("marca") if analise_marca.get("tipo_busca") == "marca_especifica" else None
                     }
+                    
+                    # Atualiza variáveis locais
+                    current_offset = deslocamento_atual
+                    last_search_type = tipo_ultima_busca
+                    last_search_params = parametros_ultima_busca
                     
                     print(f">>> DEBUG: [SALVAR_BUSCA] Salvando busca inteligente - tipo: {last_search_type}, params: {last_search_params}")
                     
@@ -1477,147 +1576,172 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     # 📝 LOG DA RESPOSTA DO BOT PARA ANÁLISE
                     print(f">>> BOT_RESPONSE: {response_text[:200]}..." if len(response_text) > 200 else f">>> BOT_RESPONSE: {response_text}")
 
-    elif tool_name in ["obter_produtos_mais_vendidos", "obter_produtos_mais_vendidos_by_name"]:
+    elif tool_name in ["obter_produtos_mais_vendidos", "obter_produtos_mais_vendidos_by_name", "obter_produtos_mais_vendidos_por_nome"]:
         last_kb_search_term, last_shown_products = None, []
 
-        if tool_name == "obter_produtos_mais_vendidos_by_name":
-            product_name = parameters.get("product_name", "")
+        if tool_name in ["obter_produtos_mais_vendidos_by_name", "obter_produtos_mais_vendidos_por_nome"]:
+            nome_produto = parameters.get("product_name", "") or parameters.get("nome_produto", "")
 
             # 🆕 EXTRAI ESPECIFICAÇÕES DO PRODUTO COM IA
-            print(f">>> CONSOLE: Extraindo especificações de '{product_name}' com IA...")
-            especificacoes = extrair_especificacoes_produto_ia(product_name)
+            print(f">>> CONSOLE: Extraindo especificações de '{nome_produto}' com IA...")
+            especificacoes = extrair_especificacoes_produto_ia(nome_produto)
             
             if especificacoes.get("enhanced_search_term"):
-                product_name_enhanced = especificacoes["enhanced_search_term"]
-                print(f">>> CONSOLE: Termo otimizado: '{product_name}' → '{product_name_enhanced}'")
-                product_name = product_name_enhanced
+                nome_produto_otimizado = especificacoes["enhanced_search_term"]
+                print(f">>> CONSOLE: Termo otimizado: '{nome_produto}' → '{nome_produto_otimizado}'")
+                nome_produto = nome_produto_otimizado
 
             # 🆕 BUSCA FUZZY INTELIGENTE
-            print(f">>> CONSOLE: Buscando '{product_name}' com sistema fuzzy...")
+            print(f">>> CONSOLE: Buscando '{nome_produto}' com sistema fuzzy...")
 
             # Etapa 1: Tenta Knowledge Base com análise
-            kb_products, kb_analysis = encontrar_produto_na_kb_com_analise(product_name)
+            produtos_kb, analise_kb = encontrar_produto_na_kb_com_analise(nome_produto)
 
-            if kb_products and kb_analysis.get("quality") in ["excellent", "good"]:
+            if produtos_kb and analise_kb.get("quality") in ["excellent", "good"]:
                 # Knowledge Base encontrou bons resultados
-                last_kb_search_term = product_name
-                last_shown_products = kb_products[:10]  # Limita a 10
+                ultimo_termo_busca_kb = nome_produto
+                produtos_exibidos_ultima_busca = produtos_kb[:10]  # Limita a 10
 
-                quality_emoji = "⚡" if kb_analysis["quality"] == "excellent" else "🎯"
-                title = f"{quality_emoji} Encontrei isto para '{product_name}' (busca rápida):"
+                emoji_qualidade = "⚡" if analise_kb["quality"] == "excellent" else "🎯"
+                titulo = f"{emoji_qualidade} Encontrei isto para '{nome_produto}' (busca rápida):"
 
-                response_text = formatar_lista_produtos_para_exibicao(
-                    last_shown_products, title, False, 0
+                texto_resposta = formatar_lista_produtos_para_exibicao(
+                    produtos_exibidos_ultima_busca, titulo, False, 0
                 )
-                last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                ultima_acao_bot = "AWAITING_PRODUCT_SELECTION"
+                
+                # Atualiza variáveis locais
+                last_shown_products = produtos_exibidos_ultima_busca
+                last_bot_action = ultima_acao_bot
+                last_kb_search_term = ultimo_termo_busca_kb
+                
                 adicionar_mensagem_historico(
-                    session, "assistant", response_text, "SHOW_PRODUCTS_FROM_KB"
+                    session, "assistant", texto_resposta, "SHOW_PRODUCTS_FROM_KB"
                 )
 
                 print(
-                    f">>> CONSOLE: KB encontrou {len(last_shown_products)} produtos (qualidade: {kb_analysis['quality']})"
+                    f">>> CONSOLE: KB encontrou {len(produtos_exibidos_ultima_busca)} produtos (qualidade: {analise_kb['quality']})"
                 )
 
             else:
                 # Knowledge Base não encontrou ou qualidade baixa - busca no banco com fuzzy
                 print(
-                    f">>> CONSOLE: KB qualidade baixa ({kb_analysis.get('quality', 'none')}), buscando no banco..."
+                    f">>> CONSOLE: KB qualidade baixa ({analise_kb.get('quality', 'none')}), buscando no banco..."
                 )
 
-                current_offset, last_shown_products = 0, []
-                last_search_type, last_search_params = "by_name", {
-                    "product_name": product_name
+                deslocamento_atual, produtos_exibidos_ultima_busca = 0, []
+                tipo_ultima_busca, parametros_ultima_busca = "busca_por_nome", {
+                    "nome_produto": nome_produto
                 }
 
                 # 🆕 USA BUSCA FUZZY COM SUGESTÕES
-                search_result = pesquisar_produtos_com_sugestoes(
-                    product_name, limite=10, offset=current_offset
+                resultado_busca = pesquisar_produtos_com_sugestoes(
+                    nome_produto, limite=10, offset=deslocamento_atual
                 )
 
-                products = search_result["products"]
-                suggestions = search_result["suggestions"]
+                produtos = resultado_busca["products"]
+                sugestoes = resultado_busca["suggestions"]
 
-                if products:
-                    current_offset += len(products)
-                    last_shown_products.extend(products)
-                    print(f">>> DEBUG: [BY_NAME_SEARCH] Incrementou offset com {len(products)} produtos, novo offset: {current_offset}")
+                if produtos:
+                    deslocamento_atual += len(produtos)
+                    produtos_exibidos_ultima_busca.extend(produtos)
+                    print(f">>> DEBUG: [BY_NAME_SEARCH] Incrementou offset com {len(produtos)} produtos, novo offset: {deslocamento_atual}")
 
                     # Determina emoji baseado na qualidade
-                    if len(products) >= 3:
-                        title_emoji = "🎯"
-                    elif suggestions:
-                        title_emoji = "🔍"
+                    if len(produtos) >= 3:
+                        emoji_titulo = "🎯"
+                    elif sugestoes:
+                        emoji_titulo = "🔍"
                     else:
-                        title_emoji = "📦"
+                        emoji_titulo = "📦"
 
-                    title = f"{title_emoji} Encontrei estes produtos relacionados a '{product_name}':"
-                    response_text = formatar_lista_produtos_para_exibicao(
-                        products, title, len(products) == 10, 0
+                    titulo = f"{emoji_titulo} Encontrei estes produtos relacionados a '{nome_produto}':"
+                    texto_resposta = formatar_lista_produtos_para_exibicao(
+                        produtos, titulo, len(produtos) == 10, 0
                     )
 
                     # 🆕 ADICIONA SUGESTÕES SE HOUVER
-                    if suggestions:
-                        response_text += f"\n💡 Dica: {suggestions[0]}"
+                    if sugestoes:
+                        texto_resposta += f"\n💡 Dica: {sugestoes[0]}"
 
-                    last_bot_action = "AWAITING_PRODUCT_SELECTION"
+                    ultima_acao_bot = "AWAITING_PRODUCT_SELECTION"
+                    
+                    # Atualiza variáveis locais
+                    current_offset = deslocamento_atual
+                    last_shown_products = produtos_exibidos_ultima_busca
+                    last_bot_action = ultima_acao_bot
+                    last_search_type = tipo_ultima_busca
+                    last_search_params = parametros_ultima_busca
+                    
                     adicionar_mensagem_historico(
-                        session, "assistant", response_text, "SHOW_PRODUCTS_FROM_DB"
+                        session, "assistant", texto_resposta, "SHOW_PRODUCTS_FROM_DB"
                     )
 
                 else:
                     # Nenhum produto encontrado - usa IA para correção e sugestões
                     print(
-                        f">>> CONSOLE: Nenhum produto encontrado para '{product_name}'"
+                        f">>> CONSOLE: Nenhum produto encontrado para '{nome_produto}'"
                     )
 
                     # 🆕 USA IA PARA CORRIGIR E SUGERIR
                     print(">>> CONSOLE: Usando IA para corrigir e sugerir alternativas...")
                     historico_conversa = obter_contexto_conversa(session)
                     correcoes_ia = corrigir_e_sugerir_ia(
-                        product_name, 
+                        nome_produto, 
                         historico_conversa, 
                         shopping_cart
                     )
 
-                    response_text = f"Não achei nada com '{product_name}', mas vou te ajudar a encontrar!"
+                    texto_resposta = f"Não achei nada com '{nome_produto}', mas vou te ajudar a encontrar!"
 
                     # Adiciona correções da IA se disponíveis
                     if correcoes_ia.get("correction"):
-                        response_text += f"\n\n🔧 Você quis dizer: *{correcoes_ia['correction']}*?"
+                        texto_resposta += f"\n\n🔧 Você quis dizer: *{correcoes_ia['correction']}*?"
                     
                     if correcoes_ia.get("suggestions"):
-                        response_text += f"\n\n💡 Sugestões: {', '.join(correcoes_ia['suggestions'][:3])}"
+                        texto_resposta += f"\n\n💡 Sugestões: {', '.join(correcoes_ia['suggestions'][:3])}"
                     
                     # Fallback para sugestões do banco
-                    if suggestions and not correcoes_ia.get("suggestions"):
-                        response_text += f"\n\n💡 {suggestions[0]}"
-                        response_text += "\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'."
+                    if sugestoes and not correcoes_ia.get("suggestions"):
+                        texto_resposta += f"\n\n💡 {sugestoes[0]}"
+                        texto_resposta += "\n\nOu tente buscar por categoria: 'refrigerantes', 'detergentes', 'alimentos'."
                     elif not correcoes_ia.get("suggestions"):
-                        response_text += "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
+                        texto_resposta += "\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'."
 
-                    last_bot_action = None
+                    ultima_acao_bot = None
+                    
+                    # Atualiza variáveis locais
+                    last_bot_action = ultima_acao_bot
                     adicionar_mensagem_historico(
-                        session, "assistant", response_text, "NO_PRODUCTS_FOUND"
+                        session, "assistant", texto_resposta, "NO_PRODUCTS_FOUND"
                     )
 
                 print(
-                    f">>> CONSOLE: Banco encontrou {len(products)} produtos, {len(suggestions)} sugestões"
+                    f">>> CONSOLE: Banco encontrou {len(produtos)} produtos, {len(sugestoes)} sugestões"
                 )
 
         else:  # obter_produtos_mais_vendidos
-            current_offset, last_shown_products = 0, []
-            last_search_type, last_search_params = "top_selling", parameters
-            products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
-            title = "⭐ Estes são nossos produtos mais populares:"
-            current_offset += len(products)
-            last_shown_products.extend(products)
-            print(f">>> DEBUG: [TOP_SELLING_SEARCH] Incrementou offset com {len(products)} produtos, novo offset: {current_offset}")
-            response_text = formatar_lista_produtos_para_exibicao(
-                products, title, len(products) == 10, 0
+            deslocamento_atual, produtos_exibidos_ultima_busca = 0, []
+            tipo_ultima_busca, parametros_ultima_busca = "mais_vendidos", parameters
+            produtos = database.obter_produtos_mais_vendidos(limite=10, offset=deslocamento_atual)
+            titulo = "⭐ Estes são nossos produtos mais populares:"
+            deslocamento_atual += len(produtos)
+            produtos_exibidos_ultima_busca.extend(produtos)
+            print(f">>> DEBUG: [TOP_SELLING_SEARCH] Incrementou offset com {len(produtos)} produtos, novo offset: {deslocamento_atual}")
+            texto_resposta = formatar_lista_produtos_para_exibicao(
+                produtos, titulo, len(produtos) == 10, 0
             )
-            last_bot_action = "AWAITING_PRODUCT_SELECTION"
+            ultima_acao_bot = "AWAITING_PRODUCT_SELECTION"
+            
+            # Atualiza variáveis locais
+            current_offset = deslocamento_atual
+            last_shown_products = produtos_exibidos_ultima_busca
+            last_bot_action = ultima_acao_bot
+            last_search_type = tipo_ultima_busca
+            last_search_params = parametros_ultima_busca
+            
             adicionar_mensagem_historico(
-                session, "assistant", response_text, "SHOW_TOP_PRODUCTS"
+                session, "assistant", texto_resposta, "SHOW_TOP_PRODUCTS"
             )
 
     elif tool_name == "adicionar_item_ao_carrinho":
@@ -1840,19 +1964,19 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             print(f">>> DEBUG: [MAIS_PRODUTOS] last_search_params: {last_search_params}")
             print(f">>> DEBUG: [MAIS_PRODUTOS] current_offset: {current_offset}")
             
-            if last_search_type == "top_selling":
+            if last_search_type in ["top_selling", "mais_vendidos"]:
                 products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
                 title = "Mostrando mais produtos populares:"
-            elif last_search_type == "by_name":
-                product_name = last_search_params.get("product_name", "")
+            elif last_search_type in ["by_name", "busca_por_nome"]:
+                nome_produto = last_search_params.get("product_name", "") or last_search_params.get("nome_produto", "")
                 products = database.obter_produtos_mais_vendidos_por_nome(
-                    product_name, limite=10, offset=current_offset
+                    nome_produto, limite=10, offset=current_offset
                 )
-                title = f"Mostrando mais produtos relacionados a '{product_name}':"
-            elif last_search_type == "smart_search":
+                title = f"Mostrando mais produtos relacionados a '{nome_produto}':"
+            elif last_search_type == "busca_inteligente":
                 # 🆕 SUPORTE PARA BUSCA INTELIGENTE COM "MAIS"
-                search_term = last_search_params.get("search_term", "")
-                category = last_search_params.get("category", "")
+                search_term = last_search_params.get("termo_busca", "")
+                category = last_search_params.get("categoria", "")
                 marca_priorizada = last_search_params.get("marca_priorizada")
                 
                 print(f">>> DEBUG: [MAIS_SMART] Continuando busca inteligente - termo: '{search_term}', categoria: '{category}', marca: '{marca_priorizada}'")
@@ -2075,13 +2199,50 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             # Sempre adiciona quick actions nas saudações
             response_text += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
         elif last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
-            # Preserva o estado se estiver aguardando seleção de produtos
-            response_text = f"{response_param}"
-            if last_shown_products:
-                response_text += f"\n\n📦 *Escolha um produto da lista:*\n"
-                for i, prod in enumerate(last_shown_products, 1):
-                    response_text += f"*{i}.* {obter_nome_produto(prod)}\n"
-                response_text += f"\nDigite o número de *1* a *{len(last_shown_products)}*."
+            # 🆕 USA IA PARA DETECTAR SAUDAÇÃO SEMANTICAMENTE
+            historico_conversa = session.get('conversation_history', [])
+            ultima_mensagem_usuario = ""
+            for msg in reversed(historico_conversa):
+                if msg.get('role') == 'user':
+                    ultima_mensagem_usuario = msg.get('message', '')
+                    break
+            
+            # 🤖 IA ANALISA SEMANTICAMENTE SE É SAUDAÇÃO
+            eh_saudacao_contextual = analisar_saudacao_com_contexto_ia(ultima_mensagem_usuario, last_shown_products, last_search_params)
+            
+            if eh_saudacao_contextual and last_shown_products:
+                # Gera resposta contextual inteligente usando IA
+                total_produtos = len(last_shown_products)
+                categoria_busca = last_search_params.get('categoria', last_search_params.get('category', ''))
+                termo_busca = last_search_params.get('termo_busca', last_search_params.get('search_term', ''))
+                
+                contexto_resposta = {
+                    "eh_saudacao": True,
+                    "tem_produtos_ativos": True,
+                    "total_produtos": total_produtos,
+                    "categoria": categoria_busca,
+                    "termo_busca": termo_busca,
+                    "mensagem_usuario": ultima_mensagem_usuario
+                }
+                
+                response_text = gerar_resposta_saudacao_contextual_ia(contexto_resposta)
+                
+                # Fallback se IA falhar
+                if not response_text:
+                    if categoria_busca:
+                        response_text = f"Oi! 👋 Vi que você está vendo nossa seleção de {categoria_busca.lower()}."
+                    else:
+                        response_text = f"Oi! 👋 Vi que você está vendo nossos produtos."
+                    response_text += f" Escolha um número de *1* a *{total_produtos}* ou digite *'mais'* para ver outras opções."
+                
+            else:
+                # Resposta normal mantendo contexto
+                response_text = f"{response_param}"
+                if last_shown_products:
+                    response_text += f"\n\n📦 *Escolha um produto da lista:*\n"
+                    for i, prod in enumerate(last_shown_products, 1):
+                        response_text += f"*{i}.* {obter_nome_produto(prod)}\n"
+                    response_text += f"\nDigite o número de *1* a *{len(last_shown_products)}*."
             # Mantém o estado atual - não reseta
         else:
             # 🚀 IA-FIRST: DETECÇÃO INTELIGENTE DE "MAIS PRODUTOS"
@@ -2108,10 +2269,10 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 products = []
                 title = ""
                 
-                if last_search_type == "smart_search":
+                if last_search_type == "busca_inteligente":
                     # 🆕 SUPORTE PARA BUSCA INTELIGENTE COM "MAIS"
-                    search_term = last_search_params.get("search_term", "")
-                    category = last_search_params.get("category", "")
+                    search_term = last_search_params.get("termo_busca", "")
+                    category = last_search_params.get("categoria", "")
                     marca_priorizada = last_search_params.get("marca_priorizada")
                     
                     print(f">>> DEBUG: [IA-FIRST-SMART] Continuando busca - termo: '{search_term}', categoria: '{category}', marca: '{marca_priorizada}'")
@@ -2131,12 +2292,12 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         products = search_result["products"]
                         title = f"Mais produtos relacionados a '{search_term}':"
                 
-                elif last_search_type == "by_name":
-                    product_name = last_search_params.get("product_name", "")
-                    products = database.obter_produtos_mais_vendidos_por_nome(product_name, limite=10, offset=current_offset)
-                    title = f"Mais produtos relacionados a '{product_name}':"
+                elif last_search_type in ["by_name", "busca_por_nome"]:
+                    nome_produto = last_search_params.get("product_name", "") or last_search_params.get("nome_produto", "")
+                    products = database.obter_produtos_mais_vendidos_por_nome(nome_produto, limite=10, offset=current_offset)
+                    title = f"Mais produtos relacionados a '{nome_produto}':"
                 
-                elif last_search_type == "top_selling":
+                elif last_search_type in ["top_selling", "mais_vendidos"]:
                     products = database.obter_produtos_mais_vendidos(limite=10, offset=current_offset)
                     title = "Mais produtos populares:"
                 
