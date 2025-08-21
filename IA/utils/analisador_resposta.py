@@ -453,7 +453,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     if any(phrase in texto_lower for phrase in [
         "produtos populares", "mais vendidos", "top produtos",
         "popular products", "best sellers"
-    ]):
+    ]) or re.fullmatch(r"\s*produtos\s*[?!.]*", texto_lower):
         print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: PRODUTOS POPULARES")
         return {
             "nome_ferramenta": "get_top_selling_products",
