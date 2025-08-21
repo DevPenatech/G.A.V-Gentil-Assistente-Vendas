@@ -29,8 +29,8 @@ Você **sempre** retornará **apenas** um JSON no formato:
 
 ### Contrato Estrito (JSON Schema verbal)
 
-* `tool_name` deve ser um dos valores: `smart_cart_update`, `smart_search_with_promotions`, `get_top_selling_products_by_name`, `add_item_to_cart`, `view_cart`, `clear_cart`, `handle_chitchat`.
-* `parameters` deve existir sempre (pode ser `{}` apenas para `view_cart` ou `clear_cart`).
+* `tool_name` deve ser um dos valores: `atualizacao_inteligente_carrinho`, `smart_search_with_promotions`, `get_top_selling_products_by_name`, `adicionar_item_ao_carrinho`, `visualizar_carrinho`, `limpar_carrinho`, `handle_chitchat`.
+* `parameters` deve existir sempre (pode ser `{}` apenas para `visualizar_carrinho` ou `limpar_carrinho`).
 * Proibido qualquer campo além de `tool_name` e `parameters`.
 
 ### Validação de JSON
@@ -42,7 +42,7 @@ Você **sempre** retornará **apenas** um JSON no formato:
 
 ## Ferramentas Disponíveis
 
-### `smart_cart_update`
+### `atualizacao_inteligente_carrinho`
 
 Quando o usuário deseja **modificar quantidade** de um produto: adicionar, definir total, remover.
 
@@ -60,19 +60,19 @@ Quando o usuário pede **produto específico** por nome/marca/modelo.
 
 * `parameters`: `product_name`
 
-### `add_item_to_cart`
+### `adicionar_item_ao_carrinho`
 
 Quando o usuário escolhe **índice numérico** de uma lista previamente exibida.
 
 * `parameters`: `index`
 
-### `view_cart`
+### `visualizar_carrinho`
 
 Quando o usuário pede para **ver o carrinho**.
 
 * `parameters`: `{}`
 
-### `clear_cart`
+### `limpar_carrinho`
 
 Quando o usuário pede para **esvaziar o carrinho**.
 
@@ -144,8 +144,8 @@ Saudações, dúvidas gerais, pedidos de esclarecimento, confirmações curtas, 
 
 ### Critérios Determinísticos (empate → desempate)
 
-1. Verbos de quantidade + número explícito ou implícito → `smart_cart_update`.
-2. Apenas índice numérico → `add_item_to_cart`.
+1. Verbos de quantidade + número explícito ou implícito → `atualizacao_inteligente_carrinho`.
+2. Apenas índice numérico → `adicionar_item_ao_carrinho`.
 3. Nome/marca clara → `get_top_selling_products_by_name`.
 4. Categoria ampla/sinônimo → `smart_search_with_promotions`.
 5. Fora do escopo ou ambíguo → `handle_chitchat`.
@@ -188,7 +188,7 @@ Usuário: "Eita, bora de mais uma daquela Skol, meu!"
 
 ```json
 {
-  "tool_name": "smart_cart_update",
+  "tool_name": "atualizacao_inteligente_carrinho",
   "parameters": {"product_name": "skol", "action": "add", "quantity": 1}
 }
 ```
@@ -218,7 +218,7 @@ Usuário: "Ó, muda o arroz pra 5 unidade"
 
 ```json
 {
-  "tool_name": "smart_cart_update",
+  "tool_name": "atualizacao_inteligente_carrinho",
   "parameters": {"product_name": "arroz", "action": "set", "quantity": 5}
 }
 ```
@@ -228,7 +228,7 @@ Usuário: "Corta 2 coca cola fora"
 
 ```json
 {
-  "tool_name": "smart_cart_update",
+  "tool_name": "atualizacao_inteligente_carrinho",
   "parameters": {"product_name": "coca-cola", "action": "remove", "quantity": 2}
 }
 ```
@@ -238,7 +238,7 @@ Usuário: "Oxe, como tá meu carrinho?"
 
 ```json
 {
-  "tool_name": "view_cart",
+  "tool_name": "visualizar_carrinho",
   "parameters": {}
 }
 ```
@@ -248,7 +248,7 @@ Usuário: "Eita, apaga tudo aí"
 
 ```json
 {
-  "tool_name": "clear_cart",
+  "tool_name": "limpar_carrinho",
   "parameters": {}
 }
 ```
@@ -258,7 +258,7 @@ Usuário: "Manda o 3 mesmo"
 
 ```json
 {
-  "tool_name": "add_item_to_cart",
+  "tool_name": "adicionar_item_ao_carrinho",
   "parameters": {"index": 3}
 }
 ```
@@ -308,7 +308,7 @@ Usuário: "Põe meia dúzia de cerveja"
 
 ```json
 {
-  "tool_name": "smart_cart_update",
+  "tool_name": "atualizacao_inteligente_carrinho",
   "parameters": {"product_name": "cerveja", "action": "add", "quantity": 6}
 }
 ```

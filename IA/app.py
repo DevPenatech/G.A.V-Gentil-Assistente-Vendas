@@ -716,7 +716,7 @@ def _handle_pending_action(
 
     elif pending_action == "AWAITING_SMART_UPDATE_SELECTION":
         print(">>> CONSOLE: CHEGOU NO ELIF AWAITING_SMART_UPDATE_SELECTION")
-        # 🆕 Tratamento para seleção em smart_cart_update
+        # 🆕 Tratamento para seleção em atualizacao_inteligente_carrinho
         print(">>> CONSOLE: Tratando ação pendente AWAITING_SMART_UPDATE_SELECTION")
         print(f">>> CONSOLE: Mensagem recebida: '{incoming_msg}'")
         try:
@@ -1027,8 +1027,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
     # Mapeamento de nomes em português para inglês (para compatibilidade)
     nome_para_ingles = {
         "busca_inteligente_com_promocoes": "smart_search_with_promotions",
-        "obter_produtos_mais_vendidos_por_nome": "obter_produtos_mais_vendidos_by_name",
-        "atualizacao_inteligente_carrinho": "smart_cart_update",
+        "obter_produtos_mais_vendidos_por_nome": "obter_produtos_mais_vendidos_por_nome",
+        "atualizacao_inteligente_carrinho": "atualizacao_inteligente_carrinho",
         "visualizar_carrinho": "visualizar_carrinho",
         "limpar_carrinho": "limpar_carrinho",
         "adicionar_item_ao_carrinho": "adicionar_item_ao_carrinho",
@@ -2229,7 +2229,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             })
             pending_action = None
 
-    elif tool_name == "smart_cart_update":
+    elif tool_name == "atualizacao_inteligente_carrinho":
         # 🆕 NOVA FERRAMENTA: Atualização inteligente do carrinho
         product_name = parameters.get("product_name", "").strip()
         action = parameters.get("action", "add")  # "add", "set", "remove"
