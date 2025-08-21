@@ -480,6 +480,34 @@ def obter_contexto_conversa(dados_sessao: Dict, max_mensagens: int = 14) -> str:
     logging.debug(f"Contexto da conversa obtido: {contexto_final[:200]}...")
     return contexto_final
 
+def obter_contexto_conversa_resumido(dados_sessao: Dict, max_mensagens: int = 20) -> Dict[str, Union[str, List[str]]]:
+    """Retorna um contexto estruturado com resumo e mensagens recentes.
+
+    Args:
+        dados_sessao: Os dados da sessão.
+        max_mensagens: Quantidade máxima de mensagens recentes a incluir.
+
+    Returns:
+        Dict com chaves:
+            - resumo: resumo combinado das mensagens anteriores (limitado).
+            - mensagens_recentes: lista de strings das mensagens recentes.
+    """
+    historico = dados_sessao.get("historico_conversa", [])
+    resumo = dados_sessao.get("resumo_conversa", "") or ""
+
+    resumo_limitado = resumo[-1000:]
+
+    mensagens_formatadas: List[str] = []
+    if historico:
+        for msg in historico[-max_mensagens:]:
+            role = "Cliente" if msg.get("role") == "user" else "G.A.V."
+            conteudo = msg.get("message", "").replace("\n", " ")
+            if len(conteudo) > 200:
+                conteudo = conteudo[:200] + "..."
+            mensagens_formatadas.append(f"{role}: {conteudo}")
+
+    return {"resumo": resumo_limitado, "mensagens_recentes": mensagens_formatadas}
+
 def detectar_comandos_limpar_carrinho(mensagem: str) -> bool:
     """Detecta comandos de limpeza de carrinho.
 

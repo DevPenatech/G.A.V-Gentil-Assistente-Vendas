@@ -14,7 +14,10 @@ from typing import Union, Dict, List
 import time
 
 
-from core.gerenciador_sessao import obter_contexto_conversa
+from core.gerenciador_sessao import (
+    obter_contexto_conversa,
+    obter_contexto_conversa_resumido,
+)
 from utils.extrator_quantidade import detectar_modificadores_quantidade
 from utils.analisador_resposta import extrair_json_da_resposta_ia
 from utils.classificador_intencao import detectar_intencao_usuario_com_ia, detectar_intencao_com_sistemas_criticos
@@ -594,8 +597,13 @@ def get_intent(
             f"[llm_interface.py] System prompt preparado. Tamanho: {len(system_prompt)} caracteres"
         )
 
-        # Obtém contexto EXPANDIDO da conversa (14 mensagens para melhor contexto)
-        conversation_context = obter_contexto_conversa(session_data, max_messages=14)
+        # Obtém contexto estruturado da conversa (resumo + mensagens recentes)
+        contexto_conversa = obter_contexto_conversa_resumido(session_data, max_mensagens=20)
+        resumo_conversa = contexto_conversa.get("resumo", "")
+        mensagens_recentes = contexto_conversa.get("mensagens_recentes", [])
+        mensagens_formatadas = "\n".join(
+            f"{i + 1}. {m}" for i, m in enumerate(mensagens_recentes)
+        )
         print(f">>> CONSOLE: Contexto da conversa com {len(session_data.get('conversation_history', []))} mensagens totais")
 
         # Informações do carrinho
@@ -642,10 +650,11 @@ def get_intent(
 
 MENSAGEM DO USUÁRIO: "{user_message}"
 
-{special_context}
+{special_context}RESUMO DA CONVERSA:
+{resumo_conversa}
 
-CONTEXTO DA CONVERSA (ESSENCIAL PARA ENTENDER A SITUAÇÃO ATUAL):
-{conversation_context}
+MENSAGENS RECENTES:
+{mensagens_formatadas}
 
 ⚠️ IMPORTANTE: Analise TODO o histórico acima para entender:
 - O que o cliente já pediu ou buscou
