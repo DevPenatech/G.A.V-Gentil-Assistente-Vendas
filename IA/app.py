@@ -962,6 +962,31 @@ def _process_mensagem_usuario(
                 print(f">>> CONSOLE: Número {numero} inválido para {len(produtos_mostrados)} produtos")
                 # Deixa a IA processar como fallback
 
+    # 🆕 Verifica se o usuário solicitou uma marca específica enquanto aguarda seleção
+    if state.get("last_bot_action") == "AWAITING_PRODUCT_SELECTION":
+        historico_conversa = obter_contexto_conversa(session)
+        analise_marca = detectar_marca_e_produto_ia(incoming_msg, historico_conversa)
+
+        if analise_marca.get("tipo_busca") == "marca_especifica" and analise_marca.get("marca"):
+            marca = analise_marca.get("marca")
+            last_search_params = state.get("last_search_params", {})
+            termo_base = (
+                last_search_params.get("termo_busca")
+                or last_search_params.get("product_name")
+                or last_search_params.get("categoria")
+                or ""
+            )
+            novo_termo_busca = f"{marca} {termo_base}".strip()
+
+            intent = {
+                "nome_ferramenta": "smart_search_with_promotions",
+                "parametros": {"search_term": novo_termo_busca},
+            }
+
+            # Limpa lista atual para evitar seleções incorretas
+            state["last_shown_products"] = []
+            return intent, response_text
+
     # 1. Análise avançada de intenções de carrinho (se há carrinho ativo)
     if shopping_cart:
         print(">>> CONSOLE: Analisando intenção de carrinho com IA...")
