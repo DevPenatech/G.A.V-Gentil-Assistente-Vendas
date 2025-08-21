@@ -97,7 +97,7 @@ class ControladorFluxoConversa:
         contexto_lower = contexto.lower()
         
         # NOVA LÓGICA: Análise mais precisa baseada em evidências reais
-        if "checkout" in contexto_lower or "finalizar pedido" in contexto_lower:
+        if "finalizar_pedido" in contexto_lower or "finalizar pedido" in contexto_lower:
             return EstadoConversa.PROCESSO_CHECKOUT
         elif "quantas unidades" in contexto_lower and "produto" in contexto_lower:
             return EstadoConversa.SELECAO_QUANTIDADE
@@ -207,7 +207,7 @@ class ControladorFluxoConversa:
                 "esperado": [r'^\d+$', r'\d+\s*unidades?', r'\d+\s*un'],
                 "inesperado": ['carrinho', 'produtos', 'buscar', 'olá']
             },
-            "checkout": {
+            "finalizar_pedido": {
                 "esperado": ['sim', 'não', 'confirmar', 'finalizar', 'cancelar'],
                 "inesperado": ['produtos', 'buscar', 'cerveja', 'adicionar']
             }
@@ -219,8 +219,8 @@ class ControladorFluxoConversa:
             tipo_contexto = "listagem_produtos"
         elif any(frase in contexto_lower for frase in ["quantas unidades", "quantidade"]):
             tipo_contexto = "selecao_quantidade"
-        elif any(frase in contexto_lower for frase in ["finalizar", "checkout", "confirmar"]):
-            tipo_contexto = "checkout"
+        elif any(frase in contexto_lower for frase in ["finalizar", "finalizar_pedido", "confirmar"]):
+            tipo_contexto = "finalizar_pedido"
         
         resultado = {"valido": True, "confianca": 0.8, "problemas": []}
         
@@ -355,7 +355,7 @@ class ControladorFluxoConversa:
         palavras_chave_topicos = {
             "produtos": ["produto", "item", "cerveja", "refrigerante", "limpeza"],
             "carrinho": ["carrinho", "itens", "pedido"],
-            "checkout": ["finalizar", "checkout", "pagamento"],
+            "finalizar_pedido": ["finalizar", "finalizar_pedido", "pagamento"],
             "busca": ["busca", "procurar", "encontrar"],
             "quantidade": ["quantidade", "unidades", "quantos"]
         }
@@ -373,7 +373,7 @@ class ControladorFluxoConversa:
         palavras_chave_topicos = {
             "produtos": ["cerveja", "refrigerante", "produto", "biscoito", "doce", "limpeza"],
             "carrinho": ["carrinho", "meu carrinho", "pedido"],
-            "checkout": ["finalizar", "comprar", "fechar"],
+            "finalizar_pedido": ["finalizar", "comprar", "fechar"],
             "busca": ["quero", "procuro", "busco"],
             "saudacao": ["oi", "olá", "bom dia", "boa tarde"]
         }

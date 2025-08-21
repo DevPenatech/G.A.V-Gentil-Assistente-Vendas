@@ -429,13 +429,13 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
             "parametros": {"index": numero}
         }
     
-    # 5. 💰 CHECKOUT/FINALIZAR
+    # 5. 💰 FINALIZAR PEDIDO
     if any(phrase in texto_lower for phrase in [
-        "finalizar", "checkout", "concluir compra", "fechar pedido"
+        "finalizar", "finalizar pedido", "concluir compra", "fechar pedido"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: CHECKOUT")
+        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: FINALIZAR_PEDIDO")
         return {
-            "nome_ferramenta": "checkout",
+            "nome_ferramenta": "finalizar_pedido",
             "parametros": {}
         }
     

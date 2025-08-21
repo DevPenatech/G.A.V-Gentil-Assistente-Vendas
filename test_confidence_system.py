@@ -337,7 +337,7 @@ def testar_gestao_inteligente_contexto():
         memoria_trabalho = update_working_memory(
             dados_sessao_teste,
             "finalizar",
-            {"nome_ferramenta": "checkout", "parametros": {}}
+            {"nome_ferramenta": "finalizar_pedido", "parametros": {}}
         )
         
         print(f"   Estado da conversa: {memoria_trabalho.get('conversation_state', 'unknown')}")
@@ -378,13 +378,13 @@ def testar_gestao_inteligente_contexto():
         
         # Teste identificação de tarefas pendentes
         tarefas_pendentes = context_manager._identify_incomplete_tasks_ia(
-            dados_sessao_teste, {"nome_ferramenta": "checkout"}
+            dados_sessao_teste, {"nome_ferramenta": "finalizar_pedido"}
         )
         print(f"   Tarefas pendentes identificadas: {len(tarefas_pendentes)}")
         
         # Teste determinação de estado
         estado_atual = context_manager._determine_current_state_ia(
-            dados_sessao_teste, "finalizar", {"nome_ferramenta": "checkout"}
+            dados_sessao_teste, "finalizar", {"nome_ferramenta": "finalizar_pedido"}
         )
         print(f"   Estado atual determinado: {estado_atual}")
         
