@@ -2036,7 +2036,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             response_text = "Para finalizar seu pedido, preciso do seu CNPJ. Por favor, me informe o CNPJ da sua empresa."
             adicionar_mensagem_historico(session, "assistant", response_text, "REQUEST_CNPJ")
 
-    elif tool_name == "ask_continue_or_finalizar_pedido":
+    elif tool_name == "perguntar_continuar_ou_finalizar":
         if shopping_cart:
             response_text = gerar_mensagem_continuar_ou_finalizar(shopping_cart)
             adicionar_mensagem_historico(
