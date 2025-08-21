@@ -477,7 +477,7 @@ def obter_contexto_conversa(dados_sessao: Dict, max_mensagens: int = 14) -> str:
         historico_recente = historico[-max_mensagens:]
         contexto = "HISTÓRICO RECENTE DA CONVERSA:\n"
         for i, msg in enumerate(historico_recente, 1):
-            role = "Cliente" if msg['role'] == 'user' else "G.A.V."
+            role = "Usuário" if msg['role'] == 'user' else "G.A.V"
             mensagem_completa = msg['message'] if len(msg['message']) <= 200 else msg['message'][:200] + "..."
             tipo_acao = msg.get('action_type', '')
             info_acao = f" [{tipo_acao}]" if tipo_acao else ""
@@ -586,15 +586,15 @@ def obter_estatisticas_sessao(dados_sessao: Dict) -> Dict:
     """
     logging.debug("Obtendo estatísticas da sessão.")
     estatisticas = {
-        "itens_carrinho": len(dados_sessao.get("shopping_cart", [])),
-        "tamanho_conversa": len(dados_sessao.get("conversation_history", [])),
+        "itens_carrinho": len(dados_sessao.get("carrinho_compras", [])),
+        "tamanho_conversa": len(dados_sessao.get("historico_conversa", [])),
         "cliente_identificado": bool(dados_sessao.get("customer_context")),
         "ultima_acao": dados_sessao.get("last_bot_action", "NONE"),
         "tem_selecao_pendente": bool(dados_sessao.get("last_shown_products")),
         "tem_quantidade_pendente": bool(dados_sessao.get("pending_product_selection"))
     }
-    
-    carrinho = dados_sessao.get("shopping_cart", [])
+
+    carrinho = dados_sessao.get("carrinho_compras", [])
     valor_total = 0.0
     for item in carrinho:
         # 🎯 PRIORIZA PREÇO PROMOCIONAL se disponível

@@ -1,6 +1,6 @@
 {
     "customer_context": null,
-    "shopping_cart": [
+    "carrinho_compras": [
         {
             "codprod": 8130,
             "descricao": "REFRIG.COCA-COLA LT 350ML",
