@@ -11,6 +11,8 @@ import time
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 
+# Logger
+logger = logging.getLogger(__name__)
 try:
     import ollama
     OLLAMA_DISPONIVEL = True
@@ -413,8 +415,8 @@ def testar_exemplos_classificacao():
         ("produto desconhecido xyz", "outros")
     ]
     
-    print("\n[TESTE] TESTE DE CLASSIFICACAO:")
-    print("=" * 50)
+    logger.info("\n[TESTE] TESTE DE CLASSIFICACAO:")
+    logger.info("=" * 50)
     
     resultados = {"correto": 0, "errado": 0}
     
@@ -422,28 +424,28 @@ def testar_exemplos_classificacao():
         resultado = classificar_categoria_produto(termo_busca, usar_ia=False)
         status = "[OK]" if resultado == esperado else "[ERRO]"
         
-        print(f"{status} '{termo_busca}' -> '{resultado}' (esperado: '{esperado}')")
+        logger.info("%s '%s' -> '%s' (esperado: '%s')", status, termo_busca, resultado, esperado)
         
         if resultado == esperado:
             resultados["correto"] += 1
         else:
             resultados["errado"] += 1
     
-    print("=" * 50)
-    print(f"[OK] Corretos: {resultados['correto']}")
-    print(f"[ERRO] Errados: {resultados['errado']}")
-    print(f"Taxa de acerto: {resultados['correto'] / len(casos_teste) * 100:.1f}%")
+    logger.info("=" * 50)
+    logger.info("[OK] Corretos: %d", resultados['correto'])
+    logger.info("[ERRO] Errados: %d", resultados['errado'])
+    logger.info("Taxa de acerto: %.1f%%", resultados['correto'] / len(casos_teste) * 100)
     
     return resultados
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     
-    print("SISTEMA DE CLASSIFICACAO DE CATEGORIAS")
-    print(f"Categorias disponiveis: {len(CATEGORIAS_PRINCIPAIS)}")
-    print(f"IA disponivel: {'SIM' if OLLAMA_DISPONIVEL else 'NAO'}")
+    logger.info("SISTEMA DE CLASSIFICACAO DE CATEGORIAS")
+    logger.info("Categorias disponiveis: %d", len(CATEGORIAS_PRINCIPAIS))
+    logger.info("IA disponivel: %s", "SIM" if OLLAMA_DISPONIVEL else "NAO")
     
     testar_exemplos_classificacao()
     
     estatisticas = obter_estatisticas_cache()
-    print(f"\nCache: {estatisticas['total']} entradas")
+    logger.info("\nCache: %d entradas", estatisticas['total'])

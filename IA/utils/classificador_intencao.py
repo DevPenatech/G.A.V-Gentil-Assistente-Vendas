@@ -12,6 +12,8 @@ import os
 import re
 from typing import Dict, Optional, List
 
+# Logger
+logger = logging.getLogger(__name__)
 # Importações dos novos sistemas críticos
 from .controlador_fluxo_conversa import validar_fluxo_conversa, detectar_confusao_conversa
 from .prevencao_invencao_dados import validar_resposta_ia, verificar_seguranca_resposta
@@ -397,12 +399,12 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
         )
         
         ai_response = response['message']['content'].strip()
-        print(f">>> [CLASSIFICADOR_IA] Mensagem: '{user_message}'")
-        print(f">>> [CLASSIFICADOR_IA] IA respondeu: {ai_response}")
+        logger.debug("[CLASSIFICADOR_IA] Mensagem: '%s'", user_message)
+        logger.debug("[CLASSIFICADOR_IA] IA respondeu: %s", ai_response)
         
         # Extrai JSON da resposta
         intent_data = _extrair_json_da_resposta(ai_response)
-        print(f">>> [CLASSIFICADOR_IA] JSON extraído: {intent_data}")
+        logger.debug("[CLASSIFICADOR_IA] JSON extraído: %s", intent_data)
         
         if intent_data and "nome_ferramenta" in intent_data:
             # Valida se a ferramenta existe

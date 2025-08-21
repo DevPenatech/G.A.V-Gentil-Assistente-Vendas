@@ -413,15 +413,15 @@ def sugerir_alternativas(termo_busca_falho: str) -> str:
 def _extract_state(session: Dict) -> Dict:
     """Extrai os dados relevantes da sessão em um dicionário mutável."""
     return {
-        "customer_context": session.get("customer_context"),
-        "shopping_cart": session.get("shopping_cart", []),
-        "last_search_type": session.get("last_search_type"),
-        "last_search_params": session.get("last_search_params", {}),
-        "current_offset": session.get("current_offset", 0),
-        "last_shown_products": session.get("last_shown_products", []),
-        "last_bot_action": session.get("last_bot_action"),
-        "pending_action": session.get("pending_action"),
-        "last_kb_search_term": session.get("last_kb_search_term"),
+        "contexto_cliente": session.get("contexto_cliente"),
+        "carrinho_compras": session.get("carrinho_compras", []),
+        "ultimo_tipo_busca": session.get("ultimo_tipo_busca"),
+        "ultimos_parametros_busca": session.get("ultimos_parametros_busca", {}),
+        "offset_atual": session.get("offset_atual", 0),
+        "ultimos_produtos_mostrados": session.get("ultimos_produtos_mostrados", []),
+        "ultima_acao_bot": session.get("ultima_acao_bot"),
+        "acao_pendente": session.get("acao_pendente"),
+        "ultimo_termo_busca_kb": session.get("ultimo_termo_busca_kb"),
     }
 
 
@@ -429,9 +429,9 @@ def _handle_pending_action(
     session: Dict, state: Dict, incoming_msg: str
 ) -> Tuple[Union[Dict, None], str]:
     """Processa ações pendentes existentes na sessão."""
-    pending_action = state.get("pending_action")
+    pending_action = state.get("acao_pendente")
     print(f">>> CONSOLE: pending_action atual: '{pending_action}'")
-    shopping_cart = state.get("shopping_cart", [])
+    carrinho_compras = state.get("carrinho_compras", [])
     intent = None
     response_text = ""
 
@@ -440,7 +440,7 @@ def _handle_pending_action(
 
         # 🆕 Extrai quantidade usando IA-FIRST com fallback
         conversation_context = obter_contexto_conversa(session)
-        last_shown_products = state.get("last_shown_products", [])
+        last_shown_products = state.get("ultimos_produtos_mostrados", [])
         qt = extrair_quantidade_com_ia(incoming_msg, last_shown_products, conversation_context)
         
         # 🆕 FALLBACK: Se IA não conseguiu, usa extração básica
@@ -469,7 +469,7 @@ def _handle_pending_action(
 
                 # Verifica se o item já existe no carrinho (por codprod ou nome)
                 duplicate_index = None
-                for i, item in enumerate(shopping_cart):
+                for i, item in enumerate(carrinho_compras):
                     if (
                         product_to_add.get("codprod")
                         and item.get("codprod") == product_to_add.get("codprod")
@@ -482,7 +482,7 @@ def _handle_pending_action(
                         break
 
                 if duplicate_index is not None:
-                    existing_item = shopping_cart[duplicate_index]
+                    existing_item = carrinho_compras[duplicate_index]
                     existing_qty = existing_item.get("qt", 0)
                     if isinstance(existing_qty, float):
                         existing_qty_display = f"{existing_qty:.1f}".rstrip("0").rstrip(
@@ -503,7 +503,7 @@ def _handle_pending_action(
                             "pending_product_for_cart": None,
                             "duplicate_item_index": duplicate_index + 1,
                             "duplicate_item_qty": qt,
-                            "pending_action": "AWAITING_DUPLICATE_DECISION",
+                            "acao_pendente": "AWAITING_DUPLICATE_DECISION",
                         },
                     )
 
@@ -516,7 +516,7 @@ def _handle_pending_action(
 
                     pending_action = "AWAITING_DUPLICATE_DECISION"
                 else:
-                    shopping_cart.append({**product_to_add, "qt": qt})
+                    carrinho_compras.append({**product_to_add, "qt": qt})
 
                     # 🆕 Resposta mais natural baseada na entrada
                     if isinstance(qt, float):
@@ -533,7 +533,7 @@ def _handle_pending_action(
                         session, 
                         success_details=f"Adicionei {qt_display} {product_name}"
                     )
-                    response_text += f"\n\n{formatar_carrinho_para_exibicao(shopping_cart)}"
+                    response_text += f"\n\n{formatar_carrinho_para_exibicao(carrinho_compras)}"
 
                     # 📝 REGISTRA A RESPOSTA DO BOT
                     adicionar_mensagem_historico(
@@ -543,14 +543,14 @@ def _handle_pending_action(
                     atualizar_contexto_sessao(
                         session,
                         {
-                            "pending_action": None,
+                            "acao_pendente": None,
                             "pending_product_for_cart": None,
-                            "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+                            "ultima_acao_bot": "AWAITING_CHECKOUT_CONFIRMATION",
                         },
                     )
                     pending_action = None
                     # Define o estado correto para aguardar confirmação de checkout
-                    state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
+                    state["ultima_acao_bot"] = "AWAITING_CHECKOUT_CONFIRMATION"
 
             else:
                 response_text = generate_personalized_response("error", session)
@@ -558,7 +558,7 @@ def _handle_pending_action(
                 atualizar_contexto_sessao(
                     session,
                     {
-                        "pending_action": None,
+                        "acao_pendente": None,
                         "pending_product_for_cart": None,
                     },
                 )
@@ -576,8 +576,8 @@ def _handle_pending_action(
             )
             pending_action = None
 
-        state["pending_action"] = pending_action
-        state["shopping_cart"] = shopping_cart
+        state["acao_pendente"] = pending_action
+        state["carrinho_compras"] = shopping_cart
 
     elif pending_action == "AWAITING_CART_ITEM_SELECTION":
         # Usuário está selecionando item do carrinho após ambiguidade
@@ -594,8 +594,8 @@ def _handle_pending_action(
 
             if selection in valid_indices:
                 if cart_action == "remove":
-                    success, message, shopping_cart = remover_item_do_carrinho(
-                        shopping_cart, selection
+                    success, message, carrinho_compras = remover_item_do_carrinho(
+                        carrinho_compras, selection
                     )
                     response_text = message
                     adicionar_mensagem_historico(
@@ -603,8 +603,8 @@ def _handle_pending_action(
                     )
                 elif cart_action == "add":
                     quantity = session.get("pending_cart_quantity", 1)
-                    success, message, shopping_cart = adicionar_quantidade_item_carrinho(
-                        shopping_cart, selection, quantity
+                    success, message, carrinho_compras = adicionar_quantidade_item_carrinho(
+                        carrinho_compras, selection, quantity
                     )
                     response_text = message
                     adicionar_mensagem_historico(
@@ -612,8 +612,8 @@ def _handle_pending_action(
                     )
                 elif cart_action == "update":
                     quantity = session.get("pending_cart_quantity", 1)
-                    success, message, shopping_cart = atualizar_quantidade_item_carrinho(
-                        shopping_cart, selection, quantity
+                    success, message, carrinho_compras = atualizar_quantidade_item_carrinho(
+                        carrinho_compras, selection, quantity
                     )
                     response_text = message
                     adicionar_mensagem_historico(
@@ -631,7 +631,7 @@ def _handle_pending_action(
             else:
                 response_text = (
                     f"Esse número não tá na lista! Escolhe um desses: {', '.join(map(str, valid_indices))}\n\n"
-                    f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart), tem_produtos=True)}"
+                    f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras), tem_produtos=True)}"
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "REQUEST_CLARIFICATION"
@@ -639,14 +639,14 @@ def _handle_pending_action(
         else:
             response_text = (
                 "Digita o número do item que você quer, por favor!\n\n"
-                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart), tem_produtos=True)}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras), tem_produtos=True)}"
             )
             adicionar_mensagem_historico(
                 session, "assistant", response_text, "REQUEST_CLARIFICATION"
             )
-
+            
         state["pending_action"] = pending_action
-        state["shopping_cart"] = shopping_cart
+        state["carrinho_compras"] = carrinho_compras
 
     elif pending_action == "AWAITING_DUPLICATE_DECISION":
         print(">>> CONSOLE: Tratando ação pendente AWAITING_DUPLICATE_DECISION")
@@ -655,8 +655,8 @@ def _handle_pending_action(
         qty = session.get("duplicate_item_qty")
 
         if choice == "1":
-            success, message, shopping_cart = adicionar_quantidade_item_carrinho(
-                shopping_cart, index, qty
+            success, message, carrinho_compras = adicionar_quantidade_item_carrinho(
+                carrinho_compras, index, qty
             )
             response_text = message
             adicionar_mensagem_historico(
@@ -668,14 +668,14 @@ def _handle_pending_action(
                 {
                     "duplicate_item_index": None,
                     "duplicate_item_qty": None,
-                    "pending_action": None,
-                    "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+                    "acao_pendente": None,
+                    "ultima_acao_bot": "AWAITING_CHECKOUT_CONFIRMATION",
                 },
             )
-            state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
+            state["ultima_acao_bot"] = "AWAITING_CHECKOUT_CONFIRMATION"
         elif choice == "2":
-            success, message, shopping_cart = atualizar_quantidade_item_carrinho(
-                shopping_cart, index, qty
+            success, message, carrinho_compras = atualizar_quantidade_item_carrinho(
+                carrinho_compras, index, qty
             )
             response_text = message
             adicionar_mensagem_historico(
@@ -687,14 +687,14 @@ def _handle_pending_action(
                 {
                     "duplicate_item_index": None,
                     "duplicate_item_qty": None,
-                    "pending_action": None,
-                    "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+                    "acao_pendente": None,
+                    "ultima_acao_bot": "AWAITING_CHECKOUT_CONFIRMATION",
                 },
             )
-            state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
+            state["ultima_acao_bot"] = "AWAITING_CHECKOUT_CONFIRMATION"
         else:
-            if index and 1 <= index <= len(shopping_cart):
-                existing_item = shopping_cart[index - 1]
+            if index and 1 <= index <= len(carrinho_compras):
+                existing_item = carrinho_compras[index - 1]
                 existing_qty = existing_item.get("qt", 0)
                 if isinstance(existing_qty, float):
                     existing_qty_display = f"{existing_qty:.1f}".rstrip("0").rstrip(".")
@@ -712,7 +712,8 @@ def _handle_pending_action(
             )
 
         state["pending_action"] = pending_action
-        state["shopping_cart"] = shopping_cart
+        state["carrinho_compras"] = carrinho_compras
+
 
     elif pending_action == "AWAITING_SMART_UPDATE_SELECTION":
         print(">>> CONSOLE: CHEGOU NO ELIF AWAITING_SMART_UPDATE_SELECTION")
@@ -742,7 +743,7 @@ def _handle_pending_action(
                 
                 if new_qty <= 0:
                     # Remove do carrinho
-                    removed_item = shopping_cart.pop(cart_idx)
+                    removed_item = carrinho_compras.pop(cart_idx)
                     product_display_name = obter_nome_produto(removed_item)
                     response_text = generate_personalized_response(
                         "operation_success", 
@@ -751,7 +752,7 @@ def _handle_pending_action(
                     )
                 else:
                     # Atualiza quantidade
-                    shopping_cart[cart_idx]["qt"] = new_qty
+                    carrinho_compras[cart_idx]["qt"] = new_qty
                     product_display_name = obter_nome_produto(item)
                     success_msg = f"{product_display_name} atualizado para {new_qty} unidades"
                     print(f">>> CONSOLE: Mensagem de sucesso: '{success_msg}'")
@@ -764,7 +765,7 @@ def _handle_pending_action(
                     
                     # 🆕 MENSAGEM MAIS CONCISA
                     from core.gerenciador_sessao import formatar_carrinho_para_exibicao
-                    cart_display = formatar_carrinho_para_exibicao(shopping_cart)
+                    cart_display = formatar_carrinho_para_exibicao(carrinho_compras)
                     response_text = f"{response_text}\n\n{cart_display}"
                 
                 adicionar_mensagem_historico(session, "assistant", response_text, "SMART_UPDATE_COMPLETED")
@@ -776,10 +777,10 @@ def _handle_pending_action(
             # Limpa estado pendente
             atualizar_contexto_sessao(session, {
                 "pending_smart_update": None,
-                "pending_action": None
+                "acao_pendente": None
             })
             pending_action = None
-            state["pending_action"] = pending_action
+            state["acao_pendente"] = pending_action
             
             # Retorna uma intent fake para indicar que a ação foi processada
             return {"nome_ferramenta": "action_processed", "parametros": {}}, response_text
@@ -811,16 +812,16 @@ def _handle_pending_action(
         elif incoming_msg.lower() in negative_responses:
             response_text = (
                 "🤖 Tudo bem! O que você gostaria de fazer então?\n\n"
-                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
             )
             adicionar_mensagem_historico(session, "assistant", response_text, "CHITCHAT")
             pending_action = None
-            state["last_shown_products"] = []
-            state["last_bot_action"] = "AWAITING_MENU_SELECTION"
+            state["ultimos_produtos_mostrados"] = []
+            state["ultima_acao_bot"] = "AWAITING_MENU_SELECTION"
         else:
             pending_action = None
 
-        state["pending_action"] = pending_action
+        state["acao_pendente"] = pending_action
 
     return None, response_text
 
@@ -831,15 +832,16 @@ def _process_user_message(
     Processa a mensagem do usuário e determina a intenção usando o novo fluxo de IA.
     """
     response_text = ""
-    shopping_cart = state.get("shopping_cart", [])
+
+    carrinho_compras = state.get("carrinho_compras", [])
 
     if not incoming_msg:
         response_text = (
             "Me conta o que você precisa que eu te ajudo!\n\n"
-            f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+            f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
         )
-        state["last_shown_products"] = []
-        state["last_bot_action"] = "AWAITING_MENU_SELECTION"
+        state["ultimos_produtos_mostrados"] = []
+        state["ultima_acao_bot"] = "AWAITING_MENU_SELECTION"
         adicionar_mensagem_historico(
             session, "assistant", response_text, "REQUEST_CLARIFICATION"
         )
@@ -868,26 +870,26 @@ def _process_user_message(
     # 🚨 PRIORIDADE MÁXIMA: Detecta números de menu principal (mas não CNPJ)
     if incoming_msg.strip().isdigit() and not is_cnpj_format(incoming_msg.strip()):
         numero = int(incoming_msg.strip())
-        ultima_acao = state.get("last_bot_action", "")
+        ultima_acao = state.get("ultima_acao_bot", "")
         
-        print(f">>> CONSOLE: Número {numero} detectado, ultima_acao='{ultima_acao}', tem_carrinho={bool(shopping_cart)}, produtos_mostrados={len(state.get('last_shown_products', []))}")
-        
+        print(f">>> CONSOLE: Número {numero} detectado, ultima_acao='{ultima_acao}', tem_carrinho={bool(carrinho_compras)}, produtos_mostrados={len(state.get('last_shown_products', []))}")
+
         # Se é contexto de menu e não tem produtos para selecionar
-        if ultima_acao == "AWAITING_MENU_SELECTION" and not state.get("last_shown_products"):
+        if ultima_acao == "AWAITING_MENU_SELECTION" and not state.get("ultimos_produtos_mostrados"):
             print(f">>> CONSOLE: Processando seleção de menu {numero}")
             if numero == 1:
                 intent = {"nome_ferramenta": "smart_search_with_promotions", "parametros": {"search_term": "produtos"}}
                 return intent, response_text
-            elif numero == 2 and shopping_cart:
+            elif numero == 2 and carrinho_compras:
                 intent = {"nome_ferramenta": "view_cart", "parametros": {}}
                 return intent, response_text
-            elif numero == 3 and shopping_cart:
+            elif numero == 3 and carrinho_compras:
                 intent = {"nome_ferramenta": "checkout", "parametros": {}}
                 return intent, response_text
         
         # 🎯 NOVA CONDIÇÃO: Se é contexto de seleção de produto e tem produtos para selecionar
-        elif ultima_acao == "AWAITING_PRODUCT_SELECTION" and state.get("last_shown_products"):
-            produtos_mostrados = state.get("last_shown_products", [])
+        elif ultima_acao == "AWAITING_PRODUCT_SELECTION" and state.get("ultimos_produtos_mostrados"):
+            produtos_mostrados = state.get("ultimos_produtos_mostrados", [])
             if 1 <= numero <= len(produtos_mostrados):
                 print(f">>> CONSOLE: Processando seleção de produto {numero}")
                 intent = {"nome_ferramenta": "add_item_to_cart", "parametros": {"index": numero}}
@@ -897,13 +899,13 @@ def _process_user_message(
                 # Deixa a IA processar como fallback
 
     # 1. Análise avançada de intenções de carrinho (se há carrinho ativo)
-    if shopping_cart:
+    if carrinho_compras:
         print(">>> CONSOLE: Analisando intenção de carrinho com IA...")
         historico_conversa = obter_contexto_conversa(session)
         intencao_carrinho = detectar_intencao_carrinho_ia(
             incoming_msg, 
             historico_conversa, 
-            shopping_cart
+            carrinho_compras
         )
         
         if intencao_carrinho.get("confidence", 0) > 0.7:
@@ -941,7 +943,9 @@ def _processar_pedido_complexo(session: Dict, state: Dict, pedidos_complexos: Li
     Returns:
         str: Resposta formatada para o usuário.
     """
-    shopping_cart = state.get("shopping_cart", [])
+
+    carrinho_compras = state.get("carrinho_compras", [])
+
     itens_adicionados = []
     itens_nao_encontrados = []
     
@@ -955,7 +959,7 @@ def _processar_pedido_complexo(session: Dict, state: Dict, pedidos_complexos: Li
         if search_result["products"]:
             produto = search_result["products"][0]
             produto["qt"] = quantidade
-            shopping_cart.append(produto)
+            carrinho_compras.append(produto)
             itens_adicionados.append(f"{quantidade}x {produto.get('descricao', produto_nome)}")
             
             # Adiciona ao histórico
@@ -968,8 +972,9 @@ def _processar_pedido_complexo(session: Dict, state: Dict, pedidos_complexos: Li
             itens_nao_encontrados.append(f"{quantidade}x {produto_nome}")
     
     # Atualiza o estado
-    state["shopping_cart"] = shopping_cart
+    state["carrinho_compras"] = carrinho_compras
     state["last_bot_action"] = "COMPLEX_ORDER_PROCESSED"
+
     
     # Gera resposta
     if itens_adicionados:
@@ -978,18 +983,19 @@ def _processar_pedido_complexo(session: Dict, state: Dict, pedidos_complexos: Li
         if itens_nao_encontrados:
             resposta += f"\n\n❌ Não encontrei:\n" + "\n".join([f"• {item}" for item in itens_nao_encontrados])
         
-        resposta += f"\n\n🛒 Carrinho com {len(shopping_cart)} itens"
+        resposta += f"\n\n🛒 Carrinho com {len(carrinho_compras)} itens"
         resposta += f"\n\n{formatar_acoes_rapidas(tem_carrinho=True)}"
     else:
         resposta = "😕 Não consegui encontrar nenhum dos produtos mencionados. Pode tentar com nomes mais específicos?"
-        resposta += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+        resposta += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
     
     return resposta
 
 def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, incoming_msg: str = "") -> str:
     """Executa a ferramenta baseada na intenção identificada com IA-FIRST."""
+
     customer_context = state.get("customer_context")
-    shopping_cart = state.get("shopping_cart", [])
+    carrinho_compras = state.get("carrinho_compras", [])
     last_search_type = state.get("last_search_type")
     last_search_params = state.get("last_search_params", {})
     current_offset = state.get("current_offset", 0)
@@ -997,6 +1003,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
     last_bot_action = state.get("last_bot_action")
     pending_action = state.get("pending_action")
     last_kb_search_term = state.get("last_kb_search_term")
+
     
     # 🆕 IA-FIRST: Detecta pedidos complexos (múltiplos produtos)
     user_message = intent.get("user_message", "")
@@ -1068,8 +1075,8 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
     # 🆕 NOVA FERRAMENTA: clear_cart
     if tool_name == "clear_cart":
         print(">>> CONSOLE: Executando limpeza completa do carrinho...")
-        message, empty_cart = limpar_carrinho_completamente(shopping_cart)
-        shopping_cart.clear()  # Garante que o carrinho está vazio
+        message, empty_cart = limpar_carrinho_completamente(carrinho_compras)
+        carrinho_compras.clear()  # Garante que o carrinho está vazio
         
         response_text = message
         adicionar_mensagem_historico(session, "assistant", response_text, "CLEAR_CART")
@@ -1123,12 +1130,12 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
                 last_bot_action = "AWAITING_PRODUCT_SELECTION"
                 
                 # 🆕 SALVA PRODUTOS NO ESTADO PARA PERMITIR SELEÇÃO NUMÉRICA
-                state["last_shown_products"] = last_shown_products
-                state["last_bot_action"] = last_bot_action
+                state["ultimos_produtos_mostrados"] = last_shown_products
+                state["ultima_acao_bot"] = last_bot_action
                 
                 # 🔧 ATUALIZA TAMBÉM AS VARIÁVEIS LOCAIS PARA SEREM SALVAS NO FINAL
-                last_shown_products = state["last_shown_products"]  # Atualiza variável local
-                last_bot_action = state["last_bot_action"]  # Atualiza variável local
+                last_shown_products = state["ultimos_produtos_mostrados"]  # Atualiza variável local
+                last_bot_action = state["ultima_acao_bot"]  # Atualiza variável local
                 
                 adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_CHEAPEST_PROMOTIONS")
         
@@ -1224,12 +1231,12 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     last_bot_action = "AWAITING_PRODUCT_SELECTION"
                     
                     # 🆕 SALVA PRODUTOS NO ESTADO PARA PERMITIR SELEÇÃO NUMÉRICA
-                    state["last_shown_products"] = last_shown_products
-                    state["last_bot_action"] = last_bot_action
+                    state["ultimos_produtos_mostrados"] = last_shown_products
+                    state["ultima_acao_bot"] = last_bot_action
                     
                     # 🔧 ATUALIZA TAMBÉM AS VARIÁVEIS LOCAIS PARA SEREM SALVAS NO FINAL
-                    last_shown_products = state["last_shown_products"]  # Atualiza variável local
-                    last_bot_action = state["last_bot_action"]  # Atualiza variável local
+                    last_shown_products = state["ultimos_produtos_mostrados"]  # Atualiza variável local
+                    last_bot_action = state["ultima_acao_bot"]  # Atualiza variável local
                     
                     adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_PRODUCTS_FROM_KB")
                     
@@ -1256,19 +1263,19 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         last_bot_action = "AWAITING_PRODUCT_SELECTION"
                         
                         # 🆕 SALVA PRODUTOS NO ESTADO PARA PERMITIR SELEÇÃO NUMÉRICA
-                        state["last_shown_products"] = last_shown_products
-                        state["last_bot_action"] = last_bot_action
+                        state["ultimos_produtos_mostrados"] = last_shown_products
+                        state["ultima_acao_bot"] = last_bot_action
                         
                         # 🔧 ATUALIZA TAMBÉM AS VARIÁVEIS LOCAIS PARA SEREM SALVAS NO FINAL
-                        last_shown_products = state["last_shown_products"]  # Atualiza variável local
-                        last_bot_action = state["last_bot_action"]  # Atualiza variável local
+                        last_shown_products = state["ultimos_produtos_mostrados"]  # Atualiza variável local
+                        last_bot_action = state["ultima_acao_bot"]  # Atualiza variável local
                         
                         adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_PRODUCTS_FROM_DB")
                     else:
                         response_text = generate_personalized_response("no_products", session, search_term=product_name)
                         if suggestions:
                             response_text += f"\n💡 Dica: {suggestions[0]}"
-                        response_text += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                        response_text += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
                         adicionar_mensagem_historico(session, "assistant", response_text, "NO_PRODUCTS_FOUND")
             
             elif is_category_promo_search:
@@ -1455,8 +1462,8 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                             )
                     
                     # 🆕 SALVA PRODUTOS NO ESTADO PARA PERMITIR SELEÇÃO NUMÉRICA E "MAIS"
-                    state["last_shown_products"] = last_shown_products
-                    state["last_bot_action"] = last_bot_action
+                    state["ultimos_produtos_mostrados"] = last_shown_products
+                    state["ultima_acao_bot"] = last_bot_action
                     
                     # 🆕 SALVA PARÂMETROS PARA FUNCIONAR COM "MAIS"
                     last_search_type = "smart_search"
@@ -1469,8 +1476,8 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     print(f">>> DEBUG: [SALVAR_BUSCA] Salvando busca inteligente - tipo: {last_search_type}, params: {last_search_params}")
                     
                     # 🔧 ATUALIZA TAMBÉM AS VARIÁVEIS LOCAIS PARA SEREM SALVAS NO FINAL
-                    last_shown_products = state["last_shown_products"]  # Atualiza variável local
-                    last_bot_action = state["last_bot_action"]  # Atualiza variável local
+                    last_shown_products = state["ultimos_produtos_mostrados"]  # Atualiza variável local
+                    last_bot_action = state["ultima_acao_bot"]  # Atualiza variável local
                     
                     adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_SMART_SEARCH_RESULTS")
                     
@@ -1576,7 +1583,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     correcoes_ia = corrigir_e_sugerir_ia(
                         product_name, 
                         historico_conversa, 
-                        shopping_cart
+                        carrinho_compras
                     )
 
                     response_text = f"Não achei nada com '{product_name}', mas vou te ajudar a encontrar!"
@@ -1678,7 +1685,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 {
                     "pending_product_for_cart": product_to_add,
                     "term_to_learn_after_quantity": term_to_learn,
-                    "pending_action": "AWAITING_QUANTITY",
+                    "acao_pendente": "AWAITING_QUANTITY",
                 },
             )
             pending_action = "AWAITING_QUANTITY"
@@ -1690,7 +1697,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
 
         else:
             response_text = generate_personalized_response("error", session)
-            response_text += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+            response_text += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
             adicionar_mensagem_historico(
                 session, "assistant", response_text, "PRODUCT_NOT_FOUND"
             )
@@ -1708,8 +1715,8 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         matched_index = None
 
         if action == "remove" and not index and not product_name:
-            if shopping_cart:
-                matches = list(enumerate(shopping_cart))
+            if carrinho_compras:
+                matches = list(enumerate(carrinho_compras))
                 pending_action = "AWAITING_CART_ITEM_SELECTION"
                 atualizar_contexto_sessao(
                     session,
@@ -1717,10 +1724,10 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         "pending_cart_matches": matches,
                         "pending_cart_action": "remove",
                         "pending_cart_quantity": quantity,
-                        "pending_action": pending_action,
+                        "acao_pendente": pending_action,
                     },
                 )
-                response_text = f"{formatar_carrinho_com_indices(shopping_cart)}\n\nDigite o número do item que deseja remover."
+                response_text = f"{formatar_carrinho_com_indices(carrinho_compras)}\n\nDigite o número do item que deseja remover."
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "REQUEST_CART_ITEM_SELECTION"
                 )
@@ -1733,7 +1740,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 state.update(
                     {
                         "customer_context": customer_context,
-                        "shopping_cart": shopping_cart,
+                        "carrinho_compras": carrinho_compras,
                         "last_search_type": last_search_type,
                         "last_search_params": last_search_params,
                         "current_offset": current_offset,
@@ -1741,6 +1748,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         "last_bot_action": "AWAITING_MENU_SELECTION",
                         "pending_action": pending_action,
                         "last_kb_search_term": last_kb_search_term,
+
                     }
                 )
                 return response_text
@@ -1750,12 +1758,12 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         if index:
             try:
                 idx = int(index)
-                if 1 <= idx <= len(shopping_cart):
+                if 1 <= idx <= len(carrinho_compras):
                     matched_index = idx
             except (ValueError, TypeError):
                 pass
         elif product_name:
-            matches = encontrar_produtos_carrinho_por_nome(shopping_cart, product_name)
+            matches = encontrar_produtos_carrinho_por_nome(carrinho_compras, product_name)
             if len(matches) == 1:
                 matched_index = matches[0][0] + 1
             elif len(matches) > 1:
@@ -1771,7 +1779,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         "pending_cart_matches": matches,
                         "pending_cart_action": pending_cart_action,
                         "pending_cart_quantity": quantity,
-                        "pending_action": pending_action,
+                        "acao_pendente": pending_action,
                     },
                 )
                 options = "\n".join(
@@ -1787,22 +1795,22 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
 
         if matched_index is not None:
             if action == "remove":
-                success, response_text, shopping_cart = remover_item_do_carrinho(
-                    shopping_cart, matched_index
+                success, response_text, carrinho_compras = remover_item_do_carrinho(
+                    carrinho_compras, matched_index
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "REMOVE_FROM_CART"
                 )
             elif action == "add_quantity":
-                success, response_text, shopping_cart = adicionar_quantidade_item_carrinho(
-                    shopping_cart, matched_index, quantity
+                success, response_text, carrinho_compras = adicionar_quantidade_item_carrinho(
+                    carrinho_compras, matched_index, quantity
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "ADD_QUANTITY_TO_CART"
                 )
             elif action == "update_quantity":
-                success, response_text, shopping_cart = atualizar_quantidade_item_carrinho(
-                    shopping_cart, matched_index, quantity
+                success, response_text, carrinho_compras = atualizar_quantidade_item_carrinho(
+                    carrinho_compras, matched_index, quantity
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "UPDATE_CART_ITEM"
@@ -1815,8 +1823,8 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         elif pending_action != "AWAITING_CART_ITEM_SELECTION":
             from core.gerenciador_sessao import formatar_carrinho_para_exibicao
             response_text = (
-                f"🤖 Não encontrei esse item no carrinho.\n\n{formatar_carrinho_para_exibicao(shopping_cart)}\n\n"
-                f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                f"🤖 Não encontrei esse item no carrinho.\n\n{formatar_carrinho_para_exibicao(carrinho_compras)}\n\n"
+                f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
             )
             adicionar_mensagem_historico(
                 session, "assistant", response_text, "CART_ITEM_NOT_FOUND"
@@ -1880,7 +1888,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             if not products:
                 response_text = (
                     "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n"
-                    f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                    f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "NO_MORE_PRODUCTS"
@@ -1900,7 +1908,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
 
     elif tool_name == "view_cart":
         from core.gerenciador_sessao import formatar_carrinho_para_exibicao
-        response_text = formatar_carrinho_para_exibicao(shopping_cart)
+        response_text = formatar_carrinho_para_exibicao(carrinho_compras)
         adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_CART")
         last_shown_products = []
         last_bot_action = "AWAITING_CHECKOUT_CONFIRMATION"
@@ -1908,7 +1916,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
     elif tool_name == "start_new_order":
         (
             customer_context,
-            shopping_cart,
+            carrinho_compras,
             last_shown_products,
             last_search_type,
             last_search_params,
@@ -1922,9 +1930,10 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         atualizar_contexto_sessao(
             session,
             {
-                "shopping_cart": shopping_cart,
+                "carrinho_compras": carrinho_compras,
                 "pending_action": pending_action,
                 "last_bot_action": last_bot_action,
+
             },
         )
         response_text = (
@@ -1938,7 +1947,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         # 🔍 VERIFICA SE CNPJ FOI FORNECIDO
         cnpj_fornecido = parameters.get("cnpj")
         
-        if not shopping_cart:
+        if not carrinho_compras:
             response_text = (
                 "Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?\n\n"
                 f"{formatar_acoes_rapidas(tem_carrinho=False)}"
@@ -1959,11 +1968,11 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             }
             
             # Gera resumo de finalização
-            response_text = gerar_resumo_finalizacao(shopping_cart, customer_context)
+            response_text = gerar_resumo_finalizacao(carrinho_compras, customer_context)
             adicionar_mensagem_historico(session, "assistant", response_text, "CHECKOUT_COMPLETE")
             
             # Limpa carrinho após finalização
-            shopping_cart.clear()
+            carrinho_compras.clear()
             last_shown_products = []
             last_bot_action = "AWAITING_MENU_SELECTION"
         elif not customer_context:
@@ -1974,13 +1983,13 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             last_bot_action = None
         else:
             # 🆕 GERA RESUMO COMPLETO DO PEDIDO
-            response_text = gerar_resumo_finalizacao(shopping_cart, customer_context)
+            response_text = gerar_resumo_finalizacao(carrinho_compras, customer_context)
             adicionar_mensagem_historico(
                 session, "assistant", response_text, "CHECKOUT_COMPLETE"
             )
             
             # 🆕 LIMPA CARRINHO APÓS FINALIZAÇÃO
-            shopping_cart.clear()
+            carrinho_compras.clear()
             last_shown_products = []
             last_bot_action = "AWAITING_MENU_SELECTION"
 
@@ -1993,20 +2002,20 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 customer_context = customer
                 
                 # 🆕 FINALIZA AUTOMATICAMENTE SE TEMOS CARRINHO E CLIENTE
-                if shopping_cart:
-                    response_text = gerar_resumo_finalizacao(shopping_cart, customer_context)
+                if carrinho_compras:
+                    response_text = gerar_resumo_finalizacao(carrinho_compras, customer_context)
                     adicionar_mensagem_historico(
                         session, "assistant", response_text, "CHECKOUT_COMPLETE"
                     )
                     
                     # Limpa carrinho após finalização
-                    shopping_cart.clear()
+                    carrinho_compras.clear()
                     last_shown_products = []
                     last_bot_action = "AWAITING_MENU_SELECTION"
                 else:
                     response_text = (
                         f"Oi, {customer_context['nome']}! Que bom te ver por aqui de novo! 😊\n\n"
-                        f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                        f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
                     )
                     adicionar_mensagem_historico(
                         session, "assistant", response_text, "CUSTOMER_IDENTIFIED"
@@ -2017,14 +2026,14 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 response_text = f"Não achei esse CNPJ {cnpj} no nosso sistema, mas tudo bem! Posso registrar seu pedido assim mesmo."
                 
                 # 🆕 PERMITE FINALIZAR MESMO SEM CADASTRO
-                if shopping_cart:
-                    response_text += f"\n\n{gerar_resumo_finalizacao(shopping_cart)}"
+                if carrinho_compras:
+                    response_text += f"\n\n{gerar_resumo_finalizacao(carrinho_compras)}"
                     adicionar_mensagem_historico(
                         session, "assistant", response_text, "CHECKOUT_COMPLETE"
                     )
                     
                     # Limpa carrinho após finalização
-                    shopping_cart.clear()
+                    carrinho_compras.clear()
                     last_shown_products = []
                     last_bot_action = "AWAITING_MENU_SELECTION"
                 else:
@@ -2037,8 +2046,8 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             adicionar_mensagem_historico(session, "assistant", response_text, "REQUEST_CNPJ")
 
     elif tool_name == "ask_continue_or_checkout":
-        if shopping_cart:
-            response_text = gerar_mensagem_continuar_ou_finalizar(shopping_cart)
+        if carrinho_compras:
+            response_text = gerar_mensagem_continuar_ou_finalizar(carrinho_compras)
             adicionar_mensagem_historico(
                 session, "assistant", response_text, "ASK_CONTINUE_OR_CHECKOUT"
             )
@@ -2073,7 +2082,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 response_text = "Olá! Sou o G.A.V., Gentil Assistente de Vendas do Comercial Esperança. É um prazer atender você! Como posso ajudar?"
                 
             # Sempre adiciona quick actions nas saudações
-            response_text += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+            response_text += f"\n\n{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
         elif last_bot_action in ["AWAITING_PRODUCT_SELECTION", "AWAITING_CORRECTION_SELECTION"]:
             # Preserva o estado se estiver aguardando seleção de produtos
             response_text = f"{response_param}"
@@ -2086,7 +2095,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         else:
             # 🚀 IA-FIRST: DETECÇÃO INTELIGENTE DE "MAIS PRODUTOS"
             # Obtém a última mensagem do usuário do histórico
-            history = session.get('conversation_history', [])
+            history = session.get('historico_conversa', [])
             last_user_message = ""
             for msg in reversed(history):
                 if msg.get('role') == 'user':
@@ -2165,7 +2174,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     if not ai_response or ai_response.strip() == "":
                         ai_response = "Opa, já mostrei todos os produtos relacionados! Quer procurar outra coisa?"
                     
-                    response_text = f"{ai_response}\n\n{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                    response_text = f"{ai_response}\n\n{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
                     last_shown_products = []
                     last_bot_action = "AWAITING_MENU_SELECTION"
                     adicionar_mensagem_historico(session, "assistant", response_text, "IA_FIRST_NO_MORE_PRODUCTS")
@@ -2173,7 +2182,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 # 🗣️ CHITCHAT NORMAL
                 response_text = (
                     f"{response_param}\n\n"
-                    f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+                    f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
                 )
                 last_shown_products = []
                 last_bot_action = "AWAITING_MENU_SELECTION"
@@ -2183,7 +2192,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
     elif not tool_name and "response_text" in intent:
         response_text = (
             f"{intent['response_text']}\n\n"
-            f"{formatar_acoes_rapidas(tem_carrinho=bool(shopping_cart))}"
+            f"{formatar_acoes_rapidas(tem_carrinho=bool(carrinho_compras))}"
         )
         adicionar_mensagem_historico(session, "assistant", response_text, "GENERIC_RESPONSE")
         last_shown_products = []
@@ -2203,12 +2212,12 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 product_name = pending_smart_update.get("product_name", "")
                 
                 # Executa a ação no carrinho
-                response_text = _executar_acao_carrinho(shopping_cart, cart_idx, item, action, quantity, product_name)
+                response_text = _executar_acao_carrinho(carrinho_compras, cart_idx, item, action, quantity, product_name)
                 
                 # Limpa ação pendente
                 atualizar_contexto_sessao(session, {
                     "pending_smart_update": None,
-                    "pending_action": None
+                    "acao_pendente": None
                 })
                 pending_action = None
                 
@@ -2224,7 +2233,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             # Limpa ação pendente em caso de erro
             atualizar_contexto_sessao(session, {
                 "pending_smart_update": None,
-                "pending_action": None
+                "acao_pendente": None
             })
             pending_action = None
 
@@ -2245,7 +2254,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         else:
             # Busca produtos no carrinho que correspondem ao nome
             matching_items = []
-            for i, item in enumerate(shopping_cart):
+            for i, item in enumerate(carrinho_compras):
                 item_name = obter_nome_produto(item).lower()
                 if product_name.lower() in item_name or any(word in item_name for word in product_name.lower().split()):
                     matching_items.append((i, item))
@@ -2259,12 +2268,12 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         best_match = search_result["products"][0]  # Pega o melhor resultado
                         # Adiciona ao carrinho
                         best_match["qt"] = quantity
-                        shopping_cart.append(best_match)
+                        carrinho_compras.append(best_match)
                         product_display_name = obter_nome_produto(best_match)
                         
                         # Resposta clara + carrinho atualizado
                         from core.gerenciador_sessao import formatar_carrinho_para_exibicao
-                        cart_display = formatar_carrinho_para_exibicao(shopping_cart)
+                        cart_display = formatar_carrinho_para_exibicao(carrinho_compras)
                         response_text = f"✅ Adicionei *{quantity}* {product_display_name} ao seu carrinho!\n\n{cart_display}"
                     else:
                         response_text = f"Não encontrei '{product_name}' nos nossos produtos. Quer ver produtos similares?"
@@ -2287,21 +2296,21 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 
                 if new_qty <= 0:
                     # Remove do carrinho
-                    removed_item = shopping_cart.pop(idx)
+                    removed_item = carrinho_compras.pop(idx)
                     product_display_name = obter_nome_produto(removed_item)
                     
                     # Resposta clara + carrinho atualizado
-                    if shopping_cart:
+                    if carrinho_compras:
                         # Se ainda há itens, mostra carrinho atualizado
                         from core.gerenciador_sessao import formatar_carrinho_para_exibicao
-                        cart_display = formatar_carrinho_para_exibicao(shopping_cart)
+                        cart_display = formatar_carrinho_para_exibicao(carrinho_compras)
                         response_text = f"✅ *{product_display_name}* removido do carrinho!\n\n{cart_display}"
                     else:
                         # Carrinho vazio
                         response_text = f"✅ *{product_display_name}* removido!\n\n🛒 Seu carrinho está vazio agora."
                 else:
                     # Atualiza quantidade
-                    shopping_cart[idx]["qt"] = new_qty
+                    carrinho_compras[idx]["qt"] = new_qty
                     product_display_name = obter_nome_produto(item)
                     
                     # Resposta clara + carrinho atualizado
@@ -2313,7 +2322,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         action_msg = f"✅ Quantidade atualizada para *{new_qty}* {product_display_name}!"
                     
                     from core.gerenciador_sessao import formatar_carrinho_para_exibicao
-                    cart_display = formatar_carrinho_para_exibicao(shopping_cart)
+                    cart_display = formatar_carrinho_para_exibicao(carrinho_compras)
                     response_text = f"{action_msg}\n\n{cart_display}"
             
             else:
@@ -2334,7 +2343,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                         "matching_items": matching_items,
                         "product_name": product_name
                     },
-                    "pending_action": "AWAITING_SMART_UPDATE_SELECTION"
+                    "acao_pendente": "AWAITING_SMART_UPDATE_SELECTION"
                 })
                 pending_action = "AWAITING_SMART_UPDATE_SELECTION"
             
@@ -2353,15 +2362,16 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
 
     state.update(
         {
-            "customer_context": customer_context,
-            "shopping_cart": shopping_cart,
-            "last_search_type": last_search_type,
-            "last_search_params": last_search_params,
-            "current_offset": current_offset,
-            "last_shown_products": last_shown_products,
-            "last_bot_action": last_bot_action,
-            "pending_action": pending_action,
-            "last_kb_search_term": last_kb_search_term,
+
+            "contexto_cliente": customer_context,
+            "carrinho_compras": shopping_cart,
+            "ultimo_tipo_busca": last_search_type,
+            "ultimos_parametros_busca": last_search_params,
+            "offset_atual": current_offset,
+            "ultimos_produtos_mostrados": last_shown_products,
+            "ultima_acao_bot": last_bot_action,
+            "acao_pendente": pending_action,
+            "ultimo_termo_busca_kb": last_kb_search_term,
         }
     )
 
@@ -2383,22 +2393,24 @@ def _finalize_session(
     atualizar_contexto_sessao(
         session,
         {
-            "customer_context": state.get("customer_context"),
-            "shopping_cart": state.get("shopping_cart", []),
-            "last_search_type": state.get("last_search_type"),
-            "last_search_params": state.get("last_search_params", {}),
-            "current_offset": state.get("current_offset", 0),
-            "last_shown_products": state.get("last_shown_products", []),
-            "last_bot_action": state.get("last_bot_action"),
-            "pending_action": state.get("pending_action"),
-            "last_kb_search_term": state.get("last_kb_search_term"),
+
+            "contexto_cliente": state.get("contexto_cliente"),
+            "carrinho_compras": state.get("carrinho_compras", []),
+            "ultimo_tipo_busca": state.get("ultimo_tipo_busca"),
+            "ultimos_parametros_busca": state.get("ultimos_parametros_busca", {}),
+            "offset_atual": state.get("offset_atual", 0),
+            "ultimos_produtos_mostrados": state.get("ultimos_produtos_mostrados", []),
+            "ultima_acao_bot": state.get("ultima_acao_bot"),
+            "acao_pendente": state.get("acao_pendente"),
+            "ultimo_termo_busca_kb": state.get("ultimo_termo_busca_kb"),
+
         },
     )
     
     if response_text:
         # 📝 SEMPRE salva a resposta no histórico antes de tentar enviar 
         # 🆕 EVITA DUPLICAÇÃO: Só salva se não for idêntica à última mensagem
-        history = session.get("conversation_history", [])
+        history = session.get("historico_conversa", [])
         last_msg = history[-1] if history else {}
         if not (last_msg.get("role") == "assistant" and last_msg.get("message") == response_text):
             adicionar_mensagem_historico(session, "assistant", response_text, "BOT_RESPONSE")
@@ -2498,8 +2510,8 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
         
         # Carrega sessão temporária e adiciona CNPJ validado
         temp_session["validated_cnpj"] = cnpj_clean
-        temp_session["customer_context"] = temp_session.get("customer_context", {})
-        temp_session["customer_context"]["cnpj"] = cnpj_clean
+        temp_session["contexto_cliente"] = temp_session.get("contexto_cliente", {})
+        temp_session["contexto_cliente"]["cnpj"] = cnpj_clean
         
         # Salva na nova sessão com CNPJ
         salvar_sessao(session_id_with_cnpj, temp_session)
@@ -2539,12 +2551,12 @@ def _validate_cnpj_first(sender_phone: str, incoming_msg: str) -> Tuple[bool, st
     
     # Ainda não tem CNPJ, verifica se já pediu antes
     print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] CNPJ não é válido, verificando histórico de conversa...")
-    conversation_history = temp_session.get("historico_conversa", [])
-    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Histórico tem {len(conversation_history)} mensagens")
+    historico_conversa = temp_session.get("historico_conversa", [])
+    print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Histórico tem {len(historico_conversa)} mensagens")
     
     already_asked_cnpj = any("cnpj" in msg.get("message", "").lower() 
                             and msg.get("role") == "assistant" 
-                            for msg in conversation_history[-3:])  # Últimas 3 mensagens
+                            for msg in historico_conversa[-3:])  # Últimas 3 mensagens
     
     print(f">>> CONSOLE: 🔍 [VALIDATE_CNPJ] Já perguntou CNPJ antes: {already_asked_cnpj}")
     
@@ -2649,7 +2661,7 @@ def process_message_async(sender_phone: str, incoming_msg: str):
             # 2.1. PRIORIDADE ESPECIAL: Se detectou checkout, limpa ações pendentes conflitantes
             if intent and intent.get("nome_ferramenta") == "checkout":
                 if intent.get("parametros", {}).get("force_checkout"):
-                    state["pending_action"] = None  # Limpa qualquer ação pendente
+                    state["acao_pendente"] = None  # Limpa qualquer ação pendente
                     print(">>> CONSOLE: Checkout forçado - limpando ações pendentes")
 
             # 3. Executa a intenção identificada
@@ -2669,14 +2681,14 @@ def process_message_async(sender_phone: str, incoming_msg: str):
                     )
 
             # 4. Mensagem padrão caso nenhuma resposta seja definida
-            if not response_text and not state.get("pending_action"):
+            if not response_text and not state.get("acao_pendente"):
                 # Não adiciona quick_actions se estiver aguardando confirmação de checkout
-                if state.get("last_bot_action") == "AWAITING_CHECKOUT_CONFIRMATION":
+                if state.get("ultima_acao_bot") == "AWAITING_CHECKOUT_CONFIRMATION":
                     response_text = "Operação concluída."
                 else:
                     response_text = (
                         "Operação concluída. O que mais posso fazer por você?\n\n"
-                        f"{formatar_acoes_rapidas(tem_carrinho=bool(state.get('shopping_cart', [])))}"
+                        f"{formatar_acoes_rapidas(tem_carrinho=bool(state.get('carrinho_compras', [])))}"
                     )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "OPERATION_COMPLETE"
@@ -2763,7 +2775,7 @@ def process_message_for_web(sender_id: str, incoming_msg: str) -> str:
                 original_sender_id = sender_id.split('_')[0] if '_' in session_id else sender_id
                 response_text = _route_tool(session, state, intent, original_sender_id, incoming_msg)
             
-            if not response_text and not state.get("pending_action"):
+            if not response_text and not state.get("acao_pendente"):
                 response_text = "Operação concluída. O que mais posso fazer por você?"
                 adicionar_mensagem_historico(session, "assistant", response_text, "OPERATION_COMPLETE")
 
@@ -2790,20 +2802,20 @@ def _finalize_session_for_web(sender_id: str, session: Dict, state: Dict, respon
     atualizar_contexto_sessao(
         session,
         {
-            "customer_context": state.get("customer_context"),
-            "shopping_cart": state.get("shopping_cart", []),
-            "last_search_type": state.get("last_search_type"),
-            "last_search_params": state.get("last_search_params", {}),
-            "current_offset": state.get("current_offset", 0),
-            "last_shown_products": state.get("last_shown_products", []),
-            "last_bot_action": state.get("last_bot_action"),
-            "pending_action": state.get("pending_action"),
-            "last_kb_search_term": state.get("last_kb_search_term"),
+            "contexto_cliente": state.get("contexto_cliente"),
+            "carrinho_compras": state.get("carrinho_compras", []),
+            "ultimo_tipo_busca": state.get("ultimo_tipo_busca"),
+            "ultimos_parametros_busca": state.get("ultimos_parametros_busca", {}),
+            "offset_atual": state.get("offset_atual", 0),
+            "ultimos_produtos_mostrados": state.get("ultimos_produtos_mostrados", []),
+            "ultima_acao_bot": state.get("ultima_acao_bot"),
+            "acao_pendente": state.get("acao_pendente"),
+            "ultimo_termo_busca_kb": state.get("ultimo_termo_busca_kb"),
         },
     )
     if response_text:
         # 🆕 EVITA DUPLICAÇÃO: Só salva se não for idêntica à última mensagem
-        history = session.get("conversation_history", [])
+        history = session.get("historico_conversa", [])
         last_msg = history[-1] if history else {}
         if not (last_msg.get("role") == "assistant" and last_msg.get("message") == response_text):
             adicionar_mensagem_historico(session, "assistant", response_text, "BOT_RESPONSE")
@@ -2918,15 +2930,17 @@ def clear_cart_endpoint():
         return jsonify({"error": "user_id é obrigatório"}), 400
     
     session = carregar_sessao(user_id)
-    shopping_cart = session.get("shopping_cart", [])
+
+    carrinho_compras = session.get("carrinho_compras", [])
     
-    message, empty_cart = limpar_carrinho_completamente(shopping_cart)
-    session["shopping_cart"] = empty_cart
+    message, empty_cart = limpar_carrinho_completamente(carrinho_compras)
+
+    session["carrinho_compras"] = empty_cart
     
     # Atualiza estado da sessão
-    session["last_bot_action"] = "AWAITING_MENU_SELECTION"
-    session["pending_action"] = None
-    session["last_shown_products"] = []
+    session["ultima_acao_bot"] = "AWAITING_MENU_SELECTION"
+    session["acao_pendente"] = None
+    session["ultimos_produtos_mostrados"] = []
     
     adicionar_mensagem_historico(session, "assistant", message, "CLEAR_CART_API")
     salvar_sessao(user_id, session)
