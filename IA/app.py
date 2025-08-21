@@ -1034,8 +1034,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
         "adicionar_item_ao_carrinho": "adicionar_item_ao_carrinho",
         "selecionar_item_para_atualizacao": "selecionar_item_para_atualizacao",
         "finalizar_pedido": "finalizar_pedido",
-        "lidar_conversa": "lidar_com_conversa_casual",
-        "handle_chitchat": "lidar_com_conversa_casual"
+        "lidar_conversa": "lidar_com_conversa_casual"
     }
     
     # Converte nome em português para inglês se necessário
@@ -1696,19 +1695,19 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 session, "assistant", response_text, "PRODUCT_NOT_FOUND"
             )
 
-    elif tool_name == "update_cart_item":
-        action = parameters.get("action")
-        quantity = parameters.get("qt", 1)
+    elif tool_name == "atualizar_item_carrinho":
+        acao = parameters.get("acao")
+        quantidade = parameters.get("quantidade", 1)
         try:
-            quantity = float(quantity)
+            quantidade = float(quantidade)
         except (ValueError, TypeError):
-            quantity = 1
+            quantidade = 1
 
-        index = parameters.get("index")
-        product_name = parameters.get("product_name")
+        indice = parameters.get("indice")
+        nome_produto = parameters.get("nome_produto")
         matched_index = None
 
-        if action == "remove" and not index and not product_name:
+        if acao == "remove" and not indice and not nome_produto:
             if shopping_cart:
                 matches = list(enumerate(shopping_cart))
                 pending_action = "AWAITING_CART_ITEM_SELECTION"
@@ -1717,7 +1716,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                     {
                         "pending_cart_matches": matches,
                         "pending_cart_action": "remove",
-                        "pending_cart_quantity": quantity,
+                        "pending_cart_quantity": quantidade,
                         "pending_action": pending_action,
                     },
                 )
@@ -1748,30 +1747,30 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
 
             last_bot_action = "AWAITING_MENU_SELECTION"
 
-        if index:
+        if indice:
             try:
-                idx = int(index)
+                idx = int(indice)
                 if 1 <= idx <= len(shopping_cart):
                     matched_index = idx
             except (ValueError, TypeError):
                 pass
-        elif product_name:
-            matches = encontrar_produtos_carrinho_por_nome(shopping_cart, product_name)
+        elif nome_produto:
+            matches = encontrar_produtos_carrinho_por_nome(shopping_cart, nome_produto)
             if len(matches) == 1:
                 matched_index = matches[0][0] + 1
             elif len(matches) > 1:
                 pending_action = "AWAITING_CART_ITEM_SELECTION"
                 pending_cart_action = (
                     "remove"
-                    if action == "remove"
-                    else ("add" if action == "add_quantity" else "update")
+                    if acao == "remove"
+                    else ("add" if acao == "add" else "set")
                 )
                 atualizar_contexto_sessao(
                     session,
                     {
                         "pending_cart_matches": matches,
                         "pending_cart_action": pending_cart_action,
-                        "pending_cart_quantity": quantity,
+                        "pending_cart_quantity": quantidade,
                         "pending_action": pending_action,
                     },
                 )
@@ -1787,23 +1786,23 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
                 )
 
         if matched_index is not None:
-            if action == "remove":
+            if acao == "remove":
                 success, response_text, shopping_cart = remover_item_do_carrinho(
                     shopping_cart, matched_index
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "REMOVE_FROM_CART"
                 )
-            elif action == "add_quantity":
+            elif acao == "add":
                 success, response_text, shopping_cart = adicionar_quantidade_item_carrinho(
-                    shopping_cart, matched_index, quantity
+                    shopping_cart, matched_index, quantidade
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "ADD_QUANTITY_TO_CART"
                 )
-            elif action == "update_quantity":
+            elif acao == "set":
                 success, response_text, shopping_cart = atualizar_quantidade_item_carrinho(
-                    shopping_cart, matched_index, quantity
+                    shopping_cart, matched_index, quantidade
                 )
                 adicionar_mensagem_historico(
                     session, "assistant", response_text, "UPDATE_CART_ITEM"
@@ -2037,7 +2036,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             response_text = "Para finalizar seu pedido, preciso do seu CNPJ. Por favor, me informe o CNPJ da sua empresa."
             adicionar_mensagem_historico(session, "assistant", response_text, "REQUEST_CNPJ")
 
-    elif tool_name == "ask_continue_or_finalizar_pedido":
+    elif tool_name == "perguntar_continuar_ou_finalizar":
         if shopping_cart:
             response_text = gerar_mensagem_continuar_ou_finalizar(shopping_cart)
             adicionar_mensagem_historico(
