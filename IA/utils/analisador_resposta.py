@@ -108,11 +108,12 @@ def _traduzir_nome_ferramenta(nome_ferramenta: str) -> str:
     traducoes = {
         "smart_search_with_promotions": "busca_inteligente_com_promocoes",
         "get_top_selling_products_by_name": "obter_produtos_mais_vendidos_por_nome",
-        "smart_cart_update": "atualizacao_inteligente_carrinho",
-        "view_cart": "visualizar_carrinho",
-        "clear_cart": "limpar_carrinho",
-        "add_item_to_cart": "adicionar_item_ao_carrinho",
+        "atualizacao_inteligente_carrinho": "atualizacao_inteligente_carrinho",
+        "visualizar_carrinho": "visualizar_carrinho",
+        "limpar_carrinho": "limpar_carrinho",
+        "adicionar_item_ao_carrinho": "adicionar_item_ao_carrinho",
         "lidar_com_conversa_casual": "lidar_conversa"
+
     }
     
     return traducoes.get(nome_ferramenta, nome_ferramenta)
@@ -337,10 +338,10 @@ def obter_estatisticas_parsing() -> Dict:
         "traducao_ferramentas": {
             "smart_search_with_promotions": "busca_inteligente_com_promocoes",
             "get_top_selling_products_by_name": "obter_produtos_mais_vendidos_por_nome",
-            "smart_cart_update": "atualizacao_inteligente_carrinho",
-            "view_cart": "visualizar_carrinho",
-            "clear_cart": "limpar_carrinho",
-            "add_item_to_cart": "adicionar_item_ao_carrinho",
+            "atualizacao_inteligente_carrinho": "atualizacao_inteligente_carrinho",
+            "visualizar_carrinho": "visualizar_carrinho",
+            "limpar_carrinho": "limpar_carrinho",
+            "adicionar_item_ao_carrinho": "adicionar_item_ao_carrinho",
             "lidar_com_conversa_casual": "lidar_conversa"
         }
     }
@@ -391,7 +392,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     ]):
         print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: LIMPAR CARRINHO")
         return {
-            "nome_ferramenta": "clear_cart", 
+            "nome_ferramenta": "limpar_carrinho", 
             "parametros": {}
         }
     
@@ -401,7 +402,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     ]):
         print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: VER CARRINHO")
         return {
-            "nome_ferramenta": "view_cart",
+            "nome_ferramenta": "visualizar_carrinho",
             "parametros": {}
         }
     
@@ -424,7 +425,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         numero = int(numeros_texto[0])
         print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ADICIONAR PRODUTO #{numero}")
         return {
-            "nome_ferramenta": "add_item_to_cart",
+            "nome_ferramenta": "adicionar_item_ao_carrinho",
             "parametros": {"index": numero}
         }
     
@@ -466,7 +467,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     ]):
         print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ATUALIZAR CARRINHO")
         return {
-            "nome_ferramenta": "smart_cart_update",
+            "nome_ferramenta": "atualizacao_inteligente_carrinho",
             "parametros": {}
         }
     

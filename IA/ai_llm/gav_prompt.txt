@@ -388,7 +388,7 @@ Usuário: "Põe meia dúzia de cerveja"
 
 ```json
 {
-  "tool_name": "smart_cart_update",
+  "tool_name": "atualizacao_inteligente_carrinho",
   "parameters": {"product_name": "cerveja", "action": "add", "quantity": 6}
 }
 ```

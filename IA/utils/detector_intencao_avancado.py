@@ -63,8 +63,8 @@ INTENÇÕES POSSÍVEIS:
 - remove_item: Remover produto específico
 - update_quantity: Alterar quantidade
 - replace_item: Substituir um produto por outro
-- clear_cart: Limpar carrinho completo
-- view_cart: Ver conteúdo do carrinho
+- limpar_carrinho: Limpar carrinho completo
+- visualizar_carrinho: Ver conteúdo do carrinho
 - unknown: Não relacionado ao carrinho
 
 EXEMPLOS:
@@ -72,7 +72,7 @@ EXEMPLOS:
 - "coloca mais duas" → add_item (quantidade: 2)
 - "troca por heineken" → replace_item
 - "deixa só uma de cada" → update_quantity
-- "quero mudar tudo" → clear_cart
+- "quero mudar tudo" → limpar_carrinho
 - "aumenta pra 5" → update_quantity
 - "remove o item 2" → remove_item (índice: 2)
 

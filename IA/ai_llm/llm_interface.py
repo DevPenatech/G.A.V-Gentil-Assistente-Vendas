@@ -291,10 +291,10 @@ def get_fallback_prompt() -> str:
 
 ESTILO: Respostas curtas com próxima ação explícita. Liste até 3 opções por vez; peça escolha por número ("1, 2 ou 3").
 
-FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, atualizar_item_carrinho, checkout, lidar_conversa, perguntar_continuar_ou_finalizar, clear_cart
+FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, adicionar_item_ao_carrinho, visualizar_carrinho, atualizar_item_carrinho, checkout, lidar_conversa, perguntar_continuar_ou_finalizar, limpar_carrinho
 
 COMANDOS ESPECIAIS:
-- "esvaziar carrinho", "limpar carrinho" → use clear_cart
+- "esvaziar carrinho", "limpar carrinho" → use limpar_carrinho
 - CNPJ (14 dígitos) quando solicitado → use find_customer_by_cnpj
 
 SEMPRE RESPONDA EM JSON VÁLIDO COM tool_name E parameters!"""
@@ -383,7 +383,7 @@ def melhorar_consciencia_contexto(mensagem_usuario: str, dados_sessao: Dict) -> 
     }
 
     # 🆕 DETECTA COMANDOS DE LIMPEZA DE CARRINHO
-    context["clear_cart_command"] = detect_cart_clearing_intent(mensagem_usuario)
+    context["limpar_carrinho_command"] = detect_cart_clearing_intent(mensagem_usuario)
     
     # 🆕 DETECTA CONTEXTO DE CHECKOUT/FINALIZAÇÃO
     checkout_context = detect_checkout_context(dados_sessao)
@@ -555,9 +555,9 @@ def get_intent(
             }
         
         # 🆕 PRIORIDADE ALTA: Comandos de limpeza de carrinho
-        if enhanced_context.get("clear_cart_command"):
+        if enhanced_context.get("limpar_carrinho_command"):
             logging.info("[llm_interface.py] Comando de limpeza de carrinho detectado")
-            return {"tool_name": "clear_cart", "parameters": {}}
+            return {"tool_name": "limpar_carrinho", "parameters": {}}
 
         # Para mensagens simples, usa detecção rápida sem IA
         message_lower = mensagem_usuario.lower().strip()
@@ -658,8 +658,8 @@ def get_intent(
 
         # 🆕 CONSTRÓI CONTEXTO ESPECÍFICO PARA PROBLEMAS IDENTIFICADOS
         special_context = ""
-        if enhanced_context.get("clear_cart_command"):
-            special_context += "⚠️ COMANDO DE LIMPEZA DE CARRINHO DETECTADO - Use clear_cart\n"
+        if enhanced_context.get("limpar_carrinho_command"):
+            special_context += "⚠️ COMANDO DE LIMPEZA DE CARRINHO DETECTADO - Use limpar_carrinho\n"
         if enhanced_context.get("is_cnpj_in_checkout_context"):
             special_context += "⚠️ CNPJ VÁLIDO EM CONTEXTO DE CHECKOUT - Use find_customer_by_cnpj\n"
         if enhanced_context.get("awaiting_cnpj"):
@@ -693,7 +693,7 @@ ANÁLISE CONTEXTUAL:
 - Quantidade inferida: {enhanced_context.get('inferred_quantity', 'Não especificada')}
 - É CNPJ válido: {'Sim' if enhanced_context.get('is_valid_cnpj') else 'Não'}
 - CNPJ em contexto checkout: {'Sim' if enhanced_context.get('is_cnpj_in_checkout_context') else 'Não'}
-- Comando limpar carrinho: {'Sim' if enhanced_context.get('clear_cart_command') else 'Não'}
+- Comando limpar carrinho: {'Sim' if enhanced_context.get('limpar_carrinho_command') else 'Não'}
 
 COMANDOS DETECTADOS:
 - Ver carrinho: {'Sim' if enhanced_context.get('direct_cart_command') else 'Não'}
@@ -701,10 +701,10 @@ COMANDOS DETECTADOS:
 - Continuar: {'Sim' if enhanced_context.get('continue_shopping') else 'Não'}
 
 INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
-1. ⚠️ Se "Comando limpar carrinho: Sim", SEMPRE use clear_cart
+1. ⚠️ Se "Comando limpar carrinho: Sim", SEMPRE use limpar_carrinho
 2. ⚠️ Se "CNPJ em contexto checkout: Sim", SEMPRE use find_customer_by_cnpj
 3. ⚠️ Se "Esperando CNPJ: Sim" e mensagem parece CNPJ, use find_customer_by_cnpj
-4. Se há produtos mostrados e usuário digitou número, use add_item_to_cart
+4. Se há produtos mostrados e usuário digitou número, use adicionar_item_ao_carrinho
 5. Considere TODO o histórico da conversa para interpretar a intenção
 """
 
@@ -797,7 +797,7 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
 
             # Se é seleção numérica e temos produtos, adiciona quantidade se detectada
             if (
-                tool_name == "add_item_to_cart"
+                tool_name == "adicionar_item_ao_carrinho"
                 and enhanced_context.get("numeric_selection")
                 and enhanced_context.get("inferred_quantity")
             ):
@@ -1038,7 +1038,7 @@ def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
     """Valida e corrige parâmetros da intenção conforme a ferramenta."""
     logging.debug(f"Validando parâmetros da intenção para a ferramenta: '{tool_name}', Parâmetros: {parameters}")
 
-    if tool_name == "add_item_to_cart":
+    if tool_name == "adicionar_item_ao_carrinho":
         # Garante que codprod seja inteiro e qt seja número válido
         if "codprod" in parameters:
             try:
