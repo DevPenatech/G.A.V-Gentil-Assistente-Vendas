@@ -274,7 +274,11 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
         {"nome_ferramenta": "smart_search_with_promotions", "parametros": {"termo_busca": "quero cerveja"}}
     """
     logging.debug(f"Detectando intenção do usuário com IA para a mensagem: '{user_message}'")
-    
+
+    # 🔄 Limpeza periódica do cache para evitar crescimento excessivo
+    if len(_cache_intencao) > 100:
+        limpar_cache_intencao()
+
     # 🚀 CACHE SEMÂNTICO IA-FIRST - Tenta cache por similaridade primeiro
     cache_result = _buscar_cache_semantico(user_message, conversation_context)
     if cache_result:
@@ -1468,6 +1472,15 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
     # FASE 2: Detecção de Confusão do Usuário
     logging.debug("[FASE 2] Detectando confusão do usuário...")
     analise_confusao = detectar_usuario_confuso(entrada_usuario, contexto_para_analise, historico_conversa)
+
+    # 🔍 Análise adicional de confusão baseada no histórico da conversa
+    analise_fluxo_conversa = detectar_confusao_conversa(historico_conversa, entrada_usuario)
+    if analise_fluxo_conversa.get("esta_confuso"):
+        analise_confusao["esta_confuso"] = True
+        if not analise_confusao.get("estrategia_redirecionamento") and \
+                analise_fluxo_conversa.get("estrategia_redirecionamento"):
+            analise_confusao["estrategia_redirecionamento"] = analise_fluxo_conversa["estrategia_redirecionamento"]
+    analise_confusao["analise_fluxo_conversa"] = analise_fluxo_conversa
     
     # 🚀 ENRIQUECIMENTO: Usa informações da memória de trabalho para melhorar análise
     produtos_ativos = memoria_trabalho.get("active_products", [])
@@ -1506,7 +1519,12 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
             mensagem_guidance = analise_confusao["estrategia_redirecionamento"]["mensagem"]
         else:
             mensagem_guidance = "Como posso ajudar você melhor? 🤝"
-        
+
+        # ✅ Validação final da mensagem de orientação
+        validacao_final = aplicar_sistemas_criticos_pos_resposta(mensagem_guidance, dados_disponiveis)
+        if validacao_final.get("foi_corrigida"):
+            mensagem_guidance = validacao_final["resposta_validada"]
+
         return {
             "nome_ferramenta": "lidar_conversa",
             "parametros": {
@@ -1520,7 +1538,8 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
             "sistemas_criticos_ativo": True,
             "necessita_redirecionamento": True,
             "confidence_score": 0.95,  # Alta confiança no redirecionamento
-            "decision_strategy": "execute_immediately"
+            "decision_strategy": "execute_immediately",
+            "validacao_pos_resposta": validacao_final
         }
     
     # FASE 4: Detecção Normal de Intenção (se não precisa redirecionamento)
@@ -1532,21 +1551,18 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
         dados_sessao, entrada_usuario, intencao_detectada
     )
     
-    # FASE 5: Validação Anti-Invenção de Dados
-    logging.debug("[FASE 5] Validando contra invenção de dados...")
-    
-    # Se a intenção gerará uma resposta textual, validamos contra invenção
+    # FASE 5: Validação Anti-Invenção de Dados e Segurança
+    logging.debug("[FASE 5] Validando resposta final...")
+
     ferramentas_com_resposta_textual = ["lidar_conversa"]
     if intencao_detectada.get("nome_ferramenta") in ferramentas_com_resposta_textual:
         resposta_texto = intencao_detectada.get("parametros", {}).get("response_text", "")
         if resposta_texto and resposta_texto != "GENERATE_GREETING":
-            # Valida resposta contra invenção de dados
-            validacao_anti_invencao = validar_resposta_ia(resposta_texto, dados_disponiveis)
-            
-            if validacao_anti_invencao["foi_corrigida"]:
-                logging.warning("[SISTEMAS_CRITICOS] Resposta corrigida para evitar invenção de dados")
-                intencao_detectada["parametros"]["response_text"] = validacao_anti_invencao["resposta_corrigida"]
-                intencao_detectada["validacao_anti_invencao"] = validacao_anti_invencao
+            validacao_final = aplicar_sistemas_criticos_pos_resposta(resposta_texto, dados_disponiveis)
+            if validacao_final.get("foi_corrigida"):
+                logging.warning("[SISTEMAS_CRITICOS] Resposta corrigida para segurança/invenção")
+                intencao_detectada["parametros"]["response_text"] = validacao_final["resposta_validada"]
+            intencao_detectada["validacao_pos_resposta"] = validacao_final
     
     # FASE 6: Enriquecimento com dados dos sistemas críticos
     intencao_detectada.update({
@@ -1587,12 +1603,17 @@ def aplicar_sistemas_criticos_pos_resposta(resposta_gerada: str, dados_disponive
     
     # Validação anti-invenção de dados
     validacao_final = validar_resposta_ia(resposta_gerada, dados_disponiveis)
-    
+    resposta_validada = validacao_final["resposta_corrigida"]
+
+    # Verificação de segurança da resposta
+    resposta_segura = verificar_seguranca_resposta(resposta_validada)
+
     return {
         "resposta_original": resposta_gerada,
-        "resposta_validada": validacao_final["resposta_corrigida"],
+        "resposta_validada": resposta_validada,
         "foi_corrigida": validacao_final["foi_corrigida"],
         "confiabilidade": validacao_final["confiabilidade"],
+        "resposta_segura": resposta_segura,
         "alertas": validacao_final.get("alertas", []),
         "validacao_detalhes": validacao_final
     }

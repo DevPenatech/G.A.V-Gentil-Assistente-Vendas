@@ -16,7 +16,11 @@ import time
 from core.gerenciador_sessao import obter_contexto_conversa, detectar_comandos_limpar_carrinho
 from utils.extrator_quantidade import detectar_modificadores_quantidade
 from utils.analisador_resposta import extrair_json_da_resposta_ia
-from utils.classificador_intencao import detectar_intencao_usuario_com_ia, detectar_intencao_com_sistemas_criticos
+from utils.classificador_intencao import (
+    detectar_intencao_usuario_com_ia,
+    detectar_intencao_com_sistemas_criticos,
+    aplicar_sistemas_criticos_pos_resposta,
+)
 
 # --- Configurações Globais (MOVIDAS PARA ANTES DAS FUNÇÕES) ---
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -1265,11 +1269,17 @@ Responda APENAS a mensagem (sem aspas):"""
         )
         
         generated_text = response["message"]["content"].strip()
-        
+
         # Remove aspas ou formatação extra se houver
         generated_text = generated_text.strip('"\'')
-        
+
         logging.info(f"[llm_interface.py] Resposta dinâmica gerada para {context_type}: {generated_text[:50]}...")
+
+        # ✅ Validação pós-resposta para garantir segurança e veracidade
+        validacao_final = aplicar_sistemas_criticos_pos_resposta(generated_text, dados_sessao)
+        if validacao_final.get("foi_corrigida"):
+            generated_text = validacao_final["resposta_validada"]
+
         return generated_text
         
     except Exception as e:
