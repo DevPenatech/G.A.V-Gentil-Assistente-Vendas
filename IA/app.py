@@ -2559,9 +2559,8 @@ def _finalize_session(
     if response_text:
         # 📝 SEMPRE salva a resposta no histórico antes de tentar enviar 
         # 🆕 EVITA DUPLICAÇÃO: Só salva se não for idêntica à última mensagem
-        history = session.get("conversation_history", [])
-        last_msg = history[-1] if history else {}
-        if not (last_msg.get("role") == "assistant" and last_msg.get("message") == response_text):
+        historico = session.get("historico_conversa", [])
+        if not (historico and historico[-1].get("message") == response_text):
             adicionar_mensagem_historico(session, "assistant", response_text, "BOT_RESPONSE")
     
     salvar_sessao(session_id, session)
