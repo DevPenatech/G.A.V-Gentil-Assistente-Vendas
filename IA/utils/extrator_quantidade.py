@@ -300,14 +300,11 @@ def detectar_modificadores_quantidade(texto: str) -> Dict:
         modificadores['acao'] = 'set'
     elif re.search(r'\b(?:remover|tirar|excluir|deletar)\b', normalizado):
         modificadores['acao'] = 'remove'
-    # NOVO: Comando para esvaziar carrinho COMPLETO
-    elif re.search(r'\b(?:esvaziar|limpar|zerar|resetar|apagar)\s*(?:carrinho|tudo|todos|completo)?', normalizado):
-        modificadores['acao'] = 'clear'
-        modificadores['referencia'] = 'all'
-    # NOVO: Comandos alternativos para limpeza
-    elif re.search(r'\b(?:começar\s+de\s+novo|recomeçar|reiniciar)', normalizado):
-        modificadores['acao'] = 'clear'
-        modificadores['referencia'] = 'all'
+    else:
+        from core.gerenciador_sessao import detectar_comandos_limpar_carrinho
+        if detectar_comandos_limpar_carrinho(texto):
+            modificadores['acao'] = 'clear'
+            modificadores['referencia'] = 'all'
     
     # Referências - EXPANDIDO
     if re.search(r'\b(?:tudo|todos|todas|carrinho|completo|inteiro|total)\b', normalizado):

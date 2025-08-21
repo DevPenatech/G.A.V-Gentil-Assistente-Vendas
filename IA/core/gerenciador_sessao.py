@@ -590,20 +590,33 @@ def detectar_comandos_limpar_carrinho(mensagem: str) -> bool:
         'do zero', 'novo pedido', 'nova compra',
         'limpa carrinho', 'esvazia carrinho', 'zera carrinho'
     ]
-    
+
     if mensagem_minuscula in comandos_limpar:
         logging.debug("Comando de limpar carrinho detectado.")
         return True
-    
+
+    verbos_limpeza = [
+        'esvaziar', 'esvazia', 'limpar', 'limpa', 'zerar', 'zera',
+        'apagar', 'apaga', 'deletar', 'deleta', 'remover', 'remove',
+        'resetar', 'reseta'
+    ]
+    termos_carrinho = [
+        'carrinho', 'tudo', 'todos', 'cesta', 'compra', 'compras', 'pedido'
+    ]
+
+    if any(v in mensagem_minuscula for v in verbos_limpeza) and \
+       any(t in mensagem_minuscula for t in termos_carrinho):
+        logging.debug("Verbo de limpeza com termo relacionado a carrinho detectado.")
+        return True
+
     padroes_limpar = [
-        r'\b(esvaziar|limpar|zerar|apagar|deletar|remover)\s+(o\s+)?carrinho\b',
         r'\b(carrinho|tudo)\s+(vazio|limpo|zerado)\b',
         r'\bcomeca\w*\s+de\s+novo\b',
-        r'\bdo\s+zero\b',
+        r'\brecome\w*\b',
         r'\breinicia\w*\s+(carrinho|tudo|compra)\b',
-        r'\b(esvazia|limpa|zera)\s+(carrinho|tudo)?\b'
+        r'\bdo\s+zero\b'
     ]
-    
+
     for padrao in padroes_limpar:
         if re.search(padrao, mensagem_minuscula):
             logging.debug("Padrão de limpar carrinho detectado.")
