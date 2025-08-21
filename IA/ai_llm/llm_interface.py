@@ -291,7 +291,7 @@ def get_fallback_prompt() -> str:
 
 ESTILO: Respostas curtas com próxima ação explícita. Liste até 3 opções por vez; peça escolha por número ("1, 2 ou 3").
 
-FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, perguntar_continuar_ou_finalizar, clear_cart
+FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, atualizar_item_carrinho, checkout, lidar_conversa, perguntar_continuar_ou_finalizar, clear_cart
 
 COMANDOS ESPECIAIS:
 - "esvaziar carrinho", "limpar carrinho" → use clear_cart
@@ -572,9 +572,9 @@ def get_intent(
         
         for pattern in greeting_patterns:
             if re.match(pattern, message_lower):
-                logging.info("[llm_interface.py] Saudação detectada, usando handle_chitchat")
+                logging.info("[llm_interface.py] Saudação detectada, usando lidar_conversa")
                 return {
-                    "tool_name": "handle_chitchat",
+                    "tool_name": "lidar_conversa",
                     "parameters": {"response_text": "GENERATE_GREETING"},
                 }
         
@@ -780,13 +780,13 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
                 # Usa fallback quando JSON inválido
                 logging.error(f"[llm_interface.py] Erro ao parsear JSON: {e}")
                 return criar_intencao_fallback(mensagem_usuario, melhorar_consciencia_contexto(mensagem_usuario, dados_sessao))
-            tool_name = intent_data.get("tool_name", "handle_chitchat")
+            tool_name = intent_data.get("tool_name", "lidar_conversa")
 
             # Valida se a ferramenta existe
             if tool_name not in AVAILABLE_TOOLS:
                 logging.warning(f"[llm_interface.py] Ferramenta inválida: {tool_name}")
                 intent_data = {
-                    "tool_name": "handle_chitchat",
+                    "tool_name": "lidar_conversa",
                     "parameters": {
                         "response_text": "Tive um problema na consulta agora. Tentar novamente?"
                     },
@@ -1063,11 +1063,19 @@ def validate_intent_parameters(tool_name: str, parameters: Dict) -> Dict:
         # Limita tamanho do nome do produto
         parameters["product_name"] = str(parameters["product_name"])[:100]
 
-    elif tool_name == "update_cart_item":
+    elif tool_name == "atualizar_item_carrinho":
         # Valida ação e parâmetros relacionados
-        valid_actions = ["remove", "update_quantity", "add_quantity"]
-        if "action" not in parameters or parameters["action"] not in valid_actions:
-            parameters["action"] = "remove"
+        valid_actions = ["remove", "add", "set"]
+        if "acao" not in parameters or parameters["acao"] not in valid_actions:
+            parameters["acao"] = "remove"
+        if "quantidade" in parameters:
+            try:
+                qt = float(parameters["quantidade"])
+                if qt <= 0:
+                    qt = 1
+                parameters["quantidade"] = qt
+            except (ValueError, TypeError):
+                parameters["quantidade"] = 1
     
     elif tool_name == "find_customer_by_cnpj":
         # 🆕 VALIDA CNPJ
@@ -1100,7 +1108,7 @@ def get_enhanced_intent(
         )
 
     # Valida e corrige parâmetros
-    tool_name = intent.get("tool_name", "handle_chitchat")
+    tool_name = intent.get("tool_name", "lidar_conversa")
     parameters = intent.get("parameters", {})
 
     validated_parameters = validate_intent_parameters(tool_name, parameters)

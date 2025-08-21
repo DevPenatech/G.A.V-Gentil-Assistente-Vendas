@@ -299,8 +299,7 @@ FERRAMENTAS DISPONÍVEIS:
 7. adicionar_item_ao_carrinho - Para selecionar item por número
 8. show_more_products - Para mostrar mais produtos da mesma busca (palavra: mais)
 9. checkout - Para finalizar pedido (palavras: finalizar, checkout, comprar)
-10. handle_chitchat - Para saudações e conversas que resetam estado  
-11. lidar_conversa - Para conversas gerais que mantêm contexto
+10. lidar_conversa - Para saudações e conversas gerais
 
 CONTEXTO DA CONVERSA (FUNDAMENTAL PARA ANÁLISE):
 {conversation_context if conversation_context else "Primeira interação"}
@@ -319,17 +318,17 @@ REGRAS DE CLASSIFICAÇÃO (ANALISE O CONTEXTO ANTES DE DECIDIR):
 8. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
 9. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
 10. Se quer limpar/esvaziar carrinho → limpar_carrinho
-11. 🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): "oi", "olá", "bom dia", "boa tarde", "boa noite", "eai" → handle_chitchat
+11. 🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): "oi", "olá", "bom dia", "boa tarde", "boa noite", "eai" → lidar_conversa
 12. Agradecimentos, perguntas gerais → lidar_conversa
 
 EXEMPLOS IMPORTANTES:
 🔥 SAUDAÇÕES (SEMPRE DETECTAR PRIMEIRO):
-- "oi" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
-- "olá" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)  
-- "bom dia" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
-- "boa tarde" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
-- "boa noite" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
-- "eai" → handle_chitchat (SEMPRE, mesmo com contexto de produtos)
+- "oi" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
+- "olá" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)  
+- "bom dia" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
+- "boa tarde" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
+- "boa noite" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
+- "eai" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
 
 OUTROS EXEMPLOS:
 - "mais" → show_more_products (PRIORIDADE MÁXIMA após busca!)
@@ -362,7 +361,6 @@ PARÂMETROS ESPERADOS:
 - obter_produtos_mais_vendidos_por_nome: {{"nome_produto": "nome_produto"}}
 - adicionar_item_ao_carrinho: {{"indice": numero}}
 - atualizacao_inteligente_carrinho: {{"nome_produto": "produto", "acao": "add/remove/set", "quantidade": numero}}
-- handle_chitchat: {{"response_text": "GENERATE_GREETING"}} (SEMPRE para saudações)
 - lidar_conversa: {{"response_text": "resposta_natural"}}
 
 ATENÇÃO ESPECIAL PARA AÇÕES:
@@ -373,7 +371,7 @@ ATENÇÃO ESPECIAL PARA AÇÕES:
 🚨 IMPORTANTE: RESPONDA APENAS EM JSON VÁLIDO, SEM EXPLICAÇÕES!
 
 EXEMPLOS DE RESPOSTA CORRETA:
-Para saudações: {{"nome_ferramenta": "handle_chitchat", "parametros": {{"response_text": "GENERATE_GREETING"}}}}
+Para saudações: {{"nome_ferramenta": "lidar_conversa", "parametros": {{"response_text": "GENERATE_GREETING"}}}}
 Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}}}}
 
 🔥 NÃO ESCREVA TEXTO EXPLICATIVO! APENAS JSON!
@@ -415,7 +413,6 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                 "adicionar_item_ao_carrinho",
                 "show_more_products",
                 "checkout",
-                "handle_chitchat",
                 "lidar_conversa"
             ]
             
@@ -754,8 +751,7 @@ class IntentConfidenceSystem:
             "adicionar_item_ao_carrinho": 0.90,
             "show_more_products": 0.85,
             "checkout": 0.70,
-            "handle_chitchat": 0.90,
-            "lidar_conversa": 0.85
+            "lidar_conversa": 0.90
         }
         
     def analyze_intent_confidence(self, intent_data: Dict, user_message: str, context: str = "") -> float:
@@ -857,7 +853,6 @@ class IntentConfidenceSystem:
             "obter_produtos_mais_vendidos_por_nome": ["nome_produto"], 
             "atualizacao_inteligente_carrinho": ["acao"],
             "adicionar_item_ao_carrinho": ["indice"],
-            "handle_chitchat": ["response_text"],
             "lidar_conversa": ["response_text"]
         }
         
@@ -916,7 +911,7 @@ class IntentConfidenceSystem:
             "checkout": ["finalizar", "checkout", "comprar", "fechar pedido"],
             "adicionar_item_ao_carrinho": [r'^\d+$'],  # Números isolados
             "show_more_products": ["mais", "continuar", "próximos"],
-            "handle_chitchat": ["oi", "olá", "bom dia", "boa tarde", "obrigado"]
+            "lidar_conversa": ["oi", "olá", "bom dia", "boa tarde", "obrigado"]
         }
         
         patterns = high_confidence_patterns.get(tool_name, [])
@@ -1014,13 +1009,6 @@ class SmartParameterValidator:
                 "validations": {
                     "cnpj": {"type": str, "pattern": r"^\d{14}$"},
                     "force_checkout": {"type": bool}
-                }
-            },
-            "handle_chitchat": {
-                "required": ["response_text"],
-                "optional": {},
-                "validations": {
-                    "response_text": {"type": str, "min_length": 1, "max_length": 1000}
                 }
             },
             "lidar_conversa": {
@@ -1254,7 +1242,7 @@ class SmartParameterValidator:
             if "quantidade" not in parametros:
                 enrichments["quantidade"] = 1
         
-        elif tool_name == "handle_chitchat":
+        elif tool_name == "lidar_conversa":
             # Enriquece resposta baseada no tipo de saudação
             if "response_text" in parametros and parametros["response_text"] == "GENERATE_GREETING":
                 if "bom dia" in user_lower:
@@ -1499,7 +1487,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
     logging.debug("[FASE 5] Validando contra invenção de dados...")
     
     # Se a intenção gerará uma resposta textual, validamos contra invenção
-    ferramentas_com_resposta_textual = ["lidar_conversa", "handle_chitchat"]
+    ferramentas_com_resposta_textual = ["lidar_conversa"]
     if intencao_detectada.get("nome_ferramenta") in ferramentas_com_resposta_textual:
         resposta_texto = intencao_detectada.get("parametros", {}).get("response_text", "")
         if resposta_texto and resposta_texto != "GENERATE_GREETING":
@@ -2019,7 +2007,6 @@ class IntelligentContextManager:
                 "visualizar_carrinho": "reviewing_cart",
                 "atualizacao_inteligente_carrinho": "modifying_cart",
                 "checkout": "finalizing_purchase",
-                "handle_chitchat": "greeting",
                 "lidar_conversa": "general_conversation"
             }
             
