@@ -191,7 +191,7 @@ def detect_checkout_context(session_data: Dict) -> Dict:
     }
     
     # Verifica histórico recente
-    history = session_data.get('conversation_history', [])
+    history = session_data.get('historico_conversa', [])
     
     if not history:
         return context
@@ -343,15 +343,15 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
     """
     logging.debug(f"Aprimorando a consciência de contexto para a mensagem: '{user_message}'")
     context = {
-        "has_cart_items": len(session_data.get("shopping_cart", [])) > 0,
-        "cart_count": len(session_data.get("shopping_cart", [])),
-        "has_pending_products": len(session_data.get("last_shown_products", [])) > 0,
-        "last_action": session_data.get("last_bot_action", ""),
-        "customer_identified": bool(session_data.get("customer_context")),
-        "recent_search": session_data.get("last_kb_search_term"),
+        "has_cart_items": len(session_data.get("carrinho_compras", [])) > 0,
+        "cart_count": len(session_data.get("carrinho_compras", [])),
+        "has_pending_products": len(session_data.get("ultimos_produtos_mostrados", [])) > 0,
+        "last_action": session_data.get("ultima_acao_bot", ""),
+        "customer_identified": bool(session_data.get("contexto_cliente")),
+        "recent_search": session_data.get("ultimo_termo_busca_kb"),
         "numeric_selection": extract_numeric_selection(user_message),
         "inferred_quantity": detect_quantity_keywords(user_message),
-        "conversation_history": session_data.get("conversation_history", [])
+        "historico_conversa": session_data.get("historico_conversa", [])
     }
 
     # 🆕 DETECTA COMANDOS DE LIMPEZA DE CARRINHO
@@ -384,7 +384,7 @@ def enhance_context_awareness(user_message: str, session_data: Dict) -> Dict:
         context["continue_shopping"] = True
         
     context["conversation_context"] = analyze_conversation_context(
-        context["conversation_history"], user_message
+        context["historico_conversa"], user_message
     )
 
     # Detecta gírias de produtos
@@ -596,13 +596,13 @@ def get_intent(
 
         # Obtém contexto EXPANDIDO da conversa (14 mensagens para melhor contexto)
         conversation_context = obter_contexto_conversa(session_data, max_messages=14)
-        print(f">>> CONSOLE: Contexto da conversa com {len(session_data.get('conversation_history', []))} mensagens totais")
+        print(f">>> CONSOLE: Contexto da conversa com {len(session_data.get('historico_conversa', []))} mensagens totais")
 
         # Informações do carrinho
         cart_info = ""
         if cart_items_count > 0:
             cart_info = f"CARRINHO ATUAL: {cart_items_count} itens"
-            cart_items = session_data.get("shopping_cart", [])
+            cart_items = session_data.get("carrinho_compras", [])
             if cart_items:
                 cart_info += " ("
                 item_names = []
@@ -619,7 +619,7 @@ def get_intent(
 
         # Produtos disponíveis para seleção
         products_info = ""
-        last_shown = session_data.get("last_shown_products", [])
+        last_shown = session_data.get("ultimos_produtos_mostrados", [])
         if last_shown and enhanced_context.get("numeric_selection"):
             products_info = f"PRODUTOS MOSTRADOS RECENTEMENTE: {len(last_shown)} opções disponíveis para seleção numérica"
 
@@ -1128,7 +1128,7 @@ def get_enhanced_intent(
         user_message,
         session_data,
         customer_context,
-        len(session_data.get("shopping_cart", [])),
+        len(session_data.get("carrinho_compras", [])),
     )
 
     if not intent:
@@ -1248,8 +1248,8 @@ def generate_personalized_response(context_type: str, session_data: Dict, **kwar
     logging.debug(f"Gerando resposta personalizada para o tipo de contexto: '{context_type}'")
     try:
         # Constrói o contexto baseado no tipo
-        conversation_history = session_data.get("conversation_history", [])
-        cart_items = len(session_data.get("shopping_cart", []))
+        conversation_history = session_data.get("historico_conversa", [])
+        cart_items = len(session_data.get("carrinho_compras", []))
         
         # 🆕 PROMPTS PROFISSIONAIS: Mensagens curtas, naturais mas sem inventar dados
         contexts = {
