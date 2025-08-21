@@ -13,6 +13,7 @@ import redis
 import re
 from IA.utils.classificador_intencao import detectar_intencao_usuario_com_ia
 
+
 # Logger
 logger = logging.getLogger(__name__)
 # Configurações
@@ -37,6 +38,50 @@ if REDIS_ATIVADO:
     except Exception as e:
         logging.warning(f"Redis não disponível: {e}. Usando armazenamento em arquivo.")
         cliente_redis = None
+
+
+def resumir_texto_semantico(texto: str, max_frases: int = 2) -> str:
+    """Gera um resumo simples baseado em frequência de palavras.
+
+    Args:
+        texto: Texto a ser resumido.
+        max_frases: Número máximo de frases no resumo.
+
+    Returns:
+        Texto resumido contendo as frases mais relevantes.
+    """
+    sentences = re.split(r"(?<=[.!?])\s+", texto)
+    if len(sentences) <= max_frases:
+        return texto.strip()
+
+    palavras = re.findall(r"\w+", texto.lower(), flags=re.UNICODE)
+    frequencias = Counter(p for p in palavras if len(p) > 3)
+
+    pontuacoes = []
+    for frase in sentences:
+        score = sum(frequencias.get(palavra, 0) for palavra in re.findall(r"\w+", frase.lower(), flags=re.UNICODE))
+        pontuacoes.append((score, frase))
+
+    pontuacoes.sort(key=lambda x: x[0], reverse=True)
+    melhores = [frase for _, frase in pontuacoes[:max_frases]]
+    return " ".join(melhores).strip()
+
+
+def _resumo_para_string(resumo: Union[str, List[Dict[str, str]]]) -> str:
+    """Converte estrutura de resumo em string legível."""
+    if not resumo:
+        return ""
+    if isinstance(resumo, str):
+        return resumo
+
+    linhas = []
+    for item in resumo:
+        role = "Cliente" if item.get("role") == "user" else "G.A.V."
+        acao = item.get("action_type", "")
+        info_acao = f" [{acao}]" if acao else ""
+        linhas.append(f"{role}{info_acao}: {item.get('summary', '')}")
+
+    return " | ".join(linhas)
 
 def _obter_caminho_arquivo_sessao(id_sessao: str) -> str:
     """Retorna o caminho do arquivo de sessão.
@@ -71,7 +116,7 @@ def carregar_sessao(id_sessao: str) -> Dict:
         "contexto_cliente": None,
         "carrinho_compras": [],
         "historico_conversa": [],
-        "resumo_conversa": "",
+        "resumo_conversa": [],
         "ultimo_tipo_busca": None,
         "ultimos_parametros_busca": {},
         "offset_atual": 0,
@@ -413,20 +458,26 @@ def _resumir_mensagens_antigas(dados_sessao: Dict, max_historico: int = 40, mant
     if len(historico) <= max_historico:
         return
 
-    mensagens_antigas = historico[:-manter_recentes]
+    mensagens_antigas = historico[:-manter_recentes] if manter_recentes > 0 else historico[:]
 
-    linhas_resumo = []
+    resumo_existente = dados_sessao.get("resumo_conversa", [])
+    if isinstance(resumo_existente, str):
+        resumo_existente = [{"role": "system", "action_type": "", "summary": resumo_existente}]
+
     for msg in mensagens_antigas:
-        role = "Cliente" if msg.get("role") == "user" else "G.A.V."
-        conteudo = msg.get("message", "").replace("\n", " ")
-        linhas_resumo.append(f"{role}: {conteudo}")
+        conteudo = msg.get("message", "")
+        resumo_msg = resumir_texto_semantico(conteudo)
+        resumo_existente.append({
+            "role": msg.get("role"),
+            "action_type": msg.get("action_type", ""),
+            "summary": resumo_msg,
+        })
 
-    novo_resumo = " | ".join(linhas_resumo)
-    resumo_existente = dados_sessao.get("resumo_conversa", "")
+    # Limita o tamanho total do resumo a 1000 caracteres
+    while len(_resumo_para_string(resumo_existente)) > 1000 and resumo_existente:
+        resumo_existente.pop(0)
 
-    combinado = (resumo_existente + " | " + novo_resumo).strip(" |") if resumo_existente else novo_resumo
-    dados_sessao["resumo_conversa"] = combinado[-1000:]
-
+    dados_sessao["resumo_conversa"] = resumo_existente
     dados_sessao["historico_conversa"] = historico[-manter_recentes:]
     logging.debug("Mensagens antigas do histórico resumidas com sucesso.")
 
@@ -464,14 +515,15 @@ def obter_contexto_conversa(dados_sessao: Dict, max_mensagens: int = 14) -> str:
     """
     logging.debug(f"Obtendo contexto da conversa com no máximo {max_mensagens} mensagens.")
     historico = dados_sessao.get("historico_conversa", [])
-    resumo = dados_sessao.get("resumo_conversa")
+    resumo_dados = dados_sessao.get("resumo_conversa")
+    resumo_texto = _resumo_para_string(resumo_dados)
 
-    if not historico and not resumo:
+    if not historico and not resumo_texto:
         return "Primeira interação com o cliente."
 
     partes = []
-    if resumo:
-        partes.append(f"RESUMO ANTERIOR:\n{resumo}")
+    if resumo_texto:
+        partes.append(f"RESUMO ANTERIOR:\n{resumo_texto}")
 
     if historico:
         historico_recente = historico[-max_mensagens:]
@@ -501,9 +553,10 @@ def obter_contexto_conversa_resumido(dados_sessao: Dict, max_mensagens: int = 20
             - mensagens_recentes: lista de strings das mensagens recentes.
     """
     historico = dados_sessao.get("historico_conversa", [])
-    resumo = dados_sessao.get("resumo_conversa", "") or ""
+    resumo_dados = dados_sessao.get("resumo_conversa", []) or []
 
-    resumo_limitado = resumo[-1000:]
+    resumo_texto = _resumo_para_string(resumo_dados)
+    resumo_limitado = resumo_texto[-1000:]
 
     mensagens_formatadas: List[str] = []
     if historico:
