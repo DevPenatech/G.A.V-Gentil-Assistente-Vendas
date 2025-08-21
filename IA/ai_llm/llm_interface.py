@@ -237,7 +237,7 @@ def load_prompt_template() -> str:
         logging.debug("Usando prompt em cache.")
         return _prompt_cache
 
-    prompt_path = os.path.join("ai_llm", "gav_prompt_structured_v2.txt")
+    prompt_path = os.path.join("ai_llm", "gav_prompt.txt")
 
     try:
         logging.info(f"[llm_interface.py] Carregando prompt de: {prompt_path}")
