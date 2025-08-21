@@ -11,8 +11,8 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union, Any
 import redis
 import re
-from utils.extrator_quantidade import detectar_modificadores_quantidade
-from collections import Counter
+from IA.utils.classificador_intencao import detectar_intencao_usuario_com_ia
+
 
 # Logger
 logger = logging.getLogger(__name__)
@@ -613,48 +613,45 @@ def detectar_comandos_limpar_carrinho(mensagem: str) -> bool:
     return False
 
 def detectar_tipo_intencao_usuario(mensagem: str, dados_sessao: Dict) -> str:
-    """Detecta o tipo de intenção do usuário.
+    """Detecta o tipo de intenção do usuário utilizando classificador de IA.
 
     Args:
         mensagem: A mensagem do usuário.
-        dados_sessao: Os dados da sessão.
+        dados_sessao: Os dados da sessão que podem conter o histórico de conversa.
 
     Returns:
-        O tipo de intenção detectado.
+        O tipo de intenção detectado em formato padronizado.
     """
-    logging.debug(f"Detectando tipo de intenção do usuário para a mensagem: '{mensagem}'")
-    mensagem_minuscula = mensagem.lower().strip()
-    
-    if detectar_comandos_limpar_carrinho(mensagem):
-        logging.info(f"[INTENCAO] Comando de limpeza detectado: '{mensagem}'")
-        return "CLEAR_CART"
-    
-    if re.match(r'^\s*\d+\s*$', mensagem_minuscula):
-        return "NUMERIC_SELECTION"
-    
-    comandos_carrinho = ['carrinho', 'ver carrinho', 'mostrar carrinho']
-    if any(cmd in mensagem_minuscula for cmd in comandos_carrinho):
-        return "VIEW_CART"
-    
-    comandos_checkout = ['finalizar', 'fechar pedido', 'checkout', 'comprar']
-    if any(cmd in mensagem_minuscula for cmd in comandos_checkout):
-        return "CHECKOUT"
-    
-    if any(word in mensagem_minuscula for word in ['quero', 'buscar', 'procurar', 'produto']):
-        return "SEARCH_PRODUCT"
+    logging.debug(
+        f"Detectando tipo de intenção do usuário para a mensagem: '{mensagem}'"
+    )
 
-    saudacoes = ['oi', 'olá', 'ola', 'boa', 'bom dia', 'boa tarde', 'boa noite', 'e aí', 'e ai']
-    if any(saudacao in mensagem_minuscula for saudacao in saudacoes):
-        return "GREETING"
+    historico = dados_sessao.get("historico_conversa", [])
+    contexto = "\n".join(
+        f"{msg.get('role', '')}: {msg.get('content', '')}" for msg in historico
+    )
 
-    modificadores = detectar_modificadores_quantidade(mensagem_minuscula)
-    if modificadores.get('action') == 'remove':
-        return "REMOVE_CART_ITEM"
+    try:
+        resultado = detectar_intencao_usuario_com_ia(mensagem, contexto)
+        nome_ferramenta = resultado.get("nome_ferramenta", "").lower()
+    except Exception as e:
+        logging.warning(f"[INTENCAO] Falha ao classificar com IA: {e}")
+        nome_ferramenta = ""
 
-    if re.search(r'\d+', mensagem) and len(dados_sessao.get("last_shown_products", [])) > 0:
-        return "QUANTITY_SPECIFICATION"
-    
-    return "GENERAL"
+    mapa_intencoes = {
+        "limpar_carrinho": "CLEAR_CART",
+        "adicionar_item_ao_carrinho": "NUMERIC_SELECTION",
+        "visualizar_carrinho": "VIEW_CART",
+        "checkout": "CHECKOUT",
+        "busca_inteligente_com_promocoes": "SEARCH_PRODUCT",
+        "obter_produtos_mais_vendidos_por_nome": "SEARCH_PRODUCT",
+        "handle_chitchat": "GREETING",
+        "atualizacao_inteligente_carrinho": "UPDATE_CART",
+        "show_more_products": "SHOW_MORE_PRODUCTS",
+        "lidar_conversa": "GENERAL",
+    }
+
+    return mapa_intencoes.get(nome_ferramenta, "GENERAL")
 
 def obter_estatisticas_sessao(dados_sessao: Dict) -> Dict:
     """Retorna estatísticas da sessão atual.
