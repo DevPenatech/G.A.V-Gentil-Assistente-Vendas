@@ -1,0 +1,238 @@
+{
+  "contexto_cliente": null,
+  "carrinho_compras": [],
+  "historico_conversa": [
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de PAPEL SULFITE REPORT  você deseja adicionar?",
+      "timestamp": "2025-08-21T14:02:13.395982",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "10000",
+      "timestamp": "2025-08-21T14:02:47.517727",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei 1 PAPEL SULFITE ao seu pedido.\n\n🛒 *Carrinho:*1x PAPEL SULFITE REPORT \n   R$ 34,90 cada = R$ 34,90\n\n💰 *Total Geral: R$ 34,90*",
+      "timestamp": "2025-08-21T14:02:50.026306",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei 1 PAPEL SULFITE ao seu pedido.\n\n🛒 *Carrinho:*1x PAPEL SULFITE REPORT \n   R$ 34,90 cada = R$ 34,90\n\n💰 *Total Geral: R$ 34,90*",
+      "timestamp": "2025-08-21T14:02:50.029544",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "10.000",
+      "timestamp": "2025-08-21T14:03:07.173913",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de PAPEL SULFITE REPORT  você deseja adicionar?",
+      "timestamp": "2025-08-21T14:03:13.977173",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de PAPEL SULFITE REPORT  você deseja adicionar?",
+      "timestamp": "2025-08-21T14:03:13.978552",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "10.000",
+      "timestamp": "2025-08-21T14:03:18.531501",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Você já possui **PAPEL SULFITE REPORT ** com **1** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade?",
+      "timestamp": "2025-08-21T14:03:19.469288",
+      "action_type": "REQUEST_DUPLICATE_DECISION"
+    },
+    {
+      "role": "assistant",
+      "message": "Você já possui **PAPEL SULFITE REPORT ** com **1** unidades. Deseja *1* somar ou *2* substituir pela nova quantidade?",
+      "timestamp": "2025-08-21T14:03:19.470823",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-21T14:03:44.169094",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Adicionei +10 PAPEL SULFITE REPORT . Total agora: 11\n\n🛒 *Carrinho:*11x PAPEL SULFITE REPORT \n   R$ 34,90 cada = R$ 383,90\n\n💰 *Total Geral: R$ 383,90*",
+      "timestamp": "2025-08-21T14:03:44.171275",
+      "action_type": "ADD_QUANTITY_TO_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "✅ Adicionei +10 PAPEL SULFITE REPORT . Total agora: 11\n\n🛒 *Carrinho:*11x PAPEL SULFITE REPORT \n   R$ 34,90 cada = R$ 383,90\n\n💰 *Total Geral: R$ 383,90*",
+      "timestamp": "2025-08-21T14:03:44.174027",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "1000",
+      "timestamp": "2025-08-21T14:06:59.237230",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Por favor, escolha um número entre as opções disponíveis (1-1-14).\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T14:07:03.497370",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Por favor, escolha um número entre as opções disponíveis (1-1-14).\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T14:07:03.500794",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-21T14:07:09.454485",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Produtos encontrados:*\n\n*1.* CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n    💰 R$ 1.000,00\n\nDigite *1* para selecionar este produto.\n📝 Digite *mais* para ver outros produtos desta categoria!",
+      "timestamp": "2025-08-21T14:07:12.203683",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Produtos encontrados:*\n\n*1.* CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n    💰 R$ 1.000,00\n\nDigite *1* para selecionar este produto.\n📝 Digite *mais* para ver outros produtos desta categoria!",
+      "timestamp": "2025-08-21T14:07:12.206637",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "papel higienico",
+      "timestamp": "2025-08-21T14:08:31.699247",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Por favor, me informe um número para continuar.\n\n📦 *Escolha um produto da lista:*\n*1.* CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n\nDigite o número de *1* a *1*.",
+      "timestamp": "2025-08-21T14:08:36.291789",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Por favor, me informe um número para continuar.\n\n📦 *Escolha um produto da lista:*\n*1.* CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n\nDigite o número de *1* a *1*.",
+      "timestamp": "2025-08-21T14:08:36.294809",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-21T14:08:49.906034",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500 você deseja adicionar?",
+      "timestamp": "2025-08-21T14:08:51.526095",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500 você deseja adicionar?",
+      "timestamp": "2025-08-21T14:08:51.528116",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "500",
+      "timestamp": "2025-08-21T14:08:55.539637",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei 500 em seu carrinho. Confirma?\n\n🛒 *Carrinho:*11x PAPEL SULFITE REPORT \n   R$ 34,90 cada = R$ 383,90\n\n500x CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n   R$ 1000,00 cada = R$ 500000,00\n\n💰 *Total Geral: R$ 500383,90*",
+      "timestamp": "2025-08-21T14:08:57.069385",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei 500 em seu carrinho. Confirma?\n\n🛒 *Carrinho:*11x PAPEL SULFITE REPORT \n   R$ 34,90 cada = R$ 383,90\n\n500x CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n   R$ 1000,00 cada = R$ 500000,00\n\n💰 *Total Geral: R$ 500383,90*",
+      "timestamp": "2025-08-21T14:08:57.076056",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "12.345.678/0001-95",
+      "timestamp": "2025-08-21T14:12:36.709650",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Cliente\n📄 *CNPJ:* 12.345.678/0001-95\n\n📦 *ITENS DO PEDIDO:*\n*1.* PAPEL SULFITE REPORT \n    11× R$ 34,90 = *R$ 383,90*\n\n*2.* CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n    500× R$ 1.000,00 = *R$ 500.000,00*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 500.383,90*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *",
+      "timestamp": "2025-08-21T14:12:38.470936",
+      "action_type": "CHECKOUT_COMPLETE"
+    },
+    {
+      "role": "assistant",
+      "message": "✅ *RESUMO DO PEDIDO*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *Cliente:* Cliente\n📄 *CNPJ:* 12.345.678/0001-95\n\n📦 *ITENS DO PEDIDO:*\n*1.* PAPEL SULFITE REPORT \n    11× R$ 34,90 = *R$ 383,90*\n\n*2.* CARTÃO PVC BRANCO CR80 DE 0,75MM  C/500\n    500× R$ 1.000,00 = *R$ 500.000,00*\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GERAL: R$ 500.383,90*\n\n✅ *Pedido registrado com sucesso!*\n📞 Em breve entraremos em contato para confirmação.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *",
+      "timestamp": "2025-08-21T14:12:38.473894",
+      "action_type": "BOT_RESPONSE"
+    }
+  ],
+  "resumo_conversa": "mais opções | Cliente: 4 | G.A.V.: Não entendi o número que você quer escolher entre 1 e 0. Qual é? | G.A.V.: Não entendi o número que você quer escolher entre 1 e 0. Qual é? | Cliente: 1 | G.A.V.: 😕 Nenhum produto encontrado na categoria 'ALIMENTOS'. Que tal tentar outra busca? | G.A.V.: 😕 Nenhum produto encontrado na categoria 'ALIMENTOS'. Que tal tentar outra busca? | Cliente: papel higienico | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'papel higienico'::*  *1.* PAPEL SULFITE REPORT      💰 R$ 34,90  *2.* TAPETE HIGIENICO LEPETS C/7     💰 R$ 16,90  *3.* TAPETE HIGIENICO BW SLIM 60X60     💰 R$ 19,90  Qual você quer? Digite 1, 2 ou *3*. | G.A.V.: 📦 *🎯 Encontrei estes produtos relacionados a 'papel higienico'::*  *1.* PAPEL SULFITE REPORT      💰 R$ 34,90  *2.* TAPETE HIGIENICO LEPETS C/7     💰 R$ 16,90  *3.* TAPETE HIGIENICO BW SLIM 60X60     💰 R$ 19,90  Qual você quer? Digite 1, 2 ou *3*. | Cliente: 1 | G.A.V.: Quantas unidades de PAPEL SULFITE REPORT  você deseja adicionar?",
+  "ultimo_tipo_busca": null,
+  "ultimos_parametros_busca": {},
+  "offset_atual": 0,
+  "ultimos_produtos_mostrados": [],
+  "ultima_acao_bot": null,
+  "acao_pendente": null,
+  "selecao_produto_pendente": null,
+  "quantidade_pendente": null,
+  "ultimo_termo_busca_kb": null,
+  "ultimos_resultados_busca": [],
+  "ultima_analise_busca": {},
+  "ultimas_sugestoes_busca": [],
+  "criado_em": "2025-08-21T12:58:14.088751",
+  "ultima_atividade": "2025-08-21T14:12:38.474397",
+  "validated_cnpj": "12345678000195",
+  "customer_context": {
+    "cnpj": "12.345.678/0001-95",
+    "nome": "Cliente",
+    "validated": true
+  },
+  "shopping_cart": [],
+  "last_search_type": "smart_search",
+  "last_search_params": {
+    "search_term": "produtos",
+    "category": "OUTROS",
+    "marca_priorizada": "produtos"
+  },
+  "current_offset": 3,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_MENU_SELECTION",
+  "pending_action": null,
+  "last_kb_search_term": null,
+  "estatisticas_sessao": {
+    "itens_carrinho": 0,
+    "tamanho_conversa": 0,
+    "cliente_identificado": true,
+    "ultima_acao": "AWAITING_MENU_SELECTION",
+    "tem_selecao_pendente": false,
+    "tem_quantidade_pendente": false,
+    "valor_total_carrinho": 0.0
+  },
+  "pending_product_for_cart": null,
+  "term_to_learn_after_quantity": null,
+  "duplicate_item_index": null,
+  "duplicate_item_qty": null
+}

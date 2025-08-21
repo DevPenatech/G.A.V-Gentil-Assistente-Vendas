@@ -1,0 +1,170 @@
+{
+  "contexto_cliente": null,
+  "carrinho_compras": [],
+  "historico_conversa": [
+    {
+      "role": "user",
+      "message": "12.345.678/0001-94",
+      "timestamp": "2025-08-21T14:07:42.174807",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🎉 *Olá! Seja bem-vindo à Comercial Esperança!*\n\nEu sou o *G.A.V.* (Gentil Assistente de Vendas) e estou aqui para te ajudar com seus pedidos de forma rápida e personalizada! 😊\n\nPara começarmos, preciso apenas do CNPJ da sua empresa:\n📄 Digite seu CNPJ (pode ser com ou sem pontuação)",
+      "timestamp": "2025-08-21T14:07:42.175521",
+      "action_type": "REQUEST_CNPJ"
+    },
+    {
+      "role": "assistant",
+      "message": "✅ *CNPJ validado com sucesso!*\n\n🎉 Bem-vindo à *Comercial Esperança*!\nAgora posso te ajudar com seus pedidos de forma personalizada.\n\n🔍 Digite o nome do produto que deseja\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T14:07:48.469694",
+      "action_type": "CNPJ_VALIDATED"
+    },
+    {
+      "role": "user",
+      "message": "ração",
+      "timestamp": "2025-08-21T14:09:35.512764",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'ração'::*\n\n*1.* MC.ACOPLAMENTO MOTOR TRAÇÃO\n    💰 R$ 1.000,00\n\n*2.* MC.CALÇO TRAÇÃO V5\n    💰 R$ 1.000,00\n\n*3.* MC.COROA DENTADA TRAÇÃO V5\n    💰 R$ 1.000,00\n\n*4.* MC.ENGRENAGEM TRAÇÃO V5\n    💰 R$ 1.000,00\n\nQual você quer? Digite 1, 2, 3 ou *4*.",
+      "timestamp": "2025-08-21T14:09:44.370126",
+      "action_type": "SHOW_PRODUCTS_FROM_DB"
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'ração'::*\n\n*1.* MC.ACOPLAMENTO MOTOR TRAÇÃO\n    💰 R$ 1.000,00\n\n*2.* MC.CALÇO TRAÇÃO V5\n    💰 R$ 1.000,00\n\n*3.* MC.COROA DENTADA TRAÇÃO V5\n    💰 R$ 1.000,00\n\n*4.* MC.ENGRENAGEM TRAÇÃO V5\n    💰 R$ 1.000,00\n\nQual você quer? Digite 1, 2, 3 ou *4*.",
+      "timestamp": "2025-08-21T14:09:44.372088",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "produtos",
+      "timestamp": "2025-08-21T14:10:32.678989",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T14:10:36.697422",
+      "action_type": "NO_MORE_PRODUCTS"
+    },
+    {
+      "role": "assistant",
+      "message": "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T14:10:36.700667",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "produtos",
+      "timestamp": "2025-08-21T14:10:50.407444",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T14:10:56.630204",
+      "action_type": "NO_MORE_PRODUCTS"
+    },
+    {
+      "role": "assistant",
+      "message": "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T14:10:56.634650",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": ".",
+      "timestamp": "2025-08-21T14:21:26.831619",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Sou o G.A.V., como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* MC.ACOPLAMENTO MOTOR TRAÇÃO\n*2.* MC.CALÇO TRAÇÃO V5\n*3.* MC.COROA DENTADA TRAÇÃO V5\n*4.* MC.ENGRENAGEM TRAÇÃO V5\n\nDigite o número de *1* a *4*.",
+      "timestamp": "2025-08-21T14:21:37.450032",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Sou o G.A.V., como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* MC.ACOPLAMENTO MOTOR TRAÇÃO\n*2.* MC.CALÇO TRAÇÃO V5\n*3.* MC.COROA DENTADA TRAÇÃO V5\n*4.* MC.ENGRENAGEM TRAÇÃO V5\n\nDigite o número de *1* a *4*.",
+      "timestamp": "2025-08-21T14:21:37.454021",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "voltar",
+      "timestamp": "2025-08-21T14:21:51.325726",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Sou o G.A.V., como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* MC.ACOPLAMENTO MOTOR TRAÇÃO\n*2.* MC.CALÇO TRAÇÃO V5\n*3.* MC.COROA DENTADA TRAÇÃO V5\n*4.* MC.ENGRENAGEM TRAÇÃO V5\n\nDigite o número de *1* a *4*.",
+      "timestamp": "2025-08-21T14:21:57.338292",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Sou o G.A.V., como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* MC.ACOPLAMENTO MOTOR TRAÇÃO\n*2.* MC.CALÇO TRAÇÃO V5\n*3.* MC.COROA DENTADA TRAÇÃO V5\n*4.* MC.ENGRENAGEM TRAÇÃO V5\n\nDigite o número de *1* a *4*.",
+      "timestamp": "2025-08-21T14:21:57.345652",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "12.345.678/0001-95",
+      "timestamp": "2025-08-21T14:26:50.698229",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T14:26:53.968171",
+      "action_type": "EMPTY_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "Seu carrinho tá vazio ainda! Bora escolher uns produtos legais?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T14:26:53.972180",
+      "action_type": "BOT_RESPONSE"
+    }
+  ],
+  "resumo_conversa": "",
+  "ultimo_tipo_busca": null,
+  "ultimos_parametros_busca": {},
+  "offset_atual": 0,
+  "ultimos_produtos_mostrados": [],
+  "ultima_acao_bot": null,
+  "acao_pendente": null,
+  "selecao_produto_pendente": null,
+  "quantidade_pendente": null,
+  "ultimo_termo_busca_kb": null,
+  "ultimos_resultados_busca": [],
+  "ultima_analise_busca": {},
+  "ultimas_sugestoes_busca": [],
+  "criado_em": "2025-08-21T14:07:42.169785",
+  "ultima_atividade": "2025-08-21T14:26:53.972825",
+  "validated_cnpj": "12345678000195",
+  "customer_context": {
+    "cnpj": "12345678000195"
+  },
+  "shopping_cart": [],
+  "last_search_type": "by_name",
+  "last_search_params": {
+    "product_name": "ração"
+  },
+  "current_offset": 4,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_MENU_SELECTION",
+  "pending_action": null,
+  "last_kb_search_term": null,
+  "estatisticas_sessao": {
+    "itens_carrinho": 0,
+    "tamanho_conversa": 0,
+    "cliente_identificado": true,
+    "ultima_acao": "AWAITING_MENU_SELECTION",
+    "tem_selecao_pendente": false,
+    "tem_quantidade_pendente": false,
+    "valor_total_carrinho": 0.0
+  }
+}

@@ -17,7 +17,7 @@ import time
 from core.gerenciador_sessao import obter_contexto_conversa
 from utils.extrator_quantidade import detectar_modificadores_quantidade
 from utils.analisador_resposta import extrair_json_da_resposta_ia
-from utils.classificador_intencao import detectar_intencao_usuario_com_ia
+from utils.classificador_intencao import detectar_intencao_usuario_com_ia, detectar_intencao_com_sistemas_criticos
 
 def check_ollama_connection() -> bool:
     """Verifica se o Ollama está disponível e funcionando"""
@@ -1162,18 +1162,43 @@ def obter_intencao_rapida(mensagem_usuario: str, dados_sessao: Dict) -> Dict:
     try:
         contexto_conversa = obter_contexto_conversa(dados_sessao)
         
-        # 🚀 USA O NOVO CLASSIFICADOR INTELIGENTE
-        resultado_intencao = detectar_intencao_usuario_com_ia(mensagem_usuario, contexto_conversa)
+        # 🚀 USA OS SISTEMAS CRÍTICOS INTEGRADOS
+        historico_conversa = dados_sessao.get("historico_conversa", [])
+        dados_disponiveis = {
+            "produtos": dados_sessao.get("produtos_encontrados", []),
+            "carrinho": dados_sessao.get("carrinho", []),
+            "promocoes": dados_sessao.get("promocoes_ativas", []),
+            "servicos": ["pagamento_dinheiro", "pagamento_vista"]
+        }
+        
+        resultado_intencao = detectar_intencao_com_sistemas_criticos(
+            entrada_usuario=mensagem_usuario,
+            contexto_conversa=contexto_conversa,
+            historico_conversa=historico_conversa,
+            dados_disponiveis=dados_disponiveis
+        )
         
         if resultado_intencao and "nome_ferramenta" in resultado_intencao:
-            logging.info(f"[INTENT] Detectado via IA: {resultado_intencao['nome_ferramenta']}")
+            # Log com informações dos sistemas críticos
+            logging.info(f"[INTENT_CRITICO] Detectado: {resultado_intencao['nome_ferramenta']}, "
+                        f"Coerente: {resultado_intencao.get('validacao_fluxo', {}).get('eh_coerente', 'N/A')}, "
+                        f"Confuso: {resultado_intencao.get('analise_confusao', {}).get('esta_confuso', 'N/A')}, "
+                        f"Redirecionamento: {resultado_intencao.get('necessita_redirecionamento', False)}")
             return resultado_intencao
             
     except Exception as e:
-        logging.warning(f"[INTENT] Erro no classificador IA: {e}")
+        logging.warning(f"[INTENT_CRITICO] Erro nos sistemas críticos: {e}")
+        # Fallback para função original
+        try:
+            resultado_fallback = detectar_intencao_usuario_com_ia(mensagem_usuario, contexto_conversa)
+            if resultado_fallback and "nome_ferramenta" in resultado_fallback:
+                logging.info(f"[INTENT_FALLBACK] Usando função original: {resultado_fallback['nome_ferramenta']}")
+                return resultado_fallback
+        except Exception as e2:
+            logging.warning(f"[INTENT_FALLBACK] Erro também na função original: {e2}")
     
-    # Fallback para sistema antigo se a IA falhar
-    logging.info(f"[INTENT] Usando fallback para: {mensagem_usuario}")
+    # Fallback final para sistema antigo se tudo falhar
+    logging.info(f"[INTENT_ULTIMO_FALLBACK] Usando sistema antigo para: {mensagem_usuario}")
     contexto = melhorar_consciencia_contexto(mensagem_usuario, dados_sessao)
     return _criar_intencao_fallback(mensagem_usuario, contexto)
 
@@ -1232,10 +1257,10 @@ def generate_personalized_response(context_type: str, session_data: Dict, **kwar
             "greeting": "Seja O PRÓPRIO G.A.V. falando! Cumprimente de forma natural e pergunte como pode ajudar. Seja caloroso mas direto. MAX 20 palavras.",
             "clarification": "Não entendeu algo? Peça esclarecimento de forma natural e direta. Seja amigável mas conciso. MAX 15 palavras.",
             "invalid_quantity": "Quantidade inválida? Explique de forma simples e rápida como informar corretamente. MAX 20 palavras.",
-            "invalid_selection": f"Número {kwargs.get('invalid_number', 'X')} não existe! Seja direto: escolha entre 1 e {kwargs.get('max_options', 'N')}. MAX 15 palavras.",
+            "invalid_selection": f"Número {kwargs.get('invalid_number', 'X')} não existe! Peça para escolher entre 1 e {kwargs.get('max_options', 'N')}. SEM mencionar entrega/pagamento. MAX 12 palavras.",
             "empty_cart": "Carrinho vazio! Anime o usuário a ver produtos de forma natural e entusiasmada. MAX 15 palavras.",
             "cnpj_request": "Para finalizar, preciso do seu CNPJ. Seja direto e amigável, sem muita explicação. MAX 15 palavras.",
-            "operation_success": f"Confirme apenas que deu certo: '{kwargs.get('success_details', '')}' ✅. Seja profissional, direto, SEM INVENTAR informações sobre entrega, prazos ou detalhes não fornecidos. MAX 15 palavras.",
+            "operation_success": f"APENAS confirme: '{kwargs.get('success_details', '')}' ✅. PROIBIDO mencionar: entrega, cartão, prazos, formas de pagamento. Só confirme a ação. MAX 10 palavras.",
         }
         
         context_prompt = contexts.get(context_type, "Responda de forma natural e amigável.")
@@ -1254,9 +1279,10 @@ REGRAS CRÍTICAS:
 - Use "você" (nunca "vocês")
 - Seja CONCISO - máximo 2 linhas
 - VARIE as palavras - não seja repetitivo
-- NUNCA INVENTE informações sobre prazos, entregas, condições que não foram fornecidas
+- ⚠️ PROIBIDO ABSOLUTO: mencionar entrega, cartão, prazos, formas de pagamento, frete
+- ⚠️ NÃO INVENTE: dados sobre serviços, condições, detalhes não fornecidos
 - Seja profissional mas humano
-- NÃO faça promessas sobre entregas ou detalhes técnicos
+- APENAS confirme ações realizadas, sem adicionar informações extras
 
 Responda APENAS a mensagem (sem aspas):"""
 
