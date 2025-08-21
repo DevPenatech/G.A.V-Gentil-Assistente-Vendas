@@ -291,7 +291,7 @@ def get_fallback_prompt() -> str:
 
 ESTILO: Respostas curtas com próxima ação explícita. Liste até 3 opções por vez; peça escolha por número ("1, 2 ou 3").
 
-FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, ask_continue_or_checkout, clear_cart
+FERRAMENTAS: get_top_selling_products, get_top_selling_products_by_name, add_item_to_cart, view_cart, update_cart_item, checkout, handle_chitchat, perguntar_continuar_ou_finalizar, clear_cart
 
 COMANDOS ESPECIAIS:
 - "esvaziar carrinho", "limpar carrinho" → use clear_cart
