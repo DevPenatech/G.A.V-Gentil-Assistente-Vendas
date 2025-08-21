@@ -13,6 +13,8 @@ import redis
 import re
 from utils.extrator_quantidade import detectar_modificadores_quantidade
 
+# Logger
+logger = logging.getLogger(__name__)
 # Configurações
 REDIS_ATIVADO = os.getenv("REDIS_ENABLED", "false").lower() == "true"
 HOST_REDIS = os.getenv("REDIS_HOST", "localhost")
@@ -264,7 +266,7 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
     produtos_com_desconto = []
     produtos_sem_desconto_extra = []
     
-    print(f">>> 🎯 [PROMO_DEBUG] Analisando {len(produtos_promo)} produtos promocionais")
+    logger.debug("🎯 [PROMO_DEBUG] Analisando %d produtos promocionais", len(produtos_promo))
     
     for p in produtos_promo:
         preco_antigo = p.get('pvenda') or p.get('preco_varejo', 0.0) or 0.0
@@ -289,14 +291,20 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
         
         # Se tem desconto real (>1%), é promoção; senão é produto normal
         nome_produto = p.get('descricao', 'Produto sem nome')
-        print(f">>> 🎯 [PROMO_ANALISE] {nome_produto}: preço_antigo={preco_antigo}, preço_promo={preco_promo}, desconto={desconto:.1f}%")
+        logger.debug(
+            "🎯 [PROMO_ANALISE] %s: preço_antigo=%s, preço_promo=%s, desconto=%.1f%%",
+            nome_produto,
+            preco_antigo,
+            preco_promo,
+            desconto,
+        )
         
         if desconto > 1.0:
             produtos_com_desconto.append(p)
-            print(f">>> 🎯 [PROMO_VALIDA] ✅ {nome_produto} é uma promoção válida ({desconto:.1f}% OFF)")
+            logger.debug("🎯 [PROMO_VALIDA] ✅ %s é uma promoção válida (%.1f%% OFF)", nome_produto, desconto)
         else:
             produtos_sem_desconto_extra.append(p)
-            print(f">>> 🎯 [PROMO_NORMAL] ❌ {nome_produto} não tem desconto suficiente ({desconto:.1f}%)")
+            logger.debug("🎯 [PROMO_NORMAL] ❌ %s não tem desconto suficiente (%.1f%%)", nome_produto, desconto)
     
     # Unir todos os produtos normais
     todos_produtos_normais = produtos_normais + produtos_sem_desconto_extra
@@ -315,9 +323,9 @@ def formatar_lista_produtos_inteligente(produtos_normais: List[Dict], produtos_p
             contador += 1
 
     # Mostrar produtos com desconto real como promoções
-    print(f">>> 🎯 [PROMO_RESULTADO] Encontradas {len(produtos_com_desconto)} promoções válidas")
+    logger.info("🎯 [PROMO_RESULTADO] Encontradas %d promoções válidas", len(produtos_com_desconto))
     if produtos_com_desconto:
-        print(f">>> 🎯 [PROMO_EXIBE] ✅ Exibindo seção de promoções")
+        logger.info("🎯 [PROMO_EXIBE] ✅ Exibindo seção de promoções")
         resposta += "🔥 *PROMOÇÕES ESPECIAIS* 🔥\n"
         resposta += "━━━━━━━━━━━━━━━━━━━━\n"
         

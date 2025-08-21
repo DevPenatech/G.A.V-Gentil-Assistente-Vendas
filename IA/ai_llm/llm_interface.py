@@ -13,6 +13,8 @@ import re
 from typing import Union, Dict, List
 import time
 
+logger = logging.getLogger(__name__)
+
 
 from core.gerenciador_sessao import obter_contexto_conversa
 from utils.extrator_quantidade import detectar_modificadores_quantidade
@@ -21,7 +23,7 @@ from utils.classificador_intencao import detectar_intencao_usuario_com_ia, detec
 
 def check_ollama_connection() -> bool:
     """Verifica se o Ollama está disponível e funcionando"""
-    logging.debug("Verificando a conexão com o Ollama.")
+    logger.debug("Verificando a conexão com o Ollama.")
     try:
         client = ollama.Client(host=OLLAMA_HOST)
         # Tenta fazer uma chamada simples para verificar conectividade
@@ -30,10 +32,10 @@ def check_ollama_connection() -> bool:
             messages=[{"role": "user", "content": "test"}],
             options={"num_predict": 1}
         )
-        logging.debug("Conexão com o Ollama bem-sucedida.")
+        logger.debug("Conexão com o Ollama bem-sucedida.")
         return True
     except Exception as e:
-        logging.warning(f"Ollama não disponível: {e}")
+        logger.warning(f"Ollama não disponível: {e}")
         return False
 
 # --- Configurações Globais ---
@@ -70,16 +72,15 @@ def is_valid_cnpj(cnpj: str) -> bool:
     🆕 NOVA FUNÇÃO: Valida se uma string é um CNPJ válido.
     Aceita CNPJ com ou sem pontuação (XX.XXX.XXX/XXXX-XX ou XXXXXXXXXXXXXX)
     """
-    logging.debug(f"Validando CNPJ: '{cnpj}'")
-    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] Validando CNPJ: '{cnpj}'")
+    logger.debug("🔍 [IS_VALID_CNPJ] Validando CNPJ: '%s'", cnpj)
     
     # Remove caracteres não numéricos (pontos, barras, traços)
     cnpj_digits = re.sub(r'\D', '', cnpj)
-    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] CNPJ apenas dígitos: '{cnpj_digits}'")
+    logger.debug("🔍 [IS_VALID_CNPJ] CNPJ apenas dígitos: '%s'", cnpj_digits)
     
     # Verifica se tem 14 dígitos
     if len(cnpj_digits) != 14:
-        print(f">>> CONSOLE: ❌ [IS_VALID_CNPJ] CNPJ não tem 14 dígitos (tem {len(cnpj_digits)})")
+        logger.debug("❌ [IS_VALID_CNPJ] CNPJ não tem 14 dígitos (tem %d)", len(cnpj_digits))
         return False
     
     # 🆕 ACEITA CNPJs DE TESTE PARA DESENVOLVIMENTO
@@ -91,18 +92,18 @@ def is_valid_cnpj(cnpj: str) -> bool:
         "12345678000195",  # Outro CNPJ de teste
     ]
     
-    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] Verificando se '{cnpj_digits}' está na lista de CNPJs de teste...")
+    logger.debug("🔍 [IS_VALID_CNPJ] Verificando se '%s' está na lista de CNPJs de teste...", cnpj_digits)
     
     if cnpj_digits in test_cnpjs:
-        print(f">>> CONSOLE: ✅ [IS_VALID_CNPJ] CNPJ de teste válido encontrado: {cnpj_digits}")
+        logger.debug("✅ [IS_VALID_CNPJ] CNPJ de teste válido encontrado: %s", cnpj_digits)
         return True
     
     # Verifica se não são todos iguais (ex: 11111111111111) - EXCETO se for de teste
     if cnpj_digits == cnpj_digits[0] * 14 and cnpj_digits not in test_cnpjs:
-        print(f">>> CONSOLE: ❌ [IS_VALID_CNPJ] CNPJ com todos dígitos iguais: {cnpj_digits}")
+        logger.debug("❌ [IS_VALID_CNPJ] CNPJ com todos dígitos iguais: %s", cnpj_digits)
         return False
     
-    print(f">>> CONSOLE: 🔍 [IS_VALID_CNPJ] Iniciando validação matemática dos dígitos verificadores...")
+    logger.debug("🔍 [IS_VALID_CNPJ] Iniciando validação matemática dos dígitos verificadores...")
     
     # Validação dos dígitos verificadores
     try:
@@ -122,11 +123,11 @@ def is_valid_cnpj(cnpj: str) -> bool:
         digit2 = ((sum2 % 11) < 2) and 0 or (11 - (sum2 % 11))
         
         result = digit2 == int(cnpj_digits[13])
-        print(f">>> CONSOLE: {'✅' if result else '❌'} [IS_VALID_CNPJ] Validação matemática: {result}")
+        logger.debug("%s [IS_VALID_CNPJ] Validação matemática: %s", "✅" if result else "❌", result)
         return result
-        
+
     except (ValueError, IndexError) as e:
-        print(f">>> CONSOLE: ❌ [IS_VALID_CNPJ] Erro na validação matemática: {e}")
+        logger.debug("❌ [IS_VALID_CNPJ] Erro na validação matemática: %s", e)
         return False
 
 
@@ -596,7 +597,10 @@ def get_intent(
 
         # Obtém contexto EXPANDIDO da conversa (14 mensagens para melhor contexto)
         conversation_context = obter_contexto_conversa(session_data, max_messages=14)
-        print(f">>> CONSOLE: Contexto da conversa com {len(session_data.get('conversation_history', []))} mensagens totais")
+        logger.debug(
+            "Contexto da conversa com %d mensagens totais",
+            len(session_data.get('conversation_history', [])),
+        )
 
         # Informações do carrinho
         cart_info = ""
@@ -723,32 +727,32 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
             logging.info(f"[llm_interface.py] Resposta do LLM: {content[:100]}...")
             
             # 🔍 DEBUG: Log da resposta completa para depuração
-            print(f"🔍 DEBUG: Resposta completa da IA:")
-            print(f"'{content}'")
-            print(f"🔍 Tamanho: {len(content)} caracteres")
+            logger.debug("🔍 Resposta completa da IA:")
+            logger.debug("'%s'", content)
+            logger.debug("🔍 Tamanho: %d caracteres", len(content))
 
             cleaned_content = clean_json_response(content)
-            print(f"🔍 DEBUG: Conteúdo após limpeza:")
-            print(f"'{cleaned_content}'")
+            logger.debug("🔍 Conteúdo após limpeza:")
+            logger.debug("'%s'", cleaned_content)
             logging.debug(f"[llm_interface.py] Conteúdo limpo: {cleaned_content}")
 
             # Parse do JSON
             try:
                 if not cleaned_content.strip():
-                    print(f"🔍 DEBUG: Conteúdo vazio após limpeza, usando fallback")
+                    logger.debug("🔍 Conteúdo vazio após limpeza, usando fallback")
                     raise json.JSONDecodeError("Empty content", "", 0)
                     
                 intent_data = json.loads(cleaned_content)
             except json.JSONDecodeError as e:
-                print(f"🔍 DEBUG: Erro JSON detalhado: {e}")
+                logger.debug("🔍 Erro JSON detalhado: %s", e)
                 if cleaned_content and len(cleaned_content) > 0:
-                    print(f"🔍 DEBUG: Posição do erro: linha {e.lineno}, coluna {e.colno}")
+                    logger.debug("🔍 Posição do erro: linha %d, coluna %d", e.lineno, e.colno)
                     if hasattr(e, 'pos') and e.pos < len(cleaned_content):
                         start = max(0, e.pos-10)
                         end = min(len(cleaned_content), e.pos+10)
-                        print(f"🔍 DEBUG: Contexto do erro: '{cleaned_content[start:end]}' (posição {e.pos})")
+                        logger.debug("🔍 Contexto do erro: '%s' (posição %d)", cleaned_content[start:end], e.pos)
                 
-                print(f"🔍 DEBUG: IA retornou texto em vez de JSON, usando fallback")
+                logger.debug("🔍 IA retornou texto em vez de JSON, usando fallback")
                 # Usa fallback quando JSON inválido
                 logging.error(f"[llm_interface.py] Erro ao parsear JSON: {e}")
                 return create_fallback_intent(user_message, enhance_context_awareness(user_message, session_data))
@@ -805,8 +809,8 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
 
 def clean_json_response(content: str) -> str:
     """Limpa a resposta do LLM para extrair JSON válido."""
-    logging.debug(f"Limpando a resposta JSON: '{content[:200]}...'" )
-    print(f"🔍 DEBUG clean_json_response: Input = '{content[:200]}...'" )
+    logger.debug("Limpando a resposta JSON: '%s'...", content[:200])
+    logger.debug("🔍 clean_json_response: Input = '%s'...", content[:200])
     
     # Remove markdown se presente
     content = re.sub(r"```json\s*", "", content)
@@ -816,13 +820,13 @@ def clean_json_response(content: str) -> str:
     json_match = re.search(r"\{.*\}", content, re.DOTALL)
     if json_match:
         extracted = json_match.group(0).strip()
-        print(f"🔍 DEBUG clean_json_response: JSON encontrado = '{extracted}'")
-        logging.debug(f"JSON extraído: '{extracted}'")
+        logger.debug("🔍 clean_json_response: JSON encontrado = '%s'", extracted)
+        logger.debug("JSON extraído: '%s'", extracted)
         return extracted
     
     # Se não encontrou JSON, a IA provavelmente retornou texto
-    print(f"🔍 DEBUG clean_json_response: NENHUM JSON encontrado! Conteúdo completo:")
-    print(f"'{content}'")
+    logger.debug("🔍 clean_json_response: NENHUM JSON encontrado! Conteúdo completo:")
+    logger.debug("'%s'", content)
     
     # Retorna string vazia para forçar fallback
     logging.debug("Nenhum JSON encontrado na resposta.")
@@ -838,8 +842,17 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
     stage = context.get("purchase_stage", "greeting")
     
     # 🔍 DEBUG: Log do estágio detectado
-    print(f"🔍 DEBUG create_fallback_intent: stage='{stage}', message='{user_message}', numeric_selection={context.get('numeric_selection')}")
-    print(f"🔍 DEBUG last_action='{context.get('last_action')}', has_cart_items={context.get('has_cart_items')}")
+    logger.debug(
+        "🔍 create_fallback_intent: stage='%s', message='%s', numeric_selection=%s",
+        stage,
+        user_message,
+        context.get('numeric_selection'),
+    )
+    logger.debug(
+        "🔍 last_action='%s', has_cart_items=%s",
+        context.get('last_action'),
+        context.get('has_cart_items'),
+    )
 
     # 🆕 PRIORIDADE MÁXIMA: CNPJ em contexto de checkout
     if context.get("is_cnpj_in_checkout_context"):
@@ -870,7 +883,7 @@ def create_fallback_intent(user_message: str, context: Dict) -> Dict:
         selection = context.get("numeric_selection")
         has_cart = context.get("has_cart_items", False)
         
-        print(f">>> FALLBACK: Seleção numérica {selection}, tem_carrinho={has_cart}")
+        logger.debug("FALLBACK: Seleção numérica %s, tem_carrinho=%s", selection, has_cart)
         
         if selection == 1:  # Buscar produtos
             return {"tool_name": "smart_search_with_promotions", "parameters": {"search_term": "produtos"}}
