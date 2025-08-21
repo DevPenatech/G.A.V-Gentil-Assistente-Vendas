@@ -1034,8 +1034,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
         "adicionar_item_ao_carrinho": "adicionar_item_ao_carrinho",
         "selecionar_item_para_atualizacao": "selecionar_item_para_atualizacao",
         "finalizar_pedido": "finalizar_pedido",
-        "lidar_conversa": "lidar_com_conversa_casual",
-        "handle_chitchat": "lidar_com_conversa_casual"
+        "lidar_conversa": "lidar_com_conversa_casual"
     }
     
     # Converte nome em português para inglês se necessário

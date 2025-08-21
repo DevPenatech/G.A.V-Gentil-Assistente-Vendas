@@ -112,7 +112,7 @@ def _traduzir_nome_ferramenta(nome_ferramenta: str) -> str:
         "view_cart": "visualizar_carrinho",
         "clear_cart": "limpar_carrinho",
         "add_item_to_cart": "adicionar_item_ao_carrinho",
-        "handle_chitchat": "lidar_conversa"
+        "lidar_com_conversa_casual": "lidar_conversa"
     }
     
     return traducoes.get(nome_ferramenta, nome_ferramenta)
@@ -341,7 +341,7 @@ def obter_estatisticas_parsing() -> Dict:
             "view_cart": "visualizar_carrinho",
             "clear_cart": "limpar_carrinho",
             "add_item_to_cart": "adicionar_item_ao_carrinho",
-            "handle_chitchat": "lidar_conversa"
+            "lidar_com_conversa_casual": "lidar_conversa"
         }
     }
 
@@ -476,7 +476,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     ]):
         print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: SAUDAÇÃO")
         return {
-            "nome_ferramenta": "handle_chitchat",
+            "nome_ferramenta": "lidar_conversa",
             "parametros": {
                 "response_text": "GENERATE_GREETING"
             }
@@ -485,7 +485,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     # 🗣️ FALLBACK: Conversa livre (quando nada específico foi detectado)
     print(f">>> 🧠 [LEITOR_DE_MENTES] 💬 Fallback: CONVERSA LIVRE")
     return {
-        "nome_ferramenta": "handle_chitchat",
+        "nome_ferramenta": "lidar_conversa",
         "parametros": {
             "response_text": texto.strip()
         }
