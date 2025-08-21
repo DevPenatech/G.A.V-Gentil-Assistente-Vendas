@@ -15,7 +15,10 @@ from typing import Dict, Optional, List
 # Importações dos novos sistemas críticos
 from .controlador_fluxo_conversa import validar_fluxo_conversa, detectar_confusao_conversa
 from .prevencao_invencao_dados import validar_resposta_ia, verificar_seguranca_resposta
-from .redirecionamento_inteligente import detectar_usuario_confuso
+from .redirecionamento_inteligente import (
+    detectar_usuario_confuso,
+    verificar_entrada_vazia_selecao,
+)
 
 # Configurações
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -1424,6 +1427,27 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
         historico_conversa = []
     if dados_sessao is None:
         dados_sessao = {"messages": []}  # Estrutura básica para otimização de contexto
+
+    # 🆕 Verifica se estamos aguardando seleção e usuário enviou entrada vazia ou '?'
+    last_bot_action = dados_sessao.get("last_bot_action")
+    mensagem_ajuda = verificar_entrada_vazia_selecao(entrada_usuario, last_bot_action)
+    if mensagem_ajuda:
+        return {
+            "nome_ferramenta": "lidar_conversa",
+            "parametros": {"response_text": mensagem_ajuda},
+            "tipo_resposta": "redirecionamento_guidance",
+            "sistemas_criticos_ativo": True,
+            "necessita_redirecionamento": True,
+            "validacao_fluxo": {
+                "eh_coerente": False,
+                "acao": "esclarecer_entrada",
+                "mensagem_orientacao": mensagem_ajuda,
+            },
+            "analise_confusao": {
+                "esta_confuso": True,
+                "motivo": "entrada_vazia_selecao",
+            },
+        }
     
     # 🚀 FASE 0: Otimização Inteligente de Contexto IA-FIRST
     logging.debug("[FASE 0] Otimizando contexto inteligentemente...")
