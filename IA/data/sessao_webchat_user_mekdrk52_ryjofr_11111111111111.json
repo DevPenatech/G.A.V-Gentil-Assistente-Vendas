@@ -4,132 +4,6 @@
   "historico_conversa": [
     {
       "role": "assistant",
-      "message": "✅ *CNPJ validado com sucesso!*\n\n🎉 Bem-vindo à *Comercial Esperança*!\nAgora posso te ajudar com seus pedidos de forma personalizada.\n\n🔍 Digite o nome do produto que deseja\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T20:16:49.509892",
-      "action_type": "CNPJ_VALIDATED"
-    },
-    {
-      "role": "user",
-      "message": "Bom dia amigo, to querendo uma cerveja pra fazer um churras",
-      "timestamp": "2025-08-20T20:16:51.471845",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Olá! Sou G.A.V., como posso ajudar hoje? Tenho certeza que encontraremos o que você procura.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T20:16:55.642142",
-      "action_type": "CHITCHAT"
-    },
-    {
-      "role": "assistant",
-      "message": "Olá! Sou G.A.V., como posso ajudar hoje? Tenho certeza que encontraremos o que você procura.\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T20:16:55.643885",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "to querendo uma cerveja pra fazer um churras",
-      "timestamp": "2025-08-20T20:18:09.081337",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-20T20:18:13.726599",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-20T20:18:13.732021",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "Eae, beleza?",
-      "timestamp": "2025-08-20T20:18:29.238341",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "Olá! Sou o G.A.V.! Como posso ajudar você hoje? Quais produtos você busca?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T20:18:34.222405",
-      "action_type": "CHITCHAT"
-    },
-    {
-      "role": "assistant",
-      "message": "Olá! Sou o G.A.V.! Como posso ajudar você hoje? Quais produtos você busca?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-20T20:18:34.224999",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "oxe, quero uma skol",
-      "timestamp": "2025-08-20T20:19:03.822472",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Skol encontrados:*\n\n*1.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*2.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
-      "timestamp": "2025-08-20T20:19:08.909923",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Skol encontrados:*\n\n*1.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*2.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
-      "timestamp": "2025-08-20T20:19:08.913205",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "deixa eu ver meu carrinho",
-      "timestamp": "2025-08-20T20:33:22.604956",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "🛒 Carrinho vazio",
-      "timestamp": "2025-08-20T20:33:31.530006",
-      "action_type": "SHOW_CART"
-    },
-    {
-      "role": "assistant",
-      "message": "🛒 Carrinho vazio",
-      "timestamp": "2025-08-20T20:33:31.537956",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "quero jack",
-      "timestamp": "2025-08-20T20:33:42.350531",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Jack encontrados:*\n\n*1.* CERVEJA FRITZ STRONG LUMBERJACK\n    💰 R$ 17,98\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*2.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*3.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *3*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
-      "timestamp": "2025-08-20T20:33:48.298172",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Jack encontrados:*\n\n*1.* CERVEJA FRITZ STRONG LUMBERJACK\n    💰 R$ 17,98\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*2.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*3.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *3*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
-      "timestamp": "2025-08-20T20:33:48.301849",
-      "action_type": "BOT_RESPONSE"
-    },
-    {
-      "role": "user",
-      "message": "quero um toddynho",
-      "timestamp": "2025-08-20T20:34:05.009757",
-      "action_type": ""
-    },
-    {
-      "role": "assistant",
-      "message": "*🎯 Produtos Toddynho encontrados:*\n\n*1.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE\n    💰 R$ 2,99\n\n*2.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE LEV.\n    💰 R$ 2,99\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
-      "timestamp": "2025-08-20T20:34:10.270407",
-      "action_type": "SHOW_SMART_SEARCH_RESULTS"
-    },
-    {
-      "role": "assistant",
       "message": "*🎯 Produtos Toddynho encontrados:*\n\n*1.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE\n    💰 R$ 2,99\n\n*2.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE LEV.\n    💰 R$ 2,99\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
       "timestamp": "2025-08-20T20:34:10.272563",
       "action_type": "BOT_RESPONSE"
@@ -205,9 +79,99 @@
       "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
       "timestamp": "2025-08-20T23:50:29.128128",
       "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "Eai",
+      "timestamp": "2025-08-21T00:29:41.940588",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Sou o G.A.V., aqui para te ajudar a encontrar o que procura em nossas lojas. Como posso ajudar hoje?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T00:29:46.872964",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Olá! Sou o G.A.V., aqui para te ajudar a encontrar o que procura em nossas lojas. Como posso ajudar hoje?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
+      "timestamp": "2025-08-21T00:29:46.878011",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero ver os produtos de cerveja",
+      "timestamp": "2025-08-21T00:29:55.588176",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-21T00:30:01.085517",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
+      "timestamp": "2025-08-21T00:30:01.099709",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-21T00:30:05.823102",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mais produtos da categoria Cerveja::*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT",
+      "timestamp": "2025-08-21T00:30:10.208407",
+      "action_type": "SHOW_MORE_PRODUCTS"
+    },
+    {
+      "role": "assistant",
+      "message": "📦 *Mais produtos da categoria Cerveja::*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT",
+      "timestamp": "2025-08-21T00:30:10.212139",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero ver o que ja tem no meu carrinho",
+      "timestamp": "2025-08-21T00:31:06.010477",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-21T00:31:10.497159",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 Carrinho vazio",
+      "timestamp": "2025-08-21T00:31:10.504262",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "9",
+      "timestamp": "2025-08-21T00:33:06.272516",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Vou te ajudar! Quer escolher entre 1 e 0? Qual sua preferência?",
+      "timestamp": "2025-08-21T00:33:12.044889",
+      "action_type": "INVALID_SELECTION"
+    },
+    {
+      "role": "assistant",
+      "message": "Vou te ajudar! Quer escolher entre 1 e 0? Qual sua preferência?",
+      "timestamp": "2025-08-21T00:33:12.047228",
+      "action_type": "BOT_RESPONSE"
     }
   ],
-  "resumo_conversa": "",
+  "resumo_conversa": "   ~R$ 6,79~ → *R$ 5,50* (19% OFF)  Qual você quer? Digite o número de *1* a *3*. 📝 Digite *mais* para ver outros produtos desta categoria! | G.A.V.: *🎯 Produtos Jack encontrados:*  *1.* CERVEJA FRITZ STRONG LUMBERJACK     💰 R$ 17,98  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *2.* CERVEJA PATAGONIA IPA LT     ~R$ 6,79~ → *R$ 5,00* (26% OFF)  *3.* CERVEJA PATAGONIA BOH PILS LT     ~R$ 6,79~ → *R$ 5,50* (19% OFF)  Qual você quer? Digite o número de *1* a *3*. 📝 Digite *mais* para ver outros produtos desta categoria! | Cliente: quero um toddynho | G.A.V.: *🎯 Produtos Toddynho encontrados:*  *1.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE     💰 R$ 2,99  *2.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE LEV.     💰 R$ 2,99  🔥 *PROMOÇÕES ESPECIAIS* 🔥 ━━━━━━━━━━━━━━━━━━━━ *3.* CERVEJA PATAGONIA IPA LT     ~R$ 6,79~ → *R$ 5,00* (26% OFF)  *4.* CERVEJA PATAGONIA BOH PILS LT     ~R$ 6,79~ → *R$ 5,50* (19% OFF)  Qual você quer? Digite o número de *1* a *4*. 📝 Digite *mais* para ver outros produtos desta categoria!",
   "ultimo_tipo_busca": null,
   "ultimos_parametros_busca": {},
   "offset_atual": 0,
@@ -221,7 +185,7 @@
   "ultima_analise_busca": {},
   "ultimas_sugestoes_busca": [],
   "criado_em": "2025-08-20T20:16:49.500551",
-  "ultima_atividade": "2025-08-20T23:50:29.129299",
+  "ultima_atividade": "2025-08-21T00:33:12.047348",
   "validated_cnpj": "11111111111111",
   "customer_context": {
     "cnpj": "11111111111111"
@@ -233,164 +197,17 @@
     "category": "CERVEJA",
     "marca_priorizada": null
   },
-  "current_offset": 0,
-  "last_shown_products": [
-    {
-      "codprod": 57832,
-      "descricao": "BEB.CHOPP BLACK SKULL MARULA",
-      "categoria": "CERVEJA",
-      "marca": "BLACK SKULL",
-      "unidade_venda": "UN",
-      "preco_varejo": 8.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 57833,
-      "descricao": "BEB.CHOPP BLACK SKULL VINHO",
-      "categoria": "CERVEJA",
-      "marca": "BLACK SKULL",
-      "unidade_venda": "UN",
-      "preco_varejo": 8.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 53336,
-      "descricao": "BEB.CHOPP DE VIN.DRAFT ",
-      "categoria": "CERVEJA",
-      "marca": "DRAFT",
-      "unidade_venda": "UN",
-      "preco_varejo": 9.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 53337,
-      "descricao": "BEB.CHOPP DE VIN.DRAFT LT",
-      "categoria": "CERVEJA",
-      "marca": "DRAFT",
-      "unidade_venda": "UN",
-      "preco_varejo": 5.69,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 53335,
-      "descricao": "BEB.CHOPP DE VIN.DRAFT WHITE",
-      "categoria": "CERVEJA",
-      "marca": "DRAFT",
-      "unidade_venda": "UN",
-      "preco_varejo": 9.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 58971,
-      "descricao": "BEB.CHOPP DE VIN ROSA VERMELHA",
-      "categoria": "CERVEJA",
-      "marca": "PROIBIDA",
-      "unidade_venda": "UN",
-      "preco_varejo": 7.49,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 76004,
-      "descricao": "BEB.CHOPP DE VIN.STEMPEL RED",
-      "categoria": "CERVEJA",
-      "marca": "STEMPEL",
-      "unidade_venda": "UN",
-      "preco_varejo": 8.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 76003,
-      "descricao": "BEB.CHOPP DE VIN.STEMPEL WHITE",
-      "categoria": "CERVEJA",
-      "marca": "STEMPEL",
-      "unidade_venda": "UN",
-      "preco_varejo": 8.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 55331,
-      "descricao": "BEB.CHOPP DE WHISK DRAFT ",
-      "categoria": "CERVEJA",
-      "marca": "DRAFT",
-      "unidade_venda": "UN",
-      "preco_varejo": 9.79,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 55332,
-      "descricao": "BEB.CHOPP ICE DRAFT ",
-      "categoria": "CERVEJA",
-      "marca": "DRAFT",
-      "unidade_venda": "UN",
-      "preco_varejo": 9.98,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 62351,
-      "descricao": "CERVEJA PATAGONIA IPA LT",
-      "categoria": "CERVEJA",
-      "marca": "STELLA ARTOIS",
-      "unidade_venda": "LT",
-      "preco_varejo": 6.79,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": 5.0,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0,
-      "desconto_percentual": 26.4,
-      "_preco_antigo": 6.79,
-      "_preco_promo": 5.0,
-      "_desconto": 26.4
-    },
-    {
-      "codprod": 58032,
-      "descricao": "CERVEJA PATAGONIA BOH PILS LT",
-      "categoria": "CERVEJA",
-      "marca": "STELLA ARTOIS",
-      "unidade_venda": "UN",
-      "preco_varejo": 6.79,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "preco_promocional": 5.5,
-      "data_inicio_promocao": null,
-      "data_fim_promocao": null,
-      "total_vendido": 0.0,
-      "desconto_percentual": 19.0,
-      "_preco_antigo": 6.79,
-      "_preco_promo": 5.5,
-      "_desconto": 19.0
-    }
-  ],
-  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
+  "current_offset": 10,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
   "pending_action": null,
   "last_kb_search_term": null,
   "estatisticas_sessao": {
     "itens_carrinho": 0,
     "tamanho_conversa": 0,
     "cliente_identificado": true,
-    "ultima_acao": "AWAITING_PRODUCT_SELECTION",
-    "tem_selecao_pendente": true,
+    "ultima_acao": "AWAITING_CHECKOUT_CONFIRMATION",
+    "tem_selecao_pendente": false,
     "tem_quantidade_pendente": false,
     "valor_total_carrinho": 0.0
   }

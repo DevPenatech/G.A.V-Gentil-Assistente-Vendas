@@ -23138,3 +23138,449 @@ Qual você quer? Digite o número de *1* a *12*.
 Qual você quer? Digite o número de *1* a *12*.
 📝 Digite *mais* para ver outros produtos desta categoria!' | TAMANHO=805
 2025-08-20 23:50:29,146 [INFO] [gav.__main__:93] [wrapper] PERFORMANCE: __main__.process_message_for_web executada em 9.597s
+2025-08-21 00:21:08,842 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:21:09,336 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:21:09,337 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:21:09,370 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:21:33,047 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:21:33,483 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:21:33,484 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:21:33,510 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:22:16,159 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:22:16,915 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:22:16,917 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:22:16,969 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:22:33,937 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:22:34,373 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:22:34,375 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:22:34,416 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:22:44,004 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:22:44,520 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:22:44,521 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:22:44,546 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:24:15,383 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:24:15,878 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:24:15,879 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:24:15,923 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:24:29,899 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:24:30,719 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:24:30,721 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:24:30,748 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:25:00,538 [INFO] [root:851] [configurar_logging_principal] Sistema de logging G.A.V. inicializado com deduplicação
+
+2025-08-21 00:25:00,954 [INFO] [gav.gav_logger:214] [log_info] Cliente Twilio inicializado com sucesso
+2025-08-21 00:25:00,955 [INFO] [gav.utils.gav_logger:214] [log_info] Sistema G.A.V. iniciando...
+2025-08-21 00:25:00,980 [WARNING] [werkzeug:97] [_log]  * Debugger is active!
+2025-08-21 00:29:41,926 [INFO] [root:2894] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mekdrk52_ryjofr: Eai
+2025-08-21 00:29:41,928 [INFO] [U:webchat:user_mekdrk52_ryjofr][S:webchat_webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] MENSAGEM RECEBIDA DO USUARIO | MSG='Eai' | TAMANHO=3
+2025-08-21 00:29:41,934 [DEBUG] [root:67] [carregar_sessao] Carregando sessão para o ID: webchat_user_mekdrk52_ryjofr_11111111111111
+2025-08-21 00:29:41,935 [DEBUG] [root:48] [_obter_caminho_arquivo_sessao] Obtendo caminho do arquivo de sessão para o ID: webchat_user_mekdrk52_ryjofr_11111111111111
+2025-08-21 00:29:41,936 [DEBUG] [root:55] [_obter_caminho_arquivo_sessao] Caminho do arquivo de sessão: data/sessao_webchat_user_mekdrk52_ryjofr_11111111111111.json
+2025-08-21 00:29:41,939 [DEBUG] [root:105] [carregar_sessao] [SESSAO] Sessão carregada do arquivo: data/sessao_webchat_user_mekdrk52_ryjofr_11111111111111.json
+2025-08-21 00:29:41,940 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: user, Tipo de Ação: , Mensagem: Eai...
+2025-08-21 00:29:41,940 [DEBUG] [root:403] [_resumir_mensagens_antigas] Resumindo mensagens antigas do histórico.
+2025-08-21 00:29:41,941 [DEBUG] [root:1161] [obter_intencao_rapida] Obtendo intenção rápida para a mensagem: 'Eai'
+2025-08-21 00:29:41,942 [DEBUG] [root:457] [obter_contexto_conversa] Obtendo contexto da conversa com no máximo 14 mensagens.
+2025-08-21 00:29:41,950 [DEBUG] [root:480] [obter_contexto_conversa] Contexto da conversa obtido: HISTÓRICO RECENTE DA CONVERSA:
+1. G.A.V. [BOT_RESPONSE]: *🎯 Produtos Toddynho encontrados:*
+
+*1.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE
+    💰 R$ 2,99
+
+*2.* ACHOC.BEB.LAC.TODDYNHO CHOCOLATE LEV.
+    💰 R$ 2,...
+2025-08-21 00:29:41,951 [DEBUG] [root:37] [detectar_intencao_usuario_com_ia] Detectando intenção do usuário com IA para a mensagem: 'Eai'
+2025-08-21 00:29:41,952 [DEBUG] [root:141] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: Eai
+2025-08-21 00:29:41,959 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.started host='host.docker.internal' port=11434 local_address=None timeout=None socket_options=None
+2025-08-21 00:29:41,969 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759b0280>
+2025-08-21 00:29:41,977 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.started request=<Request [b'POST']>
+2025-08-21 00:29:41,981 [DEBUG] [httpcore.http11:47] [trace] send_request_headers.complete
+2025-08-21 00:29:41,982 [DEBUG] [httpcore.http11:47] [trace] send_request_body.started request=<Request [b'POST']>
+2025-08-21 00:29:41,987 [DEBUG] [httpcore.http11:47] [trace] send_request_body.complete
+2025-08-21 00:29:41,989 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.started request=<Request [b'POST']>
+2025-08-21 00:29:44,506 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:29:44 GMT'), (b'Content-Length', b'416')])
+2025-08-21 00:29:44,508 [INFO] [httpx:1025] [_send_single_request] HTTP Request: POST http://host.docker.internal:11434/api/chat "HTTP/1.1 200 OK"
+2025-08-21 00:29:44,509 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.started request=<Request [b'POST']>
+2025-08-21 00:29:44,509 [DEBUG] [httpcore.http11:47] [trace] receive_response_body.complete
+2025-08-21 00:29:44,510 [DEBUG] [httpcore.http11:47] [trace] response_closed.started
+2025-08-21 00:29:44,511 [DEBUG] [httpcore.http11:47] [trace] response_closed.complete
+2025-08-21 00:29:44,512 [DEBUG] [root:220] [_extrair_json_da_resposta] Extraindo JSON da resposta da IA: '{
+  "nome_ferramenta": "handle_chitchat",
+  "parametros": {
+    "response_text": "GENERATE_GREETING"
+  }
+}'
+2025-08-21 00:29:44,513 [DEBUG] [root:491] [analyze_intent_confidence] [CONFIDENCE] Analisando confiança para: handle_chitchat
+2025-08-21 00:29:44,514 [DEBUG] [root:514] [analyze_intent_confidence] [CONFIDENCE] Fatores: {'context_alignment': 0.75, 'parameter_completeness': 0.95, 'conversation_flow': 0.75, 'linguistic_patterns': 0.75, 'historical_success': 0.9}
+2025-08-21 00:29:44,514 [DEBUG] [root:515] [analyze_intent_confidence] [CONFIDENCE] Score final: 0.813
+2025-08-21 00:29:44,515 [INFO] [root:192] [detectar_intencao_usuario_com_ia] [INTENT] Intenção: handle_chitchat, Confiança: 0.813, Estratégia: execute_with_validation
+2025-08-21 00:29:44,516 [INFO] [root:1169] [obter_intencao_rapida] [INTENT] Detectado via IA: handle_chitchat
+
+
+
+2025-08-21 00:29:44,525 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759b0970>
+
+
+
+
+
+2025-08-21 00:29:45,945 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:29:45 GMT'), (b'Content-Length', b'404')])
+
+
+
+
+
+2025-08-21 00:29:45,951 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: positivo
+2025-08-21 00:29:45,952 [INFO] [U:webchat:user] [gav.utils.gav_logger:214] [log_info] RESETANDO ESTADO para nova conversa
+2025-08-21 00:29:45,953 [DEBUG] [root:1223] [generate_personalized_response] Gerando resposta personalizada para o tipo de contexto: 'greeting'
+2025-08-21 00:29:45,957 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759b0130>
+2025-08-21 00:29:46,867 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:29:46 GMT'), (b'Content-Length', b'397')])
+2025-08-21 00:29:46,869 [INFO] [root:1275] [generate_personalized_response] [llm_interface.py] Resposta dinâmica gerada para greeting: Olá! Sou o G.A.V., aqui para te ajudar a encontrar...
+2025-08-21 00:29:46,870 [DEBUG] [root:612] [formatar_acoes_rapidas] Formatando ações rápidas. Tem carrinho: False, Tem produtos: False
+2025-08-21 00:29:46,871 [DEBUG] [root:632] [formatar_acoes_rapidas] Ações rápidas formatadas: 🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos
+❓ Digite *ajuda* para mais opções
+2025-08-21 00:29:46,872 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: CHITCHAT, Mensagem: Olá! Sou o G.A.V., aqui para te ajudar a encontrar o que procura em nossas lojas. Como posso ajudar ...
+
+2025-08-21 00:29:46,873 [DEBUG] [root:642] [atualizar_contexto_sessao] Atualizando contexto da sessão com: {'customer_context': {'cnpj': '11111111111111'}, 'shopping_cart': [], 'last_search_type': None, 'last_search_params': {}, 'current_offset': 0, 'last_shown_products': [], 'last_bot_action': None, 'pending_action': None, 'last_kb_search_term': None}
+2025-08-21 00:29:46,874 [DEBUG] [root:579] [obter_estatisticas_sessao] Obtendo estatísticas da sessão.
+2025-08-21 00:29:46,876 [DEBUG] [root:599] [obter_estatisticas_sessao] Estatísticas da sessão: {'itens_carrinho': 0, 'tamanho_conversa': 0, 'cliente_identificado': True, 'ultima_acao': None, 'tem_selecao_pendente': False, 'tem_quantidade_pendente': False, 'valor_total_carrinho': 0.0}
+2025-08-21 00:29:46,876 [DEBUG] [root:648] [atualizar_contexto_sessao] Contexto da sessão atualizado com sucesso.
+2025-08-21 00:29:46,877 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: BOT_RESPONSE, Mensagem: Olá! Sou o G.A.V., aqui para te ajudar a encontrar o que procura em nossas lojas. Como posso ajudar ...
+2025-08-21 00:29:46,878 [DEBUG] [root:125] [salvar_sessao] Salvando sessão para o ID: webchat_user_mekdrk52_ryjofr_11111111111111
+
+
+2025-08-21 00:29:46,881 [DEBUG] [root:146] [salvar_sessao] [SESSAO] Sessão salva no arquivo: data/sessao_webchat_user_mekdrk52_ryjofr_11111111111111.json
+2025-08-21 00:29:46,882 [INFO] [U:webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] RESPOSTA ENVIADA AO USUARIO | RESPOSTA='Olá! Sou o G.A.V., aqui para te ajudar a encontrar o que procura em nossas lojas. Como posso ajudar hoje?
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendidos
+❓ Digite *ajuda* para mais opções' | TAMANHO=213
+2025-08-21 00:29:46,883 [INFO] [gav.__main__:93] [wrapper] PERFORMANCE: __main__.process_message_for_web executada em 4.955s
+2025-08-21 00:29:55,578 [INFO] [root:2894] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mekdrk52_ryjofr: quero ver os produtos de cerveja
+2025-08-21 00:29:55,579 [INFO] [U:webchat:user_mekdrk52_ryjofr][S:webchat_webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] MENSAGEM RECEBIDA DO USUARIO | MSG='quero ver os produtos de cerveja' | TAMANHO=32
+
+
+2025-08-21 00:29:55,587 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: user, Tipo de Ação: , Mensagem: quero ver os produtos de cerveja...
+2025-08-21 00:29:55,588 [DEBUG] [root:1161] [obter_intencao_rapida] Obtendo intenção rápida para a mensagem: 'quero ver os produtos de cerveja'
+2025-08-21 00:29:55,589 [DEBUG] [root:480] [obter_contexto_conversa] Contexto da conversa obtido: HISTÓRICO RECENTE DA CONVERSA:
+1. G.A.V. [BOT_RESPONSE]: Olá! Eu sou G.A.V. Aqui para ajudar, como posso facilitar sua vida hoje?
+
+🔍 Digite o nome do produto
+📦 Digite *produtos* para ver os mais vendi...
+2025-08-21 00:29:55,590 [DEBUG] [root:37] [detectar_intencao_usuario_com_ia] Detectando intenção do usuário com IA para a mensagem: 'quero ver os produtos de cerveja'
+2025-08-21 00:29:55,591 [DEBUG] [root:141] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero ver os produtos de cerveja
+2025-08-21 00:29:55,600 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a75a53220>
+2025-08-21 00:29:58,397 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:29:58 GMT'), (b'Content-Length', b'421')])
+2025-08-21 00:29:58,398 [DEBUG] [root:220] [_extrair_json_da_resposta] Extraindo JSON da resposta da IA: '{
+  "nome_ferramenta": "busca_inteligente_com_promocoes",
+  "parametros": {
+    "termo_busca": "cerveja"
+  }
+}'
+2025-08-21 00:29:58,400 [DEBUG] [root:491] [analyze_intent_confidence] [CONFIDENCE] Analisando confiança para: busca_inteligente_com_promocoes
+2025-08-21 00:29:58,402 [DEBUG] [root:514] [analyze_intent_confidence] [CONFIDENCE] Fatores: {'context_alignment': 0.75, 'parameter_completeness': 0.95, 'conversation_flow': 0.75, 'linguistic_patterns': 0.75, 'historical_success': 0.85}
+2025-08-21 00:29:58,405 [DEBUG] [root:515] [analyze_intent_confidence] [CONFIDENCE] Score final: 0.805
+2025-08-21 00:29:58,415 [INFO] [root:192] [detectar_intencao_usuario_com_ia] [INTENT] Intenção: busca_inteligente_com_promocoes, Confiança: 0.805, Estratégia: execute_with_validation
+2025-08-21 00:29:58,416 [INFO] [root:1169] [obter_intencao_rapida] [INTENT] Detectado via IA: busca_inteligente_com_promocoes
+
+2025-08-21 00:29:58,436 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759f95e0>
+2025-08-21 00:29:59,867 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:29:59 GMT'), (b'Content-Length', b'404')])
+
+2025-08-21 00:29:59,885 [ERROR] [root:140] [detectar_marca_e_produto_ia] [MARCA_PRODUTO_IA] Erro: '"tipo_busca"'
+2025-08-21 00:29:59,886 [INFO] [root:355] [gerar_busca_otimizada] [BUSCA_OTIMIZADA] '{'tipo_busca': 'categoria_geral', 'marca': None, 'produto': 'cerveja', 'especificacoes': [], 'categoria': 'bebidas', 'prioridade_marca': False}' → termo: 'cerveja'
+2025-08-21 00:29:59,909 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759f94c0>
+2025-08-21 00:30:00,784 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:30:00 GMT'), (b'Content-Length', b'299')])
+2025-08-21 00:30:00,785 [INFO] [root:185] [_classificar_por_ia_com_contexto] IA-CONTEXTO classificou 'cerveja' → 'bebidas'
+2025-08-21 00:30:00,786 [INFO] [root:310] [classificar_categoria_com_contexto_ia] Classificado IA-CONTEXTO: 'cerveja' → 'bebidas'
+2025-08-21 00:30:00,796 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759845b0>
+2025-08-21 00:30:01,036 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:30:01 GMT'), (b'Content-Length', b'297')])
+2025-08-21 00:30:01,038 [DEBUG] [root:687] [obter_produtos_por_categoria] Buscando produtos por categoria 'CERVEJA' com limite 10, offset 0 e marca priorizada 'None'.
+2025-08-21 00:30:01,038 [DEBUG] [gav.gav_logger:208] [log_debug] Tentando obter conexão com o banco de dados
+2025-08-21 00:30:01,045 [INFO] [gav.database:264] [log_database_query] DB_QUERY: CONNECTION - 0.005s
+2025-08-21 00:30:01,045 [DEBUG] [gav.gav_logger:208] [log_debug] Conexão com o banco de dados estabelecida com sucesso
+2025-08-21 00:30:01,070 [INFO] [root:759] [obter_produtos_por_categoria] Encontrados 10 produtos na categoria 'CERVEJA'
+2025-08-21 00:30:01,071 [DEBUG] [root:778] [obter_produtos_promocionais_por_categoria] Buscando produtos promocionais por categoria 'CERVEJA' com limite 10 e offset 0.
+
+2025-08-21 00:30:01,076 [INFO] [gav.database:264] [log_database_query] DB_QUERY: CONNECTION - 0.003s
+
+2025-08-21 00:30:01,080 [INFO] [root:822] [obter_produtos_promocionais_por_categoria] Encontradas 2 promoções na categoria 'CERVEJA'
+2025-08-21 00:30:01,081 [DEBUG] [root:259] [formatar_lista_produtos_inteligente] Formatando lista de produtos inteligente. Título: 🎯 Produtos na categoria 'Cerveja':, Produtos normais: 10, Produtos em promoção: 2
+2025-08-21 00:30:01,082 [DEBUG] [root:344] [formatar_lista_produtos_inteligente] Lista de produtos inteligente formatada: *🎯 Produtos na categoria 'Cerveja':*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB.CHOPP BLACK SKULL VINHO
+    💰 R$ 8,98
+
+*3.* BEB.CHOPP DE VIN.DRAFT 
+    💰 R$ 9,98
+
+*4.* BEB.CHOPP DE VIN.DRAFT LT
+    💰 R$ 5,69
+
+*5.* BEB.CHOPP DE VIN.DRAFT WHITE
+    💰 R$ 9,98
+
+*6.* BEB.CHOPP DE VIN ROSA VERMELHA
+    💰 R$ 7,49
+
+*7.* BEB.CHOPP DE VIN.STEMPEL RED
+    💰 R$ 8,98
+
+*8.* BEB.CHOPP DE VIN.STEMPEL WHITE
+    💰 R$ 8,98
+
+*9.* BEB.CHOPP DE WHISK DRAFT 
+    💰 R$ 9,79
+
+*10.* BEB.CHOPP ICE DRAFT 
+    💰 R$ 9,98
+
+🔥 *PROMOÇÕES ESPECIAIS* 🔥
+━━━━━━━━━━━━━━━━━━━━
+*11.* CERVEJA PATAGONIA IPA LT
+    ~R$ 6,79~ → *R$ 5,00* (26% OFF)
+
+*12.* CERVEJA PATAGONIA BOH PILS LT
+    ~R$ 6,79~ → *R$ 5,50* (19% OFF)
+
+Qual você quer? Digite o número de *1* a *12*.
+📝 Digite *mais* para ver outros produtos desta categoria!
+2025-08-21 00:30:01,083 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: SHOW_SMART_SEARCH_RESULTS, Mensagem: *🎯 Produtos na categoria 'Cerveja':*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB.CHOP...
+2025-08-21 00:30:01,085 [DEBUG] [root:642] [atualizar_contexto_sessao] Atualizando contexto da sessão com: {'customer_context': {'cnpj': '11111111111111'}, 'shopping_cart': [], 'last_search_type': 'smart_search', 'last_search_params': {'search_term': 'cerveja', 'category': 'CERVEJA', 'marca_priorizada': None}, 'current_offset': 0, 'last_shown_products': [{'codprod': 57832, 'descricao': 'BEB.CHOPP BLACK SKULL MARULA', 'categoria': 'CERVEJA', 'marca': 'BLACK SKULL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 57833, 'descricao': 'BEB.CHOPP BLACK SKULL VINHO', 'categoria': 'CERVEJA', 'marca': 'BLACK SKULL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53336, 'descricao': 'BEB.CHOPP DE VIN.DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53337, 'descricao': 'BEB.CHOPP DE VIN.DRAFT LT', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 5.69, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53335, 'descricao': 'BEB.CHOPP DE VIN.DRAFT WHITE', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 58971, 'descricao': 'BEB.CHOPP DE VIN ROSA VERMELHA', 'categoria': 'CERVEJA', 'marca': 'PROIBIDA', 'unidade_venda': 'UN', 'preco_varejo': 7.49, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 76004, 'descricao': 'BEB.CHOPP DE VIN.STEMPEL RED', 'categoria': 'CERVEJA', 'marca': 'STEMPEL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 76003, 'descricao': 'BEB.CHOPP DE VIN.STEMPEL WHITE', 'categoria': 'CERVEJA', 'marca': 'STEMPEL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 55331, 'descricao': 'BEB.CHOPP DE WHISK DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.79, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 55332, 'descricao': 'BEB.CHOPP ICE DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 62351, 'descricao': 'CERVEJA PATAGONIA IPA LT', 'categoria': 'CERVEJA', 'marca': 'STELLA ARTOIS', 'unidade_venda': 'LT', 'preco_varejo': 6.79, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'preco_promocional': 5.0, 'data_inicio_promocao': None, 'data_fim_promocao': None, 'total_vendido': 0.0, 'desconto_percentual': 26.4, '_preco_antigo': 6.79, '_preco_promo': 5.0, '_desconto': 26.4}, {'codprod': 58032, 'descricao': 'CERVEJA PATAGONIA BOH PILS LT', 'categoria': 'CERVEJA', 'marca': 'STELLA ARTOIS', 'unidade_venda': 'UN', 'preco_varejo': 6.79, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'preco_promocional': 5.5, 'data_inicio_promocao': None, 'data_fim_promocao': None, 'total_vendido': 0.0, 'desconto_percentual': 19.0, '_preco_antigo': 6.79, '_preco_promo': 5.5, '_desconto': 19.0}], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+
+2025-08-21 00:30:01,087 [DEBUG] [root:599] [obter_estatisticas_sessao] Estatísticas da sessão: {'itens_carrinho': 0, 'tamanho_conversa': 0, 'cliente_identificado': True, 'ultima_acao': 'AWAITING_PRODUCT_SELECTION', 'tem_selecao_pendente': True, 'tem_quantidade_pendente': False, 'valor_total_carrinho': 0.0}
+
+2025-08-21 00:30:01,098 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: BOT_RESPONSE, Mensagem: *🎯 Produtos na categoria 'Cerveja':*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB.CHOP...
+
+
+2025-08-21 00:30:01,106 [INFO] [U:webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] RESPOSTA ENVIADA AO USUARIO | RESPOSTA='*🎯 Produtos na categoria 'Cerveja':*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB.CHOPP BLACK SKULL VINHO
+    💰 R$ 8,98
+
+*3.* BEB.CHOPP DE VIN.DRAFT 
+    💰 R$ 9,98
+
+*4.* BEB.CHOPP DE VIN.DRAFT LT
+    💰 R$ 5,69
+
+*5.* BEB.CHOPP DE VIN.DRAFT WHITE
+    💰 R$ 9,98
+
+*6.* BEB.CHOPP DE VIN ROSA VERMELHA
+    💰 R$ 7,49
+
+*7.* BEB.CHOPP DE VIN.STEMPEL RED
+    💰 R$ 8,98
+
+*8.* BEB.CHOPP DE VIN.STEMPEL WHITE
+    💰 R$ 8,98
+
+*9.* BEB.CHOPP DE WHISK DRAFT 
+    💰 R$ 9,79
+
+*10.* BEB.CHOPP ICE DRAFT 
+    💰 R$ 9,98
+
+🔥 *PROMOÇÕES ESPECIAIS* 🔥
+━━━━━━━━━━━━━━━━━━━━
+*11.* CERVEJA PATAGONIA IPA LT
+    ~R$ 6,79~ → *R$ 5,00* (26% OFF)
+
+*12.* CERVEJA PATAGONIA BOH PILS LT
+    ~R$ 6,79~ → *R$ 5,50* (19% OFF)
+
+Qual você quer? Digite o número de *1* a *12*.
+📝 Digite *mais* para ver outros produtos desta categoria!' | TAMANHO=805
+2025-08-21 00:30:01,109 [INFO] [gav.__main__:93] [wrapper] PERFORMANCE: __main__.process_message_for_web executada em 5.530s
+2025-08-21 00:30:05,814 [INFO] [root:2894] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mekdrk52_ryjofr: mais
+2025-08-21 00:30:05,814 [INFO] [U:webchat:user_mekdrk52_ryjofr][S:webchat_webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] MENSAGEM RECEBIDA DO USUARIO | MSG='mais' | TAMANHO=4
+2025-08-21 00:30:05,822 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: user, Tipo de Ação: , Mensagem: mais...
+2025-08-21 00:30:05,823 [DEBUG] [root:423] [_resumir_mensagens_antigas] Mensagens antigas do histórico resumidas com sucesso.
+2025-08-21 00:30:05,823 [DEBUG] [root:1161] [obter_intencao_rapida] Obtendo intenção rápida para a mensagem: 'mais'
+2025-08-21 00:30:05,824 [DEBUG] [root:480] [obter_contexto_conversa] Contexto da conversa obtido: RESUMO ANTERIOR:
+   ~R$ 6,79~ → *R$ 5,50* (19% OFF)  Qual você quer? Digite o número de *1* a *3*. 📝 Digite *mais* para ver outros produtos desta categoria! | G.A.V.: *🎯 Produtos Jack encontrados:*  *...
+2025-08-21 00:30:05,825 [DEBUG] [root:37] [detectar_intencao_usuario_com_ia] Detectando intenção do usuário com IA para a mensagem: 'mais'
+2025-08-21 00:30:05,826 [DEBUG] [root:141] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: mais
+2025-08-21 00:30:05,833 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759f34c0>
+2025-08-21 00:30:08,423 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:30:08 GMT'), (b'Content-Length', b'369')])
+2025-08-21 00:30:08,425 [DEBUG] [root:220] [_extrair_json_da_resposta] Extraindo JSON da resposta da IA: '{
+  "nome_ferramenta": "show_more_products",
+  "parametros": {}
+}'
+2025-08-21 00:30:08,426 [DEBUG] [root:491] [analyze_intent_confidence] [CONFIDENCE] Analisando confiança para: show_more_products
+2025-08-21 00:30:08,427 [DEBUG] [root:514] [analyze_intent_confidence] [CONFIDENCE] Fatores: {'context_alignment': 0.75, 'parameter_completeness': 0.95, 'conversation_flow': 0.85, 'linguistic_patterns': 0.9, 'historical_success': 0.85}
+2025-08-21 00:30:08,428 [DEBUG] [root:515] [analyze_intent_confidence] [CONFIDENCE] Score final: 0.855
+2025-08-21 00:30:08,429 [INFO] [root:192] [detectar_intencao_usuario_com_ia] [INTENT] Intenção: show_more_products, Confiança: 0.855, Estratégia: execute_with_validation
+2025-08-21 00:30:08,429 [INFO] [root:1169] [obter_intencao_rapida] [INTENT] Detectado via IA: show_more_products
+
+2025-08-21 00:30:08,437 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759f3640>
+2025-08-21 00:30:10,174 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:30:10 GMT'), (b'Content-Length', b'404')])
+
+
+
+2025-08-21 00:30:10,203 [DEBUG] [root:209] [formatar_lista_produtos_para_exibicao] Formatando lista de produtos para exibição. Título: Mais produtos da categoria Cerveja:, Quantidade: 10, Tem mais: True, Offset: 0
+2025-08-21 00:30:10,205 [DEBUG] [root:245] [formatar_lista_produtos_para_exibicao] Lista de produtos formatada: 📦 *Mais produtos da categoria Cerveja::*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB.CHOPP BLACK SKULL VINHO
+    💰 R$ 8,98
+
+*3.* BEB.CHOPP DE VIN.DRAFT 
+    💰 R$ 9,98
+
+*4.* BEB.CHOPP DE VIN.DRAFT LT
+    💰 R$ 5,69
+
+*5.* BEB.CHOPP DE VIN.DRAFT WHITE
+    💰 R$ 9,98
+
+*6.* BEB.CHOPP DE VIN ROSA VERMELHA
+    💰 R$ 7,49
+
+*7.* BEB.CHOPP DE VIN.STEMPEL RED
+    💰 R$ 8,98
+
+*8.* BEB.CHOPP DE VIN.STEMPEL WHITE
+    💰 R$ 8,98
+
+*9.* BEB.CHOPP DE WHISK DRAFT 
+    💰 R$ 9,79
+
+*10.* BEB.CHOPP ICE DRAFT 
+    💰 R$ 9,98
+
+Qual você quer? Digite o número de *1* a *10*.
+📝 Digite *mais* para ver outros produtos!
+2025-08-21 00:30:10,207 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: SHOW_MORE_PRODUCTS, Mensagem: 📦 *Mais produtos da categoria Cerveja::*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB....
+2025-08-21 00:30:10,208 [DEBUG] [root:642] [atualizar_contexto_sessao] Atualizando contexto da sessão com: {'customer_context': {'cnpj': '11111111111111'}, 'shopping_cart': [], 'last_search_type': 'smart_search', 'last_search_params': {'search_term': 'cerveja', 'category': 'CERVEJA', 'marca_priorizada': None}, 'current_offset': 10, 'last_shown_products': [{'codprod': 57832, 'descricao': 'BEB.CHOPP BLACK SKULL MARULA', 'categoria': 'CERVEJA', 'marca': 'BLACK SKULL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 57833, 'descricao': 'BEB.CHOPP BLACK SKULL VINHO', 'categoria': 'CERVEJA', 'marca': 'BLACK SKULL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53336, 'descricao': 'BEB.CHOPP DE VIN.DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53337, 'descricao': 'BEB.CHOPP DE VIN.DRAFT LT', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 5.69, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53335, 'descricao': 'BEB.CHOPP DE VIN.DRAFT WHITE', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 58971, 'descricao': 'BEB.CHOPP DE VIN ROSA VERMELHA', 'categoria': 'CERVEJA', 'marca': 'PROIBIDA', 'unidade_venda': 'UN', 'preco_varejo': 7.49, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 76004, 'descricao': 'BEB.CHOPP DE VIN.STEMPEL RED', 'categoria': 'CERVEJA', 'marca': 'STEMPEL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 76003, 'descricao': 'BEB.CHOPP DE VIN.STEMPEL WHITE', 'categoria': 'CERVEJA', 'marca': 'STEMPEL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 55331, 'descricao': 'BEB.CHOPP DE WHISK DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.79, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 55332, 'descricao': 'BEB.CHOPP ICE DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 62351, 'descricao': 'CERVEJA PATAGONIA IPA LT', 'categoria': 'CERVEJA', 'marca': 'STELLA ARTOIS', 'unidade_venda': 'LT', 'preco_varejo': 6.79, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'preco_promocional': 5.0, 'data_inicio_promocao': None, 'data_fim_promocao': None, 'total_vendido': 0.0, 'desconto_percentual': 26.4, '_preco_antigo': 6.79, '_preco_promo': 5.0, '_desconto': 26.4}, {'codprod': 58032, 'descricao': 'CERVEJA PATAGONIA BOH PILS LT', 'categoria': 'CERVEJA', 'marca': 'STELLA ARTOIS', 'unidade_venda': 'UN', 'preco_varejo': 6.79, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'preco_promocional': 5.5, 'data_inicio_promocao': None, 'data_fim_promocao': None, 'total_vendido': 0.0, 'desconto_percentual': 19.0, '_preco_antigo': 6.79, '_preco_promo': 5.5, '_desconto': 19.0}, {'codprod': 57832, 'descricao': 'BEB.CHOPP BLACK SKULL MARULA', 'categoria': 'CERVEJA', 'marca': 'BLACK SKULL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 57833, 'descricao': 'BEB.CHOPP BLACK SKULL VINHO', 'categoria': 'CERVEJA', 'marca': 'BLACK SKULL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53336, 'descricao': 'BEB.CHOPP DE VIN.DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53337, 'descricao': 'BEB.CHOPP DE VIN.DRAFT LT', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 5.69, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 53335, 'descricao': 'BEB.CHOPP DE VIN.DRAFT WHITE', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 58971, 'descricao': 'BEB.CHOPP DE VIN ROSA VERMELHA', 'categoria': 'CERVEJA', 'marca': 'PROIBIDA', 'unidade_venda': 'UN', 'preco_varejo': 7.49, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 76004, 'descricao': 'BEB.CHOPP DE VIN.STEMPEL RED', 'categoria': 'CERVEJA', 'marca': 'STEMPEL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 76003, 'descricao': 'BEB.CHOPP DE VIN.STEMPEL WHITE', 'categoria': 'CERVEJA', 'marca': 'STEMPEL', 'unidade_venda': 'UN', 'preco_varejo': 8.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 55331, 'descricao': 'BEB.CHOPP DE WHISK DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.79, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}, {'codprod': 55332, 'descricao': 'BEB.CHOPP ICE DRAFT ', 'categoria': 'CERVEJA', 'marca': 'DRAFT', 'unidade_venda': 'UN', 'preco_varejo': 9.98, 'preco_atacado': 0.0, 'quantidade_atacado': 1, 'total_vendido': 0.0}], 'last_bot_action': 'AWAITING_PRODUCT_SELECTION', 'pending_action': None, 'last_kb_search_term': None}
+
+2025-08-21 00:30:10,211 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: BOT_RESPONSE, Mensagem: 📦 *Mais produtos da categoria Cerveja::*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB....
+2025-08-21 00:30:10,218 [INFO] [U:webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] RESPOSTA ENVIADA AO USUARIO | RESPOSTA='📦 *Mais produtos da categoria Cerveja::*
+
+*1.* BEB.CHOPP BLACK SKULL MARULA
+    💰 R$ 8,98
+
+*2.* BEB.CHOPP BLACK SKULL VINHO
+    💰 R$ 8,98
+
+*3.* BEB.CHOPP DE VIN.DRAFT 
+    💰 R$ 9,98
+
+*4.* BEB.CHOPP DE VIN.DRAFT LT
+    💰 R$ 5,69
+
+*5.* BEB.CHOPP DE VIN.DRAFT WHITE
+    💰 R$ 9,98
+
+*6.* BEB.CHOPP DE VIN ROSA VERMELHA
+    💰 R$ 7,49
+
+*7.* BEB.CHOPP DE VIN.STEMPEL RED
+    💰 R$ 8,98
+
+*8.* BEB.CHOPP DE VIN.STEMPEL WHITE
+    💰 R$ 8,98
+
+*9.* BEB.CHOPP DE WHISK DRAFT 
+    💰 R$ 9,79
+
+*10.* BEB.CHOPP ICE DRAFT 
+    💰 R$ 9,98
+
+Qual você quer? Digite o número de *1* a *10*.
+📝 Digite *mais* para ver outros produtos!' | TAMANHO=605
+2025-08-21 00:30:10,227 [INFO] [gav.__main__:93] [wrapper] PERFORMANCE: __main__.process_message_for_web executada em 4.413s
+2025-08-21 00:31:06,000 [INFO] [root:2894] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mekdrk52_ryjofr: quero ver o que ja tem no meu carrinho
+2025-08-21 00:31:06,002 [INFO] [U:webchat:user_mekdrk52_ryjofr][S:webchat_webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] MENSAGEM RECEBIDA DO USUARIO | MSG='quero ver o que ja tem no meu carrinho' | TAMANHO=38
+2025-08-21 00:31:06,009 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: user, Tipo de Ação: , Mensagem: quero ver o que ja tem no meu carrinho...
+2025-08-21 00:31:06,010 [DEBUG] [root:1161] [obter_intencao_rapida] Obtendo intenção rápida para a mensagem: 'quero ver o que ja tem no meu carrinho'
+2025-08-21 00:31:06,011 [DEBUG] [root:37] [detectar_intencao_usuario_com_ia] Detectando intenção do usuário com IA para a mensagem: 'quero ver o que ja tem no meu carrinho'
+2025-08-21 00:31:06,012 [DEBUG] [root:141] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: quero ver o que ja tem no meu carrinho
+2025-08-21 00:31:06,022 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759c8550>
+2025-08-21 00:31:08,710 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:31:08 GMT'), (b'Content-Length', b'370')])
+2025-08-21 00:31:08,711 [DEBUG] [root:220] [_extrair_json_da_resposta] Extraindo JSON da resposta da IA: '{
+  "nome_ferramenta": "visualizar_carrinho",
+  "parametros": {}
+}'
+2025-08-21 00:31:08,713 [DEBUG] [root:491] [analyze_intent_confidence] [CONFIDENCE] Analisando confiança para: visualizar_carrinho
+2025-08-21 00:31:08,715 [DEBUG] [root:514] [analyze_intent_confidence] [CONFIDENCE] Fatores: {'context_alignment': 0.9, 'parameter_completeness': 0.95, 'conversation_flow': 0.85, 'linguistic_patterns': 0.9, 'historical_success': 0.95}
+2025-08-21 00:31:08,716 [DEBUG] [root:515] [analyze_intent_confidence] [CONFIDENCE] Score final: 0.908
+2025-08-21 00:31:08,728 [INFO] [root:192] [detectar_intencao_usuario_com_ia] [INTENT] Intenção: visualizar_carrinho, Confiança: 0.908, Estratégia: execute_immediately
+2025-08-21 00:31:08,730 [INFO] [root:1169] [obter_intencao_rapida] [INTENT] Detectado via IA: visualizar_carrinho
+2025-08-21 00:31:08,737 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759dbd60>
+2025-08-21 00:31:10,476 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:31:10 GMT'), (b'Content-Length', b'404')])
+2025-08-21 00:31:10,494 [DEBUG] [root:356] [formatar_carrinho_para_exibicao] Formatando carrinho para exibição. Itens no carrinho: 0
+2025-08-21 00:31:10,496 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: SHOW_CART, Mensagem: 🛒 Carrinho vazio...
+2025-08-21 00:31:10,497 [DEBUG] [root:642] [atualizar_contexto_sessao] Atualizando contexto da sessão com: {'customer_context': {'cnpj': '11111111111111'}, 'shopping_cart': [], 'last_search_type': 'smart_search', 'last_search_params': {'search_term': 'cerveja', 'category': 'CERVEJA', 'marca_priorizada': None}, 'current_offset': 10, 'last_shown_products': [], 'last_bot_action': 'AWAITING_CHECKOUT_CONFIRMATION', 'pending_action': None, 'last_kb_search_term': None}
+2025-08-21 00:31:10,501 [DEBUG] [root:599] [obter_estatisticas_sessao] Estatísticas da sessão: {'itens_carrinho': 0, 'tamanho_conversa': 0, 'cliente_identificado': True, 'ultima_acao': 'AWAITING_CHECKOUT_CONFIRMATION', 'tem_selecao_pendente': False, 'tem_quantidade_pendente': False, 'valor_total_carrinho': 0.0}
+2025-08-21 00:31:10,502 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: BOT_RESPONSE, Mensagem: 🛒 Carrinho vazio...
+2025-08-21 00:31:10,521 [INFO] [U:webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] RESPOSTA ENVIADA AO USUARIO | RESPOSTA='🛒 Carrinho vazio' | TAMANHO=16
+2025-08-21 00:31:10,522 [INFO] [gav.__main__:93] [wrapper] PERFORMANCE: __main__.process_message_for_web executada em 4.520s
+2025-08-21 00:33:06,264 [INFO] [root:2894] [webchat] WEBCHAT | Mensagem recebida de webchat:user_mekdrk52_ryjofr: 9
+2025-08-21 00:33:06,265 [INFO] [U:webchat:user_mekdrk52_ryjofr][S:webchat_webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] MENSAGEM RECEBIDA DO USUARIO | MSG='9' | TAMANHO=1
+2025-08-21 00:33:06,271 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: user, Tipo de Ação: , Mensagem: 9...
+2025-08-21 00:33:06,272 [DEBUG] [root:1161] [obter_intencao_rapida] Obtendo intenção rápida para a mensagem: '9'
+2025-08-21 00:33:06,273 [DEBUG] [root:37] [detectar_intencao_usuario_com_ia] Detectando intenção do usuário com IA para a mensagem: '9'
+2025-08-21 00:33:06,274 [DEBUG] [root:141] [detectar_intencao_usuario_com_ia] [INTENT] Classificando intenção para: 9
+2025-08-21 00:33:06,282 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a759f3e80>
+2025-08-21 00:33:09,107 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:33:09 GMT'), (b'Content-Length', b'390')])
+2025-08-21 00:33:09,109 [DEBUG] [root:220] [_extrair_json_da_resposta] Extraindo JSON da resposta da IA: '{
+  "nome_ferramenta": "adicionar_item_ao_carrinho",
+  "parametros": {"indice": 9}
+}'
+2025-08-21 00:33:09,111 [DEBUG] [root:491] [analyze_intent_confidence] [CONFIDENCE] Analisando confiança para: adicionar_item_ao_carrinho
+2025-08-21 00:33:09,114 [DEBUG] [root:514] [analyze_intent_confidence] [CONFIDENCE] Fatores: {'context_alignment': 0.75, 'parameter_completeness': 0.95, 'conversation_flow': 0.95, 'linguistic_patterns': 0.9, 'historical_success': 0.9}
+2025-08-21 00:33:09,127 [DEBUG] [root:515] [analyze_intent_confidence] [CONFIDENCE] Score final: 0.883
+2025-08-21 00:33:09,128 [INFO] [root:192] [detectar_intencao_usuario_com_ia] [INTENT] Intenção: adicionar_item_ao_carrinho, Confiança: 0.883, Estratégia: execute_with_validation
+2025-08-21 00:33:09,129 [INFO] [root:1169] [obter_intencao_rapida] [INTENT] Detectado via IA: adicionar_item_ao_carrinho
+2025-08-21 00:33:09,138 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a75a06340>
+2025-08-21 00:33:11,392 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:33:11 GMT'), (b'Content-Length', b'503')])
+2025-08-21 00:33:11,394 [INFO] [root:181] [analisar_contexto_emocional_ia] [CONTEXTO_EMOCIONAL_IA] Sentimento: negativo
+2025-08-21 00:33:11,395 [DEBUG] [root:1223] [generate_personalized_response] Gerando resposta personalizada para o tipo de contexto: 'invalid_selection'
+2025-08-21 00:33:11,397 [DEBUG] [httpcore.connection:47] [trace] close.started
+2025-08-21 00:33:11,397 [DEBUG] [httpcore.connection:47] [trace] close.complete
+2025-08-21 00:33:11,402 [DEBUG] [httpcore.connection:47] [trace] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f5a75984670>
+2025-08-21 00:33:12,041 [DEBUG] [httpcore.http11:47] [trace] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Thu, 21 Aug 2025 00:33:12 GMT'), (b'Content-Length', b'355')])
+2025-08-21 00:33:12,043 [INFO] [root:1275] [generate_personalized_response] [llm_interface.py] Resposta dinâmica gerada para invalid_selection: Vou te ajudar! Quer escolher entre 1 e 0? Qual sua...
+2025-08-21 00:33:12,044 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: INVALID_SELECTION, Mensagem: Vou te ajudar! Quer escolher entre 1 e 0? Qual sua preferência?...
+
+
+2025-08-21 00:33:12,046 [DEBUG] [root:434] [adicionar_mensagem_historico] Adicionando mensagem ao histórico. Role: assistant, Tipo de Ação: BOT_RESPONSE, Mensagem: Vou te ajudar! Quer escolher entre 1 e 0? Qual sua preferência?...
+2025-08-21 00:33:12,050 [INFO] [U:webchat:user_mekdrk52_ryjofr] [gav.utils.gav_logger:214] [log_info] [WEBCHAT] RESPOSTA ENVIADA AO USUARIO | RESPOSTA='Vou te ajudar! Quer escolher entre 1 e 0? Qual sua preferência?' | TAMANHO=63
+2025-08-21 00:33:12,050 [INFO] [gav.__main__:93] [wrapper] PERFORMANCE: __main__.process_message_for_web executada em 5.786s

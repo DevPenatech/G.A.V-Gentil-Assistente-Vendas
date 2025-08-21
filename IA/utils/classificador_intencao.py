@@ -179,10 +179,24 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
             ]
             
             if intent_data["nome_ferramenta"] in ferramentas_validas:
+                # 🚀 NOVO: Sistema de Confiança e Score de Decisão
+                confidence_score = _confidence_system.analyze_intent_confidence(
+                    intent_data, user_message, conversation_context
+                )
+                decision_strategy = _confidence_system.get_decision_strategy(confidence_score)
+                
+                # Adiciona dados de confiança ao resultado
+                intent_data["confidence_score"] = confidence_score
+                intent_data["decision_strategy"] = decision_strategy
+                
+                logging.info(f"[INTENT] Intenção: {intent_data['nome_ferramenta']}, "
+                           f"Confiança: {confidence_score:.3f}, "
+                           f"Estratégia: {decision_strategy}")
+                
                 # Cache apenas se não há contexto (primeira interação)
                 if not conversation_context:
                     _cache_intencao[cache_key] = intent_data
-                logging.info(f"[INTENT] Intenção detectada: {intent_data['nome_ferramenta']}")
+                
                 return intent_data
         
         # Fallback se a IA não retornou JSON válido
@@ -236,26 +250,39 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
     
     message_lower = user_message.lower().strip()
     
+    def _add_confidence_to_intent(intent_data: Dict) -> Dict:
+        """Adiciona dados de confiança a qualquer intenção."""
+        confidence_score = _confidence_system.analyze_intent_confidence(
+            intent_data, user_message, conversation_context
+        )
+        decision_strategy = _confidence_system.get_decision_strategy(confidence_score)
+        
+        intent_data["confidence_score"] = confidence_score
+        intent_data["decision_strategy"] = decision_strategy
+        
+        logging.debug(f"[FALLBACK] {intent_data['nome_ferramenta']}: confiança={confidence_score:.3f}, estratégia={decision_strategy}")
+        return intent_data
+    
     # Regras de fallback simples com CONTEXTO IA-FIRST
     if re.match(r'^\d+$', message_lower):
         # PRIMEIRO: Verifica se há ação pendente de atualização inteligente 
         if "AWAITING_SMART_UPDATE_SELECTION" in conversation_context:
-            return {
+            return _add_confidence_to_intent({
                 "nome_ferramenta": "selecionar_item_para_atualizacao",
                 "parametros": {"indice": int(message_lower)}
-            }
+            })
         # SEGUNDO: Verifica se é resposta à opção de finalizar pedido
         elif ("Finalizar Pedido" in conversation_context and user_message.strip() == "1"):
-            return {
+            return _add_confidence_to_intent({
                 "nome_ferramenta": "checkout",
                 "parametros": {}
-            }
+            })
         # TERCEIRO: Se não é finalizar pedido nem atualização, é seleção de produto da lista
         else:
-            return {
+            return _add_confidence_to_intent({
                 "nome_ferramenta": "adicionar_item_ao_carrinho", 
                 "parametros": {"indice": int(message_lower)}
-            }
+            })
     
     # PRIMEIRA PRIORIDADE: Ações específicas de carrinho (deve vir ANTES da verificação genérica de 'carrinho')
     if any(word in message_lower for word in ['adiciona', 'coloca', 'mais', 'remove', 'remover', 'tirar', 'trocar', 'mudar', 'alterar']):
@@ -281,31 +308,31 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
         nome_produto = re.sub(r'\d+', '', nome_produto)  # Remove números
         nome_produto = re.sub(r'\s+', ' ', nome_produto).strip()  # Limpa espaços extras
         
-        return {
+        return _add_confidence_to_intent({
             "nome_ferramenta": "atualizacao_inteligente_carrinho",
             "parametros": {"acao": acao, "quantidade": quantidade, "nome_produto": nome_produto}
-        }
+        })
     
     # SEGUNDA PRIORIDADE: Comandos de finalização de pedido (PRIORIDADE ALTA - limpa estado pendente)
     if any(word in message_lower for word in ['finalizar', 'checkout', 'concluir', 'fechar pedido', 'comprar']):
-        return {
+        return _add_confidence_to_intent({
             "nome_ferramenta": "checkout",
             "parametros": {"force_checkout": True}  # Força checkout independente do estado
-        }
+        })
     
     # TERCEIRA PRIORIDADE: Comandos de limpeza de carrinho
     if any(word in message_lower for word in ['limpar', 'esvaziar', 'zerar']):
-        return {
+        return _add_confidence_to_intent({
             "nome_ferramenta": "limpar_carrinho",
             "parametros": {}
-        }
+        })
     
     # QUARTA PRIORIDADE: Visualizar carrinho (somente quando não há ação específica)  
     if any(word in message_lower for word in ['carrinho', 'meu carrinho']) and not any(word in message_lower for word in ['adiciona', 'coloca', 'mais', 'remove', 'remover', 'tirar', 'limpar', 'esvaziar', 'zerar']):
-        return {
+        return _add_confidence_to_intent({
             "nome_ferramenta": "visualizar_carrinho", 
             "parametros": {}
-        }
+        })
     
     # Detecta se é busca por categoria ou promoção
     palavras_categoria = [
@@ -363,24 +390,39 @@ RESPONDA APENAS: SIM ou NAO"""
     # Se contém categoria ou é marca detectada pela IA, usa busca inteligente
     if (any(keyword in message_lower for keyword in palavras_categoria) or
         _detectar_marca_com_ia(user_message)):
-        return {
+        return _add_confidence_to_intent({
             "nome_ferramenta": "busca_inteligente_com_promocoes",
             "parametros": {"termo_busca": user_message}
-        }
+        })
     
     # Saudações e conversas gerais
     saudacoes = ['oi', 'olá', 'boa', 'como', 'obrigado', 'tchau']
     if any(greeting in message_lower for greeting in saudacoes):
-        return {
+        return _add_confidence_to_intent({
             "nome_ferramenta": "lidar_conversa",
             "parametros": {"texto_resposta": "Olá! Como posso te ajudar hoje?"}
-        }
+        })
     
     # Default: busca por produto específico
-    return {
+    fallback_intent = {
         "nome_ferramenta": "obter_produtos_mais_vendidos_por_nome",
         "parametros": {"nome_produto": user_message}
     }
+    
+    # Adiciona confiança ao fallback (geralmente menor)
+    confidence_score = _confidence_system.analyze_intent_confidence(
+        fallback_intent, user_message, conversation_context
+    )
+    decision_strategy = _confidence_system.get_decision_strategy(confidence_score)
+    
+    fallback_intent["confidence_score"] = confidence_score
+    fallback_intent["decision_strategy"] = decision_strategy
+    
+    logging.info(f"[FALLBACK] Intenção: {fallback_intent['nome_ferramenta']}, "
+               f"Confiança: {confidence_score:.3f}, "
+               f"Estratégia: {decision_strategy}")
+    
+    return fallback_intent
 
 def limpar_cache_intencao():
     """
@@ -402,10 +444,262 @@ def obter_estatisticas_intencao() -> Dict:
         
     Example:
         >>> obter_estatisticas_intencao()
-        {"tamanho_cache": 5, "intencoes_cache": ["oi", "cerveja", "carrinho"]}
+        {"tamanho_cache": 5, "intencoes_cache": ["oi", "carrinho"]}
     """
     logging.debug("Obtendo estatísticas do classificador de intenções.")
     return {
         "tamanho_cache": len(_cache_intencao),
         "intencoes_cache": list(_cache_intencao.keys())[:10]  # Mostra primeiras 10
+    }
+
+
+class IntentConfidenceSystem:
+    """
+    Sistema de Confiança e Score de Decisão para melhorar precisão da IA.
+    
+    Calcula score de confiança 0.0-1.0 baseado em múltiplos fatores para 
+    decidir estratégia de execução (imediata, validação, confirmação ou fallback).
+    """
+    
+    def __init__(self):
+        # Histórico de sucesso por ferramenta (será alimentado ao longo do tempo)
+        self._historical_success = {
+            "busca_inteligente_com_promocoes": 0.85,
+            "obter_produtos_mais_vendidos_por_nome": 0.80,
+            "atualizacao_inteligente_carrinho": 0.75,
+            "visualizar_carrinho": 0.95,
+            "limpar_carrinho": 0.95,
+            "adicionar_item_ao_carrinho": 0.90,
+            "show_more_products": 0.85,
+            "checkout": 0.70,
+            "handle_chitchat": 0.90,
+            "lidar_conversa": 0.85
+        }
+        
+    def analyze_intent_confidence(self, intent_data: Dict, user_message: str, context: str = "") -> float:
+        """
+        Calcula score de confiança 0.0-1.0 baseado em múltiplos fatores.
+        
+        Args:
+            intent_data: Dados da intenção detectada pela IA
+            user_message: Mensagem original do usuário
+            context: Contexto da conversa
+            
+        Returns:
+            float: Score de confiança entre 0.0-1.0
+        """
+        logging.debug(f"[CONFIDENCE] Analisando confiança para: {intent_data.get('nome_ferramenta', 'unknown')}")
+        
+        confidence_factors = {
+            "context_alignment": self._check_context_match(intent_data, context),
+            "parameter_completeness": self._validate_parameters_completeness(intent_data),
+            "conversation_flow": self._analyze_conversation_flow(context, user_message),
+            "linguistic_patterns": self._analyze_linguistic_confidence(intent_data, user_message),
+            "historical_success": self._get_historical_success_rate(intent_data.get("nome_ferramenta", ""))
+        }
+        
+        # Pesos para cada fator (soma = 1.0)
+        weights = {
+            "context_alignment": 0.25,
+            "parameter_completeness": 0.20,
+            "conversation_flow": 0.20,
+            "linguistic_patterns": 0.20,
+            "historical_success": 0.15
+        }
+        
+        # Calcula média ponderada
+        confidence = sum(confidence_factors[factor] * weights[factor] 
+                        for factor in confidence_factors)
+        
+        logging.debug(f"[CONFIDENCE] Fatores: {confidence_factors}")
+        logging.debug(f"[CONFIDENCE] Score final: {confidence:.3f}")
+        
+        return round(confidence, 3)
+    
+    def get_decision_strategy(self, confidence: float) -> str:
+        """
+        Determina estratégia de execução baseada no score de confiança.
+        
+        Args:
+            confidence: Score de confiança 0.0-1.0
+            
+        Returns:
+            str: Estratégia de execução
+        """
+        if confidence >= 0.9:
+            return "execute_immediately"      # 0.9-1.0: Execute imediatamente
+        elif confidence >= 0.7:
+            return "execute_with_validation"  # 0.7-0.9: Execute com validação
+        elif confidence >= 0.5:
+            return "ask_confirmation"         # 0.5-0.7: Peça confirmação
+        else:
+            return "use_smart_fallback"       # 0.0-0.5: Use fallback inteligente
+    
+    def _check_context_match(self, intent_data: Dict, context: str) -> float:
+        """Verifica alinhamento com contexto da conversa."""
+        if not context:
+            return 0.7  # Neutro se não há contexto
+            
+        tool_name = intent_data.get("nome_ferramenta", "")
+        
+        # Verifica padrões contextuais específicos
+        if "lista de produtos" in context.lower() or "produtos encontrados" in context.lower():
+            if tool_name == "adicionar_item_ao_carrinho":
+                return 0.95  # Alta confiança para seleção após listagem
+            elif tool_name in ["busca_inteligente_com_promocoes", "obter_produtos_mais_vendidos_por_nome"]:
+                return 0.6   # Média confiança, pode ser nova busca
+        
+        if "carrinho" in context.lower():
+            if tool_name in ["visualizar_carrinho", "atualizacao_inteligente_carrinho", "limpar_carrinho"]:
+                return 0.9   # Alta confiança para ações de carrinho
+        
+        if "finalizar" in context.lower() or "checkout" in context.lower():
+            if tool_name == "checkout":
+                return 0.95  # Alta confiança para finalização
+        
+        return 0.75  # Confiança média por padrão
+    
+    def _validate_parameters_completeness(self, intent_data: Dict) -> float:
+        """Verifica completude e qualidade dos parâmetros."""
+        parametros = intent_data.get("parametros", {})
+        tool_name = intent_data.get("nome_ferramenta", "")
+        
+        # Ferramentas que não precisam de parâmetros específicos
+        no_params_tools = ["visualizar_carrinho", "limpar_carrinho", "show_more_products"]
+        if tool_name in no_params_tools:
+            return 0.95
+        
+        # Verifica parâmetros obrigatórios por ferramenta
+        required_params = {
+            "busca_inteligente_com_promocoes": ["termo_busca"],
+            "obter_produtos_mais_vendidos_por_nome": ["nome_produto"], 
+            "atualizacao_inteligente_carrinho": ["acao"],
+            "adicionar_item_ao_carrinho": ["indice"],
+            "handle_chitchat": ["response_text"],
+            "lidar_conversa": ["response_text"]
+        }
+        
+        required = required_params.get(tool_name, [])
+        if not required:
+            return 0.8  # Ferramenta não reconhecida
+        
+        # Verifica se todos os parâmetros obrigatórios estão presentes e não vazios
+        missing_params = []
+        for param in required:
+            if param not in parametros or not str(parametros[param]).strip():
+                missing_params.append(param)
+        
+        if not missing_params:
+            return 0.95  # Todos parâmetros presentes
+        elif len(missing_params) < len(required):
+            return 0.6   # Alguns parâmetros faltando
+        else:
+            return 0.3   # Muitos parâmetros faltando
+    
+    def _analyze_conversation_flow(self, context: str, user_message: str) -> float:
+        """Analisa fluência da conversa e transição entre intenções."""
+        if not context:
+            return 0.8  # Primeira interação
+        
+        # Detecta padrões de fluência conversacional
+        user_lower = user_message.lower().strip()
+        
+        # Respostas simples/diretas têm alta confiança
+        if re.match(r'^\d+$', user_lower):  # Números isolados
+            return 0.95
+        
+        if user_lower in ['sim', 'não', 'ok', 'beleza', 'certo']:
+            return 0.9  # Confirmações simples
+        
+        # Comandos diretos têm alta confiança
+        direct_commands = ['carrinho', 'limpar', 'finalizar', 'mais']
+        if any(cmd in user_lower for cmd in direct_commands):
+            return 0.85
+        
+        # Perguntas diretas têm boa confiança
+        if user_message.strip().endswith('?'):
+            return 0.8
+        
+        return 0.75  # Confiança média por padrão
+    
+    def _analyze_linguistic_confidence(self, intent_data: Dict, user_message: str) -> float:
+        """Analisa confiança baseada em padrões linguísticos."""
+        user_lower = user_message.lower().strip()
+        tool_name = intent_data.get("nome_ferramenta", "")
+        
+        # Palavras-chave que indicam alta confiança para cada ferramenta
+        high_confidence_patterns = {
+            "visualizar_carrinho": ["carrinho", "meu carrinho", "ver carrinho"],
+            "limpar_carrinho": ["limpar", "esvaziar", "zerar", "apagar"],
+            "checkout": ["finalizar", "checkout", "comprar", "fechar pedido"],
+            "adicionar_item_ao_carrinho": [r'^\d+$'],  # Números isolados
+            "show_more_products": ["mais", "continuar", "próximos"],
+            "handle_chitchat": ["oi", "olá", "bom dia", "boa tarde", "obrigado"]
+        }
+        
+        patterns = high_confidence_patterns.get(tool_name, [])
+        for pattern in patterns:
+            if re.search(pattern, user_lower):
+                return 0.9
+        
+        # Verifica se há inconsistências linguísticas
+        if len(user_message.strip()) < 2:
+            return 0.4  # Mensagens muito curtas
+        
+        if len(user_message.strip()) > 200:
+            return 0.6  # Mensagens muito longas podem ser confusas
+        
+        return 0.75  # Confiança média
+    
+    def _get_historical_success_rate(self, tool_name: str) -> float:
+        """Retorna taxa histórica de sucesso da ferramenta."""
+        return self._historical_success.get(tool_name, 0.7)
+    
+    def update_historical_success(self, tool_name: str, success: bool):
+        """Atualiza taxa histórica de sucesso baseada em feedback."""
+        if tool_name not in self._historical_success:
+            self._historical_success[tool_name] = 0.7
+        
+        # Atualização incremental com peso menor para mudanças graduais
+        current_rate = self._historical_success[tool_name]
+        adjustment = 0.02 if success else -0.02
+        new_rate = max(0.1, min(0.98, current_rate + adjustment))
+        
+        self._historical_success[tool_name] = new_rate
+        logging.debug(f"[CONFIDENCE] Taxa de sucesso atualizada para {tool_name}: {new_rate:.3f}")
+
+
+# Instância global do sistema de confiança
+_confidence_system = IntentConfidenceSystem()
+
+def get_confidence_system() -> IntentConfidenceSystem:
+    """
+    Retorna a instância global do sistema de confiança.
+    
+    Returns:
+        IntentConfidenceSystem: Sistema de confiança configurado
+    """
+    return _confidence_system
+
+def update_intent_success(tool_name: str, success: bool):
+    """
+    Atualiza o histórico de sucesso de uma ferramenta.
+    
+    Args:
+        tool_name: Nome da ferramenta que foi executada
+        success: Se a execução foi bem-sucedida
+    """
+    _confidence_system.update_historical_success(tool_name, success)
+    logging.info(f"[CONFIDENCE] Feedback registrado para {tool_name}: {'sucesso' if success else 'falha'}")
+
+def get_confidence_statistics() -> Dict:
+    """
+    Retorna estatísticas do sistema de confiança.
+    
+    Returns:
+        Dict: Estatísticas incluindo taxas de sucesso por ferramenta
+    """
+    return {
+        "historical_success_rates": _confidence_system._historical_success.copy(),
+        "cache_stats": obter_estatisticas_intencao()
     }
