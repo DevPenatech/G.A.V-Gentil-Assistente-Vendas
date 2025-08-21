@@ -9,6 +9,8 @@ import re
 import logging
 from typing import Dict, List, Optional
 
+# Logger
+logger = logging.getLogger(__name__)
 # Importações para IA
 try:
     import ollama
@@ -76,7 +78,7 @@ Responda SOMENTE o JSON:""".format(mensagem)
         
         # Extrai JSON da resposta
         import json
-        print(f">>> DEBUG: [EXTRAÇÃO_JSON] Resposta completa da IA: {resposta_ia}")
+        logger.debug("[EXTRAÇÃO_JSON] Resposta completa da IA: %s", resposta_ia)
         
         try:
             # Se a resposta não começa com {, adiciona }
@@ -87,25 +89,32 @@ Responda SOMENTE o JSON:""".format(mensagem)
             json_match = re.search(r'\{[^{}]*\}', resposta_ia, re.DOTALL)
             if json_match:
                 json_texto = json_match.group(0)
-                print(f">>> DEBUG: [EXTRAÇÃO_JSON] JSON extraído: {json_texto}")
+                logger.debug("[EXTRAÇÃO_JSON] JSON extraído: %s", json_texto)
                 resultado = json.loads(json_texto)
-                
-                print(f">>> DEBUG: [EXTRAÇÃO_JSON] JSON parsed: {resultado}")
+
+                logger.debug("[EXTRAÇÃO_JSON] JSON parsed: %s", resultado)
                 
                 # Valida resultado
                 if resultado.get("tipo_busca") in ["marca_especifica", "categoria_geral", "produto_especifico"]:
-                    print(f">>> DEBUG: [EXTRAÇÃO_JSON] ✅ JSON válido - tipo: {resultado.get('tipo_busca')}, marca: {resultado.get('marca')}")
+                    logger.debug(
+                        "[EXTRAÇÃO_JSON] ✅ JSON válido - tipo: %s, marca: %s",
+                        resultado.get('tipo_busca'),
+                        resultado.get('marca'),
+                    )
                     logging.info(f"[MARCA_PRODUTO_IA] Detectado: {resultado.get('tipo_busca')} - {resultado.get('marca', 'sem marca')}")
                     return resultado
                 else:
-                    print(f">>> DEBUG: [EXTRAÇÃO_JSON] ❌ JSON inválido - tipo_busca não reconhecido: {resultado.get('tipo_busca')}")
+                    logger.debug(
+                        "[EXTRAÇÃO_JSON] ❌ JSON inválido - tipo_busca não reconhecido: %s",
+                        resultado.get('tipo_busca'),
+                    )
             else:
-                print(f">>> DEBUG: [EXTRAÇÃO_JSON] ❌ Nenhum JSON encontrado na resposta")
+                logger.debug("[EXTRAÇÃO_JSON] ❌ Nenhum JSON encontrado na resposta")
         except (json.JSONDecodeError, AttributeError) as e:
-            print(f">>> DEBUG: [EXTRAÇÃO_JSON] ❌ Erro ao parsear JSON: {e}")
-            
+            logger.debug("[EXTRAÇÃO_JSON] ❌ Erro ao parsear JSON: %s", e)
+
             # Tenta extrair dados manualmente da resposta
-            print(f">>> DEBUG: [EXTRAÇÃO_JSON] Tentando extração manual...")
+            logger.debug("[EXTRAÇÃO_JSON] Tentando extração manual...")
             try:
                 # Busca por padrões específicos na resposta
                 tipo_match = re.search(r'tipo_busca["\s:]*["\s]*(\w+)', resposta_ia)
@@ -117,7 +126,12 @@ Responda SOMENTE o JSON:""".format(mensagem)
                     marca = marca_match.group(1) if marca_match else None
                     produto = produto_match.group(1) if produto_match else None
                     
-                    print(f">>> DEBUG: [EXTRAÇÃO_MANUAL] tipo: {tipo_busca}, marca: {marca}, produto: {produto}")
+                    logger.debug(
+                        "[EXTRAÇÃO_MANUAL] tipo: %s, marca: %s, produto: %s",
+                        tipo_busca,
+                        marca,
+                        produto,
+                    )
                     
                     if tipo_busca in ["marca_especifica", "categoria_geral", "produto_especifico"]:
                         resultado_manual = {
@@ -128,10 +142,10 @@ Responda SOMENTE o JSON:""".format(mensagem)
                             "categoria": "bebidas" if produto == "cerveja" else "outros",
                             "prioridade_marca": tipo_busca == "marca_especifica"
                         }
-                        print(f">>> DEBUG: [EXTRAÇÃO_MANUAL] ✅ Resultado manual: {resultado_manual}")
+                        logger.debug("[EXTRAÇÃO_MANUAL] ✅ Resultado manual: %s", resultado_manual)
                         return resultado_manual
             except Exception as manual_error:
-                print(f">>> DEBUG: [EXTRAÇÃO_MANUAL] ❌ Erro na extração manual: {manual_error}")
+                logger.debug("[EXTRAÇÃO_MANUAL] ❌ Erro na extração manual: %s", manual_error)
         
         # Fallback se IA falhou
         return _detectar_marca_fallback(mensagem)
@@ -144,7 +158,7 @@ def _detectar_marca_fallback(mensagem: str) -> Dict:
     """
     Fallback IA-FIRST: usa heurísticas simples mas tenta detectar marcas com IA básica.
     """
-    print(f">>> DEBUG: [FALLBACK] Executando fallback para: '{mensagem}'")
+    logger.debug("[FALLBACK] Executando fallback para: '%s'", mensagem)
     mensagem_lower = mensagem.lower().strip()
     
     # Lista de marcas conhecidas (para fallback robusto)
@@ -167,7 +181,7 @@ def _detectar_marca_fallback(mensagem: str) -> Dict:
     # Verifica se alguma marca conhecida está na mensagem
     for marca, produto in marcas_conhecidas.items():
         if marca in mensagem_lower:
-            print(f">>> DEBUG: [FALLBACK] ✅ Marca conhecida encontrada: {marca} ({produto})")
+            logger.debug("[FALLBACK] ✅ Marca conhecida encontrada: %s (%s)", marca, produto)
             return {
                 "tipo_busca": "marca_especifica",
                 "marca": marca,
@@ -195,7 +209,7 @@ def _detectar_marca_fallback(mensagem: str) -> Dict:
             len(palavra_limpa) <= 10 and
             not palavra_limpa.isdigit()):
             possivel_marca = palavra_limpa
-            print(f">>> DEBUG: [FALLBACK] Possível marca detectada: {possivel_marca}")
+            logger.debug("[FALLBACK] Possível marca detectada: %s", possivel_marca)
             break
     
     # Determina categoria baseada em contexto simples
@@ -246,16 +260,20 @@ def filtrar_produtos_por_marca(produtos: List[Dict], marca_desejada: str, produt
     Returns:
         List[Dict]: Produtos filtrados pela marca.
     """
-    print(f">>> DEBUG: [FILTRO_MARCA] Iniciando filtro por marca '{marca_desejada}' em {len(produtos)} produtos")
+    logger.debug("[FILTRO_MARCA] Iniciando filtro por marca '%s' em %d produtos", marca_desejada, len(produtos))
     
     if not marca_desejada or not produtos:
-        print(f">>> DEBUG: [FILTRO_MARCA] Retornando sem filtrar - marca_desejada: {marca_desejada}, produtos: {len(produtos) if produtos else 0}")
+        logger.debug(
+            "[FILTRO_MARCA] Retornando sem filtrar - marca_desejada: %s, produtos: %d",
+            marca_desejada,
+            len(produtos) if produtos else 0,
+        )
         return produtos
     
     marca_lower = marca_desejada.lower()
     produtos_filtrados = []
     
-    print(f">>> DEBUG: [FILTRO_MARCA] Procurando por marca: '{marca_lower}'")
+    logger.debug("[FILTRO_MARCA] Procurando por marca: '%s'", marca_lower)
     
     for i, produto in enumerate(produtos):
         descricao = produto.get('descricao', '').lower()
@@ -267,23 +285,44 @@ def filtrar_produtos_por_marca(produtos: List[Dict], marca_desejada: str, produt
         match_desc = marca_lower in descricao
         match_canonical = marca_lower in canonical_name
         
-        print(f">>> DEBUG: [FILTRO_{i+1}] Produto: {produto.get('descricao')}")
-        print(f">>> DEBUG: [FILTRO_{i+1}] - Marca produto: '{marca_produto}' | Match: {match_marca}")
-        print(f">>> DEBUG: [FILTRO_{i+1}] - Descrição: '{descricao}' | Match: {match_desc}")
-        print(f">>> DEBUG: [FILTRO_{i+1}] - Canonical: '{canonical_name}' | Match: {match_canonical}")
+        logger.debug("[FILTRO_%d] Produto: %s", i + 1, produto.get('descricao'))
+        logger.debug(
+            "[FILTRO_%d] - Marca produto: '%s' | Match: %s",
+            i + 1,
+            marca_produto,
+            match_marca,
+        )
+        logger.debug(
+            "[FILTRO_%d] - Descrição: '%s' | Match: %s",
+            i + 1,
+            descricao,
+            match_desc,
+        )
+        logger.debug(
+            "[FILTRO_%d] - Canonical: '%s' | Match: %s",
+            i + 1,
+            canonical_name,
+            match_canonical,
+        )
         
         # Verifica também similaridade
         similar_desc = _marca_similar_no_texto(marca_lower, descricao)
         similar_canonical = _marca_similar_no_texto(marca_lower, canonical_name)
         similar_marca = _marca_similar_no_texto(marca_lower, marca_produto)
         
-        print(f">>> DEBUG: [FILTRO_{i+1}] - Similar desc: {similar_desc}, Similar canonical: {similar_canonical}, Similar marca: {similar_marca}")
+        logger.debug(
+            "[FILTRO_%d] - Similar desc: %.3f, Similar canonical: %.3f, Similar marca: %.3f",
+            i + 1,
+            similar_desc,
+            similar_canonical,
+            similar_marca,
+        )
         
         if (match_desc or match_canonical or match_marca or similar_desc or similar_canonical or similar_marca):
-            print(f">>> DEBUG: [FILTRO_{i+1}] ✅ INCLUÍDO: {produto.get('descricao')}")
+            logger.debug("[FILTRO_%d] ✅ INCLUÍDO: %s", i + 1, produto.get('descricao'))
             produtos_filtrados.append(produto)
         else:
-            print(f">>> DEBUG: [FILTRO_{i+1}] ❌ EXCLUÍDO: {produto.get('descricao')}")
+            logger.debug("[FILTRO_%d] ❌ EXCLUÍDO: %s", i + 1, produto.get('descricao'))
     
     logging.info(f"[FILTRO_MARCA] Filtrados {len(produtos_filtrados)} de {len(produtos)} produtos para marca '{marca_desejada}'")
     return produtos_filtrados

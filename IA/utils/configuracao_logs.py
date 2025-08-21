@@ -24,9 +24,14 @@ import hashlib
 import time
 from collections import defaultdict
 import threading
+import re
 
-# Configurações padrão
-NIVEL_LOG_PADRAO = os.getenv("LOG_LEVEL", "DEBUG").upper()
+# Configurações de ambiente
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development").lower()
+NIVEL_LOG_PADRAO = os.getenv(
+    "LOG_LEVEL",
+    "DEBUG" if ENVIRONMENT != "production" else "INFO"
+).upper()
 DIRETORIO_LOGS = Path("logs")
 TAMANHO_MAX_LOG = 5 * 1024 * 1024  # 5MB (reduzido)
 QUANTIDADE_BACKUP = 3  # Reduzido para economizar espaço
@@ -118,6 +123,24 @@ class DeduplicadorLogs:
 
 # Instância global do deduplicador
 _deduplicador_global = DeduplicadorLogs()
+
+# Filtro para remover dados sensíveis dos logs em produção
+SENSITIVE_TERMS = ["senha", "password", "token", "secret"]
+
+
+class FiltroDadosSensiveis(logging.Filter):
+    """Reduz dados sensíveis em mensagens de log no ambiente de produção."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if ENVIRONMENT == "production":
+            mensagem = record.getMessage()
+            for termo in SENSITIVE_TERMS:
+                pattern = re.compile(rf"{termo}\s*[:=]\s*[^\s]+", re.IGNORECASE)
+                mensagem = pattern.sub(f"{termo}=[REDACTED]", mensagem)
+            if mensagem != record.getMessage():
+                record.msg = mensagem
+                record.args = ()
+        return True
 
 class FormatadorContextual(logging.Formatter):
     """Formatter que inclui contexto de usuário quando disponível."""
@@ -775,7 +798,7 @@ def configurar_logging_principal():
     
     # Configura logger raiz
     logger_raiz = logging.getLogger()
-    logger_raiz.setLevel(logging.DEBUG)
+    logger_raiz.setLevel(getattr(logging, NIVEL_LOG_PADRAO, logging.DEBUG))
     
     # Remove handlers padrão
     logger_raiz.handlers.clear()
@@ -787,7 +810,7 @@ def configurar_logging_principal():
     
     # Handler para console (DEBUG+) - MOSTRA TUDO no terminal
     manipulador_console = logging.StreamHandler(sys.stdout)
-    manipulador_console.setLevel(logging.DEBUG)  # TUDO no console
+    manipulador_console.setLevel(getattr(logging, NIVEL_LOG_PADRAO, logging.DEBUG))
     manipulador_console.setFormatter(FormatadorColorido(FORMATO_SUPER_DETALHADO))  # Formato completo
     logger_raiz.addHandler(manipulador_console)
     
@@ -798,7 +821,7 @@ def configurar_logging_principal():
         backupCount=QUANTIDADE_BACKUP,
         encoding='utf-8'
     )
-    manipulador_arquivo_principal.setLevel(logging.DEBUG)
+    manipulador_arquivo_principal.setLevel(getattr(logging, NIVEL_LOG_PADRAO, logging.DEBUG))
     manipulador_arquivo_principal.setFormatter(formatador_contextual)
     if DEDUPLICACAO_HABILITADA:
         manipulador_arquivo_principal.addFilter(FiltroDeduplicacao())
@@ -815,6 +838,12 @@ def configurar_logging_principal():
     manipulador_arquivo_erro.setFormatter(formatador_contextual)
     if DEDUPLICACAO_HABILITADA:
         manipulador_arquivo_erro.addFilter(FiltroDeduplicacao())
+
+    if ENVIRONMENT == "production":
+        filtro_sensivel = FiltroDadosSensiveis()
+        manipulador_console.addFilter(filtro_sensivel)
+        manipulador_arquivo_principal.addFilter(filtro_sensivel)
+        manipulador_arquivo_erro.addFilter(filtro_sensivel)
     logger_raiz.addHandler(manipulador_arquivo_erro)
     
     # Handler para auditoria (JSON)
@@ -901,11 +930,11 @@ if __name__ == "__main__":
         pass
     
     # Exemplo de estatísticas
-    print("\nEstatísticas de Logs:")
-    print(json.dumps(obter_estatisticas_logs(), indent=2))
-    
+    logging.info("Estatísticas de Logs:")
+    logging.info(json.dumps(obter_estatisticas_logs(), indent=2))
+
     # Limpeza de logs antigos
-    limpar_logs_antigos(dias=0) # Limpa logs de exemplo
-    
-    print("\nLogs antigos removidos")
-    print(json.dumps(obter_estatisticas_logs(), indent=2))
+    limpar_logs_antigos(dias=0)  # Limpa logs de exemplo
+
+    logging.info("Logs antigos removidos")
+    logging.info(json.dumps(obter_estatisticas_logs(), indent=2))
