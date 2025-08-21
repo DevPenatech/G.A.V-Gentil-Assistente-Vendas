@@ -556,15 +556,15 @@ class DataInventionPrevention:
 **Solução Proposta:**
 ```python
 class IntelligentRedirection:
-    def detect_user_confusion(self, conversation_history: List, current_input: str) -> Dict:
+    def detect_user_confusion(self, historico_conversa: List, current_input: str) -> Dict:
         """
         Detecta quando usuário está confuso ou fora do fluxo
         """
         confusion_indicators = {
-            "off_topic_response": self._detect_topic_change(current_input, conversation_history),
-            "invalid_selection": self._detect_invalid_choice(current_input, conversation_history),
-            "ignored_question": self._detect_ignored_question(current_input, conversation_history),
-            "repetitive_behavior": self._detect_repetitive_patterns(conversation_history)
+            "off_topic_response": self._detect_topic_change(current_input, historico_conversa),
+            "invalid_selection": self._detect_invalid_choice(current_input, historico_conversa),
+            "ignored_question": self._detect_ignored_question(current_input, historico_conversa),
+            "repetitive_behavior": self._detect_padroes_repetitivos(historico_conversa)
         }
         
         return self._generate_redirection_strategy(confusion_indicators)

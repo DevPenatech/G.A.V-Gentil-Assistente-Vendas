@@ -1248,8 +1248,16 @@ def generate_personalized_response(context_type: str, session_data: Dict, **kwar
     logging.debug(f"Gerando resposta personalizada para o tipo de contexto: '{context_type}'")
     try:
         # Constrói o contexto baseado no tipo
-        conversation_history = session_data.get("historico_conversa", [])
+        historico_conversa = session_data.get("historico_conversa", [])
         cart_items = len(session_data.get("carrinho_compras", []))
+        historico_legivel = (
+            "\n".join(
+                f"{'Usuário' if m['role']=='user' else 'G.A.V'}: {m['message']}"
+                for m in historico_conversa[-2:]
+            )
+            if historico_conversa
+            else "Primeira conversa"
+        )
         
         # 🆕 PROMPTS PROFISSIONAIS: Mensagens curtas, naturais mas sem inventar dados
         contexts = {
@@ -1270,7 +1278,7 @@ Você é G.A.V. falando no WhatsApp com um cliente.
 
 {context_prompt}
 
-HISTÓRICO: {conversation_history[-2:] if conversation_history else 'Primeira conversa'}
+HISTÓRICO:\n{historico_legivel}
 CARRINHO: {cart_items} itens
 
 REGRAS CRÍTICAS:
