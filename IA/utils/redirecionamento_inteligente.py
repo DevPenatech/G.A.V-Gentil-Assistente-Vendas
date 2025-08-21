@@ -629,17 +629,34 @@ def detectar_usuario_confuso(entrada_atual: str, contexto_conversa: str,
         entrada_atual, contexto_conversa, historico_conversa
     )
 
+
+
 def registrar_sucesso_guidance():
-    """
-    Registra que uma orientação foi bem-sucedida.
-    """
+    """Registra que uma orientação foi bem-sucedida."""
     _redirecionador_inteligente.registrar_sucesso_redirecionamento()
 
+
 def obter_estatisticas_redirecionamento() -> Dict:
-    """
-    Retorna estatísticas do sistema de redirecionamento.
-    
-    Returns:
-        Dict: Estatísticas de detecção e redirecionamento
-    """
+    """Retorna estatísticas do sistema de redirecionamento."""
     return _redirecionador_inteligente.obter_estatisticas_redirecionamento()
+
+
+def verificar_entrada_vazia_selecao(entrada_atual: str, last_bot_action: Optional[str]) -> Optional[str]:
+    """Detecta quando usuário envia entrada vazia ou '?' durante uma etapa de seleção.
+
+    Args:
+        entrada_atual: Texto enviado pelo usuário.
+        last_bot_action: Última ação do bot registrada na sessão.
+
+    Returns:
+        Mensagem de orientação se a condição for atendida, caso contrário ``None``.
+    """
+    acoes_selecao = {
+        'AWAITING_PRODUCT_SELECTION',
+        'AWAITING_MENU_SELECTION',
+        'AWAITING_CORRECTION_SELECTION',
+    }
+
+    if last_bot_action in acoes_selecao and entrada_atual.strip() in ('', '?'):
+        return "Digite o número do item ou 'ajuda' para ver opções"
+    return None
