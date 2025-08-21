@@ -7,6 +7,7 @@ import os
 import json
 import logging
 import pickle
+from collections import Counter
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union, Any
 import redis
