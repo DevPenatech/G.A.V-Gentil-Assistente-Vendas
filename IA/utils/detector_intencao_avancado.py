@@ -17,9 +17,23 @@ except ImportError:
     OLLAMA_DISPONIVEL = False
     logging.warning("Ollama não disponível para detecção avançada de intenção")
 
+from gav_logger import log_prompt_completo, log_resposta_llm
+from core.gerenciador_sessao import detectar_comandos_limpar_carrinho
+
 # Configurações IA
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 HOST_OLLAMA = os.getenv("OLLAMA_HOST")
+
+def detectar_intencao_carrinho_deterministica(mensagem: str) -> Optional[Dict]:
+    """Detecta intenções simples de carrinho sem usar IA."""
+    texto = mensagem.lower().strip()
+    if detectar_comandos_limpar_carrinho(mensagem):
+        return {"acao": "limpar_carrinho", "parametros": {}}
+    if any(cmd in texto for cmd in ["ver carrinho", "meu carrinho", "mostrar carrinho", "carrinho"]):
+        return {"acao": "visualizar_carrinho", "parametros": {}}
+    if any(cmd in texto for cmd in ["finalizar", "checkout", "fechar pedido", "finalizar pedido"]):
+        return {"acao": "finalizar_pedido", "parametros": {}}
+    return None
 
 def detectar_intencao_carrinho_ia(mensagem: str, historico_conversa: str, carrinho_atual: List = None) -> Dict:
     """
@@ -33,6 +47,10 @@ def detectar_intencao_carrinho_ia(mensagem: str, historico_conversa: str, carrin
     Returns:
         Dict: Intenção detectada com ação e parâmetros.
     """
+    resultado_deterministico = detectar_intencao_carrinho_deterministica(mensagem)
+    if resultado_deterministico:
+        return resultado_deterministico
+
     if not OLLAMA_DISPONIVEL:
         return {"acao": "unknown", "parametros": {}}
     
@@ -86,6 +104,7 @@ JSON:"""
         else:
             cliente_ollama = ollama
         
+        log_prompt_completo(prompt_ia, funcao="detectar_intencao_carrinho_ia")
         resposta = cliente_ollama.chat(
             model=NOME_MODELO_OLLAMA,
             messages=[{"role": "user", "content": prompt_ia}],
@@ -95,8 +114,8 @@ JSON:"""
                 "num_predict": 100
             }
         )
-        
         resposta_ia = resposta["message"]["content"].strip()
+        log_resposta_llm(resposta_ia, funcao="detectar_intencao_carrinho_ia")
         logging.debug(f"[INTENCAO_CARRINHO_IA] Mensagem: '{mensagem}' → IA: '{resposta_ia}'")
         
         # 🚀 EXTRAÇÃO ROBUSTA - IA-First com múltiplas tentativas
