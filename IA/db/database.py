@@ -22,6 +22,26 @@ from gav_logger import obter_logger, log_database_query, log_error, log_warning,
 
 load_dotenv(dotenv_path='.env')  # Garante que o .env da pasta IA seja lido
 
+# Cache simples em memória para consultas repetidas
+_cache_consultas: Dict = {}
+
+def cache_query(ttl: int = 300):
+    """Decorator para cachear resultados de consultas ao banco."""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            chave = (func.__name__, args, frozenset(kwargs.items()))
+            agora = time.time()
+            if chave in _cache_consultas:
+                resultado, timestamp = _cache_consultas[chave]
+                if agora - timestamp < ttl:
+                    logging.debug(f"[CACHE_DB] Hit para {func.__name__}: {chave}")
+                    return resultado
+            resultado = func(*args, **kwargs)
+            _cache_consultas[chave] = (resultado, agora)
+            return resultado
+        return wrapper
+    return decorator
+
 def validar_configuracao_banco():
     """Valida configuração crítica do banco no startup"""
     variaveis_obrigatorias = {
@@ -111,6 +131,7 @@ def _converter_linha_para_dicionario(linha: DictCursor) -> Dict:
             dicionario_linha[chave] = float(valor)
     return dicionario_linha
 
+@cache_query()
 def encontrar_cliente_por_cnpj(cnpj: str) -> Union[Dict, None]:
     """Busca um cliente pelo CNPJ.
 
@@ -137,6 +158,7 @@ def encontrar_cliente_por_cnpj(cnpj: str) -> Union[Dict, None]:
         logging.error(f"Erro ao buscar cliente por CNPJ {cnpj}: {e}")
         return None
 
+@cache_query()
 def obter_produtos_mais_vendidos(limite: int = 10, offset: int = 0, filial: int = 17) -> List[Dict]:
     """Busca os produtos mais vendidos com base no histórico de orçamentos.
 
@@ -178,6 +200,7 @@ def obter_produtos_mais_vendidos(limite: int = 10, offset: int = 0, filial: int 
         logging.error(f"Erro ao buscar produtos mais vendidos: {e}")
         return []
 
+@cache_query()
 def obter_produtos_mais_vendidos_por_nome(nome_produto: str, limite: int = 10, offset: int = 0) -> List[Dict]:
     """Busca produtos por nome com ranking de vendas.
 
@@ -714,6 +737,7 @@ def otimizar_banco_dados():
         logging.error(f"Erro na otimização do banco: {e}")
         return False
 
+@cache_query()
 def obter_produtos_por_categoria(categoria: str, limite: int = 10, offset: int = 0, marca_priorizada: str = None) -> List[Dict]:
     """Busca produtos por categoria ordenados por vendas, com opção de priorizar marca específica.
 
@@ -806,6 +830,7 @@ def obter_produtos_por_categoria(categoria: str, limite: int = 10, offset: int =
         logging.error(f"Erro ao buscar produtos da categoria '{categoria}': {e}")
         return []
 
+@cache_query()
 def obter_produtos_promocionais_por_categoria(categoria: str, limite: int = 5, offset: int = 0) -> List[Dict]:
     """Busca produtos promocionais ativos por categoria.
 
@@ -868,6 +893,7 @@ def obter_produtos_promocionais_por_categoria(categoria: str, limite: int = 5, o
         logging.error(f"Erro ao buscar promoções da categoria '{categoria}': {e}")
         return []
 
+@cache_query()
 def obter_todas_promocoes_ativas(limite: int = 20, offset: int = 0) -> List[Dict]:
     """Busca todas as promoções ativas independente de categoria.
 
@@ -924,6 +950,7 @@ def obter_todas_promocoes_ativas(limite: int = 20, offset: int = 0) -> List[Dict
         logging.error(f"Erro ao buscar todas as promoções ativas: {e}")
         return []
 
+@cache_query()
 def obter_produtos_promocionais_por_termo(termo: str, limite: int = 10, offset: int = 0) -> List[Dict]:
     """Busca produtos promocionais por termo (marca, nome, etc) na tabela produtos_promocao.
     
@@ -992,6 +1019,7 @@ def obter_produtos_promocionais_por_termo(termo: str, limite: int = 10, offset: 
         logging.error(f"Erro ao buscar promoções por termo '{termo}': {e}")
         return []
 
+@cache_query()
 def obter_categorias_disponiveis() -> List[str]:
     """Retorna todas as categorias disponíveis no banco de dados.
 

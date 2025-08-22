@@ -20,56 +20,40 @@ except ImportError:
     OLLAMA_DISPONIVEL = False
     logging.warning("Ollama não disponível para detecção avançada de intenção")
 
+from gav_logger import log_prompt_completo, log_resposta_llm
+from core.gerenciador_sessao import detectar_comandos_limpar_carrinho
+
 # Configurações IA
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 HOST_OLLAMA = os.getenv("OLLAMA_HOST")
 
-# Cache local para resultados de detecção
-CACHE_INTENCOES: Dict[str, Dict] = {}
+def detectar_intencao_carrinho_deterministica(mensagem: str) -> Optional[Dict]:
+    """Detecta intenções simples de carrinho sem usar IA."""
+    texto = mensagem.lower().strip()
+    if detectar_comandos_limpar_carrinho(mensagem):
+        return {"acao": "limpar_carrinho", "parametros": {}}
+    if any(cmd in texto for cmd in ["ver carrinho", "meu carrinho", "mostrar carrinho", "carrinho"]):
+        return {"acao": "visualizar_carrinho", "parametros": {}}
+    if any(cmd in texto for cmd in ["finalizar", "checkout", "fechar pedido", "finalizar pedido"]):
+        return {"acao": "finalizar_pedido", "parametros": {}}
+    return None
 
-# Padrões simples para comandos que não precisam de IA
-COMANDOS_TRIVIAIS = [
-    (
-        re.compile(r"\b(ver|mostrar|visualizar|exibir)\s+(o\s+)?carrinho\b"),
-        {"acao": "visualizar_carrinho", "parametros": {}, "confianca": 1.0},
-    ),
-    (
-        re.compile(r"\b(limpar|esvaziar|deletar|clear)\s+(o\s+)?carrinho\b"),
-        {"acao": "limpar_carrinho", "parametros": {}, "confianca": 1.0},
-    ),
-    (
-        re.compile(r"\b(finalizar|checkout|concluir)\b"),
-        {"acao": "finalizar_pedido", "parametros": {}, "confianca": 1.0},
-    ),
-]
+def detectar_intencao_carrinho_ia(mensagem: str, historico_conversa: str, carrinho_atual: List = None) -> Dict:
+    """
+    Detecta intenções relacionadas ao carrinho usando IA.
+    
+    Args:
+        mensagem: Mensagem do usuário.
+        historico_conversa: Contexto da conversa.
+        carrinho_atual: Itens atuais do carrinho.
+    
+    Returns:
+        Dict: Intenção detectada com ação e parâmetros.
+    """
+    resultado_deterministico = detectar_intencao_carrinho_deterministica(mensagem)
+    if resultado_deterministico:
+        return resultado_deterministico
 
-def detectar_intencao_carrinho_ia(
-    mensagem: str,
-    historico_conversa: str,
-    carrinho_atual: List = None,
-) -> Dict:
-    """Detecta intenções relacionadas ao carrinho usando IA."""
-
-    mensagem_norm = mensagem.strip().lower()
-    chave_cache = json.dumps(
-        {
-            "mensagem": mensagem_norm,
-            "historico": historico_conversa or "",
-            "carrinho": carrinho_atual,
-        },
-        sort_keys=True,
-        ensure_ascii=False,
-    )
-
-    if chave_cache in CACHE_INTENCOES:
-        logging.debug(f"[CARRINHO_CACHE] hit: '{mensagem_norm}'")
-        return CACHE_INTENCOES[chave_cache]
-
-    for padrao, resultado in COMANDOS_TRIVIAIS:
-        if padrao.search(mensagem_norm):
-            logging.debug(f"[CARRINHO_TRIVIAL] '{mensagem}' → {resultado}")
-            CACHE_INTENCOES[chave_cache] = resultado
-            return resultado
 
     if not OLLAMA_DISPONIVEL:
         resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
@@ -126,6 +110,8 @@ JSON:"""
         else:
             cliente_ollama = ollama
 
+        log_prompt_completo(prompt_ia, funcao="detectar_intencao_carrinho_ia")
+
         resposta = cliente_ollama.chat(
             model=NOME_MODELO_OLLAMA,
             messages=[{"role": "user", "content": prompt_ia}],
@@ -137,10 +123,9 @@ JSON:"""
         )
 
         resposta_ia = resposta["message"]["content"].strip()
-        logging.debug(
-            f"[INTENCAO_CARRINHO_IA] Mensagem: '{mensagem}' → IA: '{resposta_ia}'"
-        )
-
+        log_resposta_llm(resposta_ia, funcao="detectar_intencao_carrinho_ia")
+        logging.debug(f"[INTENCAO_CARRINHO_IA] Mensagem: '{mensagem}' → IA: '{resposta_ia}'")
+        
         # 🚀 EXTRAÇÃO ROBUSTA - IA-First com múltiplas tentativas
         try:
             json_match = re.search(r"\{[^{}]*\}", resposta_ia, re.DOTALL)
