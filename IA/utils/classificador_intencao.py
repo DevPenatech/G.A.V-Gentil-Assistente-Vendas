@@ -19,6 +19,7 @@ from .redirecionamento_inteligente import (
     detectar_usuario_confuso,
     verificar_entrada_vazia_selecao,
 )
+from .gav_logger import log_prompt_completo
 
 # Configurações
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -253,10 +254,50 @@ def _criar_fallback_contextual_ia(mensagem: str, contexto: str) -> Dict:
     
     # Fallback: assume que é busca de produto
     return {
-        "nome_ferramenta": "busca_inteligente_com_promocoes", 
+        "nome_ferramenta": "busca_inteligente_com_promocoes",
         "parametros": {"termo_busca": mensagem},
         "fallback_contextual": True
     }
+
+
+def _get_saudacao_prompt_segment() -> str:
+    return (
+        "🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): \"oi\", \"olá\", \"bom dia\", \"boa tarde\", \"boa noite\", \"eai\" → lidar_conversa\n"
+        "Agradecimentos, perguntas gerais → lidar_conversa\n\n"
+        "🔥 SAUDAÇÕES (SEMPRE DETECTAR PRIMEIRO):\n"
+        "- \"oi\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"olá\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"bom dia\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"boa tarde\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"boa noite\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"eai\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+    )
+
+
+def _get_brand_prompt_segment() -> str:
+    return (
+        "🚨 REGRA CRÍTICA PARA EVITAR CONFUSÃO:\n"
+        "- SE A MENSAGEM CONTÉM \"FINI\" ou \"FINÍ\" → SEMPRE busca_inteligente_com_promocoes (marca de doces!)\n"
+        "- SE A MENSAGEM CONTÉM APENAS \"FINALIZAR\" EXATA → finalizar_pedido\n"
+        "- \"deixa eu ver fini\", \"quero fini\", \"me mostra fini\" → busca_inteligente_com_promocoes (NÃO finalizar!)\n"
+        "- Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes\n\n"
+        "🎯 BUSCA POR CATEGORIA/MARCA:\n"
+        "- \"quero cerveja\" → busca_inteligente_com_promocoes (categoria de produto)\n"
+        "- \"quero fini\" → busca_inteligente_com_promocoes (marca específica!)\n"
+        "- \"deixa eu ver fini\" → busca_inteligente_com_promocoes (marca FINI, não finalizar!)\n"
+        "- \"vou querer fini\" → busca_inteligente_com_promocoes (marca FINI!)\n"
+        "- \"me mostra fini\" → busca_inteligente_com_promocoes (marca FINI!)\n"
+        "- \"quero nutella\" → busca_inteligente_com_promocoes (marca específica!)\n"
+        "- \"quero omo\" → busca_inteligente_com_promocoes (marca específica!)\n"
+        "- \"biscoito doce\" → obter_produtos_mais_vendidos_por_nome (produto sem marca específica)\n"
+        "- \"promoções\" → busca_inteligente_com_promocoes (busca por ofertas)\n\n"
+        "🚨 CUIDADO COM MARCAS QUE SOAM COMO \"FINALIZAR\":\n"
+        "- \"deixa eu ver fini\" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)\n"
+        "- \"quero fini\" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)\n"
+        "- \"ver fini\" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)\n"
+        "- \"quero ver coca\" → busca_inteligente_com_promocoes (marca COCA, NÃO finalizar!)\n\n"
+        "ATENÇÃO: Qualquer nome que pareça ser uma marca comercial deve usar busca_inteligente_com_promocoes!\n"
+    )
 
 def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: str = "") -> Dict:
     """
@@ -290,23 +331,27 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
     if not conversation_context and cache_key in _cache_intencao:
         logging.debug(f"[INTENT] Cache exato hit para: {cache_key}")
         return _cache_intencao[cache_key]
-    
+
     try:
         # Prompt otimizado para detecção de intenção COM CONTEXTO COMPLETO
+        brand_segment = _get_brand_prompt_segment()
+        log_prompt_completo(brand_segment, funcao="detectar_intencao_usuario_com_ia", segmento="marcas")
+        saudacao_segment = _get_saudacao_prompt_segment()
+        log_prompt_completo(saudacao_segment, funcao="detectar_intencao_usuario_com_ia", segmento="saudacoes")
         intent_prompt = f"""
 Você é um classificador de intenções para um assistente de vendas do WhatsApp.
 
 FERRAMENTAS DISPONÍVEIS:
 1. busca_inteligente_com_promocoes - Para busca por categoria ou promoções específicas
-2. mostrar_todas_promocoes - Para ver TODAS promoções organizadas por categoria 
-3. obter_produtos_mais_vendidos_por_nome - Para busca de produto específico  
+2. mostrar_todas_promocoes - Para ver TODAS promoções organizadas por categoria
+3. obter_produtos_mais_vendidos_por_nome - Para busca de produto específico
 4. atualizacao_inteligente_carrinho - Para modificar carrinho (adicionar/remover)
 5. visualizar_carrinho - Para ver carrinho
 6. limpar_carrinho - Para limpar carrinho
 7. adicionar_item_ao_carrinho - Para selecionar item por número
 8. show_more_products - Para mostrar mais produtos da mesma busca (palavra: mais)
 9. finalizar_pedido - Para finalizar pedido (palavras: finalizar, comprar)
-10. handle_chitchat - Para saudações e conversas que resetam estado  
+10. handle_chitchat - Para saudações e conversas que resetam estado
 11. lidar_conversa - Para conversas gerais que mantêm contexto
 
 
@@ -317,49 +362,23 @@ MENSAGEM ATUAL DO USUÁRIO: "{user_message}"
 
 REGRAS DE CLASSIFICAÇÃO (ANALISE O CONTEXTO ANTES DE DECIDIR):
 
-🚨 REGRA CRÍTICA PARA EVITAR CONFUSÃO:
-- SE A MENSAGEM CONTÉM "FINI" ou "FINÍ" → SEMPRE busca_inteligente_com_promocoes (marca de doces!)
-- SE A MENSAGEM CONTÉM APENAS "FINALIZAR" EXATA → finalizar_pedido
-- "deixa eu ver fini", "quero fini", "me mostra fini" → busca_inteligente_com_promocoes (NÃO finalizar!)
-
+{brand_segment}
 1. PRIMEIRO, analise o CONTEXTO da conversa para entender a situação atual
 2. Se o bot mostrou uma lista de produtos e o usuário responde com número → adicionar_item_ao_carrinho
 3. 🚀 CRÍTICO: Se usuário diz apenas "mais" após uma busca de produtos → show_more_products
-4. 🎯 NOVO: Se usuário quer ver "promoções", "produtos em promoção", "ofertas" (genérico, sem categoria específica) → mostrar_todas_promocoes  
+4. 🎯 NOVO: Se usuário quer ver "promoções", "produtos em promoção", "ofertas" (genérico, sem categoria específica) → mostrar_todas_promocoes
 5. Se o usuário quer buscar categoria (cerveja, limpeza, comida, etc.) → busca_inteligente_com_promocoes
-6. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes  
-7. IMPORTANTE: Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes
-8. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
-9. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
-10. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
-11. Se quer limpar/esvaziar carrinho → limpar_carrinho
-12. 🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): "oi", "olá", "bom dia", "boa tarde", "boa noite", "eai" → lidar_conversa
-13. Agradecimentos, perguntas gerais → lidar_conversa
+6. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes
+7. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
+8. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
+9. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
+10. Se quer limpar/esvaziar carrinho → limpar_carrinho
 
-EXEMPLOS IMPORTANTES:
-🔥 SAUDAÇÕES (SEMPRE DETECTAR PRIMEIRO):
-- "oi" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "olá" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)  
-- "bom dia" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "boa tarde" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "boa noite" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "eai" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-
+{saudacao_segment}
 OUTROS EXEMPLOS (ANALISE SEMPRE O CONTEXTO PRIMEIRO):
 - "mais" → show_more_products (PRIORIDADE MÁXIMA após busca!)
 - "mais produtos" → show_more_products (continuar busca)
 - "continuar" → show_more_products (mostrar mais produtos)
-
-🎯 BUSCA POR CATEGORIA/MARCA:
-- "quero cerveja" → busca_inteligente_com_promocoes (categoria de produto)
-- "quero fini" → busca_inteligente_com_promocoes (marca específica!)
-- "deixa eu ver fini" → busca_inteligente_com_promocoes (marca FINI, não finalizar!)
-- "vou querer fini" → busca_inteligente_com_promocoes (marca FINI!)
-- "me mostra fini" → busca_inteligente_com_promocoes (marca FINI!)
-- "quero nutella" → busca_inteligente_com_promocoes (marca específica!)
-- "quero omo" → busca_inteligente_com_promocoes (marca específica!)
-- "biscoito doce" → obter_produtos_mais_vendidos_por_nome (produto sem marca específica)
-- "promoções" → busca_inteligente_com_promocoes (busca por ofertas)
 
 🛒 CARRINHO:
 - "limpar carrinho" → limpar_carrinho (comando para esvaziar carrinho)
@@ -375,14 +394,6 @@ OUTROS EXEMPLOS (ANALISE SEMPRE O CONTEXTO PRIMEIRO):
 - "finalizar pedido" → finalizar_pedido (APENAS frase exata)
 - "comprar" → finalizar_pedido (APENAS palavra exata "comprar")
 - "confirmar pedido" → finalizar_pedido (APENAS frase exata)
-
-🚨 CUIDADO COM MARCAS QUE SOAM COMO "FINALIZAR":
-- "deixa eu ver fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
-- "quero fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
-- "ver fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
-- "quero ver coca" → busca_inteligente_com_promocoes (marca COCA, NÃO finalizar!)
-
-ATENÇÃO: Qualquer nome que pareça ser uma marca comercial deve usar busca_inteligente_com_promocoes!
 
 IMPORTANTÍSSIMO: Use o CONTEXTO para entender se o usuário está respondendo a uma pergunta do bot!
 
@@ -406,6 +417,7 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
 
 🔥 NÃO ESCREVA TEXTO EXPLICATIVO! APENAS JSON!
 """
+        log_prompt_completo(intent_prompt, funcao="detectar_intencao_usuario_com_ia", segmento="completo")
 
         logging.debug(f"[INTENT] Classificando intenção para: {user_message}")
         
@@ -425,12 +437,12 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
         )
         
         ai_response = response['message']['content'].strip()
-        print(f">>> [CLASSIFICADOR_IA] Mensagem: '{user_message}'")
-        print(f">>> [CLASSIFICADOR_IA] IA respondeu: {ai_response}")
-        
+        logging.debug(f">>> [CLASSIFICADOR_IA] Mensagem: '{user_message}'")
+        logging.debug(f">>> [CLASSIFICADOR_IA] IA respondeu: {ai_response}")
+
         # Extrai JSON da resposta
         intent_data = _extrair_json_da_resposta(ai_response)
-        print(f">>> [CLASSIFICADOR_IA] JSON extraído: {intent_data}")
+        logging.debug(f">>> [CLASSIFICADOR_IA] JSON extraído: {intent_data}")
         
         if intent_data and "nome_ferramenta" in intent_data:
             # Valida se a ferramenta existe
