@@ -21,6 +21,7 @@ from utils.classificador_intencao import (
     detectar_intencao_com_sistemas_criticos,
     aplicar_sistemas_criticos_pos_resposta,
 )
+from utils.gav_logger import log_prompt_completo, log_resposta_llm
 
 # --- Configurações Globais (MOVIDAS PARA ANTES DAS FUNÇÕES) ---
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -717,6 +718,10 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": full_context},
         ]
+        log_prompt_completo(
+            f"SYSTEM:\n{system_prompt}\n\nUSER:\n{full_context}",
+            funcao="get_intent",
+        )
 
         # Configura cliente Ollama
         client = ollama.Client(host=OLLAMA_HOST)
@@ -752,6 +757,7 @@ INSTRUÇÕES ESPECIAIS DE ALTA PRIORIDADE:
 
             # Extrai e processa resposta
             content = response.get("message", {}).get("content", "")
+            log_resposta_llm(content, funcao="get_intent")
             logging.info(f"[llm_interface.py] Resposta do LLM: {content[:100]}...")
             
             # 🔍 DEBUG: Log da resposta completa para depuração
