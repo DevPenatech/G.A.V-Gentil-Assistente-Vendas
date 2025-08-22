@@ -5,7 +5,8 @@ import logging
 import threading
 import re
 from datetime import datetime
-from typing import Dict, List, Tuple, Union
+import time
+from typing import Dict, List, Tuple, Union, Optional
 from db import database
 from ai_llm import llm_interface
 from ai_llm.llm_interface import generate_personalized_response, analisar_saudacao_com_contexto_ia, gerar_resposta_saudacao_contextual_ia
@@ -42,6 +43,8 @@ from utils.detector_intencao_avancado import (
     extrair_especificacoes_produto_ia,
     corrigir_e_sugerir_ia
 )
+
+CONFIRMATION_TIMEOUT_SECONDS = 120
 from utils.detector_marca_produto import (
     detectar_marca_e_produto_ia,
     filtrar_produtos_por_marca,
@@ -488,13 +491,50 @@ def _extract_state(session: Dict) -> Dict:
         "last_bot_action": session.get("last_bot_action"),
         "pending_action": session.get("pending_action"),
         "last_kb_search_term": session.get("last_kb_search_term"),
+        "confirmation_requested_at": session.get("confirmation_requested_at"),
     }
+
+
+def _expire_pending_confirmations(session: Dict, state: Dict) -> Optional[str]:
+    """Verifica se confirmações pendentes expiraram."""
+    started_at = state.get("confirmation_requested_at")
+    last_action = state.get("last_bot_action")
+    pending_action = state.get("pending_action")
+
+    if not started_at:
+        return None
+
+    if last_action not in ("AWAITING_CHECKOUT_CONFIRMATION",) and pending_action != "AWAITING_DUPLICATE_DECISION":
+        state["confirmation_requested_at"] = None
+        atualizar_contexto_sessao(session, {"confirmation_requested_at": None})
+        return None
+
+    if time.time() - started_at > CONFIRMATION_TIMEOUT_SECONDS:
+        state["pending_action"] = None
+        state["last_bot_action"] = "AWAITING_MENU_SELECTION"
+        state["confirmation_requested_at"] = None
+        atualizar_contexto_sessao(
+            session,
+            {
+                "pending_action": None,
+                "last_bot_action": "AWAITING_MENU_SELECTION",
+                "confirmation_requested_at": None,
+            },
+        )
+        msg = "Tempo esgotado para a confirmação. Digite 'menu' para continuar."
+        adicionar_mensagem_historico(session, "assistant", msg, "CONFIRMATION_TIMEOUT")
+        return msg
+    return None
 
 
 def _handle_pending_action(
     session: Dict, state: Dict, incoming_msg: str
 ) -> Tuple[Union[Dict, None], str]:
     """Processa ações pendentes existentes na sessão."""
+    timeout_msg = _expire_pending_confirmations(session, state)
+    if timeout_msg:
+        return None, timeout_msg
+
     pending_action = state.get("pending_action")
     print(f">>> CONSOLE: pending_action atual: '{pending_action}'")
     shopping_cart = state.get("shopping_cart", [])
@@ -570,6 +610,7 @@ def _handle_pending_action(
                             "duplicate_item_index": duplicate_index + 1,
                             "duplicate_item_qty": qt,
                             "pending_action": "AWAITING_DUPLICATE_DECISION",
+                            "confirmation_requested_at": time.time(),
                         },
                     )
 
@@ -581,6 +622,7 @@ def _handle_pending_action(
                     )
 
                     pending_action = "AWAITING_DUPLICATE_DECISION"
+                    state["confirmation_requested_at"] = time.time()
                 else:
                     shopping_cart.append({**product_to_add, "qt": qt})
 
@@ -612,11 +654,13 @@ def _handle_pending_action(
                             "pending_action": None,
                             "pending_product_for_cart": None,
                             "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+                            "confirmation_requested_at": time.time(),
                         },
                     )
                     pending_action = None
                     # Define o estado correto para aguardar confirmação de finalizar_pedido
                     state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
+                    state["confirmation_requested_at"] = time.time()
 
             else:
                 response_text = generate_personalized_response("error", session)
@@ -736,9 +780,11 @@ def _handle_pending_action(
                     "duplicate_item_qty": None,
                     "pending_action": None,
                     "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+                    "confirmation_requested_at": time.time(),
                 },
             )
             state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
+            state["confirmation_requested_at"] = time.time()
         elif choice == "2":
             success, message, shopping_cart = atualizar_quantidade_item_carrinho(
                 shopping_cart, index, qty
@@ -755,9 +801,11 @@ def _handle_pending_action(
                     "duplicate_item_qty": None,
                     "pending_action": None,
                     "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+                    "confirmation_requested_at": time.time(),
                 },
             )
             state["last_bot_action"] = "AWAITING_CHECKOUT_CONFIRMATION"
+            state["confirmation_requested_at"] = time.time()
         else:
             if index and 1 <= index <= len(shopping_cart):
                 existing_item = shopping_cart[index - 1]
@@ -883,10 +931,13 @@ def _handle_pending_action(
             pending_action = None
             state["last_shown_products"] = []
             state["last_bot_action"] = "AWAITING_MENU_SELECTION"
+            state["confirmation_requested_at"] = None
         else:
             pending_action = None
 
         state["pending_action"] = pending_action
+        if pending_action is None:
+            state["confirmation_requested_at"] = None
 
     return None, response_text
 
@@ -1093,6 +1144,7 @@ def _route_tool(session: Dict, state: Dict, intent: Dict, sender_phone: str, inc
     last_bot_action = state.get("last_bot_action")
     pending_action = state.get("pending_action")
     last_kb_search_term = state.get("last_kb_search_term")
+    confirmation_requested_at = state.get("confirmation_requested_at")
     
     # 🆕 IA-FIRST: Detecta pedidos complexos (múltiplos produtos)
     mensagem_usuario = intent.get("mensagem_usuario", "")
@@ -2058,6 +2110,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         adicionar_mensagem_historico(session, "assistant", response_text, "SHOW_CART")
         last_shown_products = []
         last_bot_action = "AWAITING_CHECKOUT_CONFIRMATION"
+        confirmation_requested_at = time.time()
 
     elif tool_name == "iniciar_novo_pedido":
         (
@@ -2071,6 +2124,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
         ) = (None, [], [], None, {}, 0, None)
         pending_action = None
         last_bot_action = None
+        confirmation_requested_at = None
         session.clear()
 
         atualizar_contexto_sessao(
@@ -2553,6 +2607,7 @@ RESPONDA APENAS com a categoria do banco (CERVEJA, DOCES, DETERGENTE, HIGIENE, e
             "last_bot_action": last_bot_action,
             "pending_action": pending_action,
             "last_kb_search_term": last_kb_search_term,
+            "confirmation_requested_at": confirmation_requested_at,
         }
     )
 
@@ -2583,6 +2638,7 @@ def _finalize_session(
             "last_bot_action": state.get("last_bot_action"),
             "pending_action": state.get("pending_action"),
             "last_kb_search_term": state.get("last_kb_search_term"),
+            "confirmation_requested_at": state.get("confirmation_requested_at"),
         },
     )
     

@@ -10,6 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from utils.classificador_intencao import detectar_intencao_com_sistemas_criticos
+from utils.redirecionamento_inteligente import verificar_entrada_vazia_selecao
 
 
 class TestRedirecionamentoAjuda(unittest.TestCase):
@@ -28,6 +29,14 @@ class TestRedirecionamentoAjuda(unittest.TestCase):
         )
         self.assertTrue(resultado["necessita_redirecionamento"])
         self.assertEqual(resultado["tipo_resposta"], "redirecionamento_guidance")
+
+    def test_empty_input_triggers_help(self):
+        mensagem = verificar_entrada_vazia_selecao("", "AWAITING_PRODUCT_SELECTION")
+        self.assertEqual(mensagem, "Digite o número do item ou 'ajuda' para ver opções")
+
+    def test_no_help_outside_selection(self):
+        mensagem = verificar_entrada_vazia_selecao("?", "AWAITING_CHECKOUT_CONFIRMATION")
+        self.assertIsNone(mensagem)
 
 
 if __name__ == "__main__":

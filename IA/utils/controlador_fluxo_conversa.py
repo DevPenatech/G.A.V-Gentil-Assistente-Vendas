@@ -485,32 +485,40 @@ class ControladorFluxoConversa:
                 if acao_sugerida in ["corrigir_range", "mostrar_opcoes_validas"]:
                     acao = "corrigir_selecao"
                     opcao_maxima = problema_prioritario.get("opcao_maxima") or problema_prioritario.get("range_valido", "válido")
-                    mensagem_orientacao = f"Por favor, escolha um número entre as opções disponíveis (1-{opcao_maxima})."
-                
+                    mensagem_orientacao = (
+                        f"Escolha um número entre 1 e {opcao_maxima} ou digite 'ajuda' para ver novamente."
+                    )
+
                 elif acao_sugerida in ["pedir_numero", "esclarecer_quantidade"]:
                     acao = "esclarecer_entrada"
-                    mensagem_orientacao = "Por favor, me informe um número para continuar."
-                
+                    mensagem_orientacao = "Digite um número válido, como '2', para continuar."
+
                 elif acao_sugerida == "esclarecer_selecao":
                     acao = "esclarecer_entrada"
-                    mensagem_orientacao = "Por favor, escolha uma das opções numeradas da lista acima."
-                
+                    mensagem_orientacao = (
+                        "Escolha uma das opções numeradas ou digite 'ajuda' para repetir as opções."
+                    )
+
                 elif acao_sugerida == "esclarecer_confirmacao":
                     acao = "esclarecer_entrada"
-                    mensagem_orientacao = "Preciso de uma confirmação: responda 'sim' ou 'não'."
-                
+                    mensagem_orientacao = "Responda 'sim' para continuar ou 'não' para cancelar."
+
                 elif acao_sugerida == "redirecionar_para_contexto":
                     acao = "redirecionar"
                     tipo_contexto = problema_prioritario.get("tipo_contexto", "atual")
-                    mensagem_orientacao = f"Vamos focar no {tipo_contexto}. "
-                
+                    mensagem_orientacao = (
+                        f"Vamos focar no {tipo_contexto}. Pergunte sobre {tipo_contexto} ou digite 'menu' para opções."
+                    )
+
                 elif acao_sugerida == "reconhecer_mudanca_topico":
                     acao = "reconhecer_mudanca"
-                    mensagem_orientacao = "Entendi que você quer mudar de assunto. "
-                
+                    mensagem_orientacao = (
+                        "Entendi que você quer mudar de assunto. Sobre qual produto ou tema deseja falar agora?"
+                    )
+
                 else:
                     acao = "esclarecer_entrada"
-                    mensagem_orientacao = "Não entendi sua resposta. Pode reformular?"
+                    mensagem_orientacao = "Não entendi sua resposta. Reformule ou digite 'ajuda' para opções."
         
         return {
             "eh_coerente": eh_coerente,
