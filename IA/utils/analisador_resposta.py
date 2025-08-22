@@ -9,6 +9,10 @@ import json
 import re
 from typing import Dict, List, Any, Union
 
+from .gav_logger import obter_logger
+
+logger = obter_logger(__name__)
+
 def extrair_json_da_resposta_ia(conteudo: Any) -> Dict:
     """
     Extrai JSON de resposta da IA mantendo flexibilidade para texto humano ou dicionários.
@@ -60,9 +64,9 @@ def extrair_json_da_resposta_ia(conteudo: Any) -> Dict:
                 continue
     
     # 3. 🧠 LEITOR DE MENTES DA IA - Entende intenção mesmo sem JSON
-    print(f">>> 🧠 [EXTRAIR_JSON] Chamando Mind Reader para: '{conteudo}'")
+    logger.debug(f">>> 🧠 [EXTRAIR_JSON] Chamando Mind Reader para: '{conteudo}'")
     resultado = _analisar_intencao_do_texto_inteligente(conteudo)
-    print(f">>> 🧠 [EXTRAIR_JSON] Mind Reader retornou: {resultado}")
+    logger.debug(f">>> 🧠 [EXTRAIR_JSON] Mind Reader retornou: {resultado}")
     return resultado
 
 def _normalizar_chaves_json(dados_json: Dict) -> Dict:
@@ -361,14 +365,14 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     """
     texto_lower = texto.lower().strip()
     
-    print(f">>> 🧠 [LEITOR_DE_MENTES] Analisando texto completo: '{texto}'")
+    logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] Analisando texto completo: '{texto}'")
     
     # 🎯 DETECÇÕES DE ALTA PRIORIDADE (em ordem de prioridade)
     
     # 1. 🚀 COMANDO "MAIS PRODUTOS" - Detecção super específica
     # 🔥 DETECÇÃO ESPECIAL: palavra "mais" sozinha
     if texto_lower == "mais":
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: MAIS (palavra única)")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: MAIS (palavra única)")
         return {
             "nome_ferramenta": "show_more_products",
             "parametros": {}
@@ -379,7 +383,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         "continuar", "próximo", "next", "more products",
         "mais produtos", "show more", "ver mais"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: MAIS PRODUTOS")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: MAIS PRODUTOS")
         return {
             "nome_ferramenta": "show_more_products",
             "parametros": {}
@@ -390,7 +394,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         "limpar carrinho", "esvaziar carrinho", "zerar carrinho",
         "clear cart", "empty cart"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: LIMPAR CARRINHO")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: LIMPAR CARRINHO")
         return {
             "nome_ferramenta": "limpar_carrinho", 
             "parametros": {}
@@ -400,7 +404,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         "ver carrinho", "mostrar carrinho", "visualizar carrinho",
         "view cart", "show cart"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: VER CARRINHO")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: VER CARRINHO")
         return {
             "nome_ferramenta": "visualizar_carrinho",
             "parametros": {}
@@ -411,7 +415,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         "buscar produto", "procurar produto", "search product",
         "busca inteligente", "smart search"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: BUSCA PRODUTOS")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: BUSCA PRODUTOS")
         return {
             "nome_ferramenta": "smart_search_with_promotions",
             "parametros": {"search_term": "produtos"}
@@ -423,7 +427,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         "adicionar", "selecionar", "escolher", "add", "select"
     ]):
         numero = int(numeros_texto[0])
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ADICIONAR PRODUTO #{numero}")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ADICIONAR PRODUTO #{numero}")
         return {
             "nome_ferramenta": "adicionar_item_ao_carrinho",
             "parametros": {"index": numero}
@@ -433,7 +437,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     if any(phrase in texto_lower for phrase in [
         "finalizar", "finalizar pedido", "concluir compra", "fechar pedido"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: FINALIZAR_PEDIDO")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: FINALIZAR_PEDIDO")
         return {
             "nome_ferramenta": "finalizar_pedido",
             "parametros": {}
@@ -443,7 +447,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     cnpj_match = re.search(r'\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b|\b\d{14}\b', texto)
     if cnpj_match:
         cnpj = cnpj_match.group()
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: CNPJ {cnpj}")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: CNPJ {cnpj}")
         return {
             "nome_ferramenta": "find_customer_by_cnpj",
             "parametros": {"cnpj": cnpj}
@@ -454,7 +458,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         "produtos populares", "mais vendidos", "top produtos",
         "popular products", "best sellers"
     ]) or re.fullmatch(r"\s*produtos\s*[?!.]*", texto_lower):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: PRODUTOS POPULARES")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: PRODUTOS POPULARES")
         return {
             "nome_ferramenta": "get_top_selling_products",
             "parametros": {}
@@ -465,7 +469,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         "adiciona mais", "coloca mais", "aumentar", "diminuir",
         "alterar quantidade", "mudar quantidade"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ATUALIZAR CARRINHO")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: ATUALIZAR CARRINHO")
         return {
             "nome_ferramenta": "atualizacao_inteligente_carrinho",
             "parametros": {}
@@ -475,7 +479,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
     if any(phrase in texto_lower for phrase in [
         "olá", "oi", "boa tarde", "bom dia", "hello", "hi"
     ]):
-        print(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: SAUDAÇÃO")
+        logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] ✅ Detectou: SAUDAÇÃO")
         return {
             "nome_ferramenta": "lidar_conversa",
             "parametros": {
@@ -484,7 +488,7 @@ def _analisar_intencao_do_texto_inteligente(texto: str) -> Dict:
         }
     
     # 🗣️ FALLBACK: Conversa livre (quando nada específico foi detectado)
-    print(f">>> 🧠 [LEITOR_DE_MENTES] 💬 Fallback: CONVERSA LIVRE")
+    logger.debug(f">>> 🧠 [LEITOR_DE_MENTES] 💬 Fallback: CONVERSA LIVRE")
     return {
         "nome_ferramenta": "lidar_conversa",
         "parametros": {
