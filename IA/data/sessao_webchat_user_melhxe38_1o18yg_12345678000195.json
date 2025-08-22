@@ -1,0 +1,192 @@
+{
+  "contexto_cliente": null,
+  "carrinho_compras": [],
+  "historico_conversa": [
+    {
+      "role": "user",
+      "message": "sal",
+      "timestamp": "2025-08-21T19:34:58.874491",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Sal encontrados:*\n\n*1.* AGUA TONICA SCHWEPPES LIMAO C/TO.SAL LT\n    💰 R$ 2,89\n\n*2.* AJI-SAL CHURRASCO\n    💰 R$ 14,39\n\n*3.* AJI-SAL CHURRASCO\n    💰 R$ 9,20\n\n*4.* AJI-SAL TRADICIONAL\n    💰 R$ 5,49\n\n*5.* AJI-SAL TRADICIONAL FRASCO\n    💰 R$ 6,95\n\n*6.* ALCAPARRA EM CONSERVA SALSARETTI VD\n    💰 R$ 9,69\n\n*7.* ALHO ALHAO TRITURADO PT.S/SAL.\n    💰 R$ 19,98\n\n*8.* ALHO MAXI SABOR PICADO S/SAL\n    💰 R$ 3,18\n\n*9.* ALHO MAXI SABOR TRITURADO S/SAL\n    💰 R$ 33,98\n\n*10.* ALHO MAXI SABOR TRITURADO S/S",
+      "timestamp": "2025-08-21T19:35:05.686740",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Sal encontrados:*\n\n*1.* AGUA TONICA SCHWEPPES LIMAO C/TO.SAL LT\n    💰 R$ 2,89\n\n*2.* AJI-SAL CHURRASCO\n    💰 R$ 14,39\n\n*3.* AJI-SAL CHURRASCO\n    💰 R$ 9,20\n\n*4.* AJI-SAL TRADICIONAL\n    💰 R$ 5,49\n\n*5.* AJI-SAL TRADICIONAL FRASCO\n    💰 R$ 6,95\n\n*6.* ALCAPARRA EM CONSERVA SALSARETTI VD\n    💰 R$ 9,69\n\n*7.* ALHO ALHAO TRITURADO PT.S/SAL.\n    💰 R$ 19,98\n\n*8.* ALHO MAXI SABOR PICADO S/SAL\n    💰 R$ 3,18\n\n*9.* ALHO MAXI SABOR TRITURADO S/SAL\n    💰 R$ 33,98\n\n*10.* ALHO MAXI SABOR TRITURADO S/S",
+      "timestamp": "2025-08-21T19:35:05.688186",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "8",
+      "timestamp": "2025-08-21T19:35:30.177144",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de ALHO MAXI SABOR PICADO S/SAL você deseja adicionar?",
+      "timestamp": "2025-08-21T19:35:32.064427",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de ALHO MAXI SABOR PICADO S/SAL você deseja adicionar?",
+      "timestamp": "2025-08-21T19:35:32.068132",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-21T19:35:34.471889",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei o alho maxi sabor pica ao seu carrinho.\n\n🛒 *Carrinho:*1x ALHO MAXI SABOR PICADO S/SAL\n   R$ 3,18 cada = R$ 3,18\n\n💰 *Total Geral: R$ 3,18*",
+      "timestamp": "2025-08-21T19:35:36.037722",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "Adicionei o alho maxi sabor pica ao seu carrinho.\n\n🛒 *Carrinho:*1x ALHO MAXI SABOR PICADO S/SAL\n   R$ 3,18 cada = R$ 3,18\n\n💰 *Total Geral: R$ 3,18*",
+      "timestamp": "2025-08-21T19:35:36.041386",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "ok",
+      "timestamp": "2025-08-21T19:36:59.620778",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Ok, vamos continuar a conversa!\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T19:37:07.281905",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Ok, vamos continuar a conversa!\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T19:37:07.283722",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "2",
+      "timestamp": "2025-08-21T20:02:15.338575",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *Carrinho:*1x ALHO MAXI SABOR PICADO S/SAL\n   R$ 3,18 cada = R$ 3,18\n\n💰 *Total Geral: R$ 3,18*",
+      "timestamp": "2025-08-21T20:02:16.800184",
+      "action_type": "SHOW_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "🛒 *Carrinho:*1x ALHO MAXI SABOR PICADO S/SAL\n   R$ 3,18 cada = R$ 3,18\n\n💰 *Total Geral: R$ 3,18*",
+      "timestamp": "2025-08-21T20:02:16.802071",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-21T20:02:21.436147",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Só posso oferecer opção 1 ou 0 no carrinho. Qual você escolhe?",
+      "timestamp": "2025-08-21T20:02:30.475762",
+      "action_type": "INVALID_SELECTION"
+    },
+    {
+      "role": "assistant",
+      "message": "Só posso oferecer opção 1 ou 0 no carrinho. Qual você escolhe?",
+      "timestamp": "2025-08-21T20:02:30.486592",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "1",
+      "timestamp": "2025-08-21T20:02:37.385039",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Entendo que o número 1 é inválido. Por favor escolha entre 0 ou 1.",
+      "timestamp": "2025-08-21T20:02:42.749306",
+      "action_type": "INVALID_SELECTION"
+    },
+    {
+      "role": "assistant",
+      "message": "Entendo que o número 1 é inválido. Por favor escolha entre 0 ou 1.",
+      "timestamp": "2025-08-21T20:02:42.750880",
+      "action_type": "BOT_RESPONSE"
+    }
+  ],
+  "resumo_conversa": "ARNA.RED     💰 R$ 59,90  *5.* BEB.VIN.CHI.CAS.DEL DIABLO D.CARNA.SAUVI     💰 R$ 59,90  *6.* BEB.VIN.CHI.CAS.DEL DIABLO D.CARNA.SWEET     💰 R$ 59,90  *7.* BIFINHO BONZO CAO CARNE     💰 R$ 4,99  *8.* BIFINHO BW CAO AD CARNE     💰 R$ 15,99  *9.* BIFINHO BW CAO AD CARNE 50G     💰 R$ 3,29  | G.A.V.: *🎯 Produtos Carn encontrados:*  *1.* AMAC.P/CARNES APTI     💰 R$ 5,99  *2.* AMAC.P/CARNES C/TEMP.MAGGI     💰 R$ 8,99  *3.* BEB.VIN.CHI.CAS.DEL DIABLO D.CARNA.CABER     💰 R$ 59,90  *4.* BEB.VIN.CHI.CAS.DEL DIABLO D.CARNA.RED     💰 R$ 59,90  *5.* BEB.VIN.CHI.CAS.DEL DIABLO D.CARNA.SAUVI     💰 R$ 59,90  *6.* BEB.VIN.CHI.CAS.DEL DIABLO D.CARNA.SWEET     💰 R$ 59,90  *7.* BIFINHO BONZO CAO CARNE     💰 R$ 4,99  *8.* BIFINHO BW CAO AD CARNE     💰 R$ 15,99  *9.* BIFINHO BW CAO AD CARNE 50G     💰 R$ 3,29  | Cliente: salcicha | G.A.V.: 😕 Nenhum produto encontrado na categoria 'ALIMENTOS'. Que tal tentar outra busca? | G.A.V.: 😕 Nenhum produto encontrado na categoria 'ALIMENTOS'. Que tal tentar outra busca?",
+  "ultimo_tipo_busca": null,
+  "ultimos_parametros_busca": {},
+  "offset_atual": 0,
+  "ultimos_produtos_mostrados": [],
+  "ultima_acao_bot": null,
+  "acao_pendente": null,
+  "selecao_produto_pendente": null,
+  "quantidade_pendente": null,
+  "ultimo_termo_busca_kb": null,
+  "ultimos_resultados_busca": [],
+  "ultima_analise_busca": {},
+  "ultimas_sugestoes_busca": [],
+  "criado_em": "2025-08-21T19:25:07.440046",
+  "ultima_atividade": "2025-08-21T20:02:42.751014",
+  "validated_cnpj": "12345678000195",
+  "customer_context": {
+    "cnpj": "12345678000195"
+  },
+  "shopping_cart": [
+    {
+      "codprod": 50401,
+      "descricao": "ALHO MAXI SABOR PICADO S/SAL",
+      "categoria": "CONDIMENTO FRESCO",
+      "marca": "SABOR",
+      "unidade_venda": "PC",
+      "preco_varejo": 3.18,
+      "preco_atacado": 0.0,
+      "quantidade_atacado": 1,
+      "preco_promocional": null,
+      "preco_atual": 3.18,
+      "percentual_desconto": 0.0,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0,
+      "qt": 1
+    }
+  ],
+  "last_search_type": "busca_inteligente",
+  "last_search_params": {
+    "termo_busca": "sal",
+    "categoria": "ALIMENTOS",
+    "marca_priorizada": "sal"
+  },
+  "current_offset": 10,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_CHECKOUT_CONFIRMATION",
+  "pending_action": null,
+  "last_kb_search_term": null,
+  "estatisticas_sessao": {
+    "itens_carrinho": 1,
+    "tamanho_conversa": 0,
+    "cliente_identificado": true,
+    "ultima_acao": "AWAITING_CHECKOUT_CONFIRMATION",
+    "tem_selecao_pendente": false,
+    "tem_quantidade_pendente": false,
+    "valor_total_carrinho": 3.18
+  },
+  "pending_product_for_cart": null,
+  "term_to_learn_after_quantity": null
+}

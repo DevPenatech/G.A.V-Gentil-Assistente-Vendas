@@ -8,10 +8,34 @@ from typing import Dict, Optional, Any
 import functools
 import time
 import inspect
+import uuid
+import threading
 from configuracao_logs import configurar_logging_principal, obter_estatisticas_deduplicacao
 
 # Logger global configurado
 _logger_principal = None
+
+# Sistema de ID de requisição para rastreamento
+_request_id_storage = threading.local()
+
+def gerar_id_requisicao() -> str:
+    """Gera um novo ID único para a requisição."""
+    return str(uuid.uuid4())[:8]
+
+def obter_id_requisicao() -> str:
+    """Obtém o ID da requisição atual ou gera um novo."""
+    if not hasattr(_request_id_storage, 'request_id'):
+        _request_id_storage.request_id = gerar_id_requisicao()
+    return _request_id_storage.request_id
+
+def definir_id_requisicao(request_id: str):
+    """Define o ID da requisição atual."""
+    _request_id_storage.request_id = request_id
+
+def limpar_id_requisicao():
+    """Limpa o ID da requisição atual."""
+    if hasattr(_request_id_storage, 'request_id'):
+        delattr(_request_id_storage, 'request_id')
 
 def inicializar_logging():
     """Inicializa o sistema de logging do G.A.V."""
@@ -186,13 +210,16 @@ def _preparar_contexto_seguro(user_id: str = None, session_id: str = None, **ext
         extra_dict['user_id'] = user_id or 'N/A'
         extra_dict['session_id'] = session_id or 'N/A'
     
+    # Sempre adiciona request_id
+    extra_dict['request_id'] = obter_id_requisicao()
+    
     # Adiciona extras, evitando campos do LogRecord padrão e conflitos conhecidos
     reserved_fields = {
         'name', 'msg', 'args', 'levelname', 'levelno', 'pathname', 
         'filename', 'module', 'lineno', 'funcName', 'created', 
         'msecs', 'relativeCreated', 'thread', 'threadName',
         'processName', 'process', 'message', 'exc_info', 'exc_text',
-        'stack_info', 'user_id', 'session_id'  # Adicionados para evitar conflito
+        'stack_info', 'user_id', 'session_id', 'request_id'  # Adicionados para evitar conflito
     }
     
     for key, value in extras.items():
@@ -271,10 +298,67 @@ def log_llm_request(model: str, execution_time: float, token_count: int = None, 
         'execution_time': execution_time,
         'token_count': token_count,
         'user_id': user_id or 'N/A',
+        'request_id': obter_id_requisicao(),
         'categoria': 'LLM_PERFORMANCE',
         **extras
     }
     logger.info(f"LLM_REQUEST: {model} - {execution_time:.3f}s", extra=extra_dict)
+
+def log_prompt_completo(prompt: str, user_id: str = None, session_id: str = None, funcao: str = None, **extras):
+    """Log do prompt completo enviado ao LLM - NUNCA truncado."""
+    logger = obter_logger("llm_prompts")
+    extra_dict = _preparar_contexto_seguro(user_id, session_id, **extras)
+    extra_dict.update({
+        'request_id': obter_id_requisicao(),
+        'funcao': funcao or 'desconhecida',
+        'tamanho_prompt': len(prompt),
+        'categoria': 'LLM_PROMPT_COMPLETO'
+    })
+    
+    # Log sempre como INFO para garantir que apareça
+    logger.info(f"PROMPT_COMPLETO [{funcao}]: {prompt}", extra=extra_dict)
+
+def log_resposta_llm(resposta: str, user_id: str = None, session_id: str = None, funcao: str = None, **extras):
+    """Log da resposta completa do LLM - NUNCA truncado."""
+    logger = obter_logger("llm_responses")
+    extra_dict = _preparar_contexto_seguro(user_id, session_id, **extras)
+    extra_dict.update({
+        'request_id': obter_id_requisicao(),
+        'funcao': funcao or 'desconhecida',
+        'tamanho_resposta': len(resposta),
+        'categoria': 'LLM_RESPOSTA_COMPLETA'
+    })
+    
+    # Log sempre como INFO para garantir que apareça
+    logger.info(f"RESPOSTA_COMPLETA [{funcao}]: {resposta}", extra=extra_dict)
+
+def log_decisao_ia(intencao_detectada: str, confianca: float, estrategia: str = None, user_id: str = None, session_id: str = None, **extras):
+    """Log específico para decisões da IA sobre intenções."""
+    logger = obter_logger("ia_decisoes")
+    extra_dict = _preparar_contexto_seguro(user_id, session_id, **extras)
+    extra_dict.update({
+        'request_id': obter_id_requisicao(),
+        'intencao_detectada': intencao_detectada,
+        'confianca': confianca,
+        'estrategia': estrategia,
+        'categoria': 'IA_DECISAO'
+    })
+    
+    logger.info(f"DECISAO_IA: {intencao_detectada} (confiança: {confianca:.2f})", extra=extra_dict)
+
+def log_fallback_ativado(motivo: str, mensagem_original: str, fallback_usado: str, user_id: str = None, session_id: str = None, **extras):
+    """Log quando sistema de fallback é ativado."""
+    logger = obter_logger("ia_fallback")
+    extra_dict = _preparar_contexto_seguro(user_id, session_id, **extras)
+    extra_dict.update({
+        'request_id': obter_id_requisicao(),
+        'motivo': motivo,
+        'mensagem_original': mensagem_original,
+        'fallback_usado': fallback_usado,
+        'categoria': 'IA_FALLBACK'
+    })
+    
+    logger.warning(f"FALLBACK_ATIVADO: {motivo} -> {fallback_usado}", extra=extra_dict)
 
 def obter_status_logs():
     """Retorna status detalhado do sistema de logging."""

@@ -99,19 +99,42 @@ JSON:"""
         resposta_ia = resposta["message"]["content"].strip()
         logging.debug(f"[INTENCAO_CARRINHO_IA] Mensagem: '{mensagem}' → IA: '{resposta_ia}'")
         
-        # Extrai JSON da resposta
+        # 🚀 EXTRAÇÃO ROBUSTA - IA-First com múltiplas tentativas
         import json
-        try:
-            json_match = re.search(r'\{.*?\}', resposta_ia, re.DOTALL)
-            if json_match:
-                resultado = json.loads(json_match.group(0))
-                if "acao" in resultado:
-                    logging.info(f"[INTENCAO_CARRINHO_IA] Sucesso: {resultado['acao']}")
-                    return resultado
-        except (json.JSONDecodeError, AttributeError):
-            pass
         
-        return {"acao": "unknown", "parametros": {}}
+        # Tenta extrair JSON primeiro  
+        try:
+            json_match = re.search(r'\{[^{}]*\}', resposta_ia, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(0)
+                resultado = json.loads(json_str)
+                if "acao" in resultado:
+                    print(f">>> DEBUG: [CARRINHO_JSON] ✅ JSON válido extraído: {json.dumps(resultado, ensure_ascii=False)}")
+                    return resultado
+        except Exception as e:
+            print(f">>> DEBUG: [CARRINHO_JSON] Erro JSON: {str(e)}, tentando fallback semântico...")
+        
+        # 🧠 FALLBACK SEMÂNTICO INTELIGENTE - analisa a resposta diretamente
+        resposta_lower = resposta_ia.lower()
+        print(f">>> DEBUG: [CARRINHO_SEMANTICO] Analisando resposta completa: {resposta_ia}")
+        
+        # Detecta palavras-chave semânticas
+        if any(cmd in resposta_lower for cmd in ['visualizar', 'ver', 'mostrar', 'exibir']):
+            resultado = {"acao": "visualizar_carrinho", "parametros": {}, "confianca": 0.9}
+            print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            return resultado
+        elif any(cmd in resposta_lower for cmd in ['limpar', 'esvaziar', 'deletar', 'clear']):
+            resultado = {"acao": "limpar_carrinho", "parametros": {}, "confianca": 0.9}
+            print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            return resultado
+        elif any(cmd in resposta_lower for cmd in ['finalizar', 'checkout', 'concluir']):
+            resultado = {"acao": "finalizar_pedido", "parametros": {}, "confianca": 0.9}
+            print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            return resultado
+        
+        resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
+        print(f">>> DEBUG: [CARRINHO_SEMANTICO] ❌ Nenhuma ação detectada. Retornando: {json.dumps(resultado, ensure_ascii=False)}")
+        return resultado
         
     except Exception as e:
         logging.error(f"[INTENCAO_CARRINHO_IA] Erro: {e}")

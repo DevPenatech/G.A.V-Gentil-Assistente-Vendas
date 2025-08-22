@@ -173,7 +173,9 @@ class RedirecionadorInteligente:
         return confusoes
     
     def _detectar_ignorar_opcoes(self, entrada: str, contexto: str) -> bool:
-        """Detecta se usuário ignora opções numeradas apresentadas."""
+        """
+        🚀 100% IA-FIRST: Usa IA para detectar se é confusão real VS comando legítimo.
+        """
         # Verifica se contexto apresenta opções numeradas
         tem_opcoes_numeradas = bool(re.search(r'\d+\.', contexto))
         
@@ -186,56 +188,128 @@ class RedirecionadorInteligente:
         if entrada_eh_numero:
             return False
         
-        # Verifica se usuário mudou de assunto em vez de escolher
-        mudanca_assunto = any(palavra in entrada.lower() for palavra in [
-            'carrinho', 'produtos', 'buscar', 'quero', 'procuro', 'cerveja', 'refrigerante'
-        ])
-        
-        return mudanca_assunto and "escolha" in contexto.lower()
+        # 🧠 USA IA PARA DETECTAR SE É CONFUSÃO OU COMANDO VÁLIDO
+        return self._ia_detectar_confusao_vs_comando_valido(entrada, contexto)
+    
+    def _ia_detectar_confusao_vs_comando_valido(self, entrada: str, contexto: str) -> bool:
+        """
+        🧠 IA-FIRST: Usa IA para distinguir entre confusão real e comandos legítimos.
+        """
+        try:
+            import ollama
+            
+            prompt = f'''Você é um especialista em análise de intenções de usuários.
+
+SITUAÇÃO: O usuário viu uma lista numerada de opções mas não escolheu um número.
+
+CONTEXTO MOSTRADO AO USUÁRIO:
+{contexto[-500:]}
+
+RESPOSTA DO USUÁRIO: "{entrada}"
+
+PERGUNTA: O usuário está CONFUSO/PERDIDO ou fez um COMANDO LEGÍTIMO?
+
+Exemplos de COMANDOS LEGÍTIMOS (mesmo sem escolher número):
+- "meu carrinho" = quer ver carrinho
+- "limpar carrinho" = quer limpar carrinho  
+- "quero cerveja" = mudou de ideia, quer buscar cerveja
+- "finalizar" = quer finalizar pedido
+- "obrigado" = polidez/agradecimento
+
+Exemplos de CONFUSÃO REAL:
+- "???" = não entendeu
+- "como assim" = confuso
+- mensagens aleatórias/sem sentido
+
+RESPONDA APENAS: true (se confuso) ou false (se comando legítimo)'''
+
+            response = ollama.chat(model='llama3.1', messages=[{'role': 'user', 'content': prompt}])
+            resposta = response['message']['content']
+            
+            print(f">>> DEBUG: [IA_CONFUSAO] Entrada: '{entrada}' | Resposta IA completa: {resposta}")
+            
+            # Extrai boolean da resposta
+            if 'true' in resposta.lower():
+                print(f">>> DEBUG: [IA_CONFUSAO] ✅ IA detectou CONFUSÃO REAL")
+                return True
+            elif 'false' in resposta.lower():
+                print(f">>> DEBUG: [IA_CONFUSAO] ✅ IA detectou COMANDO LEGÍTIMO")
+                return False
+            else:
+                print(f">>> DEBUG: [IA_CONFUSAO] ⚠️ IA não decidiu, assumindo comando legítimo")
+                return False
+                
+        except Exception as e:
+            print(f">>> DEBUG: [IA_CONFUSAO] Erro na IA: {e}")
+            # Fallback: Em caso de erro, assume comando legítimo (menos restritivo)
+            return False
     
     def _detectar_mudanca_assunto(self, entrada: str, contexto: str, historico: List[Dict]) -> bool:
-        """Detecta mudança abrupta de assunto COM PRECISÃO MELHORADA."""
+        """
+        🚀 IA-FIRST: Detecta mudança abrupta DE ASSUNTO usando IA semântica.
+        """
         if not historico or len(historico) < 2:
             return False
         
-        entrada_lower = entrada.lower()
-        contexto_lower = contexto.lower()
-        
-        # NOVA LÓGICA: NÃO é mudança se é uma busca normal após saudação
-        if "bem-vindo" in contexto_lower or "como posso ajudar" in contexto_lower:
-            eh_busca_produto = any(palavra in entrada_lower for palavra in ["quero", "cerveja", "produto", "buscar", "ver"])
-            if eh_busca_produto:
-                return False  # Busca após saudação é NORMAL, não confusão
-        
-        # NÃO é mudança se o contexto NÃO tem ação pendente clara
-        tem_lista_produtos = bool(re.search(r'\d+\.\s+[^\n]+', contexto)) and "escolha" in contexto_lower
-        tem_quantidade_pendente = "quantas unidades" in contexto_lower
-        tem_checkout_pendente = "finalizar" in contexto_lower and "pedido" in contexto_lower
-        
-        tem_acao_pendente_clara = tem_lista_produtos or tem_quantidade_pendente or tem_checkout_pendente
-        
-        if not tem_acao_pendente_clara:
-            return False  # Sem ação pendente clara, qualquer entrada é válida
-        
-        # Pega últimas mensagens para análise
-        ultimas_mensagens = [msg.get("content", "") for msg in historico[-3:]]
-        
-        # Define tópicos das últimas mensagens
-        topicos_anteriores = set()
-        for mensagem in ultimas_mensagens:
-            topicos_anteriores.update(self._extrair_topicos(mensagem.lower()))
-        
-        # Define tópicos da entrada atual
-        topicos_atuais = set(self._extrair_topicos(entrada.lower()))
-        
-        # Se não há overlap de tópicos E há ação pendente clara E não é comando válido
-        tem_overlap = bool(topicos_anteriores & topicos_atuais)
-        eh_comando_direto = any(cmd in entrada_lower for cmd in ['carrinho', 'finalizar', 'limpar'])
-        eh_saudacao = any(s in entrada_lower for s in ['oi', 'olá', 'bom dia'])
-        
-        # SÓ considera mudança problemática se HÁ ação pendente clara
-        return (not tem_overlap and not eh_comando_direto and not eh_saudacao 
-                and len(topicos_atuais) > 0 and tem_acao_pendente_clara)
+        # 🧠 USA IA PARA DETECTAR MUDANÇA ABRUPTA REAL
+        return self._ia_detectar_mudanca_abrupta(entrada, contexto, historico)
+    
+    def _ia_detectar_mudanca_abrupta(self, entrada: str, contexto: str, historico: List[Dict]) -> bool:
+        """
+        🧠 IA-FIRST: Usa IA para detectar se mudança de assunto é problemática.
+        """
+        try:
+            import ollama
+            
+            # Pega últimas 3 mensagens do usuário para contexto
+            ultimas_msgs = [msg.get("content", "") for msg in historico[-3:] if msg.get("role") == "user"]
+            historico_user = " → ".join(ultimas_msgs[-2:]) if len(ultimas_msgs) >= 2 else ""
+            
+            prompt = f'''Você é um especialista em análise de fluxo conversacional.
+
+HISTÓRICO RECENTE DO USUÁRIO:
+{historico_user}
+
+CONTEXTO ATUAL DA CONVERSA:
+{contexto[-400:]}
+
+NOVA MENSAGEM DO USUÁRIO: "{entrada}"
+
+PERGUNTA: O usuário fez uma mudança ABRUPTA/PROBLEMÁTICA de assunto ou é uma mudança NATURAL/VÁLIDA?
+
+Mudanças NATURAIS/VÁLIDAS (não problemáticas):
+- "quero cerveja" após ver produtos → mudança natural de preferência
+- "meu carrinho" a qualquer momento → comando sempre válido  
+- "finalizar" a qualquer momento → comando sempre válido
+- Saudações educadas → polidez natural
+
+Mudanças ABRUPTAS/PROBLEMÁTICAS (problemáticas):
+- Falar de assunto completamente diferente sem motivo
+- Ignorar perguntas diretas com assunto aleatório
+- Confusão clara sobre o contexto
+
+RESPONDA APENAS: true (se problemática) ou false (se natural/válida)'''
+
+            response = ollama.chat(model='llama3.1', messages=[{'role': 'user', 'content': prompt}])
+            resposta = response['message']['content']
+            
+            print(f">>> DEBUG: [IA_MUDANCA] Entrada: '{entrada}' | Resposta IA completa: {resposta}")
+            
+            # Extrai boolean da resposta
+            if 'true' in resposta.lower():
+                print(f">>> DEBUG: [IA_MUDANCA] ✅ IA detectou mudança PROBLEMÁTICA")
+                return True
+            elif 'false' in resposta.lower():
+                print(f">>> DEBUG: [IA_MUDANCA] ✅ IA detectou mudança NATURAL/VÁLIDA")
+                return False
+            else:
+                print(f">>> DEBUG: [IA_MUDANCA] ⚠️ IA não decidiu, assumindo mudança natural")
+                return False
+                
+        except Exception as e:
+            print(f">>> DEBUG: [IA_MUDANCA] Erro na IA: {e}")
+            # Fallback: Em caso de erro, assume mudança natural (menos restritivo)
+            return False
     
     def _extrair_topicos(self, texto: str) -> List[str]:
         """Extrai tópicos principais de um texto."""
@@ -281,27 +355,43 @@ class RedirecionadorInteligente:
     
     def _detectar_comportamento_repetitivo(self, historico: List[Dict]) -> bool:
         """Detecta comportamento repetitivo."""
-        if not historico or len(historico) < 6:
+        if not historico or len(historico) < 8:  # ← AUMENTADO de 6 para 8
             return False
         
         # Analisa últimas mensagens do usuário
         mensagens_usuario = [
             msg.get("content", "").lower().strip() 
-            for msg in historico[-6:] 
+            for msg in historico[-8:]  # ← AUMENTADO de 6 para 8
             if msg.get("role") == "user"
         ]
         
-        if len(mensagens_usuario) < 3:
+        if len(mensagens_usuario) < 4:  # ← AUMENTADO de 3 para 4
             return False
         
-        # Verifica repetições
+        # 🚀 MELHORADO: Filtra intenções válidas de negócio antes de detectar repetição
+        intencoes_validas_negocio = [
+            'cerveja', 'produto', 'quero', 'buscar', 'procurar', 'carrinho', 
+            'finalizar', 'pedido', 'comprar', 'adicionar', 'ver', 'mostrar'
+        ]
+        
+        # Se todas as mensagens são intenções de negócio válidas, não é comportamento repetitivo
+        todas_sao_intencoes_validas = all(
+            any(intencao in msg for intencao in intencoes_validas_negocio) 
+            for msg in mensagens_usuario
+        )
+        
+        if todas_sao_intencoes_validas:
+            return False  # Usuário está fazendo pedidos legítimos, não está confuso
+        
+        # Verifica repetições exatas apenas para mensagens não-comerciais
         mensagens_unicas = set(mensagens_usuario)
         taxa_repeticao = 1 - (len(mensagens_unicas) / len(mensagens_usuario))
         
-        # Verifica padrões de tentativas falhadas
+        # Verifica padrões de tentativas falhadas apenas com números
         tentativas_numero = sum(1 for msg in mensagens_usuario if re.match(r'^\d+$', msg.strip()))
         
-        return taxa_repeticao > 0.4 or tentativas_numero >= 3
+        # 🚀 MELHORADO: Critério mais rigoroso para evitar falsos positivos
+        return taxa_repeticao > 0.6 or tentativas_numero >= 4
     
     def _detectar_selecao_invalida(self, entrada: str, contexto: str) -> bool:
         """Detecta seleção de número inválido."""

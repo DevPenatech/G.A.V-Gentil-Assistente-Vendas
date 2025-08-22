@@ -197,6 +197,17 @@ class ControladorFluxoConversa:
         usuario_lower = entrada_usuario.lower().strip()
         contexto_lower = contexto.lower()
         
+        # 🚀 MELHORADO: Detecta se entrada é intenção válida de carrinho antes da validação
+        intencoes_carrinho_validas = [
+            'ver carrinho', 'carrinho', 'meu carrinho', 'esvaziar carrinho', 
+            'limpar carrinho', 'finalizar', 'finalizar pedido', 'deletar carrinho',
+            'remover carrinho', 'cancelar pedido'
+        ]
+        
+        # Se entrada é intenção válida de carrinho, permite independente do contexto
+        if any(intencao in usuario_lower for intencao in intencoes_carrinho_validas):
+            return {"valido": True, "confianca": 0.95, "problemas": [], "tipo_bypass": "intencao_carrinho"}
+        
         # Padrões de aderência por tipo de contexto
         padroes_aderencia = {
             "listagem_produtos": {
@@ -205,7 +216,7 @@ class ControladorFluxoConversa:
             },
             "selecao_quantidade": {
                 "esperado": [r'^\d+$', r'\d+\s*unidades?', r'\d+\s*un'],
-                "inesperado": ['carrinho', 'produtos', 'buscar', 'olá']
+                "inesperado": ['produtos', 'buscar', 'olá']  # ← REMOVIDO 'carrinho' para permitir operações de carrinho
             },
             "finalizar_pedido": {
                 "esperado": ['sim', 'não', 'confirmar', 'finalizar', 'cancelar'],
@@ -251,6 +262,19 @@ class ControladorFluxoConversa:
         """
         resultado = {"valido": True, "confianca": 0.8, "problemas": []}
         
+        # 🚀 MELHORADO: Detecta intenções válidas de carrinho antes da validação
+        intencoes_carrinho_validas = [
+            'ver carrinho', 'carrinho', 'meu carrinho', 'esvaziar carrinho', 
+            'limpar carrinho', 'finalizar', 'finalizar pedido', 'deletar carrinho',
+            'remover carrinho', 'cancelar pedido'
+        ]
+        
+        usuario_lower = entrada_usuario.lower().strip()
+        
+        # Se entrada é intenção válida de carrinho, permite independente da pergunta
+        if any(intencao in usuario_lower for intencao in intencoes_carrinho_validas):
+            return {"valido": True, "confianca": 0.95, "problemas": [], "tipo_bypass": "intencao_carrinho"}
+        
         # Detecta perguntas específicas no contexto
         padroes_pergunta = {
             "quantidade": [
@@ -268,44 +292,49 @@ class ControladorFluxoConversa:
         }
         
         contexto_lower = contexto.lower()
-        usuario_lower = entrada_usuario.lower().strip()
         
         for tipo_pergunta, padroes in padroes_pergunta.items():
             if any(padrao in contexto_lower for padrao in padroes):
                 
                 if tipo_pergunta == "quantidade":
-                    # Espera número ou quantidade
+                    # Espera número ou quantidade, mas carrinho genérico ainda é problemático
                     if not re.search(r'\d+', entrada_usuario) and 'carrinho' in usuario_lower:
-                        resultado = {
-                            "valido": False,
-                            "confianca": 0.9,
-                            "problemas": ["Pergunta sobre quantidade mas resposta fala de carrinho"],
-                            "acao_sugerida": "esclarecer_quantidade",
-                            "tipo_resposta_esperada": "numero"
-                        }
+                        # Só marca como inválido se não é comando específico de carrinho
+                        if not any(cmd in usuario_lower for cmd in ['ver carrinho', 'limpar carrinho', 'esvaziar carrinho']):
+                            resultado = {
+                                "valido": False,
+                                "confianca": 0.9,
+                                "problemas": ["Pergunta sobre quantidade mas resposta fala de carrinho"],
+                                "acao_sugerida": "esclarecer_quantidade",
+                                "tipo_resposta_esperada": "numero"
+                            }
                 
                 elif tipo_pergunta == "selecao":
-                    # Espera número para seleção
+                    # Espera número para seleção, mas carrinho genérico ainda é problemático
                     if not re.match(r'^\d+$', entrada_usuario.strip()) and 'carrinho' in usuario_lower:
-                        resultado = {
-                            "valido": False,
-                            "confianca": 0.85,
-                            "problemas": ["Pergunta sobre seleção mas resposta desvia o assunto"],
-                            "acao_sugerida": "esclarecer_selecao",
-                            "tipo_resposta_esperada": "numero_selecao"
-                        }
+                        # Só marca como inválido se não é comando específico de carrinho
+                        if not any(cmd in usuario_lower for cmd in ['ver carrinho', 'limpar carrinho', 'esvaziar carrinho']):
+                            resultado = {
+                                "valido": False,
+                                "confianca": 0.85,
+                                "problemas": ["Pergunta sobre seleção mas resposta desvia o assunto"],
+                                "acao_sugerida": "esclarecer_selecao",
+                                "tipo_resposta_esperada": "numero_selecao"
+                            }
                 
                 elif tipo_pergunta == "confirmacao":
                     # Espera sim/não ou confirmação
                     if not any(palavra in usuario_lower for palavra in ['sim', 'não', 'ok', 'confirma', 'finalizar', 'cancelar']):
-                        if any(palavra in usuario_lower for palavra in ['produto', 'buscar', 'carrinho', 'adicionar']):
-                            resultado = {
-                                "valido": False,
-                                "confianca": 0.8,
-                                "problemas": ["Pergunta sobre confirmação mas resposta muda de assunto"],
-                                "acao_sugerida": "esclarecer_confirmacao",
-                                "tipo_resposta_esperada": "sim_nao"
-                            }
+                        if any(palavra in usuario_lower for palavra in ['produto', 'buscar', 'adicionar']):
+                            # Permite comandos específicos de carrinho em confirmação
+                            if not any(cmd in usuario_lower for cmd in ['ver carrinho', 'limpar carrinho', 'esvaziar carrinho']):
+                                resultado = {
+                                    "valido": False,
+                                    "confianca": 0.8,
+                                    "problemas": ["Pergunta sobre confirmação mas resposta muda de assunto"],
+                                    "acao_sugerida": "esclarecer_confirmacao",
+                                    "tipo_resposta_esperada": "sim_nao"
+                                }
                 
                 break  # Para no primeiro padrão encontrado
         
@@ -644,22 +673,38 @@ class ControladorFluxoConversa:
     
     def _detectar_padroes_repetitivos(self, historico_conversa: List[Dict]) -> bool:
         """Detecta padrões repetitivos que indicam confusão."""
-        if len(historico_conversa) < 6:  # Precisa de histórico suficiente
+        if len(historico_conversa) < 8:  # ← AUMENTADO de 6 para 8
             return False
         
-        # Analisa últimas 6 mensagens do usuário
+        # Analisa últimas 8 mensagens do usuário
         mensagens_usuario = [msg.get("content", "").lower().strip() 
-                            for msg in historico_conversa[-6:] 
+                            for msg in historico_conversa[-8:]  # ← AUMENTADO de 6 para 8
                             if msg.get("role") == "user"]
         
-        if len(mensagens_usuario) < 3:
+        if len(mensagens_usuario) < 4:  # ← AUMENTADO de 3 para 4
             return False
         
-        # Detecta repetições exatas
+        # 🚀 MELHORADO: Filtra intenções válidas de negócio antes de detectar repetição
+        intencoes_validas_negocio = [
+            'cerveja', 'produto', 'quero', 'buscar', 'procurar', 'carrinho', 
+            'finalizar', 'pedido', 'comprar', 'adicionar', 'ver', 'mostrar'
+        ]
+        
+        # Se todas as mensagens são intenções de negócio válidas, não é comportamento repetitivo
+        todas_sao_intencoes_validas = all(
+            any(intencao in msg for intencao in intencoes_validas_negocio) 
+            for msg in mensagens_usuario
+        )
+        
+        if todas_sao_intencoes_validas:
+            return False  # Usuário está fazendo pedidos legítimos, não está confuso
+        
+        # Detecta repetições exatas apenas para mensagens não-comerciais
         mensagens_unicas = set(mensagens_usuario)
         taxa_repeticao = 1 - (len(mensagens_unicas) / len(mensagens_usuario))
         
-        return taxa_repeticao > 0.5  # Mais de 50% das mensagens são repetições
+        # 🚀 MELHORADO: Critério mais rigoroso para evitar falsos positivos
+        return taxa_repeticao > 0.6  # ← AUMENTADO de 0.5 para 0.6
     
     def _gerar_estrategia_redirecionamento(self, indicadores_confusao: Dict) -> Dict:
         """

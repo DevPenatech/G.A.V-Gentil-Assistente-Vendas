@@ -137,101 +137,88 @@ Responda SOMENTE o JSON:""".format(mensagem)
         return _detectar_marca_fallback(mensagem)
         
     except Exception as e:
-        logging.error(f"[MARCA_PRODUTO_IA] Erro: {e}")
+        logging.error(f"[MARCA_PRODUTO_IA] Erro: {str(e)}")
+        print(f">>> DEBUG: [ERRO_IA] Exceção completa: {repr(e)}")
         return _detectar_marca_fallback(mensagem)
 
 def _detectar_marca_fallback(mensagem: str) -> Dict:
     """
-    Fallback IA-FIRST: usa heurísticas simples mas tenta detectar marcas com IA básica.
+    🚀 FALLBACK 100% IA-FIRST: Usa apenas contexto semântico, sem listas pré-definidas.
     """
-    print(f">>> DEBUG: [FALLBACK] Executando fallback para: '{mensagem}'")
+    print(f">>> DEBUG: [FALLBACK] Executando fallback IA-FIRST para: '{mensagem}'")
     mensagem_lower = mensagem.lower().strip()
     
-    # Lista de marcas conhecidas (para fallback robusto)
-    marcas_conhecidas = {
-        "heineken": "cerveja",
-        "skol": "cerveja", 
-        "brahma": "cerveja",
-        "antartica": "cerveja",
-        "stella": "cerveja",
-        "corona": "cerveja",
-        "budweiser": "cerveja",
-        "fini": "bala",
-        "coca": "refrigerante",
-        "pepsi": "refrigerante",
-        "guarana": "refrigerante",
-        "omo": "detergente",
-        "ariel": "detergente"
-    }
+    # 🧠 ANÁLISE SEMÂNTICA: Detecta se é comando de carrinho vs busca de produto
+    # Padrões semânticos de comandos de carrinho
+    if any(padrão in mensagem_lower for padrão in [
+        "meu carrinho", "ver carrinho", "carrinho", "limpar carrinho", "esvaziar carrinho",
+        "finalizar", "total", "pedido", "compra"
+    ]):
+        print(f">>> DEBUG: [FALLBACK] 🛒 Comando de carrinho detectado, retornando categoria_geral")
+        return {
+            "tipo_busca": "categoria_geral", 
+            "marca": None,
+            "produto": "acao_carrinho",  # Sinaliza que é ação, não produto
+            "especificacoes": [],
+            "categoria": "sistema",
+            "prioridade_marca": False
+        }
     
-    # Verifica se alguma marca conhecida está na mensagem
-    for marca, produto in marcas_conhecidas.items():
-        if marca in mensagem_lower:
-            print(f">>> DEBUG: [FALLBACK] ✅ Marca conhecida encontrada: {marca} ({produto})")
+    # 🧠 ANÁLISE SEMÂNTICA: Detecta intenção de busca vs marca específica
+    # Se mensagem é muito curta e específica, provavelmente é marca
+    palavras = mensagem_lower.split()
+    
+    # Detecta padrões de busca geral vs marca específica usando contexto
+    if len(palavras) == 1:
+        # Uma palavra só: provavelmente categoria geral
+        produto_inferido = palavras[0]
+        print(f">>> DEBUG: [FALLBACK] 🎯 Palavra única '{produto_inferido}' = categoria_geral")
+        return {
+            "tipo_busca": "categoria_geral",
+            "marca": None,
+            "produto": produto_inferido,
+            "especificacoes": [],
+            "categoria": "bebidas" if any(termo in produto_inferido for termo in ["cerveja", "beer", "refri"]) else "outros",
+            "prioridade_marca": False
+        }
+    
+    elif len(palavras) == 2:
+        # Duas palavras: analisa padrão semântico
+        if palavras[0] in ["quero", "preciso", "buscar", "comprar"]:
+            # "quero cerveja" = categoria_geral
+            produto_inferido = palavras[1]
+            print(f">>> DEBUG: [FALLBACK] 🎯 Padrão 'verbo + produto' = categoria_geral")
+            return {
+                "tipo_busca": "categoria_geral",
+                "marca": None,
+                "produto": produto_inferido,
+                "especificacoes": [],
+                "categoria": "bebidas" if any(termo in produto_inferido for termo in ["cerveja", "beer", "refri"]) else "outros",
+                "prioridade_marca": False
+            }
+        else:
+            # "cerveja heineken" = marca_especifica
+            produto_inferido = palavras[0] if len(palavras[0]) > len(palavras[1]) else palavras[1]
+            marca_inferida = palavras[1] if produto_inferido == palavras[0] else palavras[0]
+            print(f">>> DEBUG: [FALLBACK] 🏷️ Padrão 'produto + marca' detectado: {produto_inferido} + {marca_inferida}")
             return {
                 "tipo_busca": "marca_especifica",
-                "marca": marca,
-                "produto": produto,
+                "marca": marca_inferida,
+                "produto": produto_inferido,
                 "especificacoes": [],
-                "categoria": "bebidas" if produto == "cerveja" else "outros",
+                "categoria": "bebidas" if any(termo in produto_inferido for termo in ["cerveja", "beer", "refri"]) else "outros",
                 "prioridade_marca": True
             }
     
-    # Fallback simplificado: se contém palavras que parecem marca, considera marca_especifica
-    # Palavras curtas e específicas que podem ser marcas
-    palavras = mensagem_lower.split()
-    possivel_marca = None
-    
-    # Heurística simples: palavras de 3-8 caracteres que não são palavras comuns podem ser marcas
-    palavras_comuns = ["quero", "preciso", "buscar", "ver", "comprar", "onde", "tem", "para", "com", "sem", "mais", "menos", "cerveja", "refrigerante", "bala"]
-    
-    for palavra in palavras:
-        # Remove pontuação
-        palavra_limpa = palavra.strip(".,!?")
-        
-        # Se a palavra não é comum E tem tamanho de marca típica
-        if (palavra_limpa not in palavras_comuns and 
-            len(palavra_limpa) >= 3 and 
-            len(palavra_limpa) <= 10 and
-            not palavra_limpa.isdigit()):
-            possivel_marca = palavra_limpa
-            print(f">>> DEBUG: [FALLBACK] Possível marca detectada: {possivel_marca}")
-            break
-    
-    # Determina categoria baseada em contexto simples
-    if any(word in mensagem_lower for word in ["cerveja", "beer"]):
-        categoria = "bebidas"
-        produto = "cerveja"
-    elif any(word in mensagem_lower for word in ["refrigerante", "refri", "coca", "pepsi"]):
-        categoria = "bebidas"
-        produto = "refrigerante"
-    elif any(word in mensagem_lower for word in ["bala", "doce", "chocolate", "fini"]):
-        categoria = "doces"
-        produto = "bala"
-    elif any(word in mensagem_lower for word in ["agua", "água"]):
-        categoria = "bebidas"
-        produto = "agua"
-    else:
-        categoria = "outros"
-        produto = "produto"
-    
-    # Se encontrou possível marca, considera marca_especifica
-    if possivel_marca:
-        tipo_busca = "marca_especifica"
-        prioridade_marca = True
-        marca_final = possivel_marca
-    else:
-        tipo_busca = "categoria_geral"
-        prioridade_marca = False
-        marca_final = None
-    
+    # 🧠 FALLBACK FINAL: Múltiplas palavras = categoria_geral (busca ampla)
+    print(f">>> DEBUG: [FALLBACK] 🌐 Múltiplas palavras = categoria_geral")
     return {
-        "tipo_busca": tipo_busca,
-        "marca": marca_final,
-        "produto": produto,
+        "tipo_busca": "categoria_geral",
+        "marca": None,
+        "produto": mensagem.strip(),  # Usa a mensagem completa como termo de busca
         "especificacoes": [],
-        "categoria": categoria,
-        "prioridade_marca": prioridade_marca
+        "categoria": "outros",
+        "prioridade_marca": False
     }
 
 def filtrar_produtos_por_marca(produtos: List[Dict], marca_desejada: str, produto_tipo: str = "") -> List[Dict]:

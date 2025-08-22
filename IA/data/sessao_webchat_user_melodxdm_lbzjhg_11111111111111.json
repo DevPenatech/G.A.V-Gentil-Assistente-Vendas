@@ -4,150 +4,246 @@
   "historico_conversa": [
     {
       "role": "assistant",
-      "message": "Oi, como posso ajudar?\n\n🔍 Digite o nome do produto\n📦 Digite *produtos* para ver os mais vendidos\n❓ Digite *ajuda* para mais opções",
-      "timestamp": "2025-08-21T19:13:12.993173",
+      "message": "Adicionei 1 HEINEKEN LT ao carrinho!\n\n🛒 *Carrinho:*1x CERVEJA HEINEKEN LT\n   R$ 3,79 cada = R$ 3,79\n\n💰 *Total Geral: R$ 3,79*",
+      "timestamp": "2025-08-21T20:12:06.147379",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "Quero fini",
-      "timestamp": "2025-08-21T19:13:17.103221",
+      "message": "Oi",
+      "timestamp": "2025-08-21T20:38:42.827976",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Oi, como posso ajudar?\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T20:38:56.669768",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Oi, como posso ajudar?\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T20:38:56.673339",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero ver crveja",
+      "timestamp": "2025-08-21T20:39:04.594517",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Cveja encontrados:*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n    💰 R",
+      "timestamp": "2025-08-21T20:39:13.581610",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
+    },
+    {
+      "role": "assistant",
+      "message": "*🎯 Produtos Cveja encontrados:*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n    💰 R",
+      "timestamp": "2025-08-21T20:39:13.586745",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "mais",
+      "timestamp": "2025-08-21T20:39:37.191723",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T20:39:44.081689",
+      "action_type": "NO_MORE_PRODUCTS"
+    },
+    {
+      "role": "assistant",
+      "message": "Opa, já mostrei tudo que temos relacionado a essa busca! Quer procurar outra coisa?\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T20:39:44.084196",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "quero fini",
+      "timestamp": "2025-08-21T20:40:13.121508",
       "action_type": ""
     },
     {
       "role": "assistant",
       "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
-      "timestamp": "2025-08-21T19:13:23.285645",
+      "timestamp": "2025-08-21T20:40:16.886904",
       "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
       "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
-      "timestamp": "2025-08-21T19:13:23.291381",
+      "timestamp": "2025-08-21T20:40:16.889538",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "deixa eu ver cerveja",
-      "timestamp": "2025-08-21T19:13:29.769762",
+      "message": "queri leite",
+      "timestamp": "2025-08-21T20:40:22.824459",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-21T19:13:40.439278",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T20:40:28.206942",
       "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-21T19:13:40.441916",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T20:40:28.210345",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "tem da heineken?",
-      "timestamp": "2025-08-21T19:13:47.935354",
+      "message": "me mostra leiute",
+      "timestamp": "2025-08-21T20:40:36.289217",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-21T19:13:52.462409",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T20:40:41.830749",
       "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "*🎯 Produtos na categoria 'Cerveja':*\n\n*1.* BEB.CHOPP BLACK SKULL MARULA\n    💰 R$ 8,98\n\n*2.* BEB.CHOPP BLACK SKULL VINHO\n    💰 R$ 8,98\n\n*3.* BEB.CHOPP DE VIN.DRAFT \n    💰 R$ 9,98\n\n*4.* BEB.CHOPP DE VIN.DRAFT LT\n    💰 R$ 5,69\n\n*5.* BEB.CHOPP DE VIN.DRAFT WHITE\n    💰 R$ 9,98\n\n*6.* BEB.CHOPP DE VIN ROSA VERMELHA\n    💰 R$ 7,49\n\n*7.* BEB.CHOPP DE VIN.STEMPEL RED\n    💰 R$ 8,98\n\n*8.* BEB.CHOPP DE VIN.STEMPEL WHITE\n    💰 R$ 8,98\n\n*9.* BEB.CHOPP DE WHISK DRAFT \n    💰 R$ 9,79\n\n*10.* BEB.CHOPP ICE DRAFT \n  ",
-      "timestamp": "2025-08-21T19:13:52.464120",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T20:40:41.831078",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "produtos",
-      "timestamp": "2025-08-21T19:15:30.856715",
+      "message": "leite",
+      "timestamp": "2025-08-21T20:40:56.056084",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "Não achei nada com 'produtos', mas vou te ajudar a encontrar!\n\nTente usar termos mais gerais como 'refrigerante', 'sabão' ou 'arroz'.",
-      "timestamp": "2025-08-21T19:15:54.024791",
-      "action_type": "NO_PRODUCTS_FOUND"
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T20:41:00.388290",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "Operação concluída. O que mais posso fazer por você?",
-      "timestamp": "2025-08-21T19:15:54.027636",
-      "action_type": "OPERATION_COMPLETE"
-    },
-    {
-      "role": "assistant",
-      "message": "Operação concluída. O que mais posso fazer por você?",
-      "timestamp": "2025-08-21T19:15:54.030086",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T20:41:00.388717",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
       "message": "meu carrinho",
-      "timestamp": "2025-08-21T19:17:32.620783",
+      "timestamp": "2025-08-21T21:00:22.133795",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "🛒 Carrinho vazio",
-      "timestamp": "2025-08-21T19:17:41.286237",
-      "action_type": "SHOW_CART"
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T21:00:31.371056",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "🛒 Carrinho vazio",
-      "timestamp": "2025-08-21T19:17:41.288971",
+      "message": "*🎯 Produtos Fini encontrados:*\n\n*1.* AMAC.BABY SOFT INFINITY CARE\n    💰 R$ 7,59\n\n*2.* BALA FINI AMORA\n    💰 R$ 6,89\n\n*3.* BALA FINI BANANAS\n    💰 R$ 12,98\n\n*4.* BALA FINI BEIJOS MORANGO\n    💰 R$ 6,89\n\n*5.* BALA FINI DENTADURA\n    💰 R$ 6,89\n\n*6.* BALA FINI GELATINA CHAPEU SELETOR\n    💰 R$ 6,89\n\n*7.* BALA FINI GELATINA EDWIGES\n    💰 R$ 6,89\n\n*8.* BALA FINI GELATINA OCULOS DO HARRY\n    💰 R$ 6,89\n\n*9.* BALA FINI GELATINA POLVO\n    💰 R$ 6,89\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*10.* BALA ",
+      "timestamp": "2025-08-21T21:00:31.376649",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "quero sabonete",
-      "timestamp": "2025-08-21T19:17:45.945903",
+      "message": "quero skol",
+      "timestamp": "2025-08-21T21:00:44.078454",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "📦 *🎯 Encontrei estes produtos relacionados a 'sabonete'::*\n\n*1.* KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-\n    💰 R$ 15,99\n\n*2.* SABONETEIRA PLASUTIL\n    💰 R$ 3,99\n\n*3.* SABONETEIRA PUMP UP GF.1LT\n    💰 R$ 1.000,00\n\n*4.* UD.SABONETEIRA MANIKRAFT C/RES.\n    💰 R$ 1.000,00\n\n*5.* UD.SABONETEIRA P/SABAO LIQUIDO\n    💰 R$ 10,45\n\nQual você quer? Digite 1, 2, 3, 4 ou *5*.",
-      "timestamp": "2025-08-21T19:17:52.861707",
-      "action_type": "SHOW_PRODUCTS_FROM_DB"
+      "message": "*🎯 Produtos Skol encontrados:*\n\n*1.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*2.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
+      "timestamp": "2025-08-21T21:00:48.471311",
+      "action_type": "SHOW_SMART_SEARCH_RESULTS"
     },
     {
       "role": "assistant",
-      "message": "Operação concluída. O que mais posso fazer por você?",
-      "timestamp": "2025-08-21T19:17:52.862641",
-      "action_type": "OPERATION_COMPLETE"
-    },
-    {
-      "role": "assistant",
-      "message": "Operação concluída. O que mais posso fazer por você?",
-      "timestamp": "2025-08-21T19:17:52.865163",
+      "message": "*🎯 Produtos Skol encontrados:*\n\n*1.* CERVEJA SKOL LT\n    💰 R$ 2,39\n\n*2.* CERVEJA SKOL LT.\n    💰 R$ 3,09\n\n🔥 *PROMOÇÕES ESPECIAIS* 🔥\n━━━━━━━━━━━━━━━━━━━━\n*3.* CERVEJA PATAGONIA IPA LT\n    ~R$ 6,79~ → *R$ 5,00* (26% OFF)\n\n*4.* CERVEJA PATAGONIA BOH PILS LT\n    ~R$ 6,79~ → *R$ 5,50* (19% OFF)\n\nQual você quer? Digite o número de *1* a *4*.\n📝 Digite *mais* para ver outros produtos desta categoria!",
+      "timestamp": "2025-08-21T21:00:48.475487",
       "action_type": "BOT_RESPONSE"
     },
     {
       "role": "user",
-      "message": "?",
-      "timestamp": "2025-08-21T19:17:57.882479",
+      "message": "4",
+      "timestamp": "2025-08-21T21:00:52.249187",
       "action_type": ""
     },
     {
       "role": "assistant",
-      "message": "Oi, como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-\n*2.* SABONETEIRA PLASUTIL\n*3.* SABONETEIRA PUMP UP GF.1LT\n*4.* UD.SABONETEIRA MANIKRAFT C/RES.\n*5.* UD.SABONETEIRA P/SABAO LIQUIDO\n\nDigite o número de *1* a *5*.",
-      "timestamp": "2025-08-21T19:18:03.335328",
+      "message": "Quantas unidades de CERVEJA PATAGONIA BOH PILS LT você deseja adicionar?",
+      "timestamp": "2025-08-21T21:00:55.162839",
+      "action_type": "REQUEST_QUANTITY"
+    },
+    {
+      "role": "assistant",
+      "message": "Quantas unidades de CERVEJA PATAGONIA BOH PILS LT você deseja adicionar?",
+      "timestamp": "2025-08-21T21:00:55.164884",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "2",
+      "timestamp": "2025-08-21T21:00:56.718179",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Ok, os produtos estão adicionados ao seu carrinho!\n\n🛒 *Carrinho:*1x CERVEJA HEINEKEN LT\n   R$ 3,79 cada = R$ 3,79\n\n2x CERVEJA PATAGONIA BOH PILS LT\n   R$ 5,50 cada = R$ 11,00\n\n💰 *Total Geral: R$ 14,79*",
+      "timestamp": "2025-08-21T21:00:58.068256",
+      "action_type": "ADD_TO_CART"
+    },
+    {
+      "role": "assistant",
+      "message": "Ok, os produtos estão adicionados ao seu carrinho!\n\n🛒 *Carrinho:*1x CERVEJA HEINEKEN LT\n   R$ 3,79 cada = R$ 3,79\n\n2x CERVEJA PATAGONIA BOH PILS LT\n   R$ 5,50 cada = R$ 11,00\n\n💰 *Total Geral: R$ 14,79*",
+      "timestamp": "2025-08-21T21:00:58.072437",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "ver carrinho",
+      "timestamp": "2025-08-21T21:01:04.631516",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Por favor, me informe um número para continuar.\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T21:01:09.784468",
       "action_type": "CHITCHAT"
     },
     {
       "role": "assistant",
-      "message": "Oi, como posso ajudar?\n\n📦 *Escolha um produto da lista:*\n*1.* KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-\n*2.* SABONETEIRA PLASUTIL\n*3.* SABONETEIRA PUMP UP GF.1LT\n*4.* UD.SABONETEIRA MANIKRAFT C/RES.\n*5.* UD.SABONETEIRA P/SABAO LIQUIDO\n\nDigite o número de *1* a *5*.",
-      "timestamp": "2025-08-21T19:18:03.337124",
+      "message": "Por favor, me informe um número para continuar.\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T21:01:09.787276",
+      "action_type": "BOT_RESPONSE"
+    },
+    {
+      "role": "user",
+      "message": "esvaziar carrinho",
+      "timestamp": "2025-08-21T21:01:16.124353",
+      "action_type": ""
+    },
+    {
+      "role": "assistant",
+      "message": "Por favor, me informe um número para continuar.\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T21:01:19.975312",
+      "action_type": "CHITCHAT"
+    },
+    {
+      "role": "assistant",
+      "message": "Por favor, me informe um número para continuar.\n\n*1* - 🔍 Buscar produtos\n*2* - 🛒 Ver carrinho\n*3* - ✅ Finalizar pedido",
+      "timestamp": "2025-08-21T21:01:19.978677",
       "action_type": "BOT_RESPONSE"
     }
   ],
-  "resumo_conversa": "ente:* Não identificado 📄 *CNPJ:* 11.111.111/1111-11  📦 *ITENS DO PEDIDO:* *1.* BEB.CHOPP DE VIN.DRAFT WHITE     3× R$ 9,98 = *R$ 29,94*  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 💰 *TOTAL GERAL: R$ 29,94*  ✅ *Pedido registrado com sucesso!* 📞 Em breve entraremos em contato para confirmação.  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | G.A.V.: ✅ *RESUMO DO PEDIDO* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  👤 *Cliente:* Não identificado 📄 *CNPJ:* 11.111.111/1111-11  📦 *ITENS DO PEDIDO:* *1.* BEB.CHOPP DE VIN.DRAFT WHITE     3× R$ 9,98 = *R$ 29,94*  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 💰 *TOTAL GERAL: R$ 29,94*  ✅ *Pedido registrado com sucesso!* 📞 Em breve entraremos em contato para confirmação.  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções | Cliente: Oi | G.A.V.: Oi, como posso ajudar?  🔍 Digite o nome do produto 📦 Digite *produtos* para ver os mais vendidos ❓ Digite *ajuda* para mais opções",
+  "resumo_conversa": "s | G.A.V.: 📦 *Mais produtos Heineken::*  *13.* CERVEJA HEINEKEN GF     💰 R$ 12,98  *14.* CERVEJA HEINEKEN LT     💰 R$ 4,39  *15.* CERVEJA HEINEKEN LT     💰 R$ 3,79  *16.* CERVEJA HEINEKEN LT     💰 R$ 5,69  *17.* CERVEJA HEINEKEN CHOPP     💰 R$ 99,89  *18.* CERVEJA HEINEKEN L.NECK     💰 R$ 6,49  Qual você quer? Digite o número de *13* a *18*. | G.A.V.: 📦 *Mais produtos Heineken::*  *13.* CERVEJA HEINEKEN GF     💰 R$ 12,98  *14.* CERVEJA HEINEKEN LT     💰 R$ 4,39  *15.* CERVEJA HEINEKEN LT     💰 R$ 3,79  *16.* CERVEJA HEINEKEN LT     💰 R$ 5,69  *17.* CERVEJA HEINEKEN CHOPP     💰 R$ 99,89  *18.* CERVEJA HEINEKEN L.NECK     💰 R$ 6,49  Qual você quer? Digite o número de *13* a *18*. | Cliente: 15 | G.A.V.: Quantas unidades de CERVEJA HEINEKEN LT você deseja adicionar? | G.A.V.: Quantas unidades de CERVEJA HEINEKEN LT você deseja adicionar? | Cliente: 10000 | G.A.V.: Adicionei 1 HEINEKEN LT ao carrinho!  🛒 *Carrinho:*1x CERVEJA HEINEKEN LT    R$ 3,79 cada = R$ 3,79  💰 *Total Geral: R$ 3,79*",
   "ultimo_tipo_busca": null,
   "ultimos_parametros_busca": {},
   "offset_atual": 0,
@@ -160,76 +256,64 @@
   "ultimos_resultados_busca": [],
   "ultima_analise_busca": {},
   "ultimas_sugestoes_busca": [],
-  "criado_em": "2025-08-21T19:06:57.937329",
-  "ultima_atividade": "2025-08-21T19:18:03.337270",
+  "criado_em": "2025-08-21T20:02:47.025762",
+  "ultima_atividade": "2025-08-21T21:01:19.978840",
   "validated_cnpj": "11111111111111",
   "customer_context": {
     "cnpj": "11111111111111"
   },
-  "shopping_cart": [],
-  "last_search_type": "busca_por_nome",
-  "last_search_params": {
-    "nome_produto": "sabonete"
-  },
-  "current_offset": 5,
-  "last_shown_products": [
+  "shopping_cart": [
     {
-      "codprod": 42721,
-      "descricao": "KIT.SABONETE POM POM HIDRAT.C/5 LV+PG-",
-      "unidade_venda": "PC",
-      "preco_varejo": 15.99,
+      "codprod": 53148,
+      "descricao": "CERVEJA HEINEKEN LT",
+      "unidade_venda": "UN",
+      "preco_varejo": 3.79,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "total_vendido": 0.0
+      "status": "ativo",
+      "fuzzy_score": 0.49703703703703705,
+      "matched_variation": "heineken",
+      "qt": 1
     },
     {
-      "codprod": 34482,
-      "descricao": "SABONETEIRA PLASUTIL",
+      "codprod": 58032,
+      "descricao": "CERVEJA PATAGONIA BOH PILS LT",
+      "categoria": "CERVEJA",
+      "marca": "STELLA ARTOIS",
       "unidade_venda": "UN",
-      "preco_varejo": 3.99,
+      "preco_varejo": 6.79,
       "preco_atacado": 0.0,
       "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 41713,
-      "descricao": "SABONETEIRA PUMP UP GF.1LT",
-      "unidade_venda": "UN",
-      "preco_varejo": 1000.0,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 45865,
-      "descricao": "UD.SABONETEIRA MANIKRAFT C/RES.",
-      "unidade_venda": "UN",
-      "preco_varejo": 1000.0,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
-    },
-    {
-      "codprod": 453,
-      "descricao": "UD.SABONETEIRA P/SABAO LIQUIDO",
-      "unidade_venda": "UN",
-      "preco_varejo": 10.45,
-      "preco_atacado": 0.0,
-      "quantidade_atacado": 1,
-      "total_vendido": 0.0
+      "preco_promocional": 5.5,
+      "data_inicio_promocao": null,
+      "data_fim_promocao": null,
+      "total_vendido": 0.0,
+      "desconto_percentual": 19.0,
+      "_preco_antigo": 6.79,
+      "_preco_promo": 5.5,
+      "_desconto": 19.0,
+      "qt": 2
     }
   ],
-  "last_bot_action": "AWAITING_PRODUCT_SELECTION",
+  "last_search_type": "busca_inteligente",
+  "last_search_params": {
+    "termo_busca": "cerveja skol",
+    "categoria": "CERVEJA",
+    "marca_priorizada": "skol"
+  },
+  "current_offset": 4,
+  "last_shown_products": [],
+  "last_bot_action": "AWAITING_MENU_SELECTION",
   "pending_action": null,
   "last_kb_search_term": null,
   "estatisticas_sessao": {
-    "itens_carrinho": 0,
+    "itens_carrinho": 2,
     "tamanho_conversa": 0,
     "cliente_identificado": true,
-    "ultima_acao": "AWAITING_PRODUCT_SELECTION",
-    "tem_selecao_pendente": true,
+    "ultima_acao": "AWAITING_MENU_SELECTION",
+    "tem_selecao_pendente": false,
     "tem_quantidade_pendente": false,
-    "valor_total_carrinho": 0.0
+    "valor_total_carrinho": 14.79
   },
   "pending_product_for_cart": null,
   "term_to_learn_after_quantity": null

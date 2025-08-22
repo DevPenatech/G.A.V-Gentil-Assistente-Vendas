@@ -987,28 +987,33 @@ def _process_mensagem_usuario(
             state["last_shown_products"] = []
             return intent, response_text
 
-    # 1. Análise avançada de intenções de carrinho (se há carrinho ativo)
-    if shopping_cart:
-        print(">>> CONSOLE: Analisando intenção de carrinho com IA...")
-        historico_conversa = obter_contexto_conversa(session)
-        intencao_carrinho = detectar_intencao_carrinho_ia(
-            incoming_msg, 
-            historico_conversa, 
-            shopping_cart
-        )
-        
-        if intencao_carrinho.get("confidence", 0) > 0.7:
-            print(f">>> CONSOLE: Intenção de carrinho detectada: {intencao_carrinho}")
-            # Converte para formato compatível com o sistema
-            if intencao_carrinho.get("action") == "visualizar_carrinho":
-                intent = {"nome_ferramenta": "visualizar_carrinho", "parametros": {}}
-                return intent, response_text
-            elif intencao_carrinho.get("action") == "limpar_carrinho":
-                intent = {"nome_ferramenta": "limpar_carrinho", "parametros": {}}
-                return intent, response_text
-            elif intencao_carrinho.get("action") == "finalizar_pedido":
-                intent = {"nome_ferramenta": "finalizar_pedido", "parametros": {}}
-                return intent, response_text
+    # 🚀 1. MELHORADO: Análise de intenções de carrinho SEMPRE (mesmo com carrinho vazio)
+    print(">>> CONSOLE: Analisando intenção de carrinho com IA...")
+    historico_conversa = obter_contexto_conversa(session)
+    intencao_carrinho = detectar_intencao_carrinho_ia(
+        incoming_msg, 
+        historico_conversa, 
+        shopping_cart  # Pode ser lista vazia - função suporta isso
+    )
+    
+    # 🚀 MELHORADO: Verifica tanto "acao" quanto "action" e sempre prioriza carrinho
+    acao_carrinho = intencao_carrinho.get("acao") or intencao_carrinho.get("action")
+    confianca = intencao_carrinho.get("confidence", intencao_carrinho.get("confianca", 0))
+    
+    print(f">>> CONSOLE: [CARRINHO_DEBUG] acao={acao_carrinho}, confianca={confianca}")
+    
+    if acao_carrinho and acao_carrinho != "unknown":
+        print(f">>> CONSOLE: ✅ Intenção de carrinho detectada: {acao_carrinho}")
+        # Converte para formato compatível com o sistema
+        if acao_carrinho in ["visualizar_carrinho", "ver_carrinho", "mostrar_carrinho"]:
+            intent = {"nome_ferramenta": "visualizar_carrinho", "parametros": {}}
+            return intent, response_text
+        elif acao_carrinho in ["limpar_carrinho", "esvaziar_carrinho", "clear_cart"]:
+            intent = {"nome_ferramenta": "limpar_carrinho", "parametros": {}}
+            return intent, response_text
+        elif acao_carrinho in ["finalizar_pedido", "checkout", "finalizar"]:
+            intent = {"nome_ferramenta": "finalizar_pedido", "parametros": {}}
+            return intent, response_text
 
     # 2. Chama a IA para obter a intenção usando o novo classificador inteligente
     intent = llm_interface.get_intent_fast(
