@@ -12,9 +12,8 @@ import re
 import time
 from typing import Dict, Optional, List
 
-from .gav_logger import obter_logger
+from .gav_logger import log_decisao_ia
 
-logger = obter_logger(__name__)
 
 # Importações dos novos sistemas críticos
 from .controlador_fluxo_conversa import validar_fluxo_conversa, detectar_confusao_conversa
@@ -30,6 +29,9 @@ from .gav_logger import log_decisao_ia
 # Configurações
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 HOST_OLLAMA = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+
+# Limiar padrão de confiança para sinalização
+CONFIDENCE_THRESHOLD = 0.7
 
 # Cache inteligente de intenções para performance IA-FIRST
 _cache_intencao = {}
@@ -323,7 +325,9 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
         conversation_context (str, optional): Contexto da conversa para melhor análise.
     
     Returns:
-        Dict: Dicionário contendo 'nome_ferramenta' e 'parametros' da ferramenta selecionada.
+        Dict: Dicionário contendo 'nome_ferramenta', 'parametros' e opcionalmente
+        'confidence_score'. Inclui também 'confidence_below_threshold' quando
+        a confiança calculada está abaixo de ``CONFIDENCE_THRESHOLD``.
         
     Example:
         >>> detectar_intencao_usuario_com_ia("quero cerveja")
@@ -338,8 +342,10 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
     # 🚀 CACHE SEMÂNTICO IA-FIRST - Tenta cache por similaridade primeiro
     cache_result = _buscar_cache_semantico(user_message, conversation_context)
     if cache_result:
-        logging.info(f"[CACHE_SEMANTICO] Cache hit: {cache_result['nome_ferramenta']}")
-        _registrar_decisao(cache_result)
+        logging.info(f"[CACHE
+        score = cache_result.get("confidence_score", 0.0)
+        cache_result["confidence_below_threshold"] = score < CONFIDENCE_THRESHOLD
+        log_decisao_ia(cache_result.get("nome_ferramenta", "unknown"), score, cache_result.get("decision_strategy"))
 
         return cache_result
     
@@ -348,9 +354,11 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
     if not conversation_context and cache_key in _cache_intencao:
 
         logging.debug(f"[INTENT] Cache exato hit para: {cache_key}")
-        cached = _cache_intencao[cache_key]
-        _registrar_decisao(cached)
-        return cached
+        resultado_cache = _cache_intencao[cache_key]
+        score = resultado_cache.get("confidence_score", 0.0)
+        resultado_cache["confidence_below_threshold"] = score < CONFIDENCE_THRESHOLD
+        log_decisao_ia(resultado_cache.get("nome_ferramenta", "unknown"), score, resultado_cache.get("decision_strategy"))
+        return resultado_cache
     
 
     try:
@@ -497,11 +505,21 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                 # Adiciona dados de confiança ao resultado
                 intent_data["confidence_score"] = confidence_score
                 intent_data["decision_strategy"] = decision_strategy
-                
-                logger.info(f"[INTENT] Intenção: {intent_data['nome_ferramenta']}, "
-                           f"Confiança: {confidence_score:.3f}, "
-                           f"Estratégia: {decision_strategy}, "
-                           f"Validação: {intent_data.get('validation_status', 'N/A')}")
+
+                intent_data["confidence_below_threshold"] = confidence_score < CONFIDENCE_THRESHOLD
+
+                log_decisao_ia(
+                    intent_data.get("nome_ferramenta", "unknown"),
+                    confidence_score,
+                    decision_strategy,
+                )
+
+                logging.info(
+                    f"[INTENT] Intenção: {intent_data['nome_ferramenta']}, "
+                    f"Confiança: {confidence_score:.3f}, "
+                    f"Estratégia: {decision_strategy}, "
+                    f"Validação: {intent_data.get('validation_status', 'N/A')}")
+
                 
                 # Cache apenas se não há contexto (primeira interação)
                 if not conversation_context:
@@ -510,13 +528,15 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                 # 🚀 CACHE SEMÂNTICO IA-FIRST - Salva sempre no cache semântico
                 _salvar_cache_semantico(user_message, intent_data)
 
-                _registrar_decisao(intent_data)
                 return intent_data
         
         # 🚀 MÚLTIPLAS TENTATIVAS IA-FIRST - Se IA falhou, tenta recuperação inteligente
         logger.warning(f"[INTENT] IA não retornou intenção válida, tentando recuperação inteligente")
         recuperacao_result = _tentar_recuperacao_inteligente_ia(user_message, conversation_context, "json_invalido")
         if recuperacao_result:
+            score = recuperacao_result.get("confidence_score", 0.0)
+            recuperacao_result["confidence_below_threshold"] = score < CONFIDENCE_THRESHOLD
+            log_decisao_ia(recuperacao_result.get("nome_ferramenta", "unknown"), score, recuperacao_result.get("decision_strategy"))
             # Salva no cache semântico o resultado recuperado
             _salvar_cache_semantico(user_message, recuperacao_result)
             _registrar_decisao(recuperacao_result)
@@ -535,7 +555,11 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
         try:
             recuperacao_result = _tentar_recuperacao_inteligente_ia(user_message, conversation_context, str(e))
             if recuperacao_result:
-                logger.info(f"[RECUPERACAO_IA] Recuperação bem-sucedida após erro: {recuperacao_result['nome_ferramenta']}")
+                logging.info(f"[RECUPERACAO_IA] Recuperação bem-sucedida após erro: {recuperacao_result['nome_ferramenta']}")
+                score = recuperacao_result.get("confidence_score", 0.0)
+                recuperacao_result["confidence_below_threshold"] = score < CONFIDENCE_THRESHOLD
+                log_decisao_ia(recuperacao_result.get("nome_ferramenta", "unknown"), score, recuperacao_result.get("decision_strategy"))
+
                 _salvar_cache_semantico(user_message, recuperacao_result)
                 _registrar_decisao(recuperacao_result)
                 return recuperacao_result
@@ -603,13 +627,24 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
             intent_data, user_message, conversation_context
         )
         decision_strategy = _confidence_system.get_decision_strategy(confidence_score)
-        
+        below_threshold = confidence_score < CONFIDENCE_THRESHOLD
+
         intent_data["confidence_score"] = confidence_score
         intent_data["decision_strategy"] = decision_strategy
-        
-        logger.debug(f"[FALLBACK] {intent_data['nome_ferramenta']}: "
-                     f"confiança={confidence_score:.3f}, estratégia={decision_strategy}, "
-                     f"validação={intent_data.get('validation_status', 'N/A')}")
+
+        intent_data["confidence_below_threshold"] = below_threshold
+
+        log_decisao_ia(
+            intent_data.get("nome_ferramenta", "unknown"),
+            confidence_score,
+            decision_strategy,
+        )
+
+        logging.debug(
+            f"[FALLBACK] {intent_data['nome_ferramenta']}: "
+            f"confiança={confidence_score:.3f}, estratégia={decision_strategy}, "
+            f"validação={intent_data.get('validation_status', 'N/A')}")
+
         return intent_data
     
     # Regras de fallback simples com CONTEXTO IA-FIRST
@@ -1570,7 +1605,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
         if validacao_final.get("foi_corrigida"):
             mensagem_guidance = validacao_final["resposta_validada"]
 
-        return {
+        resultado_redirecionamento = {
             "nome_ferramenta": "lidar_conversa",
             "parametros": {
                 "response_text": mensagem_guidance
@@ -1583,9 +1618,18 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
             "sistemas_criticos_ativo": True,
             "necessita_redirecionamento": True,
             "confidence_score": 0.95,  # Alta confiança no redirecionamento
+            "confidence_below_threshold": False,
             "decision_strategy": "execute_immediately",
             "validacao_pos_resposta": validacao_final
         }
+
+        log_decisao_ia(
+            resultado_redirecionamento["nome_ferramenta"],
+            resultado_redirecionamento["confidence_score"],
+            resultado_redirecionamento["decision_strategy"],
+        )
+
+        return resultado_redirecionamento
     
     # FASE 4: Detecção Normal de Intenção (se não precisa redirecionamento)
     logger.debug("[FASE 4] Detectando intenção com contexto otimizado...")
@@ -1627,7 +1671,13 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
                 f"fluxo_coerente: {validacao_fluxo['eh_coerente']}, "
                 f"contexto_qualidade: {contexto_otimizado.get('context_quality_score', 0):.2f}, "
                 f"estado: {memoria_trabalho_atualizada.get('conversation_state', 'unknown')}")
-    
+
+    log_decisao_ia(
+        intencao_detectada.get("nome_ferramenta", "unknown"),
+        intencao_detectada.get("confidence_score", 0.0),
+        intencao_detectada.get("decision_strategy"),
+    )
+
     return intencao_detectada
 
 def aplicar_sistemas_criticos_pos_resposta(resposta_gerada: str, dados_disponiveis: Dict = None) -> Dict:
