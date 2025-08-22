@@ -9,6 +9,8 @@ import re
 import logging
 from typing import Dict, List, Optional
 
+from .gav_logger import log_decisao_ia
+
 # Importações para IA
 try:
     import ollama
@@ -34,7 +36,9 @@ def detectar_intencao_carrinho_ia(mensagem: str, historico_conversa: str, carrin
         Dict: Intenção detectada com ação e parâmetros.
     """
     if not OLLAMA_DISPONIVEL:
-        return {"acao": "unknown", "parametros": {}}
+        resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
+        log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "ollama_indisponivel")
+        return resultado
     
     try:
         # Prepara contexto do carrinho
@@ -110,6 +114,7 @@ JSON:"""
                 resultado = json.loads(json_str)
                 if "acao" in resultado:
                     print(f">>> DEBUG: [CARRINHO_JSON] ✅ JSON válido extraído: {json.dumps(resultado, ensure_ascii=False)}")
+                    log_decisao_ia(resultado["acao"], float(resultado.get("confianca", 0)), "json")
                     return resultado
         except Exception as e:
             print(f">>> DEBUG: [CARRINHO_JSON] Erro JSON: {str(e)}, tentando fallback semântico...")
@@ -122,23 +127,29 @@ JSON:"""
         if any(cmd in resposta_lower for cmd in ['visualizar', 'ver', 'mostrar', 'exibir']):
             resultado = {"acao": "visualizar_carrinho", "parametros": {}, "confianca": 0.9}
             print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
             return resultado
         elif any(cmd in resposta_lower for cmd in ['limpar', 'esvaziar', 'deletar', 'clear']):
             resultado = {"acao": "limpar_carrinho", "parametros": {}, "confianca": 0.9}
             print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
             return resultado
         elif any(cmd in resposta_lower for cmd in ['finalizar', 'checkout', 'concluir']):
             resultado = {"acao": "finalizar_pedido", "parametros": {}, "confianca": 0.9}
             print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
             return resultado
-        
+
         resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
         print(f">>> DEBUG: [CARRINHO_SEMANTICO] ❌ Nenhuma ação detectada. Retornando: {json.dumps(resultado, ensure_ascii=False)}")
+        log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
         return resultado
         
     except Exception as e:
         logging.error(f"[INTENCAO_CARRINHO_IA] Erro: {e}")
-        return {"acao": "unknown", "parametros": {}}
+        resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
+        log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "erro")
+        return resultado
 
 def analisar_contexto_emocional_ia(mensagem: str, historico: str) -> Dict:
     """

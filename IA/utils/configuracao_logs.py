@@ -840,6 +840,18 @@ def configurar_logging_principal():
     manipulador_performance.setFormatter(formatador_json)
     manipulador_performance.addFilter(FiltroPerformance())
     logger_raiz.addHandler(manipulador_performance)
+
+    # Handler dedicado para decisões de IA
+    manipulador_ia_decisoes = logging.handlers.RotatingFileHandler(
+        DIRETORIO_LOGS / "gav_ia_decisoes.log",
+        maxBytes=TAMANHO_MAX_LOG,
+        backupCount=QUANTIDADE_BACKUP,
+        encoding='utf-8'
+    )
+    manipulador_ia_decisoes.setLevel(logging.INFO)
+    manipulador_ia_decisoes.setFormatter(formatador_json)
+    manipulador_ia_decisoes.addFilter(FiltroModulo(['ia_decisoes']))
+    logger_raiz.addHandler(manipulador_ia_decisoes)
     
     # Suprime logs verbosos de bibliotecas externas
     logging.getLogger('twilio').setLevel(logging.WARNING)

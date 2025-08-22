@@ -19,6 +19,7 @@ from .redirecionamento_inteligente import (
     detectar_usuario_confuso,
     verificar_entrada_vazia_selecao,
 )
+from .gav_logger import log_decisao_ia
 
 # Configurações
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -87,6 +88,15 @@ def _salvar_cache_semantico(mensagem: str, resultado: Dict):
         _cache_semantico["categoria_limpar"] = resultado.copy()
     elif ferramenta == "show_more_products":
         _cache_semantico["categoria_mais"] = resultado.copy()
+
+
+def _registrar_decisao(intencao: Dict):
+    """Registra decisão da IA usando logger dedicado."""
+    log_decisao_ia(
+        intencao.get("nome_ferramenta", "desconhecida"),
+        float(intencao.get("confidence_score", 0)),
+        intencao.get("decision_strategy")
+    )
 
 def _tentar_recuperacao_inteligente_ia(mensagem_original: str, contexto: str, erro_original: str) -> Optional[Dict]:
     """
@@ -283,13 +293,16 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
     cache_result = _buscar_cache_semantico(user_message, conversation_context)
     if cache_result:
         logging.info(f"[CACHE_SEMANTICO] Cache hit: {cache_result['nome_ferramenta']}")
+        _registrar_decisao(cache_result)
         return cache_result
     
     # Cache exato (mantido para compatibilidade)
     cache_key = user_message.lower().strip()
     if not conversation_context and cache_key in _cache_intencao:
         logging.debug(f"[INTENT] Cache exato hit para: {cache_key}")
-        return _cache_intencao[cache_key]
+        cached = _cache_intencao[cache_key]
+        _registrar_decisao(cached)
+        return cached
     
     try:
         # Prompt otimizado para detecção de intenção COM CONTEXTO COMPLETO
@@ -471,10 +484,11 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                 # Cache apenas se não há contexto (primeira interação)
                 if not conversation_context:
                     _cache_intencao[cache_key] = intent_data
-                
+
                 # 🚀 CACHE SEMÂNTICO IA-FIRST - Salva sempre no cache semântico
                 _salvar_cache_semantico(user_message, intent_data)
-                
+
+                _registrar_decisao(intent_data)
                 return intent_data
         
         # 🚀 MÚLTIPLAS TENTATIVAS IA-FIRST - Se IA falhou, tenta recuperação inteligente
@@ -483,10 +497,13 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
         if recuperacao_result:
             # Salva no cache semântico o resultado recuperado
             _salvar_cache_semantico(user_message, recuperacao_result)
+            _registrar_decisao(recuperacao_result)
             return recuperacao_result
         
         logging.warning(f"[INTENT] Recuperação falhou, usando fallback final")
-        return _criar_intencao_fallback(user_message, conversation_context)
+        fallback = _criar_intencao_fallback(user_message, conversation_context)
+        _registrar_decisao(fallback)
+        return fallback
         
     except Exception as e:
         logging.error(f"[INTENT] Erro na detecção de intenção: {e}")
@@ -497,11 +514,14 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
             if recuperacao_result:
                 logging.info(f"[RECUPERACAO_IA] Recuperação bem-sucedida após erro: {recuperacao_result['nome_ferramenta']}")
                 _salvar_cache_semantico(user_message, recuperacao_result)
+                _registrar_decisao(recuperacao_result)
                 return recuperacao_result
         except Exception as e2:
             logging.debug(f"[RECUPERACAO_IA] Recuperação também falhou: {e2}")
-        
-        return _criar_intencao_fallback(user_message, conversation_context)
+
+        fallback = _criar_intencao_fallback(user_message, conversation_context)
+        _registrar_decisao(fallback)
+        return fallback
 
 def _extrair_json_da_resposta(response: str) -> Optional[Dict]:
     """
