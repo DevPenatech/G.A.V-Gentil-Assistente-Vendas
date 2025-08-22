@@ -12,6 +12,8 @@ import os
 import re
 from typing import Dict, Optional, List
 
+from .cache_inteligente import buscar_semelhante, salvar_resultado
+
 # Importações dos novos sistemas críticos
 from .controlador_fluxo_conversa import validar_fluxo_conversa, detectar_confusao_conversa
 from .prevencao_invencao_dados import validar_resposta_ia, verificar_seguranca_resposta
@@ -24,69 +26,7 @@ from .redirecionamento_inteligente import (
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
 HOST_OLLAMA = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
 
-# Cache inteligente de intenções para performance IA-FIRST
 _cache_intencao = {}
-_cache_semantico = {}  # Cache por similaridade semântica
-
-# Palavras-chave para cache semântico
-_palavras_chave_cache = {
-    "carrinho": ["carrinho", "meu carrinho", "pedido", "itens", "cesta"],
-    "cerveja": ["cerveja", "cerva", "skol", "heineken", "brahma", "antartica"],
-    "finalizar_pedido": ["finalizar", "comprar", "fechar pedido", "concluir"],
-    "limpar": ["limpar", "esvaziar", "zerar", "apagar", "cancelar"],
-    "mais": ["mais", "continuar", "próximos", "outros", "mostrar mais"],
-    "numeros": [str(i) for i in range(1, 21)]  # Números de 1 a 20
-}
-
-def _buscar_cache_semantico(mensagem: str, contexto: str = "") -> Optional[Dict]:
-    """
-    Busca no cache semântico por mensagens similares (IA-FIRST).
-    Retorna intenção cacheada se encontrar similaridade.
-    """
-    mensagem_lower = mensagem.lower().strip()
-    
-    # Se é só número, usa cache direto
-    if mensagem_lower.isdigit():
-        cache_key = f"numero_{mensagem_lower}"
-        if cache_key in _cache_semantico:
-            logging.debug(f"[CACHE_SEMANTICO] Hit para número: {mensagem_lower}")
-            return _cache_semantico[cache_key]
-    
-    # Busca por palavras-chave semânticas
-    for categoria, palavras in _palavras_chave_cache.items():
-        for palavra in palavras:
-            if palavra in mensagem_lower:
-                cache_key = f"categoria_{categoria}"
-                if cache_key in _cache_semantico:
-                    logging.debug(f"[CACHE_SEMANTICO] Hit para categoria: {categoria}")
-                    return _cache_semantico[cache_key]
-    
-    return None
-
-def _salvar_cache_semantico(mensagem: str, resultado: Dict):
-    """
-    Salva resultado no cache semântico baseado em padrões identificados.
-    """
-    mensagem_lower = mensagem.lower().strip()
-    
-    # Cache para números
-    if mensagem_lower.isdigit():
-        cache_key = f"numero_{mensagem_lower}"
-        _cache_semantico[cache_key] = resultado.copy()
-    
-    # Cache por categoria baseado na ferramenta resultado
-    ferramenta = resultado.get("nome_ferramenta", "")
-    if ferramenta == "visualizar_carrinho":
-        _cache_semantico["categoria_carrinho"] = resultado.copy()
-    elif ferramenta == "busca_inteligente_com_promocoes":
-        if any(palavra in mensagem_lower for palavra in ["cerveja", "skol", "heineken"]):
-            _cache_semantico["categoria_cerveja"] = resultado.copy()
-    elif ferramenta == "finalizar_pedido":
-        _cache_semantico["categoria_finalizar_pedido"] = resultado.copy()
-    elif ferramenta == "limpar_carrinho":
-        _cache_semantico["categoria_limpar"] = resultado.copy()
-    elif ferramenta == "show_more_products":
-        _cache_semantico["categoria_mais"] = resultado.copy()
 
 def _tentar_recuperacao_inteligente_ia(mensagem_original: str, contexto: str, erro_original: str) -> Optional[Dict]:
     """
@@ -280,7 +220,7 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
         limpar_cache_intencao()
 
     # 🚀 CACHE SEMÂNTICO IA-FIRST - Tenta cache por similaridade primeiro
-    cache_result = _buscar_cache_semantico(user_message, conversation_context)
+    cache_result = buscar_semelhante(user_message, conversation_context)
     if cache_result:
         logging.info(f"[CACHE_SEMANTICO] Cache hit: {cache_result['nome_ferramenta']}")
         return cache_result
@@ -473,7 +413,7 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                     _cache_intencao[cache_key] = intent_data
                 
                 # 🚀 CACHE SEMÂNTICO IA-FIRST - Salva sempre no cache semântico
-                _salvar_cache_semantico(user_message, intent_data)
+                salvar_resultado(user_message, intent_data)
                 
                 return intent_data
         
@@ -482,7 +422,7 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
         recuperacao_result = _tentar_recuperacao_inteligente_ia(user_message, conversation_context, "json_invalido")
         if recuperacao_result:
             # Salva no cache semântico o resultado recuperado
-            _salvar_cache_semantico(user_message, recuperacao_result)
+            salvar_resultado(user_message, recuperacao_result)
             return recuperacao_result
         
         logging.warning(f"[INTENT] Recuperação falhou, usando fallback final")
@@ -496,7 +436,7 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
             recuperacao_result = _tentar_recuperacao_inteligente_ia(user_message, conversation_context, str(e))
             if recuperacao_result:
                 logging.info(f"[RECUPERACAO_IA] Recuperação bem-sucedida após erro: {recuperacao_result['nome_ferramenta']}")
-                _salvar_cache_semantico(user_message, recuperacao_result)
+                salvar_resultado(user_message, recuperacao_result)
                 return recuperacao_result
         except Exception as e2:
             logging.debug(f"[RECUPERACAO_IA] Recuperação também falhou: {e2}")
