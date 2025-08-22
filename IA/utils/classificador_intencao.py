@@ -5,14 +5,15 @@ Classificador de Intenções Inteligente
 Usa IA para detectar automaticamente a intenção do usuário e escolher a ferramenta certa
 """
 
-import logging
 import ollama
 import json
 import os
 import re
+import time
 from typing import Dict, Optional, List
 
 from .gav_logger import log_decisao_ia
+
 
 # Importações dos novos sistemas críticos
 from .controlador_fluxo_conversa import validar_fluxo_conversa, detectar_confusao_conversa
@@ -21,6 +22,9 @@ from .redirecionamento_inteligente import (
     detectar_usuario_confuso,
     verificar_entrada_vazia_selecao,
 )
+
+from .gav_logger import log_decisao_ia
+
 
 # Configurações
 NOME_MODELO_OLLAMA = os.getenv("OLLAMA_MODEL_NAME", "llama3.1")
@@ -54,7 +58,7 @@ def _buscar_cache_semantico(mensagem: str, contexto: str = "") -> Optional[Dict]
     if mensagem_lower.isdigit():
         cache_key = f"numero_{mensagem_lower}"
         if cache_key in _cache_semantico:
-            logging.debug(f"[CACHE_SEMANTICO] Hit para número: {mensagem_lower}")
+            logger.debug(f"[CACHE_SEMANTICO] Hit para número: {mensagem_lower}")
             return _cache_semantico[cache_key]
     
     # Busca por palavras-chave semânticas
@@ -63,7 +67,7 @@ def _buscar_cache_semantico(mensagem: str, contexto: str = "") -> Optional[Dict]
             if palavra in mensagem_lower:
                 cache_key = f"categoria_{categoria}"
                 if cache_key in _cache_semantico:
-                    logging.debug(f"[CACHE_SEMANTICO] Hit para categoria: {categoria}")
+                    logger.debug(f"[CACHE_SEMANTICO] Hit para categoria: {categoria}")
                     return _cache_semantico[cache_key]
     
     return None
@@ -93,12 +97,21 @@ def _salvar_cache_semantico(mensagem: str, resultado: Dict):
     elif ferramenta == "show_more_products":
         _cache_semantico["categoria_mais"] = resultado.copy()
 
+
+def _registrar_decisao(intencao: Dict):
+    """Registra decisão da IA usando logger dedicado."""
+    log_decisao_ia(
+        intencao.get("nome_ferramenta", "desconhecida"),
+        float(intencao.get("confidence_score", 0)),
+        intencao.get("decision_strategy")
+    )
+
 def _tentar_recuperacao_inteligente_ia(mensagem_original: str, contexto: str, erro_original: str) -> Optional[Dict]:
     """
     Sistema de múltiplas tentativas inteligentes IA-FIRST.
     Tenta diferentes estratégias quando a IA principal falha.
     """
-    logging.info(f"[RECUPERACAO_IA] Iniciando recuperação para: '{mensagem_original}' (erro: {erro_original})")
+    logger.info(f"[RECUPERACAO_IA] Iniciando recuperação para: '{mensagem_original}' (erro: {erro_original})")
     
     estrategias = [
         ("mensagem_simplificada", lambda: _simplificar_mensagem_ia(mensagem_original)),
@@ -109,20 +122,20 @@ def _tentar_recuperacao_inteligente_ia(mensagem_original: str, contexto: str, er
     
     for nome_estrategia, estrategia_func in estrategias:
         try:
-            logging.debug(f"[RECUPERACAO_IA] Tentando estratégia: {nome_estrategia}")
+            logger.debug(f"[RECUPERACAO_IA] Tentando estratégia: {nome_estrategia}")
             resultado = estrategia_func()
             
             if resultado and "nome_ferramenta" in resultado:
-                logging.info(f"[RECUPERACAO_IA] SUCESSO com {nome_estrategia}: {resultado['nome_ferramenta']}")
+                logger.info(f"[RECUPERACAO_IA] SUCESSO com {nome_estrategia}: {resultado['nome_ferramenta']}")
                 resultado["estrategia_recuperacao"] = nome_estrategia
                 resultado["recuperacao_aplicada"] = True
                 return resultado
                 
         except Exception as e:
-            logging.debug(f"[RECUPERACAO_IA] Estratégia {nome_estrategia} falhou: {e}")
+            logger.debug(f"[RECUPERACAO_IA] Estratégia {nome_estrategia} falhou: {e}")
             continue
     
-    logging.warning("[RECUPERACAO_IA] Todas estratégias falharam")
+    logger.warning("[RECUPERACAO_IA] Todas estratégias falharam")
     return None
 
 def _simplificar_mensagem_ia(mensagem: str) -> Optional[Dict]:
@@ -161,7 +174,7 @@ RESPONDA APENAS EM JSON: {{"nome_ferramenta": "X", "parametros": {{}}}}
             return _extrair_json_da_resposta(response['message']['content'])
             
         except Exception as e:
-            logging.debug(f"[RECUPERACAO_IA] Simplificação falhou: {e}")
+            logger.debug(f"[RECUPERACAO_IA] Simplificação falhou: {e}")
             return None
     
     return None
@@ -202,7 +215,7 @@ JSON: {{"nome_ferramenta": "X", "parametros": {{}}}}
         return _extrair_json_da_resposta(response['message']['content'])
         
     except Exception as e:
-        logging.debug(f"[RECUPERACAO_IA] Contexto reduzido falhou: {e}")
+        logger.debug(f"[RECUPERACAO_IA] Contexto reduzido falhou: {e}")
         return None
 
 def _tentar_patterns_ia(mensagem: str, contexto: str) -> Optional[Dict]:
@@ -258,10 +271,50 @@ def _criar_fallback_contextual_ia(mensagem: str, contexto: str) -> Dict:
     
     # Fallback: assume que é busca de produto
     return {
-        "nome_ferramenta": "busca_inteligente_com_promocoes", 
+        "nome_ferramenta": "busca_inteligente_com_promocoes",
         "parametros": {"termo_busca": mensagem},
         "fallback_contextual": True
     }
+
+
+def _get_saudacao_prompt_segment() -> str:
+    return (
+        "🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): \"oi\", \"olá\", \"bom dia\", \"boa tarde\", \"boa noite\", \"eai\" → lidar_conversa\n"
+        "Agradecimentos, perguntas gerais → lidar_conversa\n\n"
+        "🔥 SAUDAÇÕES (SEMPRE DETECTAR PRIMEIRO):\n"
+        "- \"oi\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"olá\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"bom dia\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"boa tarde\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"boa noite\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+        "- \"eai\" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)\n"
+    )
+
+
+def _get_brand_prompt_segment() -> str:
+    return (
+        "🚨 REGRA CRÍTICA PARA EVITAR CONFUSÃO:\n"
+        "- SE A MENSAGEM CONTÉM \"FINI\" ou \"FINÍ\" → SEMPRE busca_inteligente_com_promocoes (marca de doces!)\n"
+        "- SE A MENSAGEM CONTÉM APENAS \"FINALIZAR\" EXATA → finalizar_pedido\n"
+        "- \"deixa eu ver fini\", \"quero fini\", \"me mostra fini\" → busca_inteligente_com_promocoes (NÃO finalizar!)\n"
+        "- Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes\n\n"
+        "🎯 BUSCA POR CATEGORIA/MARCA:\n"
+        "- \"quero cerveja\" → busca_inteligente_com_promocoes (categoria de produto)\n"
+        "- \"quero fini\" → busca_inteligente_com_promocoes (marca específica!)\n"
+        "- \"deixa eu ver fini\" → busca_inteligente_com_promocoes (marca FINI, não finalizar!)\n"
+        "- \"vou querer fini\" → busca_inteligente_com_promocoes (marca FINI!)\n"
+        "- \"me mostra fini\" → busca_inteligente_com_promocoes (marca FINI!)\n"
+        "- \"quero nutella\" → busca_inteligente_com_promocoes (marca específica!)\n"
+        "- \"quero omo\" → busca_inteligente_com_promocoes (marca específica!)\n"
+        "- \"biscoito doce\" → obter_produtos_mais_vendidos_por_nome (produto sem marca específica)\n"
+        "- \"promoções\" → busca_inteligente_com_promocoes (busca por ofertas)\n\n"
+        "🚨 CUIDADO COM MARCAS QUE SOAM COMO \"FINALIZAR\":\n"
+        "- \"deixa eu ver fini\" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)\n"
+        "- \"quero fini\" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)\n"
+        "- \"ver fini\" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)\n"
+        "- \"quero ver coca\" → busca_inteligente_com_promocoes (marca COCA, NÃO finalizar!)\n\n"
+        "ATENÇÃO: Qualquer nome que pareça ser uma marca comercial deve usar busca_inteligente_com_promocoes!\n"
+    )
 
 def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: str = "") -> Dict:
     """
@@ -280,7 +333,7 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
         >>> detectar_intencao_usuario_com_ia("quero cerveja")
         {"nome_ferramenta": "smart_search_with_promotions", "parametros": {"termo_busca": "quero cerveja"}}
     """
-    logging.debug(f"Detectando intenção do usuário com IA para a mensagem: '{user_message}'")
+    logger.debug(f"Detectando intenção do usuário com IA para a mensagem: '{user_message}'")
 
     # 🔄 Limpeza periódica do cache para evitar crescimento excessivo
     if len(_cache_intencao) > 100:
@@ -289,15 +342,17 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
     # 🚀 CACHE SEMÂNTICO IA-FIRST - Tenta cache por similaridade primeiro
     cache_result = _buscar_cache_semantico(user_message, conversation_context)
     if cache_result:
-        logging.info(f"[CACHE_SEMANTICO] Cache hit: {cache_result['nome_ferramenta']}")
+        logging.info(f"[CACHE
         score = cache_result.get("confidence_score", 0.0)
         cache_result["confidence_below_threshold"] = score < CONFIDENCE_THRESHOLD
         log_decisao_ia(cache_result.get("nome_ferramenta", "unknown"), score, cache_result.get("decision_strategy"))
+
         return cache_result
     
     # Cache exato (mantido para compatibilidade)
     cache_key = user_message.lower().strip()
     if not conversation_context and cache_key in _cache_intencao:
+
         logging.debug(f"[INTENT] Cache exato hit para: {cache_key}")
         resultado_cache = _cache_intencao[cache_key]
         score = resultado_cache.get("confidence_score", 0.0)
@@ -305,22 +360,27 @@ def detectar_intencao_usuario_com_ia(user_message: str, conversation_context: st
         log_decisao_ia(resultado_cache.get("nome_ferramenta", "unknown"), score, resultado_cache.get("decision_strategy"))
         return resultado_cache
     
+
     try:
         # Prompt otimizado para detecção de intenção COM CONTEXTO COMPLETO
+        brand_segment = _get_brand_prompt_segment()
+        log_prompt_completo(brand_segment, funcao="detectar_intencao_usuario_com_ia", segmento="marcas")
+        saudacao_segment = _get_saudacao_prompt_segment()
+        log_prompt_completo(saudacao_segment, funcao="detectar_intencao_usuario_com_ia", segmento="saudacoes")
         intent_prompt = f"""
 Você é um classificador de intenções para um assistente de vendas do WhatsApp.
 
 FERRAMENTAS DISPONÍVEIS:
 1. busca_inteligente_com_promocoes - Para busca por categoria ou promoções específicas
-2. mostrar_todas_promocoes - Para ver TODAS promoções organizadas por categoria 
-3. obter_produtos_mais_vendidos_por_nome - Para busca de produto específico  
+2. mostrar_todas_promocoes - Para ver TODAS promoções organizadas por categoria
+3. obter_produtos_mais_vendidos_por_nome - Para busca de produto específico
 4. atualizacao_inteligente_carrinho - Para modificar carrinho (adicionar/remover)
 5. visualizar_carrinho - Para ver carrinho
 6. limpar_carrinho - Para limpar carrinho
 7. adicionar_item_ao_carrinho - Para selecionar item por número
 8. show_more_products - Para mostrar mais produtos da mesma busca (palavra: mais)
 9. finalizar_pedido - Para finalizar pedido (palavras: finalizar, comprar)
-10. handle_chitchat - Para saudações e conversas que resetam estado  
+10. handle_chitchat - Para saudações e conversas que resetam estado
 11. lidar_conversa - Para conversas gerais que mantêm contexto
 
 
@@ -331,49 +391,23 @@ MENSAGEM ATUAL DO USUÁRIO: "{user_message}"
 
 REGRAS DE CLASSIFICAÇÃO (ANALISE O CONTEXTO ANTES DE DECIDIR):
 
-🚨 REGRA CRÍTICA PARA EVITAR CONFUSÃO:
-- SE A MENSAGEM CONTÉM "FINI" ou "FINÍ" → SEMPRE busca_inteligente_com_promocoes (marca de doces!)
-- SE A MENSAGEM CONTÉM APENAS "FINALIZAR" EXATA → finalizar_pedido
-- "deixa eu ver fini", "quero fini", "me mostra fini" → busca_inteligente_com_promocoes (NÃO finalizar!)
-
+{brand_segment}
 1. PRIMEIRO, analise o CONTEXTO da conversa para entender a situação atual
 2. Se o bot mostrou uma lista de produtos e o usuário responde com número → adicionar_item_ao_carrinho
 3. 🚀 CRÍTICO: Se usuário diz apenas "mais" após uma busca de produtos → show_more_products
-4. 🎯 NOVO: Se usuário quer ver "promoções", "produtos em promoção", "ofertas" (genérico, sem categoria específica) → mostrar_todas_promocoes  
+4. 🎯 NOVO: Se usuário quer ver "promoções", "produtos em promoção", "ofertas" (genérico, sem categoria específica) → mostrar_todas_promocoes
 5. Se o usuário quer buscar categoria (cerveja, limpeza, comida, etc.) → busca_inteligente_com_promocoes
-6. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes  
-7. IMPORTANTE: Se menciona marca comercial específica (fini, coca-cola, omo, heineken, nutella, etc.) → busca_inteligente_com_promocoes
-8. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
-9. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
-10. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
-11. Se quer limpar/esvaziar carrinho → limpar_carrinho
-12. 🔥 SAUDAÇÕES (PRIORIDADE CRÍTICA): "oi", "olá", "bom dia", "boa tarde", "boa noite", "eai" → lidar_conversa
-13. Agradecimentos, perguntas gerais → lidar_conversa
+6. Se menciona "promoção", "oferta", "desconto" → busca_inteligente_com_promocoes
+7. Se busca produto genérico sem marca específica (ex: "biscoito doce", "shampoo qualquer") → obter_produtos_mais_vendidos_por_nome
+8. Se fala "adiciona", "coloca", "mais", "remove", "remover", "tirar" com produto → atualizacao_inteligente_carrinho
+9. Se pergunta sobre carrinho ou quer ver carrinho → visualizar_carrinho
+10. Se quer limpar/esvaziar carrinho → limpar_carrinho
 
-EXEMPLOS IMPORTANTES:
-🔥 SAUDAÇÕES (SEMPRE DETECTAR PRIMEIRO):
-- "oi" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "olá" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)  
-- "bom dia" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "boa tarde" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "boa noite" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-- "eai" → lidar_conversa (SEMPRE, mesmo com contexto de produtos)
-
+{saudacao_segment}
 OUTROS EXEMPLOS (ANALISE SEMPRE O CONTEXTO PRIMEIRO):
 - "mais" → show_more_products (PRIORIDADE MÁXIMA após busca!)
 - "mais produtos" → show_more_products (continuar busca)
 - "continuar" → show_more_products (mostrar mais produtos)
-
-🎯 BUSCA POR CATEGORIA/MARCA:
-- "quero cerveja" → busca_inteligente_com_promocoes (categoria de produto)
-- "quero fini" → busca_inteligente_com_promocoes (marca específica!)
-- "deixa eu ver fini" → busca_inteligente_com_promocoes (marca FINI, não finalizar!)
-- "vou querer fini" → busca_inteligente_com_promocoes (marca FINI!)
-- "me mostra fini" → busca_inteligente_com_promocoes (marca FINI!)
-- "quero nutella" → busca_inteligente_com_promocoes (marca específica!)
-- "quero omo" → busca_inteligente_com_promocoes (marca específica!)
-- "biscoito doce" → obter_produtos_mais_vendidos_por_nome (produto sem marca específica)
-- "promoções" → busca_inteligente_com_promocoes (busca por ofertas)
 
 🛒 CARRINHO:
 - "limpar carrinho" → limpar_carrinho (comando para esvaziar carrinho)
@@ -389,14 +423,6 @@ OUTROS EXEMPLOS (ANALISE SEMPRE O CONTEXTO PRIMEIRO):
 - "finalizar pedido" → finalizar_pedido (APENAS frase exata)
 - "comprar" → finalizar_pedido (APENAS palavra exata "comprar")
 - "confirmar pedido" → finalizar_pedido (APENAS frase exata)
-
-🚨 CUIDADO COM MARCAS QUE SOAM COMO "FINALIZAR":
-- "deixa eu ver fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
-- "quero fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
-- "ver fini" → busca_inteligente_com_promocoes (marca FINI, NÃO finalizar!)
-- "quero ver coca" → busca_inteligente_com_promocoes (marca COCA, NÃO finalizar!)
-
-ATENÇÃO: Qualquer nome que pareça ser uma marca comercial deve usar busca_inteligente_com_promocoes!
 
 IMPORTANTÍSSIMO: Use o CONTEXTO para entender se o usuário está respondendo a uma pergunta do bot!
 
@@ -420,8 +446,9 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
 
 🔥 NÃO ESCREVA TEXTO EXPLICATIVO! APENAS JSON!
 """
+        log_prompt_completo(intent_prompt, funcao="detectar_intencao_usuario_com_ia", segmento="completo")
 
-        logging.debug(f"[INTENT] Classificando intenção para: {user_message}")
+        logger.debug(f"[INTENT] Classificando intenção para: {user_message}")
         
         client = ollama.Client(host=HOST_OLLAMA)
         response = client.chat(
@@ -439,12 +466,14 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
         )
         
         ai_response = response['message']['content'].strip()
-        print(f">>> [CLASSIFICADOR_IA] Mensagem: '{user_message}'")
-        print(f">>> [CLASSIFICADOR_IA] IA respondeu: {ai_response}")
+
+        logger.debug(f">>> [CLASSIFICADOR_IA] Mensagem: '{user_message}'")
+        logger.debug(f">>> [CLASSIFICADOR_IA] IA respondeu: {ai_response}")
         
         # Extrai JSON da resposta
         intent_data = _extrair_json_da_resposta(ai_response)
-        print(f">>> [CLASSIFICADOR_IA] JSON extraído: {intent_data}")
+        logger.debug(f">>> [CLASSIFICADOR_IA] JSON extraído: {intent_data}")
+
         
         if intent_data and "nome_ferramenta" in intent_data:
             # Valida se a ferramenta existe
@@ -476,6 +505,7 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                 # Adiciona dados de confiança ao resultado
                 intent_data["confidence_score"] = confidence_score
                 intent_data["decision_strategy"] = decision_strategy
+
                 intent_data["confidence_below_threshold"] = confidence_score < CONFIDENCE_THRESHOLD
 
                 log_decisao_ia(
@@ -489,18 +519,19 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                     f"Confiança: {confidence_score:.3f}, "
                     f"Estratégia: {decision_strategy}, "
                     f"Validação: {intent_data.get('validation_status', 'N/A')}")
+
                 
                 # Cache apenas se não há contexto (primeira interação)
                 if not conversation_context:
                     _cache_intencao[cache_key] = intent_data
-                
+
                 # 🚀 CACHE SEMÂNTICO IA-FIRST - Salva sempre no cache semântico
                 _salvar_cache_semantico(user_message, intent_data)
 
                 return intent_data
         
         # 🚀 MÚLTIPLAS TENTATIVAS IA-FIRST - Se IA falhou, tenta recuperação inteligente
-        logging.warning(f"[INTENT] IA não retornou intenção válida, tentando recuperação inteligente")
+        logger.warning(f"[INTENT] IA não retornou intenção válida, tentando recuperação inteligente")
         recuperacao_result = _tentar_recuperacao_inteligente_ia(user_message, conversation_context, "json_invalido")
         if recuperacao_result:
             score = recuperacao_result.get("confidence_score", 0.0)
@@ -508,13 +539,17 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
             log_decisao_ia(recuperacao_result.get("nome_ferramenta", "unknown"), score, recuperacao_result.get("decision_strategy"))
             # Salva no cache semântico o resultado recuperado
             _salvar_cache_semantico(user_message, recuperacao_result)
+            _registrar_decisao(recuperacao_result)
             return recuperacao_result
-        
+
         logging.warning(f"[INTENT] Recuperação falhou, usando fallback final")
-        return _criar_intencao_fallback(user_message, conversation_context)
+        fallback = _criar_intencao_fallback(user_message, conversation_context)
+        _registrar_decisao(fallback)
+        return fallback
+
         
     except Exception as e:
-        logging.error(f"[INTENT] Erro na detecção de intenção: {e}")
+        logger.error(f"[INTENT] Erro na detecção de intenção: {e}")
         
         # 🚀 MÚLTIPLAS TENTATIVAS IA-FIRST - Mesmo com erro, tenta recuperação
         try:
@@ -524,12 +559,18 @@ Para mais produtos: {{"nome_ferramenta": "show_more_products", "parametros": {{}
                 score = recuperacao_result.get("confidence_score", 0.0)
                 recuperacao_result["confidence_below_threshold"] = score < CONFIDENCE_THRESHOLD
                 log_decisao_ia(recuperacao_result.get("nome_ferramenta", "unknown"), score, recuperacao_result.get("decision_strategy"))
+
                 _salvar_cache_semantico(user_message, recuperacao_result)
+                _registrar_decisao(recuperacao_result)
                 return recuperacao_result
         except Exception as e2:
+
             logging.debug(f"[RECUPERACAO_IA] Recuperação também falhou: {e2}")
-        
-        return _criar_intencao_fallback(user_message, conversation_context)
+
+        fallback = _criar_intencao_fallback(user_message, conversation_context)
+        _registrar_decisao(fallback)
+        return fallback
+
 
 def _extrair_json_da_resposta(response: str) -> Optional[Dict]:
     """
@@ -541,7 +582,7 @@ def _extrair_json_da_resposta(response: str) -> Optional[Dict]:
     Returns:
         Optional[Dict]: Dados JSON extraídos ou None se não encontrados.
     """
-    logging.debug(f"Extraindo JSON da resposta da IA: '{response}'")
+    logger.debug(f"Extraindo JSON da resposta da IA: '{response}'")
     try:
         # Procura por JSON na resposta
         json_pattern = r'\{.*?\}'
@@ -557,7 +598,7 @@ def _extrair_json_da_resposta(response: str) -> Optional[Dict]:
         return json.loads(response)
         
     except Exception as e:
-        logging.debug(f"[INTENT] Erro ao extrair JSON: {e}")
+        logger.debug(f"[INTENT] Erro ao extrair JSON: {e}")
         return None
 
 def _criar_intencao_fallback(user_message: str, conversation_context: str = "") -> Dict:
@@ -570,7 +611,7 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
     Returns:
         Dict: Intenção de fallback com nome_ferramenta e parametros.
     """
-    logging.debug(f"Criando intenção de fallback para a mensagem: '{user_message}'")
+    logger.debug(f"Criando intenção de fallback para a mensagem: '{user_message}'")
     
     message_lower = user_message.lower().strip()
     
@@ -590,6 +631,7 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
 
         intent_data["confidence_score"] = confidence_score
         intent_data["decision_strategy"] = decision_strategy
+
         intent_data["confidence_below_threshold"] = below_threshold
 
         log_decisao_ia(
@@ -602,6 +644,7 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
             f"[FALLBACK] {intent_data['nome_ferramenta']}: "
             f"confiança={confidence_score:.3f}, estratégia={decision_strategy}, "
             f"validação={intent_data.get('validation_status', 'N/A')}")
+
         return intent_data
     
     # Regras de fallback simples com CONTEXTO IA-FIRST
@@ -686,7 +729,7 @@ def _criar_intencao_fallback(user_message: str, conversation_context: str = "") 
     # 🆕 IA-FIRST: Detecta automaticamente se é uma marca conhecida usando IA
     def _detectar_marca_com_ia(mensagem: str) -> bool:
         """Usa IA para detectar se a mensagem contém uma marca conhecida."""
-        logging.debug(f"Detectando marca com IA para a mensagem: '{mensagem}'")
+        logger.debug(f"Detectando marca com IA para a mensagem: '{mensagem}'")
         try:
             import ollama
             prompt_marca = f"""Analise se esta mensagem contém uma MARCA ESPECÍFICA de produto comercial:
@@ -717,14 +760,14 @@ RESPONDA APENAS: SIM ou NAO"""
             
             resposta = response['message']['content'].strip().upper()
             resultado = "SIM" in resposta
-            logging.debug(f"[IA-MARCA] '{mensagem}' → IA disse: '{resposta}' → resultado: {resultado}")
+            logger.debug(f"[IA-MARCA] '{mensagem}' → IA disse: '{resposta}' → resultado: {resultado}")
             return resultado
         except Exception as e:
-            logging.warning(f"[IA-MARCA] Erro na detecção para '{mensagem}': {e}")
+            logger.warning(f"[IA-MARCA] Erro na detecção para '{mensagem}': {e}")
             # Fallback: se IA falhar, assume que é marca se não for categoria óbvia
             palavras_categoria_obvias = ['cerveja', 'refrigerante', 'doce', 'bala', 'sabão', 'detergente']
             fallback_resultado = not any(cat in mensagem.lower() for cat in palavras_categoria_obvias)
-            logging.debug(f"[IA-MARCA] Fallback para '{mensagem}': {fallback_resultado}")
+            logger.debug(f"[IA-MARCA] Fallback para '{mensagem}': {fallback_resultado}")
             return fallback_resultado
     
     # Se contém categoria ou é marca detectada pela IA, usa busca inteligente
@@ -763,7 +806,7 @@ RESPONDA APENAS: SIM ou NAO"""
     fallback_intent["confidence_score"] = confidence_score
     fallback_intent["decision_strategy"] = decision_strategy
     
-    logging.info(f"[FALLBACK] Intenção: {fallback_intent['nome_ferramenta']}, "
+    logger.info(f"[FALLBACK] Intenção: {fallback_intent['nome_ferramenta']}, "
                f"Confiança: {confidence_score:.3f}, "
                f"Estratégia: {decision_strategy}, "
                f"Validação: {fallback_intent.get('validation_status', 'N/A')}")
@@ -779,7 +822,7 @@ def limpar_cache_intencao():
     """
     global _cache_intencao
     _cache_intencao.clear()
-    logging.info("[INTENT] Cache de intenções limpo")
+    logger.info("[INTENT] Cache de intenções limpo")
 
 def obter_estatisticas_intencao() -> Dict:
     """
@@ -792,7 +835,7 @@ def obter_estatisticas_intencao() -> Dict:
         >>> obter_estatisticas_intencao()
         {"tamanho_cache": 5, "intencoes_cache": ["oi", "carrinho"]}
     """
-    logging.debug("Obtendo estatísticas do classificador de intenções.")
+    logger.debug("Obtendo estatísticas do classificador de intenções.")
     return {
         "tamanho_cache": len(_cache_intencao),
         "intencoes_cache": list(_cache_intencao.keys())[:10]  # Mostra primeiras 10
@@ -835,7 +878,7 @@ class IntentConfidenceSystem:
         Returns:
             float: Score de confiança entre 0.0-1.0
         """
-        logging.debug(f"[CONFIDENCE] Analisando confiança para: {intent_data.get('nome_ferramenta', 'unknown')}")
+        logger.debug(f"[CONFIDENCE] Analisando confiança para: {intent_data.get('nome_ferramenta', 'unknown')}")
         
         confidence_factors = {
             "context_alignment": self._check_context_match(intent_data, context),
@@ -858,8 +901,8 @@ class IntentConfidenceSystem:
         confidence = sum(confidence_factors[factor] * weights[factor] 
                         for factor in confidence_factors)
         
-        logging.debug(f"[CONFIDENCE] Fatores: {confidence_factors}")
-        logging.debug(f"[CONFIDENCE] Score final: {confidence:.3f}")
+        logger.debug(f"[CONFIDENCE] Fatores: {confidence_factors}")
+        logger.debug(f"[CONFIDENCE] Score final: {confidence:.3f}")
         
         return round(confidence, 3)
     
@@ -1012,7 +1055,7 @@ class IntentConfidenceSystem:
         new_rate = max(0.1, min(0.98, current_rate + adjustment))
         
         self._historical_success[tool_name] = new_rate
-        logging.debug(f"[CONFIDENCE] Taxa de sucesso atualizada para {tool_name}: {new_rate:.3f}")
+        logger.debug(f"[CONFIDENCE] Taxa de sucesso atualizada para {tool_name}: {new_rate:.3f}")
 
 
 class SmartParameterValidator:
@@ -1114,7 +1157,7 @@ class SmartParameterValidator:
         tool_name = intent_data.get("nome_ferramenta", "")
         parametros = intent_data.get("parametros", {}).copy()
         
-        logging.debug(f"[VALIDATOR] Validando {tool_name} com parâmetros: {parametros}")
+        logger.debug(f"[VALIDATOR] Validando {tool_name} com parâmetros: {parametros}")
         
         # 1. Validação de Schema
         validation_result = self._validate_schema(tool_name, parametros)
@@ -1149,7 +1192,7 @@ class SmartParameterValidator:
         # Atualiza parâmetros validados
         intent_data["parametros"] = parametros
         
-        logging.debug(f"[VALIDATOR] Resultado: {tool_name} - status: {intent_data.get('validation_status')} - parâmetros: {parametros}")
+        logger.debug(f"[VALIDATOR] Resultado: {tool_name} - status: {intent_data.get('validation_status')} - parâmetros: {parametros}")
         
         return intent_data
     
@@ -1376,7 +1419,7 @@ def update_intent_success(tool_name: str, success: bool):
         success: Se a execução foi bem-sucedida
     """
     _confidence_system.update_historical_success(tool_name, success)
-    logging.info(f"[CONFIDENCE] Feedback registrado para {tool_name}: {'sucesso' if success else 'falha'}")
+    logger.info(f"[CONFIDENCE] Feedback registrado para {tool_name}: {'sucesso' if success else 'falha'}")
 
 def get_confidence_statistics() -> Dict:
     """
@@ -1459,7 +1502,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
     Returns:
         Dict: Resultado completo com intenção, validações e orientações
     """
-    logging.info(f"[SISTEMAS_CRITICOS] Processando entrada: '{entrada_usuario}' com contexto: '{contexto_conversa[:50]}...'")
+    logger.info(f"[SISTEMAS_CRITICOS] Processando entrada: '{entrada_usuario}' com contexto: '{contexto_conversa[:50]}...'")
     
     # Inicializa dados se não fornecidos
     if dados_disponiveis is None:
@@ -1491,23 +1534,23 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
         }
     
     # 🚀 FASE 0: Otimização Inteligente de Contexto IA-FIRST
-    logging.debug("[FASE 0] Otimizando contexto inteligentemente...")
+    logger.debug("[FASE 0] Otimizando contexto inteligentemente...")
     contexto_otimizado = _context_manager.optimize_context_window(dados_sessao, entrada_usuario)
     memoria_trabalho = _context_manager.maintain_working_memory(dados_sessao, entrada_usuario)
     
     # Usa contexto otimizado se disponível, senão usa contexto original
     contexto_para_analise = contexto_otimizado.get("optimized_text", contexto_conversa) or contexto_conversa
     
-    logging.info(f"[SISTEMAS_CRITICOS] Contexto otimizado: {len(contexto_conversa)} → {len(contexto_para_analise)} chars, "
+    logger.info(f"[SISTEMAS_CRITICOS] Contexto otimizado: {len(contexto_conversa)} → {len(contexto_para_analise)} chars, "
                 f"qualidade: {contexto_otimizado.get('context_quality_score', 0):.2f}, "
                 f"estado_conversa: {memoria_trabalho.get('conversation_state', 'unknown')}")
     
     # FASE 1: Validação de Fluxo Conversacional
-    logging.debug("[FASE 1] Validando fluxo conversacional...")
+    logger.debug("[FASE 1] Validando fluxo conversacional...")
     validacao_fluxo = validar_fluxo_conversa(entrada_usuario, contexto_para_analise, historico_conversa)
     
     # FASE 2: Detecção de Confusão do Usuário
-    logging.debug("[FASE 2] Detectando confusão do usuário...")
+    logger.debug("[FASE 2] Detectando confusão do usuário...")
     analise_confusao = detectar_usuario_confuso(entrada_usuario, contexto_para_analise, historico_conversa)
 
     # 🔍 Análise adicional de confusão baseada no histórico da conversa
@@ -1539,7 +1582,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
                        analise_confusao["esta_confuso"]
     
     if deve_redirecionar:
-        logging.info("[SISTEMAS_CRITICOS] Usuário necessita redirecionamento - aplicando guidance")
+        logger.info("[SISTEMAS_CRITICOS] Usuário necessita redirecionamento - aplicando guidance")
         
         # 🚀 NOVO: Usa memória de trabalho para contextualizar redirecionamento
         if acoes_pendentes:
@@ -1589,7 +1632,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
         return resultado_redirecionamento
     
     # FASE 4: Detecção Normal de Intenção (se não precisa redirecionamento)
-    logging.debug("[FASE 4] Detectando intenção com contexto otimizado...")
+    logger.debug("[FASE 4] Detectando intenção com contexto otimizado...")
     intencao_detectada = detectar_intencao_usuario_com_ia(entrada_usuario, contexto_para_analise)
     
     # 🚀 NOVO: Atualiza memória de trabalho com a intenção detectada
@@ -1598,7 +1641,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
     )
     
     # FASE 5: Validação Anti-Invenção de Dados e Segurança
-    logging.debug("[FASE 5] Validando resposta final...")
+    logger.debug("[FASE 5] Validando resposta final...")
 
     ferramentas_com_resposta_textual = ["lidar_conversa"]
     if intencao_detectada.get("nome_ferramenta") in ferramentas_com_resposta_textual:
@@ -1606,7 +1649,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
         if resposta_texto and resposta_texto != "GENERATE_GREETING":
             validacao_final = aplicar_sistemas_criticos_pos_resposta(resposta_texto, dados_disponiveis)
             if validacao_final.get("foi_corrigida"):
-                logging.warning("[SISTEMAS_CRITICOS] Resposta corrigida para segurança/invenção")
+                logger.warning("[SISTEMAS_CRITICOS] Resposta corrigida para segurança/invenção")
                 intencao_detectada["parametros"]["response_text"] = validacao_final["resposta_validada"]
             intencao_detectada["validacao_pos_resposta"] = validacao_final
     
@@ -1623,7 +1666,7 @@ def detectar_intencao_com_sistemas_criticos(entrada_usuario: str, contexto_conve
         "qualidade_contexto": contexto_otimizado.get("context_quality_score", 0)
     })
     
-    logging.info(f"[SISTEMAS_CRITICOS] Intenção final: {intencao_detectada['nome_ferramenta']}, "
+    logger.info(f"[SISTEMAS_CRITICOS] Intenção final: {intencao_detectada['nome_ferramenta']}, "
                 f"confiança: {intencao_detectada.get('confidence_score', 0):.2f}, "
                 f"fluxo_coerente: {validacao_fluxo['eh_coerente']}, "
                 f"contexto_qualidade: {contexto_otimizado.get('context_quality_score', 0):.2f}, "
@@ -1648,7 +1691,7 @@ def aplicar_sistemas_criticos_pos_resposta(resposta_gerada: str, dados_disponive
     Returns:
         Dict: Resultado da validação com resposta corrigida se necessário
     """
-    logging.debug("[POS_RESPOSTA] Aplicando validação final...")
+    logger.debug("[POS_RESPOSTA] Aplicando validação final...")
     
     if dados_disponiveis is None:
         dados_disponiveis = {}
@@ -1723,7 +1766,7 @@ class IntelligentContextManager:
             Dict: Contexto otimizado com informações mais relevantes
         """
         self._optimization_stats["contexts_optimized"] += 1
-        logging.debug(f"[CONTEXT_MANAGER] Otimizando contexto para: '{current_message[:50]}...'")
+        logger.debug(f"[CONTEXT_MANAGER] Otimizando contexto para: '{current_message[:50]}...'")
         
         # 1. Extração de histórico relevante
         relevant_history = self._extract_relevant_history_ia(session_data, current_message)
@@ -1751,7 +1794,7 @@ class IntelligentContextManager:
         if original_length > 0:
             self._optimization_stats["context_compression_ratio"] = optimized_length / original_length
         
-        logging.info(f"[CONTEXT_MANAGER] Contexto otimizado: {original_length} → {optimized_length} chars "
+        logger.info(f"[CONTEXT_MANAGER] Contexto otimizado: {original_length} → {optimized_length} chars "
                     f"({self._optimization_stats['context_compression_ratio']:.2%} compressão)")
         
         return optimized_context
@@ -1770,7 +1813,7 @@ class IntelligentContextManager:
             Dict: Memória de trabalho atualizada
         """
         self._optimization_stats["working_memory_updates"] += 1
-        logging.debug(f"[CONTEXT_MANAGER] Atualizando memória de trabalho...")
+        logger.debug(f"[CONTEXT_MANAGER] Atualizando memória de trabalho...")
         
         # 1. Rastreamento de produtos discutidos
         active_products = self._track_discussed_products_ia(session_data, current_message)
@@ -1793,7 +1836,7 @@ class IntelligentContextManager:
             search_term = current_intent.get("parametros", {}).get("termo_busca", current_message)
             self._working_memory["current_search_context"] = {
                 "search_term": search_term,
-                "timestamp": logging.time.time() if hasattr(logging, 'time') else 0
+                "timestamp": time.time()
             }
         
         # 6. Registro de operações de carrinho
@@ -1801,14 +1844,14 @@ class IntelligentContextManager:
             self._working_memory["cart_operations_history"].append({
                 "operation": current_intent.get("nome_ferramenta"),
                 "message": current_message,
-                "timestamp": logging.time.time() if hasattr(logging, 'time') else 0
+                "timestamp": time.time()
             })
             # Mantém apenas últimas 10 operações
             if len(self._working_memory["cart_operations_history"]) > 10:
                 self._working_memory["cart_operations_history"] = \
                     self._working_memory["cart_operations_history"][-10:]
         
-        logging.debug(f"[CONTEXT_MANAGER] Memória atualizada: estado={conversation_state}, "
+        logger.debug(f"[CONTEXT_MANAGER] Memória atualizada: estado={conversation_state}, "
                      f"produtos_ativos={len(active_products)}, ações_pendentes={len(pending_actions)}")
         
         return self._working_memory.copy()
@@ -1927,7 +1970,7 @@ class IntelligentContextManager:
     
     def _weight_by_recency_and_relevance_ia(self, prioritized_context: List[Dict], current_message: str) -> List[Dict]:
         """Aplica peso por recência e relevância usando IA."""
-        now = logging.time.time() if hasattr(logging, 'time') else 1000
+        now = time.time()
         
         for i, msg_data in enumerate(prioritized_context):
             # Peso por recência (mensagens mais recentes têm peso maior)
@@ -2173,7 +2216,7 @@ class IntelligentContextManager:
             "current_search_context": None,
             "cart_operations_history": []
         }
-        logging.info("[CONTEXT_MANAGER] Memória de trabalho resetada")
+        logger.info("[CONTEXT_MANAGER] Memória de trabalho resetada")
     
     def get_current_working_memory(self) -> Dict:
         """Retorna cópia atual da memória de trabalho."""
@@ -2253,7 +2296,7 @@ def obter_estatisticas_sistemas_criticos() -> Dict:
             "versao_sistemas": "1.1.0_21082025"
         }
     except ImportError as e:
-        logging.warning(f"[SISTEMAS_CRITICOS] Erro ao importar estatísticas: {e}")
+        logger.warning(f"[SISTEMAS_CRITICOS] Erro ao importar estatísticas: {e}")
         return {
             "classificador_intencao": get_combined_statistics(),
             "gestao_contexto": get_context_optimization_stats(),

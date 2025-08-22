@@ -10,10 +10,12 @@ import time
 import inspect
 import uuid
 import threading
+
 from .configuracao_logs import (
     configurar_logging_principal,
     obter_estatisticas_deduplicacao,
 )
+
 
 # Logger global configurado
 _logger_principal = None
