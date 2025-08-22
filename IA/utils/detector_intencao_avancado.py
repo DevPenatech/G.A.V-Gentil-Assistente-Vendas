@@ -10,6 +10,8 @@ import json
 import logging
 from typing import Dict, List, Optional
 
+from .gav_logger import log_decisao_ia
+
 # Importações para IA
 try:
     import ollama
@@ -70,10 +72,10 @@ def detectar_intencao_carrinho_ia(
             return resultado
 
     if not OLLAMA_DISPONIVEL:
-        resultado = {"acao": "unknown", "parametros": {}}
-        CACHE_INTENCOES[chave_cache] = resultado
+        resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
+        log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "ollama_indisponivel")
         return resultado
-
+    
     try:
         # Prepara contexto do carrinho
         contexto_carrinho = ""
@@ -146,11 +148,9 @@ JSON:"""
                 json_str = json_match.group(0)
                 resultado = json.loads(json_str)
                 if "acao" in resultado:
-                    logging.debug(
-                        ">>> DEBUG: [CARRINHO_JSON] ✅ JSON válido extraído: %s",
-                        json.dumps(resultado, ensure_ascii=False),
-                    )
-                    CACHE_INTENCOES[chave_cache] = resultado
+                    print(f">>> DEBUG: [CARRINHO_JSON] ✅ JSON válido extraído: {json.dumps(resultado, ensure_ascii=False)}")
+                    log_decisao_ia(resultado["acao"], float(resultado.get("confianca", 0)), "json")
+
                     return resultado
         except Exception as e:
             logging.debug(
@@ -167,43 +167,38 @@ JSON:"""
         # Detecta palavras-chave semânticas
         if any(cmd in resposta_lower for cmd in ["visualizar", "ver", "mostrar", "exibir"]):
             resultado = {"acao": "visualizar_carrinho", "parametros": {}, "confianca": 0.9}
-            logging.debug(
-                ">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: %s",
-                json.dumps(resultado, ensure_ascii=False),
-            )
-            CACHE_INTENCOES[chave_cache] = resultado
+
+            print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
+
             return resultado
         elif any(
             cmd in resposta_lower for cmd in ["limpar", "esvaziar", "deletar", "clear"]
         ):
             resultado = {"acao": "limpar_carrinho", "parametros": {}, "confianca": 0.9}
-            logging.debug(
-                ">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: %s",
-                json.dumps(resultado, ensure_ascii=False),
-            )
-            CACHE_INTENCOES[chave_cache] = resultado
+
+            print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
+
             return resultado
         elif any(cmd in resposta_lower for cmd in ["finalizar", "checkout", "concluir"]):
             resultado = {"acao": "finalizar_pedido", "parametros": {}, "confianca": 0.9}
-            logging.debug(
-                ">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: %s",
-                json.dumps(resultado, ensure_ascii=False),
-            )
-            CACHE_INTENCOES[chave_cache] = resultado
+            print(f">>> DEBUG: [CARRINHO_SEMANTICO] ✅ Detectado por semântica: {json.dumps(resultado, ensure_ascii=False)}")
+            log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
             return resultado
 
         resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
-        logging.debug(
-            ">>> DEBUG: [CARRINHO_SEMANTICO] ❌ Nenhuma ação detectada. Retornando: %s",
-            json.dumps(resultado, ensure_ascii=False),
-        )
-        CACHE_INTENCOES[chave_cache] = resultado
+        print(f">>> DEBUG: [CARRINHO_SEMANTICO] ❌ Nenhuma ação detectada. Retornando: {json.dumps(resultado, ensure_ascii=False)}")
+        log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "semantica")
+
         return resultado
 
     except Exception as e:
         logging.error(f"[INTENCAO_CARRINHO_IA] Erro: {e}")
-        resultado = {"acao": "unknown", "parametros": {}}
-        CACHE_INTENCOES[chave_cache] = resultado
+
+        resultado = {"acao": "unknown", "parametros": {}, "confianca": 0}
+        log_decisao_ia(resultado["acao"], resultado.get("confianca", 0), "erro")
+
         return resultado
 
 def analisar_contexto_emocional_ia(mensagem: str, historico: str) -> Dict:
